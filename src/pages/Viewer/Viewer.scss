@@ -1,0 +1,29 @@
+.viewer-box {
+  width: 100%;
+  height: 100%;
+
+  .viewer-center-box {
+    position: relative;
+    display: flex;
+    flex: 1;
+    height: calc(100% - 50px);
+    flex-flow: row nowrap;
+    align-items: stretch;
+  }
+}
+
+.load-image-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-style: normal;
+}
