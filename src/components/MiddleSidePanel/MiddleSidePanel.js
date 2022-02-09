@@ -19,7 +19,7 @@ const MiddleSidePanel = props => {
             </Checkbox> */}
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
-            </Checkbox> 
+            </Checkbox>
             <div className="size">大小</div>
             <div className="type">类型</div>
             <div className="risk">风险</div>
@@ -41,11 +41,7 @@ const MiddleSidePanel = props => {
                 <div className="type">{item.type}</div>
                 <div className="risk">{item.risk}</div>
                 <div className="soak">
-                  <span>
-                    {
-                      item.state === undefined ? '-' : (item.state ? '是' : '否')
-                    }
-                  </span>
+                  <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
                 <div className="action review-state">
                   <span className={item.review ? 'review' : null}>{item.review ? '已检阅' : '未检阅'}</span>

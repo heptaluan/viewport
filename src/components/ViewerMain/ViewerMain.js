@@ -4,7 +4,7 @@ import './ViewerMain.scss'
 import useWindowSize from '../../hook/useWindowSize'
 import Toolbar from '../../components/Toolbar/Toolbar'
 import CustomOverlay from '../common/CustomOverlay/CustomOverlay'
-import { Button } from 'antd'
+import { Button, Spin } from 'antd'
 
 const ViewerMain = props => {
   const size = useWindowSize()
@@ -12,7 +12,7 @@ const ViewerMain = props => {
     <div className="viewer-main-box">
       {props.imagesConfig.length === 0 ? (
         <div className="error-tips">
-          <span>正在加载...</span>
+          <Spin tip="Loading..." />
         </div>
       ) : (
         <div>
@@ -30,7 +30,9 @@ const ViewerMain = props => {
                 <span>是否为结节</span>
                 <div className="group">
                   <Button onClick={e => props.updateNoduleList(false)}>否</Button>
-                  <Button onClick={e => props.updateNoduleList(true)} type="primary">是</Button>
+                  <Button onClick={e => props.updateNoduleList(true)} type="primary">
+                    是
+                  </Button>
                 </div>
               </div>
             </div>

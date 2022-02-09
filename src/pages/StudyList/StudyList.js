@@ -107,7 +107,8 @@ const StudyList = () => {
     <div className="study-list-container">
       <div className="search-box-wrap">
         <div className="header">
-          <Button type="primary">检索</Button>
+          <Button type="primary">搜索</Button>
+          <Button type="primary">重置</Button>
         </div>
         <div className="search-box">
           <Input style={{ width: 200 }} placeholder="请输入姓名" />

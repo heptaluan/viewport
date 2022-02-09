@@ -10,7 +10,7 @@ const toolbarList = [
     icon: <IconFont style={{ fontSize: '24px' }} type="icon-asmkticon0229" />,
     type: 'playClip',
     checked: false,
-    filter: true
+    filter: true,
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const toolbarList = [
     icon: <IconFont style={{ fontSize: '20px' }} type="icon-fanzhuan1" />,
     type: 'vflip',
     checked: false,
-    filter: true
+    filter: true,
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ const toolbarList = [
     icon: <IconFont style={{ fontSize: '20px' }} type="icon-fanzhuan" />,
     type: 'hflip',
     checked: false,
-    filter: true
+    filter: true,
   },
   {
     id: 4,
@@ -123,7 +123,7 @@ const Toolbar = props => {
             key={item.id}
             className={item.checked ? (item.filter ? 'filter-active' : 'active') : ''}
             onClick={e => handleToolbarClick(e, index, item.type)}
-            data-type={ item.type}
+            data-type={item.type}
           >
             <Tooltip title={item.text}>{item.icon}</Tooltip>
           </li>
