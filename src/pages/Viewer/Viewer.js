@@ -791,7 +791,7 @@ const Viewer = () => {
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
           id: index,
-          num: res[i].rois[0].key,
+          num: res[i].coord.coordZ,
           size: res[i].diameter,
           type: res[i].featureLabel.value,
           risk: (res[i].scrynMaligant * 100).toFixed(0) + '%',
