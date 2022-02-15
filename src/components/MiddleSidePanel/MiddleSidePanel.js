@@ -20,7 +20,7 @@ const MiddleSidePanel = props => {
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
             </Checkbox>
-            <div className="size">大小</div>
+            <div className="size">大小(单位mm)</div>
             <div className="type">类型</div>
             <div className="risk">风险</div>
             <div className="soak">结节</div>
@@ -37,7 +37,7 @@ const MiddleSidePanel = props => {
                 <Checkbox onChange={e => props.onCheckChange(e, index)} checked={item.checked}>
                   <div className="num">{item.num}</div>
                 </Checkbox>
-                <div className="size">{item.size}</div>
+                <div className="size">{item.size.replace(/m/g, '')}</div>
                 <div className="type">{item.type}</div>
                 <div className="risk">{item.risk}</div>
                 <div className="soak">
@@ -64,7 +64,9 @@ const MiddleSidePanel = props => {
                     className={`viewer-item ${item.active ? 'item-active' : ''}`}
                     onClick={e => props.handleCheckedListClick(item.num)}
                   >
-                    {item.text}
+                    于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
+                    结节，大小约 <span>{item.size}</span>，体积约 <span>{item.noduleSize} mm³</span>，结节恶性风险为：
+                    <span>{item.risk}</span>。
                   </div>
                 ) : null
               })}

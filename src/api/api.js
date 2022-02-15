@@ -7,7 +7,7 @@ import { getURLParameters } from '../util/index'
 // const basicUrl = 'http://139.196.114.118:9999'
 const basicUrl = 'http://192.168.1.204:9999'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDQ1MTgxMzgsInVzZXJuYW1lIjoiYWRtaW4ifQ.vbkMCbav2ylHCdJrKPZes9CUcwqsV17mGTgytKxJZdM'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDQ5MzcyMzEsInVzZXJuYW1lIjoiYWRtaW4ifQ.Rt6fzWe4ESKeX_Kut_tAn0FOnHovN6V3YYeg5yGZvL4'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -22,3 +22,6 @@ export const getImageList = id =>
 // 获取病人信息
 export const getPatientsList = (id, type) =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/patients/list?resource=${id}&type=${type}`)
+
+// 获取病人信息
+export const getNodeList = id => axios.get(`${basicUrl}/tailai-report/report/image/getDnResult?id=${id}`)

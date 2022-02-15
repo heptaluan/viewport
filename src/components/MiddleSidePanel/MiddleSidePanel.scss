@@ -149,6 +149,11 @@
             border: 1px solid transparent;
             transition: all 0.1s;
             cursor: default;
+            line-height: 18px;
+
+            span {
+              color: #1890ff;
+            }
 
             &.item-active {
               border: 1px solid #ccc;
