@@ -11,6 +11,7 @@ import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleToo
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import { getMedicalList, getImageList, getPatientsList, getNodeList } from '../../api/api'
 import { getURLParameters } from '../../util/index'
+import { message } from 'antd'
 
 const Viewer = () => {
   const defaultTools = [
@@ -492,11 +493,14 @@ const Viewer = () => {
 
   // 导出结果
   const handleSubmitResults = () => {
-    if (noduleList.some(item => item.review === false)) {
-      window.parent.postMessage('', '*')
-    }
-    console.log(originNoduleList)
     console.log(noduleList)
+    if (noduleList.every(item => item.review === true)) {
+      
+    } else {
+      message.warning(`请检阅完所有结节列表后在进行结果提交`)
+    }
+    // console.log(originNoduleList)
+    // console.log(noduleList)
     // window.parent.postMessage({
     //   code: 200,
     //   success: true
