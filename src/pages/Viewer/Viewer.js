@@ -11,7 +11,6 @@ import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleToo
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import { getMedicalList, getImageList, getPatientsList, getNodeList } from '../../api/api'
 import { getURLParameters } from '../../util/index'
-import { data } from './data'
 
 const Viewer = () => {
   const defaultTools = [
@@ -53,30 +52,31 @@ const Viewer = () => {
   const [taskLength, setTaskLength] = useState(0)
   const [sequenceListData, setLeftSidePanelData] = useState([])
   const [noduleList, setNoduleList] = useState([])
+  const [originNoduleList, setOriginNoduleList] = useState([])
   const [patients, setPatients] = useState([])
   const [noduleMapList, setNoduleMapList] = useState([])
 
   // 结节详情
   const [noduleInfo, setNoduleInfo] = useState(null)
 
-  // 初始化序列和图片列表
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await getMedicalList(
-  //       getURLParameters(window.location.href).resource,
-  //       getURLParameters(window.location.href).type
-  //     )
-  //     // console.log(result)
-  //     if (result.data.code === 200 && result.data.result.length > 0) {
-  //       setLeftSidePanelData(result.data.result)
-  //       const instanceUid = result.data.result[0].instanceUid
-  //       const res = await getImageList(instanceUid)
-  //       setImageList(res)
-  //     }
-  //   }
-  //   fetchData()
+  // 初始化影像信息
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getMedicalList(
+        getURLParameters(window.location.href).requestId,
+        getURLParameters(window.location.href).type
+      )
+      // console.log(result)
+      if (result.data.code === 200 && result.data.result.length > 0) {
+        setLeftSidePanelData(result.data.result)
+        const instanceUid = result.data.result[0].instanceUid
+        const res = await getImageList(instanceUid)
+        setImageList(res)
+      }
+    }
+    fetchData()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
+  }, [])
 
   // 初始化结节信息
   useEffect(() => {
@@ -84,12 +84,9 @@ const Viewer = () => {
       const result = await getNodeList(getURLParameters(window.location.href).id)
       if (result.data.code === 200) {
         console.log(result.data)
-        const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-        formatNodeData(data)
-        if (result.data.result.dicomGroupId) {
-          getMedicalList(result.data.result.dicomGroupId, getURLParameters(window.location.href).type).then(res => {
-            console.log(res)
-          })
+        if (result.data.result) {
+          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
+          formatNodeData(data)
         }
       }
     }
@@ -101,17 +98,17 @@ const Viewer = () => {
 
   // 初始化病人信息
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await getPatientsList(
-        getURLParameters(window.location.href).resource,
-        getURLParameters(window.location.href).type
-      )
-      // console.log(result)
-      if (result.data.code === 200) {
-        setPatients(result.data.result)
-      }
-    }
-    fetchData()
+    // const fetchData = async () => {
+    //   const result = await getPatientsList(
+    //     getURLParameters(window.location.href).resource,
+    //     getURLParameters(window.location.href).type
+    //   )
+    //   // console.log(result)
+    //   if (result.data.code === 200 && result.data.result) {
+    //     setPatients(result.data.result)
+    //   }
+    // }
+    // fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -270,10 +267,10 @@ const Viewer = () => {
       noduleList.map(item => (item.active = false))
       item.active = true
       setNoduleList([...noduleList])
-      setTimeout(() => {
-        const viewerItemActive = document.querySelector('#viewerItemBox .item-active')
-        viewerItemActive && viewerItemActive.scrollIntoView()
-      }, 0)
+      // setTimeout(() => {
+      //   const viewerItemActive = document.querySelector('#viewerItemBox .item-active')
+      //   viewerItemActive && viewerItemActive.scrollIntoView()
+      // }, 0)
     }
 
     // 设置当前视图选中项
@@ -287,7 +284,6 @@ const Viewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
     checkItme.review = true
     checkItme.state = checkState
-    console.log(checkItme)
     setNoduleList([...noduleList])
   }
 
@@ -495,7 +491,17 @@ const Viewer = () => {
   // ===========================================================
 
   // 导出结果
-  const handleSubmitResults = () => {}
+  const handleSubmitResults = () => {
+    if (noduleList.some(item => item.review === false)) {
+      window.parent.postMessage('', '*')
+    }
+    console.log(originNoduleList)
+    console.log(noduleList)
+    // window.parent.postMessage({
+    //   code: 200,
+    //   success: true
+    // }, '*')
+  }
 
   // 保存为图片
   const saveAs = (element, filename, mimetype = 'image/png') => {
@@ -525,8 +531,8 @@ const Viewer = () => {
     const nodulesMapList = []
     let index = 0
     if (data.code === 10000) {
+      setOriginNoduleList(data.detectionResult.nodulesList)
       const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
-      console.log(res)
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
           id: index,
@@ -539,12 +545,13 @@ const Viewer = () => {
           checked: false,
           active: false,
           noduleName: res[i].noduleName,
+          noduleNum: res[i].noduleNum,
           state: undefined,
           review: false,
           lung: res[i].lobe.lungLocation,
           lobe: res[i].lobe.lobeLocation,
           noduleSize: res[i].noduleSize,
-          featureLabelG: res[i].featureLabelG
+          featureLabelG: res[i].featureLabelG,
         })
         index++
       }
