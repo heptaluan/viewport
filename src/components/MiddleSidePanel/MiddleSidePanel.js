@@ -8,7 +8,7 @@ const MiddleSidePanel = props => {
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
-        <div className="title">结点列表（{props.noduleList.length}）</div>
+        <div className="title">结节列表（{props.noduleList.length}）</div>
         <div className="table-box">
           <div className="table-title">
             {/* <div className="icon">

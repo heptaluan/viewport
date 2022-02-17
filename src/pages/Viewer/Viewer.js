@@ -9,7 +9,7 @@ import cornerstoneTools from 'cornerstone-tools'
 import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import { getMedicalList, getImageList, getPatientsList, getNodeList } from '../../api/api'
+import { getMedicalList, getImageList, getPatientsList, getNodeList, updateDnResult } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { message } from 'antd'
 
@@ -76,7 +76,7 @@ const Viewer = () => {
       }
     }
     fetchData()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 初始化结节信息
@@ -141,18 +141,18 @@ const Viewer = () => {
           const measurementData = {
             visible: true,
             active: true,
-            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'blue',
+            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'white',
             invalidated: true,
             handles: {
               start: {
-                x: item[i].startX,
-                y: item[i].startY,
+                x: item[i].startX - 10,
+                y: item[i].startY - 10,
                 highlight: true,
                 active: true,
               },
               end: {
-                x: item[i].endX,
-                y: item[i].endY,
+                x: item[i].endX + 10,
+                y: item[i].endY + 10,
                 highlight: true,
                 active: true,
               },
@@ -165,18 +165,18 @@ const Viewer = () => {
           const measurementData = {
             visible: true,
             active: true,
-            color: 'blue',
+            color: 'white',
             invalidated: true,
             handles: {
               start: {
-                x: item[i].startX,
-                y: item[i].startY,
+                x: item[i].startX - 10,
+                y: item[i].startY - 10,
                 highlight: true,
                 active: true,
               },
               end: {
-                x: item[i].endX,
-                y: item[i].endY,
+                x: item[i].endX + 10,
+                y: item[i].endY + 10,
                 highlight: true,
                 active: true,
               },
@@ -192,18 +192,28 @@ const Viewer = () => {
   // 设置图片列表
   const setImageList = res => {
     if (res.data.code === 200 && res.data.result.length > 0) {
+      const newList = sortImageList(res.data.result)
+      // const newList = res.data.result
       const imageList = []
-      res.data.result.forEach(item => {
+      newList.forEach(item => {
         imageList.push(`wadouri:${item.ossUrl}`)
       })
 
-      // console.log(imageList)
       setImagesConfig(imageList)
 
       // 缓存图片
       // if (imageList.length > 0) {
       //   loadAndCacheImage(cornerstone, imageList)
       // }
+    }
+  }
+
+  // 调整影像序列顺序
+  const sortImageList = list => {
+    if (list[0].sliceLocation > list[1].sliceLocation) {
+      return list
+    } else {
+      return list.reverse()
     }
   }
 
@@ -285,6 +295,19 @@ const Viewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
     checkItme.review = true
     checkItme.state = checkState
+    setNoduleList([...noduleList])
+  }
+
+  // 更新结节时间
+  const checkNoduleList = (val, type) => {
+    console.log(val + type)
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme && type === 'lung') {
+      checkItme.lung = val
+    }
+    if (checkItme && type === 'lobe') {
+      checkItme.lobe = val
+    }
     setNoduleList([...noduleList])
   }
 
@@ -464,7 +487,6 @@ const Viewer = () => {
      * index = 4，ww: 1000, wl: 250
      * index = 5，ww: 300, wl: 40
      */
-
     const viewportDefault = cornerstone.getDefaultViewportForImage(element, image)
     const viewport = cornerstone.getViewport(element)
     viewport.voiLUT = undefined
@@ -491,20 +513,45 @@ const Viewer = () => {
 
   // ===========================================================
 
-  // 导出结果
+  // 提交审核结果
   const handleSubmitResults = () => {
-    console.log(noduleList)
     if (noduleList.every(item => item.review === true)) {
-      
+      const postData = {
+        id: getURLParameters(window.location.href).id,
+        orderId: getURLParameters(window.location.href).orderId,
+        resultInfo: {
+          nodelist: [],
+        },
+      }
+
+      for (let i = 0; i < noduleList.length; i++) {
+        if (noduleList[i].state === false) {
+          postData.resultInfo.nodelist.push({
+            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+            imageIndex: noduleList[i].num,
+            visable: 1,
+          })
+        }
+      }
+      postData.resultInfo = JSON.stringify(postData.resultInfo)
+      updateDnResult(JSON.stringify(postData)).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          message.success(`提交审核结果成功`)
+          window.parent.postMessage(
+            {
+              code: 200,
+              success: true,
+            },
+            '*'
+          )
+        } else {
+          message.error(`提交失败，请重新尝试`)
+        }
+      })
     } else {
       message.warning(`请检阅完所有结节列表后在进行结果提交`)
     }
-    // console.log(originNoduleList)
-    // console.log(noduleList)
-    // window.parent.postMessage({
-    //   code: 200,
-    //   success: true
-    // }, '*')
   }
 
   // 保存为图片
@@ -529,14 +576,15 @@ const Viewer = () => {
     }
   }
 
-  // 格式化结点数据
+  // 格式化结节数据
   const formatNodeData = data => {
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
     if (data.code === 10000) {
-      setOriginNoduleList(data.detectionResult.nodulesList)
-      const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
+      setOriginNoduleList([...data.detectionResult.nodulesList])
+      const res = data.detectionResult.nodulesList
+      // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
           id: index,
@@ -632,7 +680,7 @@ const Viewer = () => {
           noduleList={noduleList}
         />
       </div>
-      <NoduleInfo noduleInfo={noduleInfo} />
+      <NoduleInfo noduleInfo={noduleInfo} checkNoduleList={checkNoduleList} />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
       ) : null}

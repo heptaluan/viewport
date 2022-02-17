@@ -13,7 +13,7 @@ axios.defaults.headers.common['X-Access-Token'] =
 export const getMedicalList = (id, type) =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/series/list?resource=${id}&type=${type}`)
 
-// 获取图片详情
+// 获取影像列表
 export const getImageList = id =>
   axios.get(
     `${basicUrl}/tailai-multiomics/multiomics/medicalImage/instance/list?seriesInstanceUid=${id}&column=instanceNumber&order=asc`
@@ -23,5 +23,13 @@ export const getImageList = id =>
 export const getPatientsList = (id, type) =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/patients/list?resource=${id}&type=${type}`)
 
-// 获取病人信息
+// 获取结节列表
 export const getNodeList = id => axios.get(`${basicUrl}/tailai-report/report/image/getDnResult?id=${id}`)
+
+// 提交审核结果
+export const updateDnResult = params =>
+  axios.post(`${basicUrl}/tailai-report/report/image/updateDnResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })

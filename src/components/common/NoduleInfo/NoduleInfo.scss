@@ -1,20 +1,29 @@
 .nodule-info-box {
   position: absolute;
   left: 0;
-  bottom: 20px;
+  top: 120px;
   width: 250px;
-  padding: 0 10px;
+  padding: 0 0 0 15px;
 
   .nodule-detail {
-    display: flex;
-    flex-direction: column;
+    
+    .list {
+      margin: 15px 0;
+      display: flex;
 
-    em {
-      font-weight: bold;
-    }
+      .list-title {
+        height: 32px;
+        line-height: 32px;
+      }
 
-    span {
-      margin: 5px 0;
+      .ant-radio-wrapper {
+        margin-right: 0;
+      }
+
+      .ant-radio-group {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }
