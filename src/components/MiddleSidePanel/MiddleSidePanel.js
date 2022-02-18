@@ -2,7 +2,9 @@ import React from 'react'
 import './MiddleSidePanel.scss'
 import IconFont from '../common/IconFont/index'
 import { Popover, Checkbox } from 'antd'
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
+
+const { TextArea } = Input
 
 const MiddleSidePanel = props => {
   return (
@@ -65,7 +67,8 @@ const MiddleSidePanel = props => {
                     onClick={e => props.handleCheckedListClick(item.num)}
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
-                    结节，大小约 <span>{item.size}</span>，体积约 <span>{item.noduleSize} mm³</span>，结节恶性风险为：
+                    结节，类型为 <span>{item.type}</span>，大小约 <span>{item.size}</span>，体积约{' '}
+                    <span>{item.noduleSize} mm³</span>，结节恶性风险为：
                     <span>{item.risk}</span>。
                   </div>
                 ) : null
@@ -76,7 +79,17 @@ const MiddleSidePanel = props => {
             <div className="title">影像建议</div>
             <div className="suggest-content">
               <div className="suggest-content-wrap">
-                <div className="suggest-item">建议</div>
+                <TextArea
+                  placeholder="请输入建议"
+                  bordered={false}
+                  rows={6}
+                  maxLength={150}
+                  style={{
+                    width: '100%',
+                    resize: 'none',
+                  }}
+                  onChange={props.handleTextareaOnChange}
+                />
               </div>
               <div className="save">
                 <Button type="primary" size="small">

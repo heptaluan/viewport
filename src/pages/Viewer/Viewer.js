@@ -11,7 +11,7 @@ import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleToo
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import { getMedicalList, getImageList, getPatientsList, getNodeList, updateDnResult } from '../../api/api'
 import { getURLParameters } from '../../util/index'
-import { message } from 'antd'
+import { Modal, message } from 'antd'
 
 const Viewer = () => {
   const defaultTools = [
@@ -298,15 +298,20 @@ const Viewer = () => {
     setNoduleList([...noduleList])
   }
 
-  // 更新结节时间
+  // 更新结节事件
   const checkNoduleList = (val, type) => {
-    console.log(val + type)
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme && type === 'lung') {
       checkItme.lung = val
+      checkItme.doctorCheck = true
     }
     if (checkItme && type === 'lobe') {
       checkItme.lobe = val
+      checkItme.doctorCheck = true
+    }
+    if (checkItme && type === 'type') {
+      checkItme.type = val
+      checkItme.doctorCheck = true
     }
     setNoduleList([...noduleList])
   }
@@ -513,47 +518,6 @@ const Viewer = () => {
 
   // ===========================================================
 
-  // 提交审核结果
-  const handleSubmitResults = () => {
-    if (noduleList.every(item => item.review === true)) {
-      const postData = {
-        id: getURLParameters(window.location.href).id,
-        orderId: getURLParameters(window.location.href).orderId,
-        resultInfo: {
-          nodelist: [],
-        },
-      }
-
-      for (let i = 0; i < noduleList.length; i++) {
-        if (noduleList[i].state === false) {
-          postData.resultInfo.nodelist.push({
-            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: noduleList[i].num,
-            visable: 1,
-          })
-        }
-      }
-      postData.resultInfo = JSON.stringify(postData.resultInfo)
-      updateDnResult(JSON.stringify(postData)).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          message.success(`提交审核结果成功`)
-          window.parent.postMessage(
-            {
-              code: 200,
-              success: true,
-            },
-            '*'
-          )
-        } else {
-          message.error(`提交失败，请重新尝试`)
-        }
-      })
-    } else {
-      message.warning(`请检阅完所有结节列表后在进行结果提交`)
-    }
-  }
-
   // 保存为图片
   const saveAs = (element, filename, mimetype = 'image/png') => {
     const canvas = element.querySelector('canvas')
@@ -604,6 +568,7 @@ const Viewer = () => {
           lobe: res[i].lobe.lobeLocation,
           noduleSize: res[i].noduleSize,
           featureLabelG: res[i].featureLabelG,
+          doctorCheck: false,
         })
         index++
       }
@@ -650,6 +615,114 @@ const Viewer = () => {
     }
   }
 
+  // ===========================================================
+
+  const [visible, setVisible] = useState(false)
+  const [suggest, setSuggest] = useState('')
+
+  const hideModal = () => {
+    setVisible(false)
+  }
+
+  // 获取建议内容
+  const handleTextareaOnChange = e => {
+    setSuggest(e.target.value)
+  }
+
+  // 弹窗
+  const handleShowModal = () => {
+    if (noduleList.every(item => item.review === true)) {
+      setVisible(true)
+    } else {
+      message.warning(`请检阅完所有结节列表后在进行结果提交`)
+    }
+  }
+
+  // 提交审核结果
+  const handleSubmitResults = () => {
+    const postData = {
+      id: getURLParameters(window.location.href).id,
+      orderId: getURLParameters(window.location.href).orderId,
+      resultInfo: {
+        nodelist: [],
+      },
+    }
+
+    const dnPostData = {
+      id: getURLParameters(window.location.href).id,
+      orderId: getURLParameters(window.location.href).orderId,
+      dnResultInfo: {
+        nodelist: [],
+      },
+    }
+
+    if (getURLParameters(window.location.href).user === 'diannei') {
+      for (let i = 0; i < noduleList.length; i++) {
+        if (noduleList[i].state === false) {
+          dnPostData.dnResultInfo.nodelist.push({
+            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+            imageIndex: noduleList[i].num,
+            dn_visable: 1,
+            dn_check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
+            dn_check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
+            dn_check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
+            dn_edit: noduleList[i].doctorCheck,
+            dn_suggest: suggest,
+          })
+        }
+      }
+
+      dnPostData.dnResultInfo = JSON.stringify(dnPostData.dnResultInfo)
+      updateDnResult(JSON.stringify(dnPostData)).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          message.success(`提交审核结果成功`)
+          window.parent.postMessage(
+            {
+              code: 200,
+              success: true,
+            },
+            '*'
+          )
+        } else {
+          message.error(`提交失败，请重新尝试`)
+        }
+      })
+    } else {
+      for (let i = 0; i < noduleList.length; i++) {
+        if (noduleList[i].state === false) {
+          postData.resultInfo.nodelist.push({
+            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+            imageIndex: noduleList[i].num,
+            visable: 1,
+            check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
+            check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
+            check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
+            edit: noduleList[i].doctorCheck,
+            suggest: suggest,
+          })
+        }
+      }
+
+      postData.resultInfo = JSON.stringify(postData.resultInfo)
+      updateDnResult(JSON.stringify(postData)).then(res => {
+        console.log(res)
+        if (res.data.code === 200) {
+          message.success(`提交审核结果成功`)
+          window.parent.postMessage(
+            {
+              code: 200,
+              success: true,
+            },
+            '*'
+          )
+        } else {
+          message.error(`提交失败，请重新尝试`)
+        }
+      })
+    }
+  }
+
   return (
     <div className="viewer-box">
       {/* {taskLength !== imagesConfig.length ? (
@@ -657,9 +730,9 @@ const Viewer = () => {
           <span>图片序列加载中 {taskLength > 0 ? <em>，正在加载第 {taskLength} 张</em> : null}</span>
         </div>
       ) : null} */}
-      <Header data={patients} handleSubmitResults={handleSubmitResults} />
+      <Header data={patients} handleShowModal={handleShowModal} />
       <div className="viewer-center-box">
-        <LeftSidePanel data={sequenceListData} handleSequenceListClick={handleSequenceListClick} />
+        {/* <LeftSidePanel data={sequenceListData} handleSequenceListClick={handleSequenceListClick} /> */}
         <MiddleSidePanel
           handleVisibleChange={handleVisibleChange}
           handleCheckedListClick={handleCheckedListClick}
@@ -670,20 +743,32 @@ const Viewer = () => {
           indeterminate={indeterminate}
           checkAll={checkAll}
           noduleList={noduleList}
+          handleTextareaOnChange={handleTextareaOnChange}
         />
         <ViewerMain
           handleToolbarClick={handleToolbarClick}
           handleElementEnabledEvt={handleElementEnabledEvt}
-          updateNoduleList={updateNoduleList}
           toolsConfig={toolsConfig}
           imagesConfig={imagesConfig}
           noduleList={noduleList}
         />
       </div>
-      <NoduleInfo noduleInfo={noduleInfo} checkNoduleList={checkNoduleList} />
+      <NoduleInfo noduleInfo={noduleInfo} checkNoduleList={checkNoduleList} updateNoduleList={updateNoduleList} />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
       ) : null}
+
+      <Modal
+        title="提交审核结果"
+        maskClosable={false}
+        visible={visible}
+        onOk={handleSubmitResults}
+        onCancel={hideModal}
+        okText="确认"
+        cancelText="取消"
+      >
+        <p>是否提交检阅结果</p>
+      </Modal>
     </div>
   )
 }

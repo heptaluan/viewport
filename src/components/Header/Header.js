@@ -14,7 +14,7 @@ const Header = props => {
         )}
       </div>
       <div className="export">
-        <Button type="primary" onClick={props.handleSubmitResults}>
+        <Button type="primary" onClick={props.handleShowModal}>
           提交审核结果
         </Button>
       </div>

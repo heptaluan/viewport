@@ -4,7 +4,7 @@ import './ViewerMain.scss'
 import useWindowSize from '../../hook/useWindowSize'
 import Toolbar from '../../components/Toolbar/Toolbar'
 import CustomOverlay from '../common/CustomOverlay/CustomOverlay'
-import { Button, Spin } from 'antd'
+import { Spin } from 'antd'
 
 const ViewerMain = props => {
   const size = useWindowSize()
@@ -24,19 +24,6 @@ const ViewerMain = props => {
             imageIds={props.imagesConfig}
             style={{ minWidth: '100%', height: `${size.height - 85}px`, flex: '1' }}
           />
-          {props.noduleList.some(item => item.checked === true) ? (
-            <div className="check-group">
-              <div className="group-wrap">
-                <span>是否为结节</span>
-                <div className="group">
-                  <Button onClick={e => props.updateNoduleList(false)}>否</Button>
-                  <Button onClick={e => props.updateNoduleList(true)} type="primary">
-                    是
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ) : null}
         </div>
       )}
     </div>
