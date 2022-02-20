@@ -336,14 +336,20 @@ const Viewer = () => {
     if (checkItme && type === 'lung') {
       checkItme.lung = val
       checkItme.doctorCheck = true
+      checkItme.review = true
+      checkItme.state = true
     }
     if (checkItme && type === 'lobe') {
       checkItme.lobe = val
       checkItme.doctorCheck = true
+      checkItme.review = true
+      checkItme.state = true
     }
     if (checkItme && type === 'type') {
       checkItme.type = val
       checkItme.doctorCheck = true
+      checkItme.review = true
+      checkItme.state = true
     }
     setNoduleList([...noduleList])
   }
@@ -679,7 +685,7 @@ const Viewer = () => {
     const postData = {
       id: getURLParameters(window.location.href).id,
       orderId: getURLParameters(window.location.href).orderId,
-      doctor: getURLParameters(window.location.href).user,
+      doctor: decodeURIComponent(getURLParameters(window.location.href).user),
       resultInfo: {
         nodelist: [],
       },
