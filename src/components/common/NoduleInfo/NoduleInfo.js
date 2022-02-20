@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './NoduleInfo.scss'
 import { Radio, Select, Button } from 'antd'
 

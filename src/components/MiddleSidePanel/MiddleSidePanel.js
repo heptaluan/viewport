@@ -1,8 +1,7 @@
 import React from 'react'
 import './MiddleSidePanel.scss'
-import IconFont from '../common/IconFont/index'
-import { Popover, Checkbox } from 'antd'
-import { Button, Input } from 'antd'
+// import IconFont from '../common/IconFont/index'
+import { Checkbox, Button, Input } from 'antd'
 
 const { TextArea } = Input
 
@@ -88,6 +87,7 @@ const MiddleSidePanel = props => {
                     width: '100%',
                     resize: 'none',
                   }}
+                  value={props.noduleInfo?.suggest}
                   onChange={props.handleTextareaOnChange}
                 />
               </div>

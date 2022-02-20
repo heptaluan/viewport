@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Viewer.scss'
 import Header from '../../components/Header/Header'
-import LeftSidePanel from '../../components/LeftSidePanel/LeftSidePanel'
+// import LeftSidePanel from '../../components/LeftSidePanel/LeftSidePanel'
 import ViewerMain from '../../components/ViewerMain/ViewerMain'
 import MiddleSidePanel from '../../components/MiddleSidePanel/MiddleSidePanel'
 import cornerstone from 'cornerstone-core'
@@ -9,7 +9,7 @@ import cornerstoneTools from 'cornerstone-tools'
 import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import { getMedicalList, getImageList, getPatientsList, getNodeList, updateDnResult } from '../../api/api'
+import { getMedicalList, getImageList, getNodeList, updateDnResult, getPatientsList } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { Modal, message } from 'antd'
 
@@ -48,21 +48,42 @@ const Viewer = () => {
   ]
 
   // 初始化
+  // eslint-disable-next-line no-unused-vars
   const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
+  // eslint-disable-next-line no-unused-vars
   const [taskLength, setTaskLength] = useState(0)
+  // eslint-disable-next-line no-unused-vars
   const [sequenceListData, setLeftSidePanelData] = useState([])
   const [noduleList, setNoduleList] = useState([])
   const [originNoduleList, setOriginNoduleList] = useState([])
+  // eslint-disable-next-line no-unused-vars
   const [patients, setPatients] = useState([])
   const [noduleMapList, setNoduleMapList] = useState([])
 
   // 结节详情
   const [noduleInfo, setNoduleInfo] = useState(null)
 
+  // 页面类型
+  const [pageType, setPageType] = useState('')
+
   // 初始化影像信息
   useEffect(() => {
-    const fetchData = async () => {
+    const fetcImagehData = async () => {
+      const result = await getMedicalList(
+        getURLParameters(window.location.href).resource,
+        getURLParameters(window.location.href).type
+      )
+      // console.log(result)
+      if (result.data.code === 200 && result.data.result.length > 0) {
+        setLeftSidePanelData(result.data.result)
+        const instanceUid = result.data.result[0].instanceUid
+        const res = await getImageList(instanceUid)
+        setImageList(res)
+      }
+    }
+
+    const fetchReviewData = async () => {
       const result = await getMedicalList(
         getURLParameters(window.location.href).requestId,
         getURLParameters(window.location.href).type
@@ -75,7 +96,16 @@ const Viewer = () => {
         setImageList(res)
       }
     }
-    fetchData()
+
+    console.log(pageType)
+
+    if (getURLParameters(window.location.href).page === 'review') {
+      setPageType('review')
+      fetchReviewData()
+    } else if (getURLParameters(window.location.href).page === 'image') {
+      setPageType('image')
+      fetcImagehData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -91,25 +121,27 @@ const Viewer = () => {
         }
       }
     }
-    fetchData()
-    // setNoduleList(defaultNoduleList)
-    // setNoduleList([])
+    if (getURLParameters(window.location.href).page === 'review') {
+      fetchData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 初始化病人信息
   useEffect(() => {
-    // const fetchData = async () => {
-    //   const result = await getPatientsList(
-    //     getURLParameters(window.location.href).resource,
-    //     getURLParameters(window.location.href).type
-    //   )
-    //   // console.log(result)
-    //   if (result.data.code === 200 && result.data.result) {
-    //     setPatients(result.data.result)
-    //   }
-    // }
-    // fetchData()
+    const fetchData = async () => {
+      const result = await getPatientsList(
+        getURLParameters(window.location.href).resource,
+        getURLParameters(window.location.href).type
+      )
+      // console.log(result)
+      if (result.data.code === 200 && result.data.result) {
+        setPatients(result.data.result)
+      }
+    }
+    if (getURLParameters(window.location.href).page === 'image') {
+      fetchData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -218,10 +250,10 @@ const Viewer = () => {
   }
 
   // 序列点击事件
-  const handleSequenceListClick = async instanceUid => {
-    const res = await getImageList(instanceUid)
-    setImageList(res)
-  }
+  // const handleSequenceListClick = async instanceUid => {
+  //   const res = await getImageList(instanceUid)
+  //   setImageList(res)
+  // }
 
   // ===========================================================
 
@@ -314,6 +346,15 @@ const Viewer = () => {
       checkItme.doctorCheck = true
     }
     setNoduleList([...noduleList])
+  }
+
+  // 更新医生影像建议内容
+  const handleTextareaOnChange = e => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme) {
+      checkItme.suggest = e.target.value
+      setNoduleList([...noduleList])
+    }
   }
 
   // 列表右侧操作菜单
@@ -519,26 +560,26 @@ const Viewer = () => {
   // ===========================================================
 
   // 保存为图片
-  const saveAs = (element, filename, mimetype = 'image/png') => {
-    const canvas = element.querySelector('canvas')
-    if (canvas.msToBlob) {
-      const blob = canvas.msToBlob()
+  // const saveAs = (element, filename, mimetype = 'image/png') => {
+  //   const canvas = element.querySelector('canvas')
+  //   if (canvas.msToBlob) {
+  //     const blob = canvas.msToBlob()
 
-      return window.navigator.msSaveBlob(blob, filename)
-    }
+  //     return window.navigator.msSaveBlob(blob, filename)
+  //   }
 
-    const lnk = document.createElement('a')
-    lnk.download = filename
-    lnk.href = canvas.toDataURL(mimetype, 1)
+  //   const lnk = document.createElement('a')
+  //   lnk.download = filename
+  //   lnk.href = canvas.toDataURL(mimetype, 1)
 
-    if (document.createEvent) {
-      const e = document.createEvent('MouseEvents')
-      e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-      lnk.dispatchEvent(e)
-    } else if (lnk.fireEvent) {
-      lnk.fireEvent('onclick')
-    }
-  }
+  //   if (document.createEvent) {
+  //     const e = document.createEvent('MouseEvents')
+  //     e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+  //     lnk.dispatchEvent(e)
+  //   } else if (lnk.fireEvent) {
+  //     lnk.fireEvent('onclick')
+  //   }
+  // }
 
   // 格式化结节数据
   const formatNodeData = data => {
@@ -569,6 +610,7 @@ const Viewer = () => {
           noduleSize: res[i].noduleSize,
           featureLabelG: res[i].featureLabelG,
           doctorCheck: false,
+          suggest: '',
         })
         index++
       }
@@ -595,38 +637,32 @@ const Viewer = () => {
   }
 
   // 排序函数
-  const nestedSort =
-    (prop1, prop2 = null, direction = 'asc') =>
-    (e1, e2) => {
-      const a = prop2 ? e1[prop1][prop2] : e1[prop1],
-        b = prop2 ? e2[prop1][prop2] : e2[prop1],
-        sortOrder = direction === 'asc' ? 1 : -1
-      return a < b ? -sortOrder : a > b ? sortOrder : 0
-    }
+  // const nestedSort =
+  //   (prop1, prop2 = null, direction = 'asc') =>
+  //   (e1, e2) => {
+  //     const a = prop2 ? e1[prop1][prop2] : e1[prop1],
+  //       b = prop2 ? e2[prop1][prop2] : e2[prop1],
+  //       sortOrder = direction === 'asc' ? 1 : -1
+  //     return a < b ? -sortOrder : a > b ? sortOrder : 0
+  //   }
 
   // 缓存图片请求池
-  const loadAndCacheImage = (cornerstone, imageList) => {
-    const taskPool = []
-    for (let i = 0; i < imageList.length; i++) {
-      cornerstone.loadAndCacheImage(imageList[i]).then(image => {
-        taskPool.push(image.imageId)
-        setTaskLength(taskPool.length)
-      })
-    }
-  }
+  // const loadAndCacheImage = (cornerstone, imageList) => {
+  //   const taskPool = []
+  //   for (let i = 0; i < imageList.length; i++) {
+  //     cornerstone.loadAndCacheImage(imageList[i]).then(image => {
+  //       taskPool.push(image.imageId)
+  //       setTaskLength(taskPool.length)
+  //     })
+  //   }
+  // }
 
   // ===========================================================
 
   const [visible, setVisible] = useState(false)
-  const [suggest, setSuggest] = useState('')
 
   const hideModal = () => {
     setVisible(false)
-  }
-
-  // 获取建议内容
-  const handleTextareaOnChange = e => {
-    setSuggest(e.target.value)
   }
 
   // 弹窗
@@ -643,6 +679,7 @@ const Viewer = () => {
     const postData = {
       id: getURLParameters(window.location.href).id,
       orderId: getURLParameters(window.location.href).orderId,
+      doctor: getURLParameters(window.location.href).user,
       resultInfo: {
         nodelist: [],
       },
@@ -662,12 +699,12 @@ const Viewer = () => {
           dnPostData.dnResultInfo.nodelist.push({
             index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
             imageIndex: noduleList[i].num,
-            dn_visable: 1,
+            dn_check_invisible: 1,
             dn_check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
             dn_check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
             dn_check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
             dn_edit: noduleList[i].doctorCheck,
-            dn_suggest: suggest,
+            dn_suggest: noduleList[i].suggest,
           })
         }
       }
@@ -694,12 +731,12 @@ const Viewer = () => {
           postData.resultInfo.nodelist.push({
             index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
             imageIndex: noduleList[i].num,
-            visable: 1,
+            check_invisible: 1,
             check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
             check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
             check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
             edit: noduleList[i].doctorCheck,
-            suggest: suggest,
+            suggest: noduleList[i].suggest,
           })
         }
       }
@@ -730,7 +767,7 @@ const Viewer = () => {
           <span>图片序列加载中 {taskLength > 0 ? <em>，正在加载第 {taskLength} 张</em> : null}</span>
         </div>
       ) : null} */}
-      <Header data={patients} handleShowModal={handleShowModal} />
+      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} />
       <div className="viewer-center-box">
         {/* <LeftSidePanel data={sequenceListData} handleSequenceListClick={handleSequenceListClick} /> */}
         <MiddleSidePanel
@@ -744,6 +781,7 @@ const Viewer = () => {
           checkAll={checkAll}
           noduleList={noduleList}
           handleTextareaOnChange={handleTextareaOnChange}
+          noduleInfo={noduleInfo}
         />
         <ViewerMain
           handleToolbarClick={handleToolbarClick}
@@ -766,6 +804,7 @@ const Viewer = () => {
         onCancel={hideModal}
         okText="确认"
         cancelText="取消"
+        maskStyle={{ backgroundColor: 'transparent' }}
       >
         <p>是否提交检阅结果</p>
       </Modal>

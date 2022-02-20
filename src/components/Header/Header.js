@@ -13,11 +13,13 @@ const Header = props => {
           </span>
         )}
       </div>
-      <div className="export">
-        <Button type="primary" onClick={props.handleShowModal}>
-          提交审核结果
-        </Button>
-      </div>
+      {props.pageType === 'review' ? (
+        <div className="export">
+          <Button type="primary" onClick={props.handleShowModal}>
+            提交审核结果
+          </Button>
+        </div>
+      ) : null}
     </div>
   )
 }

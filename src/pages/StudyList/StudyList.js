@@ -101,7 +101,7 @@ const columns = [
 const StudyList = () => {
   const history = useHistory()
 
-  const onSearch = value => console.log(value)
+  // const onSearch = value => console.log(value)
 
   return (
     <div className="study-list-container">

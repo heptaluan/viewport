@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
-// const basicUrl = getURLParameters(window.location.href).url
-// axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
+const basicUrl = getURLParameters(window.location.href).url
+axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
 // const basicUrl = 'http://139.196.114.118:9999'
-const basicUrl = 'http://192.168.1.204:9999'
-axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDQ5MzcyMzEsInVzZXJuYW1lIjoiYWRtaW4ifQ.Rt6fzWe4ESKeX_Kut_tAn0FOnHovN6V3YYeg5yGZvL4'
+// const basicUrl = 'http://192.168.1.204:9999'
+// axios.defaults.headers.common['X-Access-Token'] =
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDUzNzYzMjMsInVzZXJuYW1lIjoiYWRtaW4ifQ.dB2Xfrvl1TuqLngDfsRQkWnaSr360d0ffydvh8mxzNw'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
