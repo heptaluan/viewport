@@ -258,9 +258,10 @@ const Viewer = () => {
   // ===========================================================
 
   // 单选
-  const onCheckChange = (e, index) => {
+  const onCheckChange = (index, num) => {
+    handleCheckedListClick(num)
     noduleList.map(item => (item.checked = false))
-    noduleList[index].checked = e.target.checked
+    noduleList[index].checked = true
     setNoduleList([...noduleList])
     if (noduleList.every(item => item.checked === true)) {
       setIndeterminate(false)
@@ -307,8 +308,8 @@ const Viewer = () => {
   const handleCheckedListClick = index => {
     const item = noduleList.find(item => Number(item.num) === index + 1)
     if (item) {
-      noduleList.map(item => (item.active = false))
-      item.active = true
+      // noduleList.map(item => (item.active = false))
+      // item.active = true
       setNoduleList([...noduleList])
       // setTimeout(() => {
       //   const viewerItemActive = document.querySelector('#viewerItemBox .item-active')
@@ -336,20 +337,14 @@ const Viewer = () => {
     if (checkItme && type === 'lung') {
       checkItme.lung = val
       checkItme.doctorCheck = true
-      checkItme.review = true
-      checkItme.state = true
     }
     if (checkItme && type === 'lobe') {
       checkItme.lobe = val
       checkItme.doctorCheck = true
-      checkItme.review = true
-      checkItme.state = true
     }
     if (checkItme && type === 'type') {
       checkItme.type = val
       checkItme.doctorCheck = true
-      checkItme.review = true
-      checkItme.state = true
     }
     setNoduleList([...noduleList])
   }
@@ -699,23 +694,32 @@ const Viewer = () => {
       },
     }
 
-    if (getURLParameters(window.location.href).user === 'diannei') {
+    if (decodeURIComponent(getURLParameters(window.location.href).user) === 'dn_doctor') {
       for (let i = 0; i < noduleList.length; i++) {
-        if (noduleList[i].state === false) {
+        if (noduleList[i].state === true) {
           dnPostData.dnResultInfo.nodelist.push({
             index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: noduleList[i].num,
-            dn_check_invisible: 1,
+            imageIndex: imagesConfig.length - noduleList[i].num,
             dn_check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
             dn_check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
             dn_check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
             dn_edit: noduleList[i].doctorCheck,
             dn_suggest: noduleList[i].suggest,
           })
+        } else {
+          dnPostData.dnResultInfo.nodelist.push({
+            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+            imageIndex: imagesConfig.length - noduleList[i].num,
+            dn_check_invisible: 1,
+            dn_edit: true,
+            dn_suggest: noduleList[i].suggest,
+          })
         }
       }
 
+      dnPostData.dnResultInfo.nodelist = dnPostData.dnResultInfo.nodelist.filter(item => item.edit !== false)
       dnPostData.dnResultInfo = JSON.stringify(dnPostData.dnResultInfo)
+      
       updateDnResult(JSON.stringify(dnPostData)).then(res => {
         console.log(res)
         if (res.data.code === 200) {
@@ -733,20 +737,28 @@ const Viewer = () => {
       })
     } else {
       for (let i = 0; i < noduleList.length; i++) {
-        if (noduleList[i].state === false) {
+        if (noduleList[i].state === true) {
           postData.resultInfo.nodelist.push({
             index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: noduleList[i].num,
-            check_invisible: 1,
+            imageIndex: imagesConfig.length - noduleList[i].num,
             check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
             check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
             check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
             edit: noduleList[i].doctorCheck,
             suggest: noduleList[i].suggest,
           })
+        } else {
+          postData.resultInfo.nodelist.push({
+            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+            imageIndex: imagesConfig.length - noduleList[i].num,
+            check_invisible: 1,
+            edit: true,
+            suggest: noduleList[i].suggest,
+          })
         }
       }
 
+      postData.resultInfo.nodelist = postData.resultInfo.nodelist.filter(item => item.edit !== false)
       postData.resultInfo = JSON.stringify(postData.resultInfo)
       updateDnResult(JSON.stringify(postData)).then(res => {
         console.log(res)

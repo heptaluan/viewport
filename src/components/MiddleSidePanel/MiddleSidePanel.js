@@ -6,6 +6,10 @@ import { Checkbox, Button, Input } from 'antd'
 const { TextArea } = Input
 
 const MiddleSidePanel = props => {
+  const handleListClick = (index, num) => {
+    props.onCheckChange(index, num)
+  }
+
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
@@ -32,10 +36,10 @@ const MiddleSidePanel = props => {
               <div
                 key={item.id}
                 className={`table-item ${item.active ? 'item-active' : ''}`}
-                onClick={e => props.handleCheckedListClick(item.num)}
+                onClick={e => handleListClick(index, item.num)}
               >
                 {/* <div className="icon">{item.id}</div> */}
-                <Checkbox onChange={e => props.onCheckChange(e, index)} checked={item.checked}>
+                <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="num">{item.num}</div>
                 </Checkbox>
                 <div className="size">{item.size.replace(/m/g, '')}</div>

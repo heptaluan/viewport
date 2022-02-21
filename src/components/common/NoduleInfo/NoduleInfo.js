@@ -81,7 +81,7 @@ const NoduleInfo = props => {
               <Button style={{ marginRight: '10px' }} size="small" onClick={e => props.updateNoduleList(false)}>
                 否
               </Button>
-              <Button size="small" onClick={e => props.updateNoduleList(true)} type="primary">
+              <Button size="small" onClick={e => props.updateNoduleList(true)} >
                 是
               </Button>
             </div>
