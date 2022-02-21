@@ -306,16 +306,16 @@ const Viewer = () => {
 
   // 列表点击事件
   const handleCheckedListClick = index => {
-    const item = noduleList.find(item => Number(item.num) === index + 1)
-    if (item) {
-      // noduleList.map(item => (item.active = false))
-      // item.active = true
-      setNoduleList([...noduleList])
-      // setTimeout(() => {
-      //   const viewerItemActive = document.querySelector('#viewerItemBox .item-active')
-      //   viewerItemActive && viewerItemActive.scrollIntoView()
-      // }, 0)
-    }
+    // const item = noduleList.find(item => Number(item.num) === index + 1)
+    // if (item) {
+    //   noduleList.map(item => (item.active = false))
+    //   item.active = true
+    //   setNoduleList([...noduleList])
+    //   setTimeout(() => {
+    //     const viewerItemActive = document.querySelector('#viewerItemBox .item-active')
+    //     viewerItemActive && viewerItemActive.scrollIntoView()
+    //   }, 0)
+    // }
 
     // 设置当前视图选中项
     if (cornerstoneElement) {
