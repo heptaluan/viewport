@@ -77,7 +77,6 @@ const Viewer = () => {
         getURLParameters(window.location.href).resource,
         getURLParameters(window.location.href).type
       )
-      // console.log(result)
       if (result.data.code === 200 && result.data.result.length > 0) {
         setLeftSidePanelData(result.data.result)
         const instanceUid = result.data.result[0].instanceUid
@@ -91,7 +90,6 @@ const Viewer = () => {
         getURLParameters(window.location.href).requestId,
         getURLParameters(window.location.href).type
       )
-      // console.log(result)
       if (result.data.code === 200 && result.data.result.length > 0) {
         setLeftSidePanelData(result.data.result)
         const instanceUid = result.data.result[0].instanceUid
@@ -106,13 +104,6 @@ const Viewer = () => {
     } else if (getURLParameters(window.location.href).page === 'image') {
       setPageType('image')
       fetcImagehData()
-      setPatients({
-        caseName: 123,
-        medicalCaseCode: 123,
-        gender_dictText: 123,
-        patientAge: 123,
-        studyTime: 123
-      })
     } else if (getURLParameters(window.location.href).page === 'detail') {
       setPageType('detail')
       fetcImagehData()
@@ -158,7 +149,6 @@ const Viewer = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
 
   // 多选
   const [indeterminate, setIndeterminate] = useState(false)
