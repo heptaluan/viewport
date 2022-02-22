@@ -118,7 +118,7 @@ const Viewer = () => {
       fetcImagehData()
       const index = getURLParameters(window.location.href).index
       if (index) {
-        setImageIdIndex(Number(index))
+        setImageIdIndex(Number(index) - 1)
       } else {
         setImageIdIndex(0)
       }
