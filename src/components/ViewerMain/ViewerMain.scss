@@ -13,17 +13,3 @@
 .left-mid.orientation-marker {
   display: none;
 }
-
-.viewer-box .error-tips {
-  width: 100%;
-  height: calc(100% - 35px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 0;
-  top: 35px;
-  background: #000000;
-  color: #fff;
-  z-index: 9;
-}

@@ -1,4 +1,5 @@
-.viewer-box {
+.viewer-box,
+.viewer-review-box {
   width: 100%;
   height: 100%;
 
@@ -9,6 +10,20 @@
     height: calc(100% - 50px);
     flex-flow: row nowrap;
     align-items: stretch;
+  }
+
+  .error-tips {
+    width: 100%;
+    height: calc(100% - 35px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 35px;
+    background: #000000;
+    color: #fff;
+    z-index: 9;
   }
 }
 
@@ -39,7 +54,41 @@
     z-index: 9;
   }
 
-  .header-box, .middle-side-panel-box, .tool-bar-box {
+  .header-box,
+  .middle-side-panel-box,
+  .tool-bar-box {
+    display: none;
+  }
+}
+
+.viewer-image-box{
+  width: 100%;
+  height: 100%;
+
+  .viewer-center-box {
+    position: relative;
+    display: flex;
+    flex: 1;
+    height: 100%;
+    flex-flow: row nowrap;
+    align-items: stretch;
+  }
+  
+  .error-tips {
+    width: 100%;
+    height: calc(100% - 35px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 35px;
+    background: #000000;
+    color: #fff;
+    z-index: 9;
+  }
+
+  .middle-side-panel-box {
     display: none;
   }
 }

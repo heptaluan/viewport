@@ -67,6 +67,9 @@ const Viewer = () => {
   // 页面类型
   const [pageType, setPageType] = useState('')
 
+  // 跳转帧数
+  const [imageIdIndex, setImageIdIndex] = useState(0)
+
   // 初始化影像信息
   useEffect(() => {
     const fetcImagehData = async () => {
@@ -103,9 +106,22 @@ const Viewer = () => {
     } else if (getURLParameters(window.location.href).page === 'image') {
       setPageType('image')
       fetcImagehData()
+      setPatients({
+        caseName: 123,
+        medicalCaseCode: 123,
+        gender_dictText: 123,
+        patientAge: 123,
+        studyTime: 123
+      })
     } else if (getURLParameters(window.location.href).page === 'detail') {
       setPageType('detail')
       fetcImagehData()
+      const index = getURLParameters(window.location.href).index
+      if (index) {
+        setImageIdIndex(Number(index))
+      } else {
+        setImageIdIndex(0)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -131,13 +147,10 @@ const Viewer = () => {
   // 初始化病人信息
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getPatientsList(
-        getURLParameters(window.location.href).resource,
-        getURLParameters(window.location.href).type
-      )
+      const result = await getPatientsList(getURLParameters(window.location.href).resource)
       // console.log(result)
       if (result.data.code === 200 && result.data.result) {
-        setPatients(result.data.result)
+        setPatients(result.data.result.records[0])
       }
     }
     if (getURLParameters(window.location.href).page === 'image') {
@@ -145,6 +158,7 @@ const Viewer = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
 
   // 多选
   const [indeterminate, setIndeterminate] = useState(false)
@@ -681,6 +695,7 @@ const Viewer = () => {
     const postData = {
       id: getURLParameters(window.location.href).id,
       orderId: getURLParameters(window.location.href).orderId,
+      dicomGroupId: getURLParameters(window.location.href).dicomGroupId,
       doctor: decodeURIComponent(getURLParameters(window.location.href).user),
       resultInfo: {
         nodelist: [],
@@ -690,6 +705,7 @@ const Viewer = () => {
     const dnPostData = {
       id: getURLParameters(window.location.href).id,
       orderId: getURLParameters(window.location.href).orderId,
+      dicomGroupId: getURLParameters(window.location.href).dicomGroupId,
       dnResultInfo: {
         nodelist: [],
       },
@@ -786,7 +802,7 @@ const Viewer = () => {
   }
 
   return (
-    <div className={pageType === 'detail' ? 'viewer-detail-box' : 'viewer-box'}>
+    <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
       {/* {taskLength !== imagesConfig.length ? (
         <div className="load-image-mask">
           <span>图片序列加载中 {taskLength > 0 ? <em>，正在加载第 {taskLength} 张</em> : null}</span>
@@ -815,6 +831,7 @@ const Viewer = () => {
           imagesConfig={imagesConfig}
           noduleList={noduleList}
           pageType={pageType}
+          imageIdIndex={imageIdIndex}
         />
       </div>
       <NoduleInfo noduleInfo={noduleInfo} checkNoduleList={checkNoduleList} updateNoduleList={updateNoduleList} />

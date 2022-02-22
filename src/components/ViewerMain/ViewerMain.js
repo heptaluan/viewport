@@ -18,6 +18,7 @@ const ViewerMain = props => {
         <div>
           <Toolbar handleToolbarClick={props.handleToolbarClick} />
           <CornerstoneViewport
+            imageIdIndex={props.imageIdIndex}
             viewportOverlayComponent={CustomOverlay}
             onElementEnabled={elementEnabledEvt => props.handleElementEnabledEvt(elementEnabledEvt)}
             tools={props.toolsConfig}
