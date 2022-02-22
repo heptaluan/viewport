@@ -97,13 +97,14 @@ const Viewer = () => {
       }
     }
 
-    console.log(pageType)
-
     if (getURLParameters(window.location.href).page === 'review') {
       setPageType('review')
       fetchReviewData()
     } else if (getURLParameters(window.location.href).page === 'image') {
       setPageType('image')
+      fetcImagehData()
+    } else if (getURLParameters(window.location.href).page === 'detail') {
+      setPageType('detail')
       fetcImagehData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -719,18 +720,21 @@ const Viewer = () => {
 
       dnPostData.dnResultInfo.nodelist = dnPostData.dnResultInfo.nodelist.filter(item => item.edit !== false)
       dnPostData.dnResultInfo = JSON.stringify(dnPostData.dnResultInfo)
-      
+
       updateDnResult(JSON.stringify(dnPostData)).then(res => {
         console.log(res)
         if (res.data.code === 200) {
           message.success(`提交审核结果成功`)
-          window.parent.postMessage(
-            {
-              code: 200,
-              success: true,
-            },
-            '*'
-          )
+          setVisible(false)
+          setTimeout(() => {
+            window.parent.postMessage(
+              {
+                code: 200,
+                success: true,
+              },
+              '*'
+            )
+          }, 1000)
         } else {
           message.error(`提交失败，请重新尝试`)
         }
@@ -764,13 +768,16 @@ const Viewer = () => {
         console.log(res)
         if (res.data.code === 200) {
           message.success(`提交审核结果成功`)
-          window.parent.postMessage(
-            {
-              code: 200,
-              success: true,
-            },
-            '*'
-          )
+          setVisible(false)
+          setTimeout(() => {
+            window.parent.postMessage(
+              {
+                code: 200,
+                success: true,
+              },
+              '*'
+            )
+          }, 1000)
         } else {
           message.error(`提交失败，请重新尝试`)
         }
@@ -779,7 +786,7 @@ const Viewer = () => {
   }
 
   return (
-    <div className="viewer-box">
+    <div className={pageType === 'detail' ? 'viewer-detail-box' : 'viewer-box'}>
       {/* {taskLength !== imagesConfig.length ? (
         <div className="load-image-mask">
           <span>图片序列加载中 {taskLength > 0 ? <em>，正在加载第 {taskLength} 张</em> : null}</span>
@@ -807,6 +814,7 @@ const Viewer = () => {
           toolsConfig={toolsConfig}
           imagesConfig={imagesConfig}
           noduleList={noduleList}
+          pageType={pageType}
         />
       </div>
       <NoduleInfo noduleInfo={noduleInfo} checkNoduleList={checkNoduleList} updateNoduleList={updateNoduleList} />

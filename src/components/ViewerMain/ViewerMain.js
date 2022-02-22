@@ -22,7 +22,11 @@ const ViewerMain = props => {
             onElementEnabled={elementEnabledEvt => props.handleElementEnabledEvt(elementEnabledEvt)}
             tools={props.toolsConfig}
             imageIds={props.imagesConfig}
-            style={{ minWidth: '100%', height: `${size.height - 85}px`, flex: '1' }}
+            style={{
+              minWidth: '100%',
+              height: props.pageType === 'detail' ? `${size.height}px` : `${size.height - 85}px`,
+              flex: '1',
+            }}
           />
         </div>
       )}
