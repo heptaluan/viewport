@@ -54,7 +54,7 @@ const Viewer = () => {
   // eslint-disable-next-line no-unused-vars
   const [taskLength, setTaskLength] = useState(0)
   // eslint-disable-next-line no-unused-vars
-  // const [sequenceListData, setLeftSidePanelData] = useState([])
+  const [sequenceListData, setLeftSidePanelData] = useState([])
   const [noduleList, setNoduleList] = useState([])
   const [originNoduleList, setOriginNoduleList] = useState([])
   // eslint-disable-next-line no-unused-vars
@@ -73,21 +73,40 @@ const Viewer = () => {
   // 初始化影像信息
   useEffect(() => {
     const fetcImagehData = async () => {
-      getImageList(getURLParameters(window.location.href).resource).then(res => {
-        if (res.data.code === 200) {
-          setImageList(res)
-        }
-      })
+      const result = await getMedicalList(
+        getURLParameters(window.location.href).resource,
+        0
+      )
+      if (result.data.code === 200 && result.data.result.length > 0) {
+        setLeftSidePanelData(result.data.result)
+        const instanceUid = result.data.result[0].instanceUid
+        const res = await getImageList(instanceUid, getURLParameters(window.location.href).resource)
+        setImageList(res)
+      }
     }
 
-    fetcImagehData()
+    const fetchReviewData = async () => {
+      const result = await getMedicalList(
+        getURLParameters(window.location.href).resource,
+        0
+      )
+      if (result.data.code === 200 && result.data.result.length > 0) {
+        setLeftSidePanelData(result.data.result)
+        const instanceUid = result.data.result[0].instanceUid
+        const res = await getImageList(instanceUid, getURLParameters(window.location.href).resource)
+        setImageList(res)
+      }
+    }
 
     if (getURLParameters(window.location.href).page === 'review') {
       setPageType('review')
+      fetchReviewData()
     } else if (getURLParameters(window.location.href).page === 'image') {
       setPageType('image')
+      fetcImagehData()
     } else if (getURLParameters(window.location.href).page === 'detail') {
       setPageType('detail')
+      fetcImagehData()
       const index = getURLParameters(window.location.href).index
       if (index) {
         setImageIdIndex(Number(index) - 1)
@@ -103,6 +122,7 @@ const Viewer = () => {
     const fetchData = async () => {
       const result = await getNodeList(getURLParameters(window.location.href).id)
       if (result.data.code === 200) {
+        console.log(result.data)
         if (result.data.result) {
           const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
           formatNodeData(data)
@@ -265,29 +285,29 @@ const Viewer = () => {
   }
 
   // 全选
-  // const onCheckAllChange = e => {
-  //   setCheckAll(e.target.checked)
-  //   if (e.target.checked) {
-  //     noduleList.map(item => (item.checked = true))
-  //     setNoduleList([...noduleList])
-  //   } else {
-  //     noduleList.map(item => (item.checked = false))
-  //     setNoduleList([...noduleList])
-  //   }
-  // }
+  const onCheckAllChange = e => {
+    setCheckAll(e.target.checked)
+    if (e.target.checked) {
+      noduleList.map(item => (item.checked = true))
+      setNoduleList([...noduleList])
+    } else {
+      noduleList.map(item => (item.checked = false))
+      setNoduleList([...noduleList])
+    }
+  }
 
   // 弹出层按钮事件
-  // const handleHideNodule = (e, id) => {
-  //   noduleList.splice(
-  //     noduleList.findIndex(item => item.id === id),
-  //     1
-  //   )
-  //   setNoduleList([...noduleList])
-  //   setShowPopover({
-  //     visible: false,
-  //     index: 0,
-  //   })
-  // }
+  const handleHideNodule = (e, id) => {
+    // noduleList.splice(
+    //   noduleList.findIndex(item => item.id === id),
+    //   1
+    // )
+    // setNoduleList([...noduleList])
+    // setShowPopover({
+    //   visible: false,
+    //   index: 0,
+    // })
+  }
 
   // 列表点击事件
   const handleCheckedListClick = index => {
@@ -614,12 +634,9 @@ const Viewer = () => {
           })
         }
       }
-
       setNoduleList(nodulesList)
       setNoduleMapList(nodulesMapList)
-      
     } else {
-      debugger
       setNoduleList([])
       console.log(`数据加载失败`)
     }
@@ -668,7 +685,7 @@ const Viewer = () => {
     const postData = {
       id: getURLParameters(window.location.href).id,
       orderId: getURLParameters(window.location.href).orderId,
-      dicomGroupId: getURLParameters(window.location.href).resource,
+      dicomGroupId: getURLParameters(window.location.href).dicomGroupId,
       doctor: decodeURIComponent(getURLParameters(window.location.href).user),
       resultInfo: {
         nodelist: [],
@@ -678,7 +695,7 @@ const Viewer = () => {
     const dnPostData = {
       id: getURLParameters(window.location.href).id,
       orderId: getURLParameters(window.location.href).orderId,
-      dicomGroupId: getURLParameters(window.location.href).resource,
+      dicomGroupId: getURLParameters(window.location.href).dicomGroupId,
       dnResultInfo: {
         nodelist: [],
       },
@@ -787,9 +804,9 @@ const Viewer = () => {
         <MiddleSidePanel
           handleVisibleChange={handleVisibleChange}
           handleCheckedListClick={handleCheckedListClick}
-          // handleHideNodule={handleHideNodule}
+          handleHideNodule={handleHideNodule}
           onCheckChange={onCheckChange}
-          // onCheckAllChange={onCheckAllChange}
+          onCheckAllChange={onCheckAllChange}
           showPopover={showPopover}
           indeterminate={indeterminate}
           checkAll={checkAll}
