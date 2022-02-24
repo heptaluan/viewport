@@ -85,28 +85,15 @@ const Viewer = () => {
       }
     }
 
-    const fetchReviewData = async () => {
-      const result = await getMedicalList(
-        getURLParameters(window.location.href).resource,
-        0
-      )
-      if (result.data.code === 200 && result.data.result.length > 0) {
-        setLeftSidePanelData(result.data.result)
-        const instanceUid = result.data.result[0].instanceUid
-        const res = await getImageList(instanceUid, getURLParameters(window.location.href).resource)
-        setImageList(res)
-      }
-    }
+    fetcImagehData()
+
 
     if (getURLParameters(window.location.href).page === 'review') {
       setPageType('review')
-      fetchReviewData()
     } else if (getURLParameters(window.location.href).page === 'image') {
       setPageType('image')
-      fetcImagehData()
     } else if (getURLParameters(window.location.href).page === 'detail') {
       setPageType('detail')
-      fetcImagehData()
       const index = getURLParameters(window.location.href).index
       if (index) {
         setImageIdIndex(Number(index) - 1)
