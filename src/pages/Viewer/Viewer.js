@@ -70,23 +70,29 @@ const Viewer = () => {
   // 跳转帧数
   const [imageIdIndex, setImageIdIndex] = useState(0)
 
+  // 初始化结节信息
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getNodeList(getURLParameters(window.location.href).id)
+      if (result.data.code === 200) {
+        if (result.data.result) {
+          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
+          formatNodeData(data)
+        }
+      }
+    }
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // 初始化影像信息
   useEffect(() => {
     const fetcImagehData = async () => {
-      const result = await getMedicalList(
-        getURLParameters(window.location.href).resource,
-        0
-      )
-      if (result.data.code === 200 && result.data.result.length > 0) {
-        setLeftSidePanelData(result.data.result)
-        const instanceUid = result.data.result[0].instanceUid
-        const res = await getImageList(instanceUid, getURLParameters(window.location.href).resource)
-        setImageList(res)
-      }
+      const res = await getImageList(getURLParameters(window.location.href).resource)
+      setImageList(res)
     }
 
     fetcImagehData()
-
 
     if (getURLParameters(window.location.href).page === 'review') {
       setPageType('review')
@@ -100,24 +106,6 @@ const Viewer = () => {
       } else {
         setImageIdIndex(0)
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // 初始化结节信息
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getNodeList(getURLParameters(window.location.href).id)
-      if (result.data.code === 200) {
-        console.log(result.data)
-        if (result.data.result) {
-          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-          formatNodeData(data)
-        }
-      }
-    }
-    if (getURLParameters(window.location.href).page === 'review') {
-      fetchData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

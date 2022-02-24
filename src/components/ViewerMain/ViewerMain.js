@@ -12,7 +12,7 @@ const ViewerMain = props => {
     <div className="viewer-main-box">
       {props.imagesConfig.length === 0 ? (
         <div className="error-tips">
-          <Spin tip="Loading..." />
+          <Spin tip="加载失败，请重新尝试" />
         </div>
       ) : (
         <div>
