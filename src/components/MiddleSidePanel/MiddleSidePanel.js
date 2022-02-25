@@ -82,7 +82,7 @@ const MiddleSidePanel = props => {
             <div className="title">影像建议</div>
             <div className="suggest-content">
               <div className="suggest-content-wrap">
-                <TextArea
+                {/* <TextArea
                   placeholder="请输入建议"
                   bordered={false}
                   rows={6}
@@ -93,7 +93,7 @@ const MiddleSidePanel = props => {
                   }}
                   value={props.noduleInfo?.suggest}
                   onChange={props.handleTextareaOnChange}
-                />
+                /> */}
               </div>
               <div className="save">
                 <Button type="primary" size="small">

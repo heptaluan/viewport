@@ -7,10 +7,14 @@ const Header = props => {
     <div className="header-box">
       <div className="user-content">
         {props.data?.patientName ? (
-          <span>
-            姓名：{props.data.patientName} 病例编号：{props.data.medicalCaseCode} 性别：
-            {props.data.patientSex_dictText} 年龄：{props.data.age} 检查日期：{props.data.createTime}
-          </span>
+          <div className="patient-detail">
+            <span>姓名：{props.data.patientName}，</span>
+            <span>性别：{props.data.gender_dictText}，</span>
+            <span>年龄：{props.data.age}，</span>
+            <span>病例编号：{props.data.medicalCaseCode}，</span>
+            <span>patientId：{props.data.patientId}，</span>
+            <span>检查日期：{props.data.createTime}</span>
+          </div>
         ) : null}
       </div>
       {props.pageType === 'review' ? (

@@ -11,7 +11,7 @@ import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleToo
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import { getMedicalList, getImageList, getNodeList, updateDnResult, getPatientsList } from '../../api/api'
 import { getURLParameters } from '../../util/index'
-import { Modal, message } from 'antd'
+import { Modal, message, Button } from 'antd'
 
 const Viewer = () => {
   const defaultTools = [
@@ -252,7 +252,7 @@ const Viewer = () => {
     }
 
     const checkItme = noduleList.find(item => item.checked === true)
-    if (checkItme) {
+    if (checkItme && pageType !== 'detail') {
       setNoduleInfo(checkItme)
     } else {
       setNoduleInfo(null)
@@ -640,6 +640,16 @@ const Viewer = () => {
 
   // ===========================================================
 
+  const [showState, setShowState] = useState(false)
+
+  // 隐藏和显示结节列表
+  const showNoduleList = () => {
+    console.log(showState)
+    setShowState(!showState)
+  }
+
+  // ===========================================================
+
   const [visible, setVisible] = useState(false)
 
   const hideModal = () => {
@@ -776,19 +786,20 @@ const Viewer = () => {
       <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} />
       <div className="viewer-center-box">
         {/* <LeftSidePanel data={sequenceListData} handleSequenceListClick={handleSequenceListClick} /> */}
-        <MiddleSidePanel
-          handleVisibleChange={handleVisibleChange}
-          handleCheckedListClick={handleCheckedListClick}
-          handleHideNodule={handleHideNodule}
-          onCheckChange={onCheckChange}
-          onCheckAllChange={onCheckAllChange}
-          showPopover={showPopover}
-          indeterminate={indeterminate}
-          checkAll={checkAll}
-          noduleList={noduleList}
-          handleTextareaOnChange={handleTextareaOnChange}
-          noduleInfo={noduleInfo}
-        />
+        <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
+          <MiddleSidePanel
+            handleVisibleChange={handleVisibleChange}
+            handleCheckedListClick={handleCheckedListClick}
+            handleHideNodule={handleHideNodule}
+            onCheckChange={onCheckChange}
+            onCheckAllChange={onCheckAllChange}
+            showPopover={showPopover}
+            indeterminate={indeterminate}
+            checkAll={checkAll}
+            noduleList={noduleList}
+            noduleInfo={noduleInfo}
+          />
+        </div>
         <ViewerMain
           handleToolbarClick={handleToolbarClick}
           handleElementEnabledEvt={handleElementEnabledEvt}
@@ -799,7 +810,12 @@ const Viewer = () => {
           imageIdIndex={imageIdIndex}
         />
       </div>
-      <NoduleInfo noduleInfo={noduleInfo} checkNoduleList={checkNoduleList} updateNoduleList={updateNoduleList} />
+      <NoduleInfo
+        noduleInfo={noduleInfo}
+        handleTextareaOnChange={handleTextareaOnChange}
+        checkNoduleList={checkNoduleList}
+        updateNoduleList={updateNoduleList}
+      />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
       ) : null}
@@ -816,6 +832,12 @@ const Viewer = () => {
       >
         <p>是否提交检阅结果</p>
       </Modal>
+
+      {pageType === 'review' ? (
+        <div className="show-button">
+          <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
+        </div>
+      ) : null}
     </div>
   )
 }

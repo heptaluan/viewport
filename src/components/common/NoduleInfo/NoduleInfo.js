@@ -1,6 +1,6 @@
 import React from 'react'
 import './NoduleInfo.scss'
-import { Radio, Select, Button } from 'antd'
+import { Radio, Select, Button, Input } from 'antd'
 
 const { Option } = Select
 
@@ -31,8 +31,8 @@ const NoduleInfo = props => {
           <div className="list">
             <span className="list-title">肺：</span>
             <Radio.Group onChange={onLungChange} value={props.noduleInfo.lung}>
-              <Radio value={'左肺'}>左肺</Radio>
               <Radio value={'右肺'}>右肺</Radio>
+              <Radio value={'左肺'}>左肺</Radio>
             </Radio.Group>
           </div>
           <div className="list">
@@ -45,12 +45,7 @@ const NoduleInfo = props => {
           </div>
           <div className="list">
             <div className="list-title">类型：</div>
-            <Select
-              size="small"
-              value={props.noduleInfo.type}
-              style={{ width: 150 }}
-              onChange={handleSelectChange}
-            >
+            <Select size="small" value={props.noduleInfo.type} style={{ width: 150, fontSize: 13 }} onChange={handleSelectChange}>
               <Option value="肺内实性">肺内实性</Option>
               <Option value="部分实性">部分实性</Option>
               <Option value="磨玻璃">磨玻璃</Option>
@@ -60,6 +55,16 @@ const NoduleInfo = props => {
             </Select>
           </div>
           <div className="list">
+            <em>建议：</em>
+            <Input
+              placeholder="这里输入结节备注信息"
+              size="small"
+              style={{ width: 150, height: 24, marginTop: 2, fontSize: 13 }}
+              onChange={props.handleTextareaOnChange}
+              value={props.noduleInfo?.suggest}
+            />
+          </div>
+          <div className="list">
             <em>大小：</em>
             {props.noduleInfo.size}
           </div>
@@ -67,10 +72,10 @@ const NoduleInfo = props => {
             <em>体积：</em>
             {props.noduleInfo.noduleSize} mm³
           </div>
-          <div className="list">
+          {/* <div className="list">
             <em>形态类型：</em>
             {props.noduleInfo.type}
-          </div>
+          </div> */}
         </div>
       ) : null}
       {props.noduleInfo ? (
@@ -81,7 +86,7 @@ const NoduleInfo = props => {
               <Button style={{ marginRight: '10px' }} size="small" onClick={e => props.updateNoduleList(false)}>
                 否
               </Button>
-              <Button size="small" onClick={e => props.updateNoduleList(true)} >
+              <Button size="small" onClick={e => props.updateNoduleList(true)}>
                 是
               </Button>
             </div>
