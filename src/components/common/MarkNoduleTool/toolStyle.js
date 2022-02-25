@@ -1,20 +1,20 @@
 let defaultWidth = 1,
-  activeWidth = 2;
+  activeWidth = 2
 
 function setToolWidth(width) {
-  defaultWidth = width;
+  defaultWidth = width
 }
 
 function getToolWidth() {
-  return defaultWidth;
+  return defaultWidth
 }
 
 function setActiveWidth(width) {
-  activeWidth = width;
+  activeWidth = width
 }
 
 function getActiveWidth() {
-  return activeWidth;
+  return activeWidth
 }
 
 const toolStyle = {
@@ -22,6 +22,6 @@ const toolStyle = {
   getToolWidth,
   setActiveWidth,
   getActiveWidth,
-};
+}
 
-export default toolStyle;
+export default toolStyle

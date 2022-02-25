@@ -25,8 +25,10 @@ function draw(context, fn) {
 
 function rotatePoint(point, center, angle) {
   const angleRadians = angle * (Math.PI / 180) // Convert to radians
-  const rotatedX = Math.cos(angleRadians) * (point.x - center.x) - Math.sin(angleRadians) * (point.y - center.y) + center.x
-  const rotatedY = Math.sin(angleRadians) * (point.x - center.x) + Math.cos(angleRadians) * (point.y - center.y) + center.y
+  const rotatedX =
+    Math.cos(angleRadians) * (point.x - center.x) - Math.sin(angleRadians) * (point.y - center.y) + center.x
+  const rotatedY =
+    Math.sin(angleRadians) * (point.x - center.x) + Math.cos(angleRadians) * (point.y - center.y) + center.y
 
   return {
     x: rotatedX,
@@ -123,12 +125,4 @@ function drawRect(context, element, corner1, corner2, options, coordSystem = 'pi
   })
 }
 
-export {
-  getToolState,
-  getElementToolStateManager,
-  getNewContext,
-  rotatePoint,
-  draw,
-  path,
-  drawRect
-}
+export { getToolState, getElementToolStateManager, getNewContext, rotatePoint, draw, path, drawRect }

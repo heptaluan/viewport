@@ -45,7 +45,12 @@ const NoduleInfo = props => {
           </div>
           <div className="list">
             <div className="list-title">类型：</div>
-            <Select size="small" value={props.noduleInfo.type} style={{ width: 150, fontSize: 13 }} onChange={handleSelectChange}>
+            <Select
+              size="small"
+              value={props.noduleInfo.type}
+              style={{ width: 150, fontSize: 13 }}
+              onChange={handleSelectChange}
+            >
               <Option value="肺内实性">肺内实性</Option>
               <Option value="部分实性">部分实性</Option>
               <Option value="磨玻璃">磨玻璃</Option>

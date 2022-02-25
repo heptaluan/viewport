@@ -93,7 +93,15 @@ export default class MarkNoduleTool extends BaseAnnotationTool {
         const rectOptions = { color }
 
         // Draw
-        drawRect(context, element, data.handles.start, data.handles.end, rectOptions, 'pixel', data.handles.initialRotation)
+        drawRect(
+          context,
+          element,
+          data.handles.start,
+          data.handles.end,
+          rectOptions,
+          'pixel',
+          data.handles.initialRotation
+        )
       }
     })
   }

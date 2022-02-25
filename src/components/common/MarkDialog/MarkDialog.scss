@@ -4,7 +4,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  background: rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, 0.2);
   z-index: 9;
 
   .mark-dialog-box {
@@ -43,14 +43,12 @@
     }
 
     .mark-btn-group {
-
       .tab-two {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
       }
-
     }
   }
 }
