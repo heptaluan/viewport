@@ -27,7 +27,7 @@ const MiddleSidePanel = props => {
             </Checkbox>
             <div className="size">大小(单位mm)</div>
             <div className="type">类型</div>
-            <div className="risk">风险</div>
+            {/* <div className="risk">风险</div> */}
             <div className="soak">结节</div>
             <div className="action">状态</div>
           </div>
@@ -44,7 +44,7 @@ const MiddleSidePanel = props => {
                 </Checkbox>
                 <div className="size">{item.size.replace(/m/g, '')}</div>
                 <div className="type">{item.type}</div>
-                <div className="risk">{item.risk}</div>
+                {/* <div className="risk">{item.risk}</div> */}
                 <div className="soak">
                   <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
@@ -71,18 +71,18 @@ const MiddleSidePanel = props => {
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.size}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>，结节恶性风险为：
-                    <span>{item.risk}</span>。
+                    <span>{item.noduleSize} mm³</span>。
+                    {/* 结节恶性风险为：<span>{item.risk}</span> */}
                   </div>
                 ) : null
               })}
             </div>
           </div>
-          <div className="suggest-box">
+          {/* <div className="suggest-box">
             <div className="title">影像建议</div>
             <div className="suggest-content">
               <div className="suggest-content-wrap">
-                {/* <TextArea
+                <TextArea
                   placeholder="请输入建议"
                   bordered={false}
                   rows={6}
@@ -93,7 +93,7 @@ const MiddleSidePanel = props => {
                   }}
                   value={props.noduleInfo?.suggest}
                   onChange={props.handleTextareaOnChange}
-                /> */}
+                />
               </div>
               <div className="save">
                 <Button type="primary" size="small">
@@ -101,7 +101,7 @@ const MiddleSidePanel = props => {
                 </Button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

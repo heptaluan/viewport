@@ -19,7 +19,7 @@ const Header = props => {
       </div>
       {props.pageType === 'review' ? (
         <div className="export">
-          <Button type="primary" onClick={props.handleShowModal}>
+          <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
           </Button>
         </div>

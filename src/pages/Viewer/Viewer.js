@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Viewer.scss'
 import Header from '../../components/Header/Header'
 // import LeftSidePanel from '../../components/LeftSidePanel/LeftSidePanel'
@@ -9,7 +9,7 @@ import cornerstoneTools from 'cornerstone-tools'
 import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import { getMedicalList, getImageList, getNodeList, updateDnResult, getPatientsList } from '../../api/api'
+import { saveDnResult, getImageList, getNodeList, updateDnResult, getPatientsList, getDoctorTask } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { Modal, message, Button } from 'antd'
 
@@ -64,15 +64,20 @@ const Viewer = () => {
   // 结节详情
   const [noduleInfo, setNoduleInfo] = useState(null)
 
-  // 页面类型
+  // 页面类型和状态
   const [pageType, setPageType] = useState('')
+  const [pageState, setPageState] = useState('')
 
   // 跳转帧数
   const [imageIdIndex, setImageIdIndex] = useState(0)
 
+  // Ref
+  const noduleListRef = useRef(null)
+
   // 初始化结节信息
   useEffect(() => {
-    const fetchData = async () => {
+    // 管理员请求接口
+    const fetchAdminData = async () => {
       const result = await getNodeList(getURLParameters(window.location.href).id)
       if (result.data.code === 200) {
         if (result.data.result) {
@@ -81,7 +86,32 @@ const Viewer = () => {
         }
       }
     }
-    fetchData()
+
+    // 医生请求接口
+    const fetchDoctorData = async () => {
+      const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
+      if (result.data.code === 200) {
+        if (result.data.result) {
+          if (result.data.result.doctorTask.resultInfo) {
+            const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+            const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
+            formatNodeData(data, resultInfo.nodelist)
+          } else {
+            const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+            formatNodeData(data)
+          }
+        }
+      }
+    }
+
+    if (getURLParameters(window.location.href).user === 'admin') {
+      fetchDoctorData()
+    } else {
+      fetchAdminData()
+    }
+
+    noduleListRef.current = noduleList
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -93,6 +123,10 @@ const Viewer = () => {
     }
 
     fetcImagehData()
+
+    if (getURLParameters(window.location.href).state === 'admin') {
+      setPageState('admin')
+    }
 
     if (getURLParameters(window.location.href).page === 'review') {
       setPageType('review')
@@ -204,8 +238,7 @@ const Viewer = () => {
   // 设置图片列表
   const setImageList = res => {
     if (res.data.code === 200 && res.data.result.length > 0) {
-      const newList = sortImageList(res.data.result)
-      // const newList = res.data.result
+      const newList = res.data.result
       const imageList = []
       newList.forEach(item => {
         imageList.push(`wadouri:${item.ossUrl}`)
@@ -214,18 +247,9 @@ const Viewer = () => {
       setImagesConfig(imageList)
 
       // 缓存图片
-      // if (imageList.length > 0) {
-      //   loadAndCacheImage(cornerstone, imageList)
-      // }
-    }
-  }
-
-  // 调整影像序列顺序
-  const sortImageList = list => {
-    if (list[0].sliceLocation > list[1].sliceLocation) {
-      return list
-    } else {
-      return list.reverse()
+      if (imageList.length > 0) {
+        loadAndCacheImage(cornerstone, imageList)
+      }
     }
   }
 
@@ -252,11 +276,12 @@ const Viewer = () => {
     }
 
     const checkItme = noduleList.find(item => item.checked === true)
-    if (checkItme && pageType !== 'detail') {
+    if (checkItme && pageType !== 'detail' && pageState !== 'admin') {
       setNoduleInfo(checkItme)
     } else {
       setNoduleInfo(null)
     }
+    
   }
 
   // 全选
@@ -309,6 +334,9 @@ const Viewer = () => {
     checkItme.review = true
     checkItme.state = checkState
     setNoduleList([...noduleList])
+
+    // 提交结节数据
+    saveResults()
   }
 
   // 更新结节事件
@@ -316,17 +344,20 @@ const Viewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme && type === 'lung') {
       checkItme.lung = val
-      checkItme.doctorCheck = true
+      checkItme.review = true
     }
     if (checkItme && type === 'lobe') {
       checkItme.lobe = val
-      checkItme.doctorCheck = true
+      checkItme.review = true
     }
     if (checkItme && type === 'type') {
       checkItme.type = val
-      checkItme.doctorCheck = true
+      checkItme.review = true
     }
     setNoduleList([...noduleList])
+
+    // 提交结节数据
+    saveResults()
   }
 
   // 更新医生影像建议内容
@@ -336,6 +367,18 @@ const Viewer = () => {
       checkItme.suggest = e.target.value
       setNoduleList([...noduleList])
     }
+  }
+
+  // 建议框失去焦点后保存数据
+  const handleInputBlur = e => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme) {
+      checkItme.suggest = e.target.value
+      setNoduleList([...noduleList])
+    }
+
+    // 提交结节数据
+    saveResults()
   }
 
   // 列表右侧操作菜单
@@ -563,7 +606,7 @@ const Viewer = () => {
   // }
 
   // 格式化结节数据
-  const formatNodeData = data => {
+  const formatNodeData = (data, resultInfo) => {
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
@@ -576,7 +619,7 @@ const Viewer = () => {
           id: index,
           num: res[i].coord.coordZ,
           size: res[i].diameter,
-          type: res[i].featureLabel.value,
+          type: resultInfo[i].featureLabel ? resultInfo[i].featureLabel : res[i].featureLabel.value,
           risk: (res[i].scrynMaligant * 100).toFixed(0) + '%',
           soak: '',
           info: '',
@@ -584,14 +627,13 @@ const Viewer = () => {
           active: false,
           noduleName: res[i].noduleName,
           noduleNum: res[i].noduleNum,
-          state: undefined,
-          review: false,
-          lung: res[i].lobe.lungLocation,
-          lobe: res[i].lobe.lobeLocation,
+          state: resultInfo[i].invisable === 1 ? false : resultInfo[i].invisable === 0 ? true : undefined,
+          review: resultInfo[i].edit ? resultInfo[i].edit : false,
+          lung: resultInfo[i].lungLocation ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
+          lobe: resultInfo[i].lobeLocation ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
           noduleSize: res[i].noduleSize,
           featureLabelG: res[i].featureLabelG,
-          doctorCheck: false,
-          suggest: '',
+          suggest: resultInfo[i].suggest ? resultInfo[i].suggest : '',
         })
         index++
       }
@@ -609,8 +651,8 @@ const Viewer = () => {
           })
         }
       }
-      setNoduleList(nodulesList)
-      setNoduleMapList(nodulesMapList)
+      setNoduleList(prev => nodulesList)
+      setNoduleMapList(prev => nodulesMapList)
     } else {
       setNoduleList([])
       console.log(`数据加载失败`)
@@ -628,15 +670,16 @@ const Viewer = () => {
   //   }
 
   // 缓存图片请求池
-  // const loadAndCacheImage = (cornerstone, imageList) => {
-  //   const taskPool = []
-  //   for (let i = 0; i < imageList.length; i++) {
-  //     cornerstone.loadAndCacheImage(imageList[i]).then(image => {
-  //       taskPool.push(image.imageId)
-  //       setTaskLength(taskPool.length)
-  //     })
-  //   }
-  // }
+  const loadAndCacheImage = (cornerstone, imageList) => {
+    const taskPool = []
+    console.log(noduleListRef)
+    // for (let i = 0; i < imageList.length; i++) {
+    //   cornerstone.loadAndCacheImage(imageList[i]).then(image => {
+    //     taskPool.push(image.imageId)
+    //     setTaskLength(taskPool.length)
+    //   })
+    // }
+  }
 
   // ===========================================================
 
@@ -665,115 +708,84 @@ const Viewer = () => {
     }
   }
 
-  // 提交审核结果
-  const handleSubmitResults = () => {
+  // 获取当前时间
+  const getCurrentTime = () => {
+    let yy = new Date().getFullYear()
+    let mm = new Date().getMonth() + 1
+    let dd = new Date().getDate()
+    let hh = new Date().getHours()
+    let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
+    let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
+    return yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
+  }
+
+  // 格式化提交数据
+  const formatPostData = () => {
     const postData = {
-      id: getURLParameters(window.location.href).id,
-      orderId: getURLParameters(window.location.href).orderId,
-      dicomGroupId: getURLParameters(window.location.href).dicomGroupId,
-      doctor: decodeURIComponent(getURLParameters(window.location.href).user),
+      id:
+        getURLParameters(window.location.href).user === 'admin'
+          ? getURLParameters(window.location.href).doctorId
+          : getURLParameters(window.location.href).taskId,
       resultInfo: {
         nodelist: [],
       },
     }
 
-    const dnPostData = {
-      id: getURLParameters(window.location.href).id,
-      orderId: getURLParameters(window.location.href).orderId,
-      dicomGroupId: getURLParameters(window.location.href).dicomGroupId,
-      dnResultInfo: {
-        nodelist: [],
-      },
-    }
-
-    if (decodeURIComponent(getURLParameters(window.location.href).user) === 'dn_doctor') {
-      for (let i = 0; i < noduleList.length; i++) {
-        if (noduleList[i].state === true) {
-          dnPostData.dnResultInfo.nodelist.push({
-            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: imagesConfig.length - noduleList[i].num,
-            dn_check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
-            dn_check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
-            dn_check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
-            dn_edit: noduleList[i].doctorCheck,
-            dn_suggest: noduleList[i].suggest,
-          })
-        } else {
-          dnPostData.dnResultInfo.nodelist.push({
-            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: imagesConfig.length - noduleList[i].num,
-            dn_check_invisible: 1,
-            dn_edit: true,
-            dn_suggest: noduleList[i].suggest,
-          })
-        }
-      }
-
-      dnPostData.dnResultInfo.nodelist = dnPostData.dnResultInfo.nodelist.filter(item => item.edit !== false)
-      dnPostData.dnResultInfo = JSON.stringify(dnPostData.dnResultInfo)
-
-      updateDnResult(JSON.stringify(dnPostData)).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          message.success(`提交审核结果成功`)
-          setVisible(false)
-          setTimeout(() => {
-            window.parent.postMessage(
-              {
-                code: 200,
-                success: true,
-              },
-              '*'
-            )
-          }, 1000)
-        } else {
-          message.error(`提交失败，请重新尝试`)
-        }
-      })
-    } else {
-      for (let i = 0; i < noduleList.length; i++) {
-        if (noduleList[i].state === true) {
-          postData.resultInfo.nodelist.push({
-            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: imagesConfig.length - noduleList[i].num,
-            check_lung: noduleList[i].doctorCheck ? noduleList[i].lung : null,
-            check_local: noduleList[i].doctorCheck ? noduleList[i].lobe : null,
-            check_type: noduleList[i].doctorCheck ? noduleList[i].type : null,
-            edit: noduleList[i].doctorCheck,
-            suggest: noduleList[i].suggest,
-          })
-        } else {
-          postData.resultInfo.nodelist.push({
-            index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-            imageIndex: imagesConfig.length - noduleList[i].num,
-            check_invisible: 1,
-            edit: true,
-            suggest: noduleList[i].suggest,
-          })
-        }
-      }
-
-      postData.resultInfo.nodelist = postData.resultInfo.nodelist.filter(item => item.edit !== false)
-      postData.resultInfo = JSON.stringify(postData.resultInfo)
-      updateDnResult(JSON.stringify(postData)).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          message.success(`提交审核结果成功`)
-          setVisible(false)
-          setTimeout(() => {
-            window.parent.postMessage(
-              {
-                code: 200,
-                success: true,
-              },
-              '*'
-            )
-          }, 1000)
-        } else {
-          message.error(`提交失败，请重新尝试`)
-        }
+    for (let i = 0; i < noduleList.length; i++) {
+      postData.resultInfo.nodelist.push({
+        index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+        imageIndex: imagesConfig.length - noduleList[i].num,
+        lungLocation: noduleList[i].lung,
+        lobeLocation: noduleList[i].lobe,
+        featureLabel: noduleList[i].type,
+        edit_time: getCurrentTime(),
+        edit: noduleList[i].review,
+        suggest: noduleList[i].suggest,
+        invisable: noduleList[i].state === false ? 1 : noduleList[i].state === true ? 0 : '-',
       })
     }
+
+    postData.resultInfo = JSON.stringify(postData.resultInfo)
+
+    return postData
+  }
+
+  // 暂存结节数据
+  const saveResults = () => {
+    const postData = formatPostData()
+    saveDnResult(JSON.stringify(postData)).then(res => {
+      if (res.data.code === 200) {
+        message.success(`结节结果保存成功`)
+      } else {
+        message.error(`结节结果保存失败，请重新尝试`)
+      }
+    })
+  }
+
+  // 提交审核结果
+  const handleSubmitResults = () => {
+    const postData = formatPostData()
+    console.log(postData)
+    debugger
+    return
+    updateDnResult(JSON.stringify(postData)).then(res => {
+      console.log(res)
+      if (res.data.code === 200) {
+        message.success(`提交审核结果成功`)
+        setVisible(false)
+        setTimeout(() => {
+          window.parent.postMessage(
+            {
+              code: 200,
+              success: true,
+            },
+            '*'
+          )
+        }, 1000)
+      } else {
+        message.error(`提交失败，请重新尝试`)
+      }
+    })
   }
 
   return (
@@ -783,7 +795,7 @@ const Viewer = () => {
           <span>图片序列加载中 {taskLength > 0 ? <em>，正在加载第 {taskLength} 张</em> : null}</span>
         </div>
       ) : null} */}
-      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} />
+      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} />
       <div className="viewer-center-box">
         {/* <LeftSidePanel data={sequenceListData} handleSequenceListClick={handleSequenceListClick} /> */}
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
@@ -813,8 +825,10 @@ const Viewer = () => {
       <NoduleInfo
         noduleInfo={noduleInfo}
         handleTextareaOnChange={handleTextareaOnChange}
+        handleInputBlur={handleInputBlur}
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
+        pageState={pageState}
       />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />

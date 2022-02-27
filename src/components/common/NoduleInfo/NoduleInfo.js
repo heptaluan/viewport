@@ -66,6 +66,7 @@ const NoduleInfo = props => {
               size="small"
               style={{ width: 150, height: 24, marginTop: 2, fontSize: 13 }}
               onChange={props.handleTextareaOnChange}
+              onBlur={props.handleInputBlur}
               value={props.noduleInfo?.suggest}
             />
           </div>
@@ -88,10 +89,19 @@ const NoduleInfo = props => {
           <div className="group-wrap">
             <span>是否为结节</span>
             <div className="group">
-              <Button style={{ marginRight: '10px' }} size="small" onClick={e => props.updateNoduleList(false)}>
+              <Button
+                type={props.noduleInfo.state === false ? 'primary' : null}
+                style={{ marginRight: '10px' }}
+                size="small"
+                onClick={e => props.updateNoduleList(false)}
+              >
                 否
               </Button>
-              <Button size="small" onClick={e => props.updateNoduleList(true)}>
+              <Button
+                type={props.noduleInfo.state === true ? 'primary' : null}
+                size="small"
+                onClick={e => props.updateNoduleList(true)}
+              >
                 是
               </Button>
             </div>
