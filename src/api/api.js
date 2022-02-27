@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
-// const basicUrl = getURLParameters(window.location.href).url
-// axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
+const basicUrl = getURLParameters(window.location.href).url
+axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
 // const basicUrl = 'http://139.196.114.118:9999'
-const basicUrl = 'http://192.168.1.204:9999'
-axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDU5OTMwMDIsInVzZXJuYW1lIjoiYWRtaW4ifQ.vvXebHuJcmxIrtmg-8vbl3AbEamyMN9wAyTjbBrj2lA'
+// const basicUrl = 'http://192.168.1.204:9999'
+// axios.defaults.headers.common['X-Access-Token'] =
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDYwMTI4MTMsInVzZXJuYW1lIjoiYWRtaW4ifQ.6G266U12hp_ChaM5lXpyOeghM6bYTgiKcSUdcAxU-yY'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -26,7 +26,7 @@ export const getPatientsList = id =>
 // 获取结节列表（管理员）
 export const getNodeList = id => axios.get(`${basicUrl}/report/image/getDnResult?id=${id}`)
 
-// 获取结节列表（管理员）
+// 获取结节列表（医生）
 export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task?id=${id}`)
 
 // 提交审核结果

@@ -71,9 +71,6 @@ const Viewer = () => {
   // 跳转帧数
   const [imageIdIndex, setImageIdIndex] = useState(0)
 
-  // Ref
-  const noduleListRef = useRef(null)
-
   // 初始化结节信息
   useEffect(() => {
     // 管理员请求接口
@@ -82,7 +79,8 @@ const Viewer = () => {
       if (result.data.code === 200) {
         if (result.data.result) {
           const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-          formatNodeData(data)
+          formatNodeData(data, [])
+          fetcImagehData()
         }
       }
     }
@@ -99,22 +97,24 @@ const Viewer = () => {
             fetcImagehData()
           } else {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-            formatNodeData(data)
+            formatNodeData(data, [])
             fetcImagehData()
           }
         }
       }
     }
 
-    if (getURLParameters(window.location.href).user === 'admin') {
-      fetchDoctorData()
-    } else {
-      fetchAdminData()
-    }
-
     const fetcImagehData = async () => {
       const res = await getImageList(getURLParameters(window.location.href).resource)
       setImageList(res)
+    }
+
+    if (getURLParameters(window.location.href).user === 'admin') {
+      fetchAdminData()
+    } else if (!getURLParameters(window.location.href).user) {
+      fetcImagehData()
+    } else {
+      fetchDoctorData()
     }
 
     if (getURLParameters(window.location.href).state === 'admin') {
@@ -134,9 +134,6 @@ const Viewer = () => {
         setImageIdIndex(0)
       }
     }
-
-    noduleListRef.current = noduleList
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -248,8 +245,10 @@ const Viewer = () => {
       setImagesConfig(imageList)
 
       // 缓存图片
-      if (imageList.length > 0) {
-        loadAndCacheImage(cornerstone, imageList)
+      if (getURLParameters(window.location.href).user) {
+        if (imageList.length > 0) {
+          loadAndCacheImage(cornerstone, imageList)
+        }
       }
     }
   }
@@ -619,7 +618,7 @@ const Viewer = () => {
           id: index,
           num: res[i].coord.coordZ,
           size: res[i].diameter,
-          type: resultInfo[i].featureLabel ? resultInfo[i].featureLabel : res[i].featureLabel.value,
+          type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
           risk: (res[i].scrynMaligant * 100).toFixed(0) + '%',
           soak: '',
           info: '',
@@ -627,13 +626,13 @@ const Viewer = () => {
           active: false,
           noduleName: res[i].noduleName,
           noduleNum: res[i].noduleNum,
-          state: resultInfo[i].invisable === 1 ? false : resultInfo[i].invisable === 0 ? true : undefined,
-          review: resultInfo[i].edit ? resultInfo[i].edit : false,
-          lung: resultInfo[i].lungLocation ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
-          lobe: resultInfo[i].lobeLocation ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
+          state: resultInfo[i] && resultInfo[i].invisable === 1 ? false : resultInfo[i] && resultInfo[i].invisable === 0 ? true : undefined,
+          review: resultInfo[i] ? resultInfo[i].edit : false,
+          lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
+          lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
           noduleSize: res[i].noduleSize,
           featureLabelG: res[i].featureLabelG,
-          suggest: resultInfo[i].suggest ? resultInfo[i].suggest : '',
+          suggest: resultInfo[i] ? resultInfo[i].suggest : '',
         })
         index++
       }
@@ -651,8 +650,8 @@ const Viewer = () => {
           })
         }
       }
-      setNoduleList(prev => nodulesList)
-      setNoduleMapList(prev => nodulesMapList)
+      setNoduleList(nodulesList)
+      setNoduleMapList(nodulesMapList)
     } else {
       setNoduleList([])
       console.log(`数据加载失败`)
@@ -672,13 +671,12 @@ const Viewer = () => {
   // 缓存图片请求池
   const loadAndCacheImage = (cornerstone, imageList) => {
     const taskPool = []
-    console.log(noduleListRef)
-    // for (let i = 0; i < imageList.length; i++) {
-    //   cornerstone.loadAndCacheImage(imageList[i]).then(image => {
-    //     taskPool.push(image.imageId)
-    //     setTaskLength(taskPool.length)
-    //   })
-    // }
+    for (let i = 0; i < imageList.length; i++) {
+      cornerstone.loadAndCacheImage(imageList[i]).then(image => {
+        taskPool.push(image.imageId)
+        // setTaskLength(taskPool.length)
+      })
+    }
   }
 
   // ===========================================================
@@ -724,8 +722,8 @@ const Viewer = () => {
     const postData = {
       id:
         getURLParameters(window.location.href).user === 'admin'
-          ? getURLParameters(window.location.href).doctorId
-          : getURLParameters(window.location.href).taskId,
+          ? getURLParameters(window.location.href).taskId
+          : getURLParameters(window.location.href).doctorId,
       resultInfo: {
         nodelist: [],
       },
