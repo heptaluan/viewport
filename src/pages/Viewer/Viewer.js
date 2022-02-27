@@ -96,9 +96,11 @@ const Viewer = () => {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
             formatNodeData(data, resultInfo.nodelist)
+            fetcImagehData()
           } else {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             formatNodeData(data)
+            fetcImagehData()
           }
         }
       }
@@ -110,19 +112,10 @@ const Viewer = () => {
       fetchAdminData()
     }
 
-    noduleListRef.current = noduleList
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // 初始化影像信息
-  useEffect(() => {
     const fetcImagehData = async () => {
       const res = await getImageList(getURLParameters(window.location.href).resource)
       setImageList(res)
     }
-
-    fetcImagehData()
 
     if (getURLParameters(window.location.href).state === 'admin') {
       setPageState('admin')
@@ -141,6 +134,14 @@ const Viewer = () => {
         setImageIdIndex(0)
       }
     }
+
+    noduleListRef.current = noduleList
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 初始化影像信息
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -281,7 +282,6 @@ const Viewer = () => {
     } else {
       setNoduleInfo(null)
     }
-    
   }
 
   // 全选
@@ -766,8 +766,6 @@ const Viewer = () => {
   const handleSubmitResults = () => {
     const postData = formatPostData()
     console.log(postData)
-    debugger
-    return
     updateDnResult(JSON.stringify(postData)).then(res => {
       console.log(res)
       if (res.data.code === 200) {
@@ -783,7 +781,7 @@ const Viewer = () => {
           )
         }, 1000)
       } else {
-        message.error(`提交失败，请重新尝试`)
+        message.error(`提交失败，请刷新后重新尝试`)
       }
     })
   }
