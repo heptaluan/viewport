@@ -239,7 +239,7 @@ const Viewer = () => {
       const newList = res.data.result
       const imageList = []
       newList.forEach(item => {
-        imageList.push(`wadouri:${item.ossUrl}`)
+        imageList.push(`wadouri:${item.ossUrl.replace('http://', 'https://')}`)
       })
 
       setImagesConfig(imageList)
@@ -276,7 +276,7 @@ const Viewer = () => {
     }
 
     const checkItme = noduleList.find(item => item.checked === true)
-    if (checkItme && pageType !== 'detail' && pageState !== 'admin') {
+    if (checkItme && pageType !== 'detail') {
       setNoduleInfo(checkItme)
     } else {
       setNoduleInfo(null)
@@ -626,7 +626,12 @@ const Viewer = () => {
           active: false,
           noduleName: res[i].noduleName,
           noduleNum: res[i].noduleNum,
-          state: resultInfo[i] && resultInfo[i].invisable === 1 ? false : resultInfo[i] && resultInfo[i].invisable === 0 ? true : undefined,
+          state:
+            resultInfo[i] && resultInfo[i].invisable === 1
+              ? false
+              : resultInfo[i] && resultInfo[i].invisable === 0
+              ? true
+              : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,

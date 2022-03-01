@@ -7,7 +7,7 @@ axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.locati
 // const basicUrl = 'http://139.196.114.118:9999'
 // const basicUrl = 'http://192.168.1.204:9999'
 // axios.defaults.headers.common['X-Access-Token'] =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDYwMTI4MTMsInVzZXJuYW1lIjoiYWRtaW4ifQ.6G266U12hp_ChaM5lXpyOeghM6bYTgiKcSUdcAxU-yY'
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDYwNTg0MDEsInVzZXJuYW1lIjoiYWRtaW4ifQ.OOIA5yY82NAjUZDxGjZjC2WlMK4ToAhs7hloJ5li0no'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>

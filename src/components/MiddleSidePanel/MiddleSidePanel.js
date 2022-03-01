@@ -49,7 +49,7 @@ const MiddleSidePanel = props => {
                   <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
                 <div className="action review-state">
-                  <span className={item.review ? 'review' : null}>{item.review ? '已检阅' : '未检阅'}</span>
+                  <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
                 </div>
               </div>
             ))}
@@ -71,8 +71,7 @@ const MiddleSidePanel = props => {
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.size}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。
-                    {/* 结节恶性风险为：<span>{item.risk}</span> */}
+                    <span>{item.noduleSize} mm³</span>。{/* 结节恶性风险为：<span>{item.risk}</span> */}
                   </div>
                 ) : null
               })}

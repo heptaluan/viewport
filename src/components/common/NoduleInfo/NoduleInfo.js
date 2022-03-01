@@ -30,14 +30,14 @@ const NoduleInfo = props => {
           </div> */}
           <div className="list">
             <span className="list-title">肺：</span>
-            <Radio.Group onChange={onLungChange} value={props.noduleInfo.lung}>
+            <Radio.Group disabled={props.pageState === 'admin'} onChange={onLungChange} value={props.noduleInfo.lung}>
               <Radio value={'右肺'}>右肺</Radio>
               <Radio value={'左肺'}>左肺</Radio>
             </Radio.Group>
           </div>
           <div className="list">
             <div className="list-title">肺叶：</div>
-            <Radio.Group onChange={onLobeChange} value={props.noduleInfo.lobe}>
+            <Radio.Group disabled={props.pageState === 'admin'} onChange={onLobeChange} value={props.noduleInfo.lobe}>
               <Radio value={'上叶'}>上叶</Radio>
               {props.noduleInfo.lung === '左肺' ? null : <Radio value={'中叶'}>中叶</Radio>}
               <Radio value={'下叶'}>下叶</Radio>
@@ -46,6 +46,7 @@ const NoduleInfo = props => {
           <div className="list">
             <div className="list-title">类型：</div>
             <Select
+              disabled={props.pageState === 'admin'}
               size="small"
               value={props.noduleInfo.type}
               style={{ width: 150, fontSize: 13 }}
@@ -63,6 +64,7 @@ const NoduleInfo = props => {
           <div className="list">
             <em>建议：</em>
             <Input
+              disabled={props.pageState === 'admin'}
               placeholder="这里输入结节备注信息"
               size="small"
               style={{ width: 150, height: 24, marginTop: 2, fontSize: 13 }}
@@ -91,6 +93,7 @@ const NoduleInfo = props => {
             <span>是否为结节</span>
             <div className="group">
               <Button
+                disabled={props.pageState === 'admin'}
                 type={props.noduleInfo.state === false ? 'primary' : null}
                 style={{ marginRight: '10px' }}
                 size="small"
@@ -99,6 +102,7 @@ const NoduleInfo = props => {
                 否
               </Button>
               <Button
+                disabled={props.pageState === 'admin'}
                 type={props.noduleInfo.state === true ? 'primary' : null}
                 size="small"
                 onClick={e => props.updateNoduleList(true)}

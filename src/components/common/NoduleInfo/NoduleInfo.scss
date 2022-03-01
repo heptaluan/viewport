@@ -47,3 +47,7 @@
     }
   }
 }
+
+.ant-radio-disabled + span {
+  color: #fff !important;
+}
