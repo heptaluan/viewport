@@ -779,6 +779,8 @@ const Viewer = () => {
             {
               code: 200,
               success: true,
+              backId: getURLParameters(window.location.href).backId,
+              backType: getURLParameters(window.location.href).backType,
             },
             '*'
           )
