@@ -80,7 +80,7 @@ const Viewer = () => {
         if (result.data.result) {
           const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
           formatNodeData(data, [])
-          fetcImagehData()
+          fetcImagehData(data.detectionResult.nodulesList)
         }
       }
     }
@@ -94,25 +94,25 @@ const Viewer = () => {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
             formatNodeData(data, resultInfo.nodelist)
-            fetcImagehData()
+            fetcImagehData(data.detectionResult.nodulesList)
           } else {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             formatNodeData(data, [])
-            fetcImagehData()
+            fetcImagehData(data.detectionResult.nodulesList)
           }
         }
       }
     }
 
-    const fetcImagehData = async () => {
+    const fetcImagehData = async data => {
       const res = await getImageList(getURLParameters(window.location.href).resource)
-      setImageList(res)
+      setImageList(res, data)
     }
 
     if (getURLParameters(window.location.href).user === 'admin') {
       fetchAdminData()
     } else if (!getURLParameters(window.location.href).user) {
-      fetcImagehData()
+      fetcImagehData(null)
     } else {
       fetchDoctorData()
     }
@@ -234,7 +234,7 @@ const Viewer = () => {
   }
 
   // 设置图片列表
-  const setImageList = res => {
+  const setImageList = (res, data) => {
     if (res.data.code === 200 && res.data.result.length > 0) {
       const newList = res.data.result
       const imageList = []
@@ -245,19 +245,11 @@ const Viewer = () => {
       setImagesConfig(imageList)
 
       // 缓存图片
-      if (getURLParameters(window.location.href).user) {
-        if (imageList.length > 0) {
-          loadAndCacheImage(cornerstone, imageList)
-        }
+      if (data && data.length > 0) {
+        loadAndCacheImage(cornerstone, imageList, data)
       }
     }
   }
-
-  // 序列点击事件
-  // const handleSequenceListClick = async instanceUid => {
-  //   const res = await getImageList(instanceUid)
-  //   setImageList(res)
-  // }
 
   // ===========================================================
 
@@ -663,24 +655,33 @@ const Viewer = () => {
     }
   }
 
-  // 排序函数
-  // const nestedSort =
-  //   (prop1, prop2 = null, direction = 'asc') =>
-  //   (e1, e2) => {
-  //     const a = prop2 ? e1[prop1][prop2] : e1[prop1],
-  //       b = prop2 ? e2[prop1][prop2] : e2[prop1],
-  //       sortOrder = direction === 'asc' ? 1 : -1
-  //     return a < b ? -sortOrder : a > b ? sortOrder : 0
-  //   }
-
   // 缓存图片请求池
-  const loadAndCacheImage = (cornerstone, imageList) => {
-    const taskPool = []
-    for (let i = 0; i < imageList.length; i++) {
-      cornerstone.loadAndCacheImage(imageList[i]).then(image => {
-        taskPool.push(image.imageId)
-        // setTaskLength(taskPool.length)
-      })
+  const loadAndCacheImage = (cornerstone, imageList, data) => {
+    try {
+      const coordZList = []
+      for (let i = 0; i < data.length; i++) {
+        coordZList.push(data[i].coord.coordZ)
+      }
+
+      let filterArr = []
+      for (let i = 0; i < coordZList.length; i++) {
+        var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
+        for (let j = 0; j < 10; j++) {
+          filterArr.push(pre + j)
+        }
+      }
+
+      filterArr = [...new Set(filterArr)]
+      const newImageList = []
+      for (let i = 0; i < filterArr.length; i++) {
+        newImageList.push(imageList[filterArr[i]])
+      }
+
+      for (let i = 0; i < newImageList.length; i++) {
+        cornerstone.loadAndCacheImage(newImageList[i])
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
