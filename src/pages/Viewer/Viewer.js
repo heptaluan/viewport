@@ -627,9 +627,9 @@ const Viewer = () => {
           noduleName: res[i].noduleName,
           noduleNum: res[i].noduleNum,
           state:
-            resultInfo[i] && resultInfo[i].invisable === 1
+            resultInfo[i] && Number(resultInfo[i].invisable) === 1
               ? false
-              : resultInfo[i] && resultInfo[i].invisable === 0
+              : resultInfo[i] && Number(resultInfo[i].invisable) === 0
               ? true
               : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
@@ -737,14 +737,14 @@ const Viewer = () => {
     for (let i = 0; i < noduleList.length; i++) {
       postData.resultInfo.nodelist.push({
         index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
-        imageIndex: imagesConfig.length - noduleList[i].num,
+        imageIndex: noduleList[i].num,
         lungLocation: noduleList[i].lung,
         lobeLocation: noduleList[i].lobe,
         featureLabel: noduleList[i].type,
         edit_time: getCurrentTime(),
         edit: noduleList[i].review,
         suggest: noduleList[i].suggest,
-        invisable: noduleList[i].state === false ? 1 : noduleList[i].state === true ? 0 : '-',
+        invisable: noduleList[i].state === false ? '1' : noduleList[i].state === true ? '0' : '-',
       })
     }
 
