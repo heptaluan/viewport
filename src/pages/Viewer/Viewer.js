@@ -129,7 +129,7 @@ const Viewer = () => {
       setPageType('detail')
       const index = getURLParameters(window.location.href).index
       if (index) {
-        setImageIdIndex(Number(index) - 1)
+        setImageIdIndex(Number(index))
       } else {
         setImageIdIndex(0)
       }
@@ -442,11 +442,11 @@ const Viewer = () => {
 
   // 切换当前视图
   const changeActiveImage = (index, cornerstoneElement) => {
-    cornerstone.loadImage(imagesConfig[index - 1]).then(image => {
+    cornerstone.loadImage(imagesConfig[index]).then(image => {
       cornerstone.displayImage(cornerstoneElement, image)
       cornerstoneTools.addStackStateManager(cornerstoneElement, ['stack'])
       cornerstoneTools.addToolState(cornerstoneElement, 'stack', {
-        currentImageIdIndex: Number(index - 1),
+        currentImageIdIndex: Number(index),
         imageIds: imagesConfig,
       })
     })
