@@ -854,6 +854,12 @@ const Viewer = () => {
       {pageType === 'review' ? (
         <div className="show-button">
           <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
+          {getURLParameters(window.location.href).patientId &&
+          getURLParameters(window.location.href).patientId !== 'null' ? (
+            <span className="infor-detail">
+              patientId: <em>{getURLParameters(window.location.href).patientId}</em>
+            </span>
+          ) : null}
         </div>
       ) : null}
     </div>
