@@ -9,9 +9,19 @@ import cornerstoneTools from 'cornerstone-tools'
 import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import { saveDnResult, getImageList, getNodeList, updateDnResult, getPatientsList, getDoctorTask } from '../../api/api'
+import {
+  saveDnResult,
+  getImageList,
+  getNodeList,
+  updateDnResult,
+  getPatientsList,
+  getDoctorTask,
+  addNewNodeList,
+} from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { Modal, message, Button } from 'antd'
+import Draggable from 'react-draggable'
+import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 
 const Viewer = () => {
   const defaultTools = [
@@ -70,6 +80,12 @@ const Viewer = () => {
 
   // 跳转帧数
   const [imageIdIndex, setImageIdIndex] = useState(0)
+
+  // 当前帧数
+  const [currentImageIdIndex, setCurrentImageIdIndex] = useState(0)
+
+  // 当前 Dicom 文件
+  const [currentDicomFileUrl, setCurrentDicomFileUrl] = useState('')
 
   // 初始化结节信息
   useEffect(() => {
@@ -174,7 +190,7 @@ const Viewer = () => {
 
   // 添加结节标注
   const addNodeTool = (cornerstoneElement, index = 0) => {
-    const item = noduleMapList.filter(item => item.index === index + 1)
+    const item = noduleMapList.filter(item => item.index === index)
     const checkItme = noduleList.find(item => item.checked === true)
 
     if (item.length >= 1) {
@@ -313,6 +329,13 @@ const Viewer = () => {
     //   }, 0)
     // }
 
+    // noduleList.map(item => (item.checked = false))
+    // noduleList[index].checked = true
+    // setNoduleList([...noduleList])
+
+    // 设置当中帧数
+    setCurrentImageIdIndex(index)
+
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
@@ -330,7 +353,7 @@ const Viewer = () => {
     saveResults()
   }
 
-  // 更新结节事件
+  // 更新结节事件
   const checkNoduleList = (val, type) => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme && type === 'lung') {
@@ -529,6 +552,7 @@ const Viewer = () => {
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
+      setCurrentDicomFileUrl(curImageId)
       handleCheckedListClick(index)
     })
 
@@ -647,8 +671,46 @@ const Viewer = () => {
           })
         }
       }
-      setNoduleList(nodulesList)
-      setNoduleMapList(nodulesMapList)
+
+      for (let i = 0; i < resultInfo.length; i++) {
+        if (resultInfo[i].nodeType && resultInfo[i].nodeType === 'add') {
+          nodulesList.push({
+            id: index,
+            num: resultInfo[i].imageIndex,
+            size: '',
+            type: resultInfo[i].featureLabel,
+            risk: '',
+            soak: '',
+            info: '',
+            checked: false,
+            active: false,
+            noduleName: resultInfo[i].noduleName,
+            noduleNum: resultInfo[i].noduleNum,
+            state: true,
+            review: true,
+            lung: resultInfo[i].lungLocation,
+            lobe: resultInfo[i].lobeLocation,
+            noduleSize: '',
+            featureLabelG: resultInfo[i].featureLabel,
+            suggest: resultInfo[i].suggest,
+            nodeType: resultInfo[i].nodeType,
+          })
+
+          index++
+
+          nodulesMapList.push({
+            noduleName: resultInfo[i].noduleName,
+            index: resultInfo[i].imageIndex,
+            startX: resultInfo[i].startX,
+            startY: resultInfo[i].startY,
+            endX: resultInfo[i].endX,
+            endY: resultInfo[i].endY,
+          })
+        }
+      }
+
+      setNoduleList([...nodulesList])
+      setNoduleMapList([...nodulesMapList])
     } else {
       setNoduleList([])
       console.log(`数据加载失败`)
@@ -725,6 +787,7 @@ const Viewer = () => {
 
   // 格式化提交数据
   const formatPostData = () => {
+
     const postData = {
       id:
         getURLParameters(window.location.href).user === 'admin'
@@ -736,8 +799,9 @@ const Viewer = () => {
     }
 
     for (let i = 0; i < noduleList.length; i++) {
+      const index = originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1
       postData.resultInfo.nodelist.push({
-        index: originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1,
+        index: index ? index : noduleList.length + 1,
         imageIndex: noduleList[i].num,
         lungLocation: noduleList[i].lung,
         lobeLocation: noduleList[i].lobe,
@@ -746,6 +810,13 @@ const Viewer = () => {
         edit: noduleList[i].review,
         suggest: noduleList[i].suggest,
         invisable: noduleList[i].state === false ? '1' : noduleList[i].state === true ? '0' : '-',
+        nodeType: noduleList[i].nodeType ? noduleList[i].nodeType : '',
+        startX: noduleList[i].startX ? parseInt(noduleList[i].startX) : '',
+        startY: noduleList[i].startY ? parseInt(noduleList[i].startY) : '',
+        endX: noduleList[i].endX ? parseInt(noduleList[i].endX) : '',
+        endY: noduleList[i].endY ? parseInt(noduleList[i].endY) : '',
+        noduleName: noduleList[i].noduleName ? noduleList[i].noduleName : '',
+        noduleNum: noduleList[i].noduleNum ? noduleList[i].noduleNum : '',
       })
     }
 
@@ -792,6 +863,196 @@ const Viewer = () => {
     })
   }
 
+  // ===========================================================
+
+  const draggleRef = React.createRef()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalDisabled, setModalDisabled] = useState(true)
+  const [modalBounds, setModalBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 })
+  const [toolList, setToolList] = useState([])
+
+  // 提交结节信息
+  const handleSubmitNodeDetail = e => {
+    const tool = cornerstoneTools.getToolState(cornerstoneElement, 'RectangleRoi')
+    // if (!tool) {
+    //   message.warn(`请先标注结节后在进行新增`)
+    // } else {
+    //   showModal()
+    // }
+    formatNewNodeData(tool.data)
+    setTimeout(() => {
+      showModal()
+    }, 0)
+  }
+
+  // 重新请求，刷新数据
+  const fetchDoctorData = async () => {
+    const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
+    if (result.data.code === 200) {
+      if (result.data.result) {
+        if (result.data.result.doctorTask.resultInfo) {
+          const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+          const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
+          formatNodeData(data, resultInfo.nodelist)
+        } else {
+          const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+          formatNodeData(data, [])
+        }
+      }
+    }
+  }
+
+  // 格式化新增结节数据
+  const formatNewNodeData = data => {
+    const toolList = []
+    for (let i = 0; i < data.length; i++) {
+      toolList.push({
+        uuid: data[i].uuid,
+        lung: '',
+        lobe: '',
+        type: undefined,
+        suggest: '',
+        cachedStats: data[i].cachedStats,
+        startX: data[i].handles.start.x,
+        startY: data[i].handles.start.y,
+        endX: data[i].handles.end.x,
+        endY: data[i].handles.end.y,
+      })
+    }
+    setToolList(toolList)
+  }
+
+  // 更新结节事件
+  const updateToolList = (val, type, id) => {
+    const checkItme = toolList.find(item => item.uuid === id)
+    if (checkItme && type === 'lung') {
+      checkItme.lung = val
+    }
+    if (checkItme && type === 'lobe') {
+      checkItme.lobe = val
+    }
+    if (checkItme && type === 'type') {
+      checkItme.type = val
+    }
+    setToolList([...toolList])
+  }
+
+  // 更新医生影像建议内容
+  const handleToolListTextareaChange = (e, id) => {
+    const checkItme = toolList.find(item => item.uuid === id)
+    if (checkItme) {
+      checkItme.suggest = e.target.value
+      setToolList([...toolList])
+    }
+  }
+
+  // 建议框失去焦点后保存数据
+  const handleToolListTextareaBlur = (e, id) => {
+    const checkItme = toolList.find(item => item.uuid === id)
+    if (checkItme) {
+      checkItme.suggest = e.target.value
+      setToolList([...toolList])
+    }
+  }
+
+  const showModal = () => {
+    setModalVisible(true)
+  }
+
+  const handleOk = e => {
+    for (let i = 0; i < toolList.length; i++) {
+      if (!toolList[i].lung) {
+        message.warn(`请选择所有结节的肺属性后在进行新增`)
+        return false
+      }
+
+      if (!toolList[i].lobe) {
+        message.warn(`请选择所有结节的肺叶属性后在进行新增`)
+        return false
+      }
+
+      if (!toolList[i].type) {
+        message.warn(`请选择所有结节的类型属性后在进行新增`)
+        return false
+      }
+    }
+
+    const postData = {
+      dicom_url: currentDicomFileUrl.replace('wadouri:', ''),
+      boxes: [toolList[0].startY, toolList[0].startX, toolList[0].endY, toolList[0].endX].join(','),
+      uuid: toolList[0].uuid,
+    }
+
+    // addNewNodeList(JSON.stringify(postData)).then(res => {
+    //   if (res.data.code === 200) {
+    //     message.success(`结节结果保存成功`)
+    //   } else {
+    //     message.error(`结节结果保存失败，请重新尝试`)
+    //   }
+    // })
+
+    const newNodeData = {
+      active: false,
+      checked: false,
+      featureLabelG: '',
+      id: `id_${toolList[0].uuid}`,
+      info: '',
+      lobe: toolList[0].lobe,
+      lung: toolList[0].lung,
+      noduleName: `nodule_${toolList[0].uuid}`,
+      noduleNum: toolList[0].uuid,
+      noduleSize: '',
+      num: currentImageIdIndex,
+      review: true,
+      risk: '',
+      size: '',
+      soak: '',
+      state: true,
+      suggest: toolList[0].suggest,
+      type: toolList[0].type,
+      nodeType: 'add',
+      startX: toolList[0].startX,
+      startY: toolList[0].startY,
+      endX: toolList[0].endX,
+      endY: toolList[0].endY,
+    }
+
+    noduleList.push(newNodeData)
+    setNoduleList([...noduleList])
+    saveResults()
+
+    setTimeout(() => {
+      fetchDoctorData()
+    }, 100)
+
+
+    // console.log(noduleList)
+    // console.log(currentDicomFileUrl)
+    // console.log(toolList)
+
+    cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
+    cornerstone.updateImage(cornerstoneElement)
+    setModalVisible(false)
+  }
+
+  const handleCancel = e => {
+    setModalVisible(false)
+  }
+
+  const onStart = (event, uiData) => {
+    const { clientWidth, clientHeight } = window.document.documentElement
+    const targetRect = draggleRef.current?.getBoundingClientRect()
+    if (!targetRect) {
+      return
+    }
+    setModalBounds({
+      left: -targetRect.left + uiData.x,
+      right: clientWidth - (targetRect.right - uiData.x),
+      top: -targetRect.top + uiData.y,
+      bottom: clientHeight - (targetRect.bottom - uiData.y),
+    })
+  }
+
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
       {/* {taskLength !== imagesConfig.length ? (
@@ -817,6 +1078,7 @@ const Viewer = () => {
           />
         </div>
         <ViewerMain
+          handleSubmitNodeDetail={handleSubmitNodeDetail}
           handleToolbarClick={handleToolbarClick}
           handleElementEnabledEvt={handleElementEnabledEvt}
           toolsConfig={toolsConfig}
@@ -862,6 +1124,49 @@ const Viewer = () => {
           ) : null}
         </div>
       ) : null}
+
+      <Modal
+        title={
+          <div
+            style={{
+              width: '100%',
+              cursor: 'move',
+            }}
+            onMouseOver={() => {
+              if (modalDisabled) {
+                setModalDisabled(false)
+              }
+            }}
+            onMouseOut={() => {
+              setModalDisabled(true)
+            }}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            // end
+          >
+            新增结节
+          </div>
+        }
+        okText={'确定'}
+        cancelText={'取消'}
+        visible={modalVisible}
+        maskClosable={false}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        modalRender={modal => (
+          <Draggable disabled={modalDisabled} bounds={modalBounds} onStart={(event, uiData) => onStart(event, uiData)}>
+            <div ref={draggleRef}>{modal}</div>
+          </Draggable>
+        )}
+      >
+        <AddNewNode
+          handleToolListTextareaChange={handleToolListTextareaChange}
+          handleToolListTextareaBlur={handleToolListTextareaBlur}
+          updateToolList={updateToolList}
+          currentImageIdIndex={currentImageIdIndex}
+          toolList={toolList}
+        />
+      </Modal>
     </div>
   )
 }

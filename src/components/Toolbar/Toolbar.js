@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
-import { Tooltip } from 'antd'
+import { Tooltip, Button } from 'antd'
 
 const toolbarList = [
   {
@@ -53,13 +53,13 @@ const toolbarList = [
     type: 'EllipticalRoi',
     checked: false,
   },
-  {
-    id: 8,
-    text: '矩形',
-    icon: <IconFont style={{ fontSize: '24px' }} type="icon-juxing" />,
-    type: 'RectangleRoi',
-    checked: false,
-  },
+  // {
+  //   id: 8,
+  //   text: '矩形',
+  //   icon: <IconFont style={{ fontSize: '24px' }} type="icon-juxing" />,
+  //   type: 'RectangleRoi',
+  //   checked: false,
+  // },
   {
     id: 9,
     text: '角度选择',
@@ -79,6 +79,17 @@ const toolbarList = [
     text: '清除',
     icon: <IconFont style={{ fontSize: '18px' }} type="icon-qingchuhuancun" />,
     type: 'Eraser',
+    checked: false,
+  },
+  {
+    id: 12,
+    type: 'hr',
+  },
+  {
+    id: 8,
+    text: '结节标注',
+    icon: <IconFont style={{ fontSize: '24px' }} type="icon-juxing" />,
+    type: 'RectangleRoi',
     checked: false,
   },
   // {
@@ -111,24 +122,29 @@ const Toolbar = props => {
   }
 
   return (
-    <ul className="tool-bar-box">
-      {toolbarList.map((item, index) => {
-        return item.type === 'hr' ? (
-          <li key={item.id} className="hr">
-            <div></div>
-          </li>
-        ) : (
-          <li
-            id={item.type === 'MarkNodule' && item.checked ? 'mark' : null}
-            key={item.id}
-            className={item.checked ? (item.filter ? 'filter-active' : 'active') : ''}
-            onClick={e => handleToolbarClick(e, index, item.type)}
-            data-type={item.type}
-          >
-            <Tooltip title={item.text}>{item.icon}</Tooltip>
-          </li>
-        )
-      })}
+    <ul className="tool-bar-box-wrap">
+      <div className="tool-bar-box">
+        {toolbarList.map((item, index) => {
+          return item.type === 'hr' ? (
+            <li key={item.id} className="hr">
+              <div></div>
+            </li>
+          ) : (
+            <li
+              id={item.type === 'MarkNodule' && item.checked ? 'mark' : null}
+              key={item.id}
+              className={item.checked ? (item.filter ? 'filter-active' : 'active') : ''}
+              onClick={e => handleToolbarClick(e, index, item.type)}
+              data-type={item.type}
+            >
+              <Tooltip title={item.text}>{item.icon}</Tooltip>
+            </li>
+          )
+        })}
+      </div>
+      <div className='submit-btn'>
+        <Button onClick={e => props.handleSubmitNodeDetail(e)} size='small'>新增结节</Button>
+      </div>
     </ul>
   )
 }

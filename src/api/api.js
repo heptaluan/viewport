@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
-const basicUrl = getURLParameters(window.location.href).url
-axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
+// const basicUrl = getURLParameters(window.location.href).url
+// axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
 // const basicUrl = 'http://139.196.114.118:9999'
-// const basicUrl = 'http://192.168.1.204:9999'
-// axios.defaults.headers.common['X-Access-Token'] =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDY5Mjc4MDQsInVzZXJuYW1lIjoiYWRtaW4ifQ.y-N_PaxDxGn4ToCo1cajdOCsHkZCk0efuAvmmvQCaLY'
+const basicUrl = 'https://ct.feipankang.com/api'
+axios.defaults.headers.common['X-Access-Token'] =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTIzMDAxMTIsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.taBCds2R_o0cr9bc1PaMbutYO9GTJnvUg5E_xXAjTwg'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -40,6 +40,14 @@ export const saveDnResult = params =>
 // 提交审核结果
 export const updateDnResult = params =>
   axios.post(`${basicUrl}/report/image/updateDnResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+
+// 新增结节
+export const addNewNodeList = params =>
+  axios.post(`http://192.168.11.34:5001/new`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },

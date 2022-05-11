@@ -16,7 +16,10 @@ const ViewerMain = props => {
         </div>
       ) : (
         <div>
-          <Toolbar handleToolbarClick={props.handleToolbarClick} />
+          <Toolbar
+            handleToolbarClick={props.handleToolbarClick}
+            handleSubmitNodeDetail={props.handleSubmitNodeDetail}
+          />
           <CornerstoneViewport
             imageIdIndex={props.imageIdIndex}
             viewportOverlayComponent={CustomOverlay}
