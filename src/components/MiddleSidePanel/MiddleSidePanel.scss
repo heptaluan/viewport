@@ -74,9 +74,13 @@
           transition: all 0.1s;
           padding: 0 10px 0 5px;
 
-          &.item-active {
-            border: 1px solid #ccc;
+          &.add-item {
+            border-top: 1px solid #ccc;
             background: #eaeaea;
+          }
+
+          &.add-item:last-child {
+            border-bottom: 1px solid #ccc;
           }
 
           &:hover {

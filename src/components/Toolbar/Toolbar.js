@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
 import { Tooltip, Button } from 'antd'
+import { getURLParameters } from '../../util/index'
 
 const toolbarList = [
   {
@@ -93,7 +94,7 @@ const toolbarList = [
     checked: false,
   },
   // {
-  //   id: 12,
+  //   id: 13,
   //   text: '标记',
   //   icon: <IconFont style={{ fontSize: '20px' }} type="icon-shizi-" />,
   //   type: 'MarkNodule',
@@ -142,9 +143,14 @@ const Toolbar = props => {
           )
         })}
       </div>
-      <div className='submit-btn'>
-        <Button onClick={e => props.handleSubmitNodeDetail(e)} size='small'>新增结节</Button>
-      </div>
+      {getURLParameters(window.location.href).page === 'review' &&
+      getURLParameters(window.location.href).user !== 'admin' ? (
+        <div className="submit-btn">
+          <Button onClick={e => props.handleSubmitNodeDetail(e)} size="small">
+            新增结节
+          </Button>
+        </div>
+      ) : null}
     </ul>
   )
 }

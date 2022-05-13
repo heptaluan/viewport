@@ -73,14 +73,19 @@ const NoduleInfo = props => {
               value={props.noduleInfo?.suggest}
             />
           </div>
-          <div className="list">
-            <em>大小：</em>
-            {props.noduleInfo.size}
-          </div>
-          <div className="list">
-            <em>体积：</em>
-            {props.noduleInfo.noduleSize} mm³
-          </div>
+          {props.noduleInfo.diameter ? (
+            <div className="list">
+              <em>大小：</em>
+              {props.noduleInfo.diameter}
+            </div>
+          ) : null}
+          {props.noduleInfo.noduleSize ? (
+            <div className="list">
+              <em>体积：</em>
+              {props.noduleInfo.noduleSize} mm³
+            </div>
+          ) : null}
+
           {/* <div className="list">
             <em>形态类型：</em>
             {props.noduleInfo.type}

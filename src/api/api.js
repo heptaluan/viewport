@@ -7,7 +7,7 @@ import { getURLParameters } from '../util/index'
 // const basicUrl = 'http://139.196.114.118:9999'
 const basicUrl = 'https://ct.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTIzMDAxMTIsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.taBCds2R_o0cr9bc1PaMbutYO9GTJnvUg5E_xXAjTwg'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTI0NzI2MjIsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.7r7k_wivOyZSUiVOQ0CyQjEc_-_KK4Q2rxsiTKD_YxY'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -29,9 +29,17 @@ export const getNodeList = id => axios.get(`${basicUrl}/report/image/getDnResult
 // 获取结节列表（医生）
 export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task?id=${id}`)
 
-// 提交审核结果
+// 保存结果
 export const saveDnResult = params =>
   axios.post(`${basicUrl}/report/doctorTask/saveTask`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+
+// 提交审核结果（测试用）
+export const updateDnResultTemp = params =>
+  axios.post(`${basicUrl}/report/image/updateDnResultTemp`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },
@@ -49,6 +57,6 @@ export const updateDnResult = params =>
 export const addNewNodeList = params =>
   axios.post(`http://192.168.11.34:5001/new`, params, {
     headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
+      'Content-Type': 'application/json',
     },
   })
