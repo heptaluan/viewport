@@ -55,7 +55,7 @@ export const updateDnResult = params =>
 
 // 新增结节
 export const addNewNodeList = params =>
-  axios.post(`http://192.168.11.34:5001/new`, params, {
+  axios.post(`https://ct.feipankang.com/image/new`, params, {
     headers: {
       'Content-Type': 'application/json',
     },

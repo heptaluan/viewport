@@ -1133,6 +1133,8 @@ const Viewer = () => {
         setModalVisible(false)
       } else {
         message.error(`新增失败，请重新尝试`)
+        setTimeout(hide)
+        setConfirmLoading(true)
         return false
       }
     })
