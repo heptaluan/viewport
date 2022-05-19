@@ -402,6 +402,8 @@ const Viewer = () => {
       setNoduleList([...noduleList])
     }
 
+    console.log(noduleList)
+
     // 提交结节数据
     saveResults()
   }
