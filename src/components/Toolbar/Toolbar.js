@@ -77,17 +77,42 @@ const toolbarList = [
   },
   {
     id: 11,
-    text: '清除',
+    text: '缩放',
+    icon: <IconFont style={{ fontSize: '18px' }} type="icon-zoom" />,
+    type: 'Zoom',
+    checked: false,
+  },
+  {
+    id: 12,
+    text: '平移',
+    icon: <IconFont style={{ fontSize: '18px' }} type="icon-move" />,
+    type: 'Pan',
+    checked: false,
+  },
+  {
+    id: 13,
+    type: 'hr',
+  },
+  {
+    id: 14,
+    text: '复原图像',
+    icon: <IconFont style={{ fontSize: '18px' }} type="icon-reset_defalut" />,
+    type: 'Reset',
+    checked: false,
+  },
+  {
+    id: 15,
+    text: '清除标注',
     icon: <IconFont style={{ fontSize: '18px' }} type="icon-qingchuhuancun" />,
     type: 'Eraser',
     checked: false,
   },
   {
-    id: 12,
+    id: 16,
     type: 'hr',
   },
   {
-    id: 8,
+    id: 17,
     text: '结节标注',
     icon: <IconFont style={{ fontSize: '24px' }} type="icon-juxing" />,
     type: 'RectangleRoi',
@@ -109,6 +134,9 @@ const Toolbar = props => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
       state[index].checked = !state[index].checked
       setstate([...state])
+    } else if (type === 'Reset') {
+      props.handleToolbarClick(type, state[index].checked)
+      return
     } else {
       state[index].checked = !state[index].checked
       state.map(item => {

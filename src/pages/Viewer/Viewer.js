@@ -56,6 +56,20 @@ const Viewer = () => {
       name: 'Length',
       modeOptions: { mouseButtonMask: 1 },
     },
+    {
+      name: 'Pan',
+      modeOptions: { mouseButtonMask: 1 },
+    },
+    {
+      name: 'Zoom',
+      modeOptions: { mouseButtonMask: 1 },
+      configuration: {
+        invert: false,
+        preventZoomOutsideImage: false,
+        minScale: .1,
+        maxScale: 20.0,
+      }
+    },
   ]
 
   // 初始化
@@ -454,6 +468,8 @@ const Viewer = () => {
       case 'Angle':
       case 'Length':
       case 'MarkNodule':
+      case 'Zoom':
+      case 'Pan':
         changeToolActive(checked, type)
         break
       case 'hflip':
@@ -470,6 +486,10 @@ const Viewer = () => {
         } else {
           cornerstoneTools.stopClip(cornerstoneElement)
         }
+        break
+      case 'Reset':
+        cornerstone.reset(cornerstoneElement)
+        windowChange(cornerstoneElement, cornerstone.getImage(cornerstoneElement), 2)
         break
       default:
         break
