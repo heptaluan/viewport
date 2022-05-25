@@ -205,6 +205,12 @@ const Viewer = () => {
   // 视图元素
   const [cornerstoneElement, setCornerstoneElement] = useState(null)
 
+  useEffect(() => {
+    if (cornerstoneElement) {
+      console.log(1111)
+    }
+  }, [cornerstoneElement])
+
   // 弹出层
   const [showPopover, setShowPopover] = useState({
     index: 0,
@@ -230,14 +236,14 @@ const Viewer = () => {
             invalidated: true,
             handles: {
               start: {
-                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 10,
-                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 10,
+                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
+                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
                 highlight: true,
                 active: true,
               },
               end: {
-                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 10,
-                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 10,
+                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
+                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
                 highlight: true,
                 active: true,
               },
@@ -254,14 +260,14 @@ const Viewer = () => {
             invalidated: true,
             handles: {
               start: {
-                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 10,
-                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 10,
+                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
+                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
                 highlight: true,
                 active: true,
               },
               end: {
-                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 10,
-                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 10,
+                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
+                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
                 highlight: true,
                 active: true,
               },
@@ -565,14 +571,19 @@ const Viewer = () => {
     const cornerstoneElement = elementEnabledEvt.detail.element
     setCornerstoneElement(cornerstoneElement)
     cornerstoneTools.addTool(MarkNoduleTool)
+    let flag = true
 
     cornerstoneElement.addEventListener('cornerstonenewimage', newImage => {
       const curImageId = newImage.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
 
+      if (flag) {
+        windowChange(cornerstoneElement, newImage.detail.image, 2)
+        flag = false
+      }
+
       cornerstoneTools.setToolActive('MarkNodule', { mouseButtonMask: 1 })
       setTimeout(() => {
-        windowChange(cornerstoneElement, newImage.detail.image, 2)
         addNodeTool(cornerstoneElement, index)
         setActiveToolState()
       }, 0)
@@ -973,7 +984,9 @@ const Viewer = () => {
   // 提交结节信息
   const handleSubmitNodeDetail = e => {
     const tool = cornerstoneTools.getToolState(cornerstoneElement, 'RectangleRoi')
-    console.log(tool)
+    // console.log(tool)
+    // console.log(cornerstone.getStoredPixels(cornerstoneElement, '265', '95', 1, 1))
+    // console.log(cornerstone.getPixels(cornerstoneElement, '265', '95', 1, 1))
     if (!tool || tool.data.length === 0) {
       message.warn(`请进行结节标注后在进行新增`)
       return false
