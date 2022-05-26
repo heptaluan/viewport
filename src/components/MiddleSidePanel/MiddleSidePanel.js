@@ -1,12 +1,18 @@
 import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox } from 'antd'
+import { Checkbox, Tag } from 'antd'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
     props.onCheckChange(index, num)
   }
+
+  const deleteNodeListHandle = (e, item) => {
+    e.stopPropagation()
+    props.showDeleteConfirm(item)
+  }
+
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
@@ -48,6 +54,13 @@ const MiddleSidePanel = props => {
                 <div className="action review-state">
                   <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
                 </div>
+                {item.nodeType === 1 ? (
+                  <div className="del-tips">
+                    <Tag color="#f50" onClick={e => deleteNodeListHandle(e, item)}>
+                      删除
+                    </Tag>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

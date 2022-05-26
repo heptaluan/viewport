@@ -23,6 +23,9 @@ import { getURLParameters } from '../../util/index'
 import { Modal, message, Button } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+
+const { confirm } = Modal
 
 const Viewer = () => {
   const defaultTools = [
@@ -1179,6 +1182,40 @@ const Viewer = () => {
     setModalVisible(false)
   }
 
+  // 删除结节
+  const showDeleteConfirm = item => {
+    confirm({
+      title: `是否删除新增的中心帧为 ${item.num} 的结节？`,
+      icon: <ExclamationCircleOutlined />,
+      content: `结节为 ${item.lung}，${item.lobe}，类型为：${item.type}`,
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        const newNoduleList = noduleList.filter(n => n.noduleNum !== item.noduleNum)
+        setNoduleList([...newNoduleList])
+        saveResults()
+
+        const index = currentImageIdIndex
+
+        setTimeout(() => {
+          fetchDoctorData()
+        }, 200)
+
+        setTimeout(() => {
+          changeActiveImage(index, cornerstoneElement)
+        }, 1000)
+
+        cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
+        cornerstone.updateImage(cornerstoneElement)
+        setModalVisible(false)
+      },
+      onCancel() {
+        console.log('Cancel')
+      },
+    })
+  }
+
   const onStart = (event, uiData) => {
     const { clientWidth, clientHeight } = window.document.documentElement
     const targetRect = draggleRef.current?.getBoundingClientRect()
@@ -1210,6 +1247,7 @@ const Viewer = () => {
             handleHideNodule={handleHideNodule}
             onCheckChange={onCheckChange}
             onCheckAllChange={onCheckAllChange}
+            showDeleteConfirm={showDeleteConfirm}
             showPopover={showPopover}
             indeterminate={indeterminate}
             checkAll={checkAll}
