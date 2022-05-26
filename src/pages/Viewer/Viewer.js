@@ -69,9 +69,9 @@ const Viewer = () => {
       configuration: {
         invert: false,
         preventZoomOutsideImage: false,
-        minScale: .1,
+        minScale: 0.1,
         maxScale: 20.0,
-      }
+      },
     },
   ]
 
@@ -737,7 +737,6 @@ const Viewer = () => {
             review: true,
             lung: resultInfo[i].lungLocation,
             lobe: resultInfo[i].lobeLocation,
-            noduleSize: '',
             featureLabelG: resultInfo[i].featureLabel,
             suggest: resultInfo[i].suggest,
             nodeType: resultInfo[i].nodeType,
@@ -750,6 +749,9 @@ const Viewer = () => {
             maxHu: resultInfo[i].maxHu,
             minHu: resultInfo[i].minHu,
             meanHu: resultInfo[i].meanHu,
+            diameterNorm: resultInfo[i].diameterNorm,
+            noduleSize: resultInfo[i].noduleSize,
+            centerHu: resultInfo[i].centerHu,
           })
 
           index++
@@ -878,6 +880,9 @@ const Viewer = () => {
         maxHu: noduleList[i].maxHu ? noduleList[i].maxHu : '',
         minHu: noduleList[i].minHu ? noduleList[i].minHu : '',
         meanHu: noduleList[i].meanHu ? noduleList[i].meanHu : '',
+        diameterNorm: noduleList[i].diameterNorm ? noduleList[i].diameterNorm : '',
+        noduleSize: noduleList[i].noduleSize ? noduleList[i].noduleSize : '',
+        centerHu: noduleList[i].centerHu ? noduleList[i].centerHu : '',
       })
     }
 
@@ -1081,6 +1086,7 @@ const Viewer = () => {
   }
 
   const handleOk = e => {
+    
     for (let i = 0; i < toolList.length; i++) {
       if (!toolList[i].lung) {
         message.warn(`请选择所有结节的肺属性后在进行新增`)
@@ -1120,6 +1126,7 @@ const Viewer = () => {
         const startY = toolList[0].startY.toFixed(2)
         const endX = toolList[0].endX.toFixed(2)
         const endY = toolList[0].endY.toFixed(2)
+        const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
 
         const newNodeData = {
           active: false,
@@ -1131,7 +1138,6 @@ const Viewer = () => {
           lung: toolList[0].lung,
           noduleName: `nodule_${toolList[0].uuid}`,
           noduleNum: toolList[0].uuid,
-          noduleSize: '',
           num: currentImageIdIndex,
           review: true,
           risk: res.whu_scrynMaligant,
@@ -1146,10 +1152,19 @@ const Viewer = () => {
           scrynMaligant: res.data.scrynMaligant,
           whu_scrynMaligant: res.data.whu_scrynMaligant,
           nodeBox: [startY, startX, endY, endX],
-          diameter: `${Math.abs(endX - startX).toFixed(2)}mm*${Math.abs(endY - startY).toFixed(2)}mm`,
+          diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`,
           maxHu: toolList[0].cachedStats.max,
           minHu: toolList[0].cachedStats.min,
           meanHu: toolList[0].cachedStats.mean.toFixed(2),
+          diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
+          noduleSize: (Math.sqrt(toolList[0].cachedStats.area) / 2).toFixed(2),
+          centerHu: cornerstone.getPixels(
+            cornerstoneElement,
+            (Number(startX) + Number(endX)) / 2,
+            (Number(startY) + Number(endY)) / 2,
+            1,
+            1
+          )[0],
         }
 
         noduleList.push(newNodeData)
@@ -1187,11 +1202,13 @@ const Viewer = () => {
     confirm({
       title: `是否删除中心帧为 ${item.num} 的结节？`,
       icon: <ExclamationCircleOutlined />,
-      content: <div>
-        肺：{item.lung} <br />
-        肺叶：{item.lobe} <br />
-        类型：{item.type} <br />
-      </div>,
+      content: (
+        <div>
+          肺：{item.lung} <br />
+          肺叶：{item.lobe} <br />
+          类型：{item.type} <br />
+        </div>
+      ),
       okText: '删除',
       okType: 'danger',
       cancelText: '取消',
