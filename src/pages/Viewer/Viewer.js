@@ -1185,15 +1185,21 @@ const Viewer = () => {
   // 删除结节
   const showDeleteConfirm = item => {
     confirm({
-      title: `是否删除新增的中心帧为 ${item.num} 的结节？`,
+      title: `是否删除中心帧为 ${item.num} 的结节？`,
       icon: <ExclamationCircleOutlined />,
-      content: `结节为 ${item.lung}，${item.lobe}，类型为：${item.type}`,
+      content: <div>
+        肺：{item.lung} <br />
+        肺叶：{item.lobe} <br />
+        类型：{item.type} <br />
+      </div>,
       okText: '删除',
       okType: 'danger',
       cancelText: '取消',
       onOk() {
-        const newNoduleList = noduleList.filter(n => n.noduleNum !== item.noduleNum)
-        setNoduleList([...newNoduleList])
+        const itemIndex = noduleList.findIndex(n => n.noduleNum === item.noduleNum)
+        noduleList.splice(itemIndex, 1)
+        setNoduleList([...noduleList])
+
         saveResults()
 
         const index = currentImageIdIndex
