@@ -125,4 +125,96 @@ function drawRect(context, element, corner1, corner2, options, coordSystem = 'pi
   })
 }
 
-export { getToolState, getElementToolStateManager, getNewContext, rotatePoint, draw, path, drawRect }
+function getPixelSpacing(image) {
+  const imagePlane = cornerstone.metaData.get('imagePlaneModule', image.imageId)
+
+  if (imagePlane) {
+    return {
+      rowPixelSpacing: imagePlane.rowPixelSpacing || imagePlane.rowImagePixelSpacing,
+      colPixelSpacing: imagePlane.columnPixelSpacing || imagePlane.colImagePixelSpacing,
+    }
+  }
+
+  return {
+    rowPixelSpacing: image.rowPixelSpacing,
+    colPixelSpacing: image.columnPixelSpacing,
+  }
+}
+
+function calculateSUV(image, storedPixelValue, skipRescale = false) {
+  const patientStudyModule = cornerstone.metaData.get('patientStudyModule', image.imageId)
+  const seriesModule = cornerstone.metaData.get('generalSeriesModule', image.imageId)
+
+  if (!patientStudyModule || !seriesModule) {
+    return
+  }
+
+  const modality = seriesModule.modality
+
+  // Image must be PET
+  if (modality !== 'PT') {
+    return
+  }
+
+  const modalityPixelValue = skipRescale ? storedPixelValue : storedPixelValue * image.slope + image.intercept
+
+  const patientWeight = patientStudyModule.patientWeight // In kg
+
+  if (!patientWeight) {
+    return
+  }
+
+  const petSequenceModule = cornerstone.metaData.get('petIsotopeModule', image.imageId)
+
+  if (!petSequenceModule) {
+    return
+  }
+
+  const radiopharmaceuticalInfo = petSequenceModule.radiopharmaceuticalInfo
+  const startTime = radiopharmaceuticalInfo.radiopharmaceuticalStartTime
+  const totalDose = radiopharmaceuticalInfo.radionuclideTotalDose
+  const halfLife = radiopharmaceuticalInfo.radionuclideHalfLife
+  const seriesAcquisitionTime = seriesModule.seriesTime
+
+  if (!startTime || !totalDose || !halfLife || !seriesAcquisitionTime) {
+    return
+  }
+
+  const acquisitionTimeInSeconds =
+    fracToDec(seriesAcquisitionTime.fractionalSeconds || 0) +
+    seriesAcquisitionTime.seconds +
+    seriesAcquisitionTime.minutes * 60 +
+    seriesAcquisitionTime.hours * 60 * 60
+  const injectionStartTimeInSeconds =
+    fracToDec(startTime.fractionalSeconds || 0) + startTime.seconds + startTime.minutes * 60 + startTime.hours * 60 * 60
+  const durationInSeconds = acquisitionTimeInSeconds - injectionStartTimeInSeconds
+  const correctedDose = totalDose * Math.exp((-durationInSeconds * Math.log(2)) / halfLife)
+  const suv = ((modalityPixelValue * patientWeight) / correctedDose) * 1000
+
+  return suv
+}
+
+/**
+ * Returns a decimal value given a fractional value.
+ * @private
+ * @method
+ * @name fracToDec
+ *
+ * @param  {number} fractionalValue The value to convert.
+ * @returns {number}                 The value converted to decimal.
+ */
+function fracToDec(fractionalValue) {
+  return parseFloat(`.${fractionalValue}`)
+}
+
+export {
+  getToolState,
+  getElementToolStateManager,
+  getNewContext,
+  rotatePoint,
+  draw,
+  path,
+  drawRect,
+  getPixelSpacing,
+  calculateSUV,
+}

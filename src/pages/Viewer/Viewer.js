@@ -992,6 +992,7 @@ const Viewer = () => {
   // 提交结节信息
   const handleSubmitNodeDetail = e => {
     const tool = cornerstoneTools.getToolState(cornerstoneElement, 'RectangleRoi')
+    
     // console.log(tool)
     // console.log(cornerstone.getStoredPixels(cornerstoneElement, '265', '95', 1, 1))
     // console.log(cornerstone.getPixels(cornerstoneElement, '265', '95', 1, 1))
