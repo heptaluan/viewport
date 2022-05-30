@@ -7,7 +7,7 @@ import { getURLParameters } from '../util/index'
 // const basicUrl = 'http://139.196.114.118:9999'
 const basicUrl = 'https://ct.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTM1Nzc5OTgsInVzZXJuYW1lIjoiYWRtaW4ifQ.a1wtas8gioRHTlQZaMVVh8xjgqCxnP-lToM55ISLka0'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTM5MzgyNDUsInVzZXJuYW1lIjoiYWRtaW4ifQ.qC5iseUX0ooH0ColVhrmo9eXOiRavAMoI-Fq3_8K0Ws'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
