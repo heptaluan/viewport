@@ -4,8 +4,9 @@ import { getURLParameters } from '../util/index'
 const basicUrl = getURLParameters(window.location.href).url
 axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
-// const basicUrl = 'http://139.196.114.118:9999'
-// const basicUrl = 'https://ct.feipankang.com/api'
+// // const basicUrl = 'http://139.196.114.118:9999'
+// // const basicUrl = 'https://ct.feipankang.com/api'
+// const basicUrl = 'http://192.168.1.204:9999'
 // axios.defaults.headers.common['X-Access-Token'] =
 //   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTQxNzgzNzcsInVzZXJuYW1lIjoiYWRtaW4ifQ.8-lqZ7iqa4JJO-40yXvWJTKn-C6U8vf62KLWNCiuQgQ'
 
