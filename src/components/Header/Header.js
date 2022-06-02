@@ -1,8 +1,17 @@
 import React from 'react'
 import './Header.scss'
 import { Button } from 'antd'
+import { getURLParameters } from '../../util/index'
 
 const Header = props => {
+  
+  const handleDownLoad = () => {
+    const orderId = getURLParameters(window.location.href).orderId
+    const domian = getURLParameters(window.location.href).url
+    const token = getURLParameters(window.location.href).token
+    window.open(`${domian}/tailai-multiomics/multiomics/medicalImage/downloadZip?token=${token}&orderId=${orderId}`, '_blank')
+  }
+
   return (
     <div className="header-box">
       <div className="user-content">
@@ -19,6 +28,7 @@ const Header = props => {
       </div>
       {props.pageType === 'review' ? (
         <div className="export">
+          <Button onClick={handleDownLoad} style={{'marginRight': 10}}>影像下载</Button>
           <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
           </Button>

@@ -208,12 +208,6 @@ const Viewer = () => {
   // 视图元素
   const [cornerstoneElement, setCornerstoneElement] = useState(null)
 
-  useEffect(() => {
-    if (cornerstoneElement) {
-      console.log(1111)
-    }
-  }, [cornerstoneElement])
-
   // 弹出层
   const [showPopover, setShowPopover] = useState({
     index: 0,
