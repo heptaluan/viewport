@@ -1,14 +1,14 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
-const basicUrl = getURLParameters(window.location.href).url
-axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
+// const basicUrl = getURLParameters(window.location.href).url
+// axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
 // // const basicUrl = 'http://139.196.114.118:9999'
-// // const basicUrl = 'https://ct.feipankang.com/api'
+const basicUrl = 'https://ct.feipankang.com/api'
 // const basicUrl = 'http://192.168.1.204:9999'
-// axios.defaults.headers.common['X-Access-Token'] =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTQxNzgzNzcsInVzZXJuYW1lIjoiYWRtaW4ifQ.8-lqZ7iqa4JJO-40yXvWJTKn-C6U8vf62KLWNCiuQgQ'
+axios.defaults.headers.common['X-Access-Token'] =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTQ2MTI3MjgsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.hLc8k53Kl4mrbTwscLUXWgzjH9uz9dsck_ZrljxRnew'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>

@@ -136,6 +136,11 @@ const Toolbar = props => {
       setstate([...state])
     } else if (type === 'Reset') {
       props.handleToolbarClick(type, state[index].checked)
+      state.map(item => {
+        if (item.type === 'vflip' || item.type !== 'vflip')
+          item.checked = false
+      })
+      setstate([...state])
       return
     } else {
       state[index].checked = !state[index].checked
