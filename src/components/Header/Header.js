@@ -1,15 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Header.scss'
-import { Button } from 'antd'
+import { Button, Image } from 'antd'
 import { getURLParameters } from '../../util/index'
+import { getClinicalFiles } from '../../api/api'
 
 const Header = props => {
-  
+  const [visible, setVisible] = useState(false)
+  const [showClinicalFilesButton, setShowClinicalFilesButton] = useState(false)
+  const [fileData, setFileData] = useState(null)
+
   const handleDownLoad = () => {
     const orderId = getURLParameters(window.location.href).orderId
     const domian = getURLParameters(window.location.href).url
     const token = getURLParameters(window.location.href).token
-    window.open(`${domian}/tailai-multiomics/multiomics/medicalImage/downloadZip?token=${token}&orderId=${orderId}`, '_blank')
+    window.open(
+      `${domian}/tailai-multiomics/multiomics/medicalImage/downloadZip?token=${token}&orderId=${orderId}`,
+      '_blank'
+    )
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getClinicalFiles(getURLParameters(window.location.href).orderId)
+      if (result.data.code === 500) {
+        setShowClinicalFilesButton(false)
+      } else if (result.data.code === 200) {
+        setShowClinicalFilesButton(true)
+        setFileData([...result.data.result])
+      }
+    }
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleViewClinicalImages = () => {
+    setVisible(true)
   }
 
   return (
@@ -28,12 +53,36 @@ const Header = props => {
       </div>
       {props.pageType === 'review' ? (
         <div className="export">
-          <Button onClick={handleDownLoad} style={{'marginRight': 10}}>影像下载</Button>
+          {showClinicalFilesButton ? (
+            <Button onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
+              查看临床影像
+            </Button>
+          ) : null}
+          <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
+            影像下载
+          </Button>
           <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
           </Button>
         </div>
       ) : null}
+
+      <div
+        style={{
+          display: 'none',
+        }}
+      >
+        <Image.PreviewGroup
+          preview={{
+            visible,
+            onVisibleChange: vis => setVisible(vis),
+          }}
+        >
+          {fileData?.map((item, index) => {
+            return <Image key={`${index} - ${item.createTime}`} src={item.fileUrl} />
+          })}
+        </Image.PreviewGroup>
+      </div>
     </div>
   )
 }

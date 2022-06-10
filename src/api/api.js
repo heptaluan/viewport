@@ -8,7 +8,7 @@ import { getURLParameters } from '../util/index'
 const basicUrl = 'https://ct.feipankang.com/api'
 // const basicUrl = 'http://192.168.1.204:9999'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTQ2MTI3MjgsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.hLc8k53Kl4mrbTwscLUXWgzjH9uz9dsck_ZrljxRnew'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTQ3OTIyODQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.qt5tDbvr4FuzBZPl8zuSebJH5mDjI607MHveS-4EuDg'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -19,6 +19,10 @@ export const getImageList = resource =>
   axios.get(
     `${basicUrl}/tailai-multiomics/multiomics/medicalImage/instance/list?column=z_position&order=asc&archiveTaskId=${resource}`
   )
+
+// 查看临床影像
+export const getClinicalFiles = orderId =>
+  axios.get(`${basicUrl}/multiomics/productOrder/orderDetail/relateFiles?orderId=${orderId}&type=1`)
 
 // 获取病人信息
 export const getPatientsList = id =>

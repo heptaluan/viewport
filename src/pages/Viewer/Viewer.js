@@ -1152,7 +1152,7 @@ const Viewer = () => {
           minHu: toolList[0].cachedStats.min,
           meanHu: toolList[0].cachedStats.mean.toFixed(2),
           diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
-          noduleSize: (Math.sqrt(toolList[0].cachedStats.area) / 2).toFixed(2),
+          noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
           centerHu: cornerstone.getPixels(
             cornerstoneElement,
             (Number(startX) + Number(endX)) / 2,
