@@ -1225,6 +1225,7 @@ const Viewer = () => {
         }, 1000)
 
         cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
+        cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
         cornerstone.updateImage(cornerstoneElement)
         setModalVisible(false)
       },

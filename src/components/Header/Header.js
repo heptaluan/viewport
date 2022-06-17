@@ -6,8 +6,7 @@ import { getClinicalFiles } from '../../api/api'
 
 const Header = props => {
   const [visible, setVisible] = useState(false)
-  const [showClinicalFilesButton, setShowClinicalFilesButton] = useState(false)
-  const [fileData, setFileData] = useState(null)
+  const [fileData, setFileData] = useState([])
 
   const handleDownLoad = () => {
     const orderId = getURLParameters(window.location.href).orderId
@@ -23,9 +22,8 @@ const Header = props => {
     const fetchData = async () => {
       const result = await getClinicalFiles(getURLParameters(window.location.href).orderId)
       if (result.data.code === 500) {
-        setShowClinicalFilesButton(false)
+        setFileData([])
       } else if (result.data.code === 200) {
-        setShowClinicalFilesButton(true)
         setFileData([...result.data.result])
       }
     }
@@ -53,11 +51,9 @@ const Header = props => {
       </div>
       {props.pageType === 'review' ? (
         <div className="export">
-          {showClinicalFilesButton ? (
-            <Button onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
-              查看临床影像
-            </Button>
-          ) : null}
+          <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
+            { fileData.length === 0 ? '暂无临床影像' : '查看临床影像' }
+          </Button>
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
             影像下载
           </Button>
