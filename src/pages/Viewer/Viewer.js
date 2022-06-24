@@ -407,22 +407,35 @@ const Viewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
       checkItme.suggest = e.target.value
+      checkItme.review = true
       setNoduleList([...noduleList])
     }
   }
 
-  // 建议框失去焦点后保存数据
+  // 备注框失去焦点后保存数据
   const handleInputBlur = e => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
       checkItme.suggest = e.target.value
+      checkItme.review = true
       setNoduleList([...noduleList])
     }
-
-    console.log(noduleList)
-
     // 提交结节数据
     saveResults()
+  }
+
+  // 更新恶性风险
+  const handleUpdateRisk = (val, type) => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme) {
+      checkItme.scrynMaligant = val
+      checkItme.review = true
+      setNoduleList([...noduleList])
+    }
+    // 提交结节数据
+    if (type !== 'inputChange') {
+      saveResults()
+    }
   }
 
   // 列表右侧操作菜单
@@ -676,7 +689,8 @@ const Viewer = () => {
           num: res[i].coord.coordZ,
           diameter: res[i].diameter,
           type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
-          risk: (res[i].scrynMaligant * 100).toFixed(0) + '%',
+          risk: (res[i].scrynMaligant * 100).toFixed(0),
+          scrynMaligant: resultInfo[i] && resultInfo[i].scrynMaligant ? resultInfo[i].scrynMaligant : (res[i].scrynMaligant * 100).toFixed(0),
           soak: '',
           info: '',
           checked: false,
@@ -720,7 +734,8 @@ const Viewer = () => {
             num: resultInfo[i].imageIndex,
             size: '',
             type: resultInfo[i].featureLabel,
-            risk: '',
+            risk: resultInfo[i].risk,
+            scrynMaligant: resultInfo[i].scrynMaligant,
             soak: '',
             info: '',
             checked: false,
@@ -736,7 +751,6 @@ const Viewer = () => {
             nodeType: resultInfo[i].nodeType,
             imageUrl1: resultInfo[i].imageUrl1,
             imageUrl2: resultInfo[i].imageUrl2,
-            scrynMaligant: resultInfo[i].scrynMaligant,
             whu_scrynMaligant: resultInfo[i].whu_scrynMaligant,
             nodeBox: resultInfo[i].nodeBox,
             diameter: resultInfo[i].diameter,
@@ -820,6 +834,7 @@ const Viewer = () => {
 
   // 弹窗
   const handleShowModal = () => {
+    console.log(formatPostData())
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {
@@ -867,7 +882,6 @@ const Viewer = () => {
         noduleNum: noduleList[i].noduleNum ? noduleList[i].noduleNum : '',
         imageUrl1: noduleList[i].imageUrl1 ? noduleList[i].imageUrl1 : '',
         imageUrl2: noduleList[i].imageUrl2 ? noduleList[i].imageUrl2 : '',
-        scrynMaligant: noduleList[i].scrynMaligant ? noduleList[i].scrynMaligant : '',
         whu_scrynMaligant: noduleList[i].whu_scrynMaligant ? noduleList[i].whu_scrynMaligant : '',
         nodeBox: noduleList[i].nodeBox ? noduleList[i].nodeBox : '',
         diameter: noduleList[i].diameter ? noduleList[i].diameter : '',
@@ -877,6 +891,8 @@ const Viewer = () => {
         diameterNorm: noduleList[i].diameterNorm ? noduleList[i].diameterNorm : '',
         noduleSize: noduleList[i].noduleSize ? noduleList[i].noduleSize : '',
         centerHu: noduleList[i].centerHu ? noduleList[i].centerHu : '',
+        risk: noduleList[i].risk ? noduleList[i].risk : '',
+        scrynMaligant: noduleList[i].scrynMaligant ? noduleList[i].scrynMaligant : '',
       })
     }
 
@@ -890,7 +906,7 @@ const Viewer = () => {
     const postData = formatPostData()
     saveDnResult(JSON.stringify(postData)).then(res => {
       if (res.data.code === 200) {
-        message.success(`结节结果保存成功`)
+        message.success(`结节信息保存成功`)
       } else {
         message.error(`结节结果保存失败，请重新尝试`)
       }
@@ -1135,7 +1151,7 @@ const Viewer = () => {
           noduleNum: toolList[0].uuid,
           num: currentImageIdIndex,
           review: true,
-          risk: res.whu_scrynMaligant,
+          risk: res.data.whu_scrynMaligant,
           size: '',
           soak: '',
           state: true,
@@ -1164,12 +1180,14 @@ const Viewer = () => {
 
         noduleList.push(newNodeData)
         setNoduleList([...noduleList])
+        
         saveResults()
 
         const index = currentImageIdIndex
 
         setTimeout(() => {
           fetchDoctorData()
+          setNoduleInfo(null)
         }, 200)
 
         setTimeout(() => {
@@ -1211,6 +1229,7 @@ const Viewer = () => {
         const itemIndex = noduleList.findIndex(n => n.noduleNum === item.noduleNum)
         noduleList.splice(itemIndex, 1)
         setNoduleList([...noduleList])
+        setNoduleInfo(null)
 
         saveResults()
 
@@ -1272,6 +1291,7 @@ const Viewer = () => {
             checkAll={checkAll}
             noduleList={noduleList}
             noduleInfo={noduleInfo}
+            imagesConfig={imagesConfig}
           />
         </div>
         <ViewerMain
@@ -1291,6 +1311,7 @@ const Viewer = () => {
         handleInputBlur={handleInputBlur}
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
+        handleUpdateRisk={handleUpdateRisk}
         pageState={pageState}
       />
       {showMark ? (

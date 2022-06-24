@@ -1,10 +1,85 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
-import { Radio, Select, Button, Input } from 'antd'
+import { Radio, Select, Button, Input, InputNumber } from 'antd'
 
 const { Option } = Select
 
 const NoduleInfo = props => {
+  const [btnGroup, setBtnGroup] = useState([
+    {
+      id: 0,
+      val: 0,
+      checked: true,
+    },
+    {
+      id: 1,
+      val: 1,
+      checked: false,
+    },
+    {
+      id: 2,
+      val: 2,
+      checked: false,
+    },
+    {
+      id: 3,
+      val: 3,
+      checked: false,
+    },
+    {
+      id: 4,
+      val: 4,
+      checked: false,
+    },
+    {
+      id: 5,
+      val: 5,
+      checked: false,
+    },
+    {
+      id: 6,
+      val: 6,
+      checked: false,
+    },
+    {
+      id: 7,
+      val: 7,
+      checked: false,
+    },
+    {
+      id: 8,
+      val: 8,
+      checked: false,
+    },
+    {
+      id: 9,
+      val: 9,
+      checked: false,
+    },
+  ])
+
+  const [riskData, setRiskData] = useState(0)
+
+  useEffect(() => {
+    if (props.noduleInfo) {
+      setRiskData(parseInt(props.noduleInfo.scrynMaligant))
+    }
+  }, [props.noduleInfo])
+
+  useEffect(() => {
+    if (props.noduleInfo?.scrynMaligant) {
+      let num = 0
+      const risk = parseInt(props.noduleInfo.scrynMaligant)
+      if (risk < 10) {
+        num = 0
+      } else {
+        num = parseInt(risk / 10)
+      }
+      handleSetButtonActive(num)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.noduleInfo])
+
   const onLungChange = e => {
     props.checkNoduleList(e.target.value, 'lung')
     if (e.target.value === '左肺' && props.noduleInfo.lobe === '中叶') {
@@ -18,6 +93,34 @@ const NoduleInfo = props => {
 
   const handleSelectChange = val => {
     props.checkNoduleList(val, 'type')
+  }
+
+  // 风险值输入框事件
+  const handleRishInputChange = val => {
+    handleSetButtonActive(parseInt(Number(val / 10)))
+    setRiskData(val)
+    props.handleUpdateRisk(val, 'inputChange')
+  }
+
+  const handleRishInputBlur = e => {
+    handleSetButtonActive(parseInt(Number(e.target.value / 10)))
+    props.handleUpdateRisk(Number(e.target.value))
+  }
+
+  // 设置当中按钮选中
+  const handleSetButtonActive = num => {
+    if (num > 99 || num < 0) return false 
+    btnGroup.map(item => (item.checked = false))
+    const item = btnGroup.find(item => item.id === num)
+    item.checked = true
+    setBtnGroup([...btnGroup])
+  }
+
+  const handleRishButtonClick = val => {
+    handleSetButtonActive(val)
+    const curRisk = val * 10 + Math.floor(Math.random() * 10)
+    setRiskData(curRisk)
+    props.handleUpdateRisk(Number(curRisk))
   }
 
   return (
@@ -49,7 +152,7 @@ const NoduleInfo = props => {
               disabled={props.pageState === 'admin'}
               size="small"
               value={props.noduleInfo.type}
-              style={{ width: 150, fontSize: 13 }}
+              style={{ width: 185, fontSize: 13 }}
               onChange={handleSelectChange}
             >
               <Option value="肺内实性">肺内实性</Option>
@@ -61,18 +164,7 @@ const NoduleInfo = props => {
               <Option value="其他">其他</Option>
             </Select>
           </div>
-          <div className="list">
-            <em>建议：</em>
-            <Input
-              disabled={props.pageState === 'admin'}
-              placeholder="这里输入结节备注信息"
-              size="small"
-              style={{ width: 150, height: 24, marginTop: 2, fontSize: 13 }}
-              onChange={props.handleTextareaOnChange}
-              onBlur={props.handleInputBlur}
-              value={props.noduleInfo?.suggest}
-            />
-          </div>
+          
           {props.noduleInfo.diameter ? (
             <div className="list">
               <em>大小：</em>
@@ -85,6 +177,50 @@ const NoduleInfo = props => {
               {props.noduleInfo.noduleSize} mm³
             </div>
           ) : null}
+
+          <div className="list">
+            <em>恶性风险：</em>
+            {props.noduleInfo.risk ? `${props.noduleInfo.risk}%` : '-'}
+            <InputNumber
+              addonAfter="%"
+              disabled={props.pageState === 'admin'}
+              placeholder="请输入风险值"
+              size="small"
+              style={{ width: 110, height: 24, marginTop: 2, marginLeft: 18, fontSize: 13 }}
+              onChange={val => handleRishInputChange(val)}
+              onBlur={e => handleRishInputBlur(e)}
+              value={riskData}
+              min={1}
+              max={99}
+            />
+          </div>
+
+          <div className="list list-btn-box">
+            {btnGroup.map((item, index) => (
+              <div className="list-btn-group" key={item.id}>
+                <Button
+                  type={item.checked === true ? 'primary' : null}
+                  size="small"
+                  onClick={e => handleRishButtonClick(item.val)}
+                >
+                  {item.val}
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <div className="list">
+            <em>备注：</em>
+            <Input
+              disabled={props.pageState === 'admin'}
+              placeholder="请输入结节备注信息"
+              size="small"
+              style={{ width: 185, height: 24, marginTop: 2, fontSize: 13 }}
+              onChange={props.handleTextareaOnChange}
+              onBlur={props.handleInputBlur}
+              value={props.noduleInfo?.suggest}
+            />
+          </div>
 
           {/* <div className="list">
             <em>形态类型：</em>

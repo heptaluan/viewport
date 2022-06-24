@@ -28,9 +28,11 @@ const MiddleSidePanel = props => {
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
             </Checkbox>
-            <div className="size">肺</div>
-            <div className="risk">肺叶</div>
+            <div className="soak">肺</div>
+            <div className="soak">肺叶</div>
             <div className="type">类型</div>
+            <div className="risk">风险</div>
+            {/* <div className="suggest">建议</div> */}
             <div className="soak">结节</div>
             <div className="action">状态</div>
           </div>
@@ -43,11 +45,15 @@ const MiddleSidePanel = props => {
               >
                 {/* <div className="icon">{item.id}</div> */}
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
-                  <div className="num">{item.num}</div>
+                  <div className="num">{props.imagesConfig.length - item.num}</div>
                 </Checkbox>
-                <div className="size">{item.lung}</div>
-                <div className="risk">{item.lobe}</div>
+                <div className="soak">{item.lung}</div>
+                <div className="soak">{item.lobe}</div>
                 <div className="type">{item.type}</div>
+                <div className={`risk ${item.risk && (Number(item.scrynMaligant) !== Number(item.risk)) ? 'edit' : ''}`}>
+                  {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
+                </div>
+                {/* <div className="suggest">{item.suggest}</div> */}
                 <div className="soak">
                   <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
@@ -81,7 +87,7 @@ const MiddleSidePanel = props => {
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。{/* 结节恶性风险为：<span>{item.risk}</span> */}
+                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk}</span> %。
                   </div>
                 ) : null
               })}

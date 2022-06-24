@@ -43,17 +43,12 @@
           justify-content: center;
         }
 
-        .icon,
-        .risk,
-        .soak,
-        .action {
-          flex: 1;
+        .num, .type {
+          flex: 2;
         }
 
-        .num,
-        .size,
-        .type {
-          flex: 2;
+        .risk, .suggest, .soak, .action {
+          flex: 1;
         }
       }
 
@@ -94,17 +89,23 @@
           }
         }
 
-        .icon,
-        .risk,
-        .soak,
-        .action {
+        .num, .type {
+          flex: 2;
+        }
+
+        .risk, .suggest, .soak, .action {
           flex: 1;
         }
 
-        .num,
-        .size,
-        .type {
-          flex: 2;
+        .risk.edit {
+          color: #ff4d4f;
+        }
+
+        .suggest {
+          max-width: 47px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: normal;
         }
 
         .review-state {
