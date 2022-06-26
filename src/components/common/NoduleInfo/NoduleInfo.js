@@ -199,6 +199,7 @@ const NoduleInfo = props => {
             {btnGroup.map((item, index) => (
               <div className="list-btn-group" key={item.id}>
                 <Button
+                  disabled={props.pageState === 'admin'}
                   type={item.checked === true ? 'primary' : null}
                   size="small"
                   onClick={e => handleRishButtonClick(item.val)}
