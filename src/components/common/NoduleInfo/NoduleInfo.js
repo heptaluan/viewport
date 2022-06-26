@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
 import { Radio, Select, Button, Input, InputNumber } from 'antd'
 
+const { TextArea } = Input
+
 const { Option } = Select
 
 const NoduleInfo = props => {
@@ -210,13 +212,14 @@ const NoduleInfo = props => {
             ))}
           </div>
 
-          <div className="list">
+          <div className="list" style={{marginBottom: 8, height: 'auto'}}>
             <em>备注：</em>
-            <Input
+            <TextArea
+              rows={4}
               disabled={props.pageState === 'admin'}
               placeholder="请输入结节备注信息"
               size="small"
-              style={{ width: 185, height: 24, marginTop: 2, fontSize: 13 }}
+              style={{ width: 185, marginTop: 2, fontSize: 13, resize: 'none', minHeight: 85 }}
               onChange={props.handleTextareaOnChange}
               onBlur={props.handleInputBlur}
               value={props.noduleInfo?.suggest}
@@ -237,7 +240,7 @@ const NoduleInfo = props => {
               <Button
                 disabled={props.pageState === 'admin'}
                 type={props.noduleInfo.state === false ? 'primary' : null}
-                style={{ marginRight: '10px' }}
+                style={{ marginRight: '15px' }}
                 size="small"
                 onClick={e => props.updateNoduleList(false)}
               >
