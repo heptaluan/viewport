@@ -137,8 +137,7 @@ const Toolbar = props => {
     } else if (type === 'Reset') {
       props.handleToolbarClick(type, state[index].checked)
       state.map(item => {
-        if (item.type === 'vflip' || item.type === 'hflip')
-          item.checked = false
+        if (item.type === 'vflip' || item.type === 'hflip') item.checked = false
       })
       setstate([...state])
       return
@@ -181,6 +180,10 @@ const Toolbar = props => {
         <div className="submit-btn">
           <Button onClick={e => props.handleSubmitNodeDetail(e)} size="small">
             新增结节
+          </Button>
+
+          <Button onClick={e => props.handleShowMarker(e)} size="small">
+            { props.showMarker ? '隐藏标注' : '显示标注'}
           </Button>
         </div>
       ) : null}
