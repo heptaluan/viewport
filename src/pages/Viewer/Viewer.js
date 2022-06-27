@@ -438,6 +438,20 @@ const Viewer = () => {
     }
   }
 
+  // 更新体积
+  const handleUpdateNoduleSize = (val, type) => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme) {
+      checkItme.noduleSize = val
+      checkItme.review = true
+      setNoduleList([...noduleList])
+    }
+    // 提交结节数据
+    if (type !== 'inputChange') {
+      saveResults()
+    }
+  }
+
   // 列表右侧操作菜单
   const handleVisibleChange = (visible, index) => {
     if (visible) {
@@ -896,6 +910,8 @@ const Viewer = () => {
       })
     }
 
+    console.log(postData.resultInfo)
+
     postData.resultInfo = JSON.stringify(postData.resultInfo)
 
     return postData
@@ -1312,6 +1328,7 @@ const Viewer = () => {
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
         handleUpdateRisk={handleUpdateRisk}
+        handleUpdateNoduleSize={handleUpdateNoduleSize}
         pageState={pageState}
       />
       {showMark ? (

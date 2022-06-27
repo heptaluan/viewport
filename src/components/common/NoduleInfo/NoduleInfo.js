@@ -60,11 +60,15 @@ const NoduleInfo = props => {
     },
   ])
 
+  console.log(props)
+
   const [riskData, setRiskData] = useState(0)
+  const [noduleSize, setNoduleSize] = useState(0)
 
   useEffect(() => {
     if (props.noduleInfo) {
       setRiskData(parseInt(props.noduleInfo.scrynMaligant))
+      setNoduleSize(parseInt(props.noduleInfo.noduleSize))
     }
   }, [props.noduleInfo])
 
@@ -95,6 +99,16 @@ const NoduleInfo = props => {
 
   const handleSelectChange = val => {
     props.checkNoduleList(val, 'type')
+  }
+
+  // 体积输入框事件
+  const handleNoduleSizeInputChange = val => {
+    setNoduleSize(val)
+    props.handleUpdateNoduleSize(val, 'inputChange')
+  }
+
+  const handleNoduleSizeInputBlur = e => {
+    props.handleUpdateNoduleSize(Number(e.target.value))
   }
 
   // 风险值输入框事件
@@ -174,9 +188,19 @@ const NoduleInfo = props => {
             </div>
           ) : null}
           {props.noduleInfo.noduleSize ? (
-            <div className="list">
+            <div className="list" style={{marginBottom: 8}}>
               <em>体积：</em>
-              {props.noduleInfo.noduleSize} mm³
+              <InputNumber
+                addonAfter="mm³"
+                disabled={props.pageState === 'admin'}
+                placeholder="请输入风险值"
+                size="small"
+                style={{ width: 140, height: 24, marginTop: 2, marginLeft: 18, fontSize: 13 }}
+                onChange={val => handleNoduleSizeInputChange(val)}
+                onBlur={e => handleNoduleSizeInputBlur(e)}
+                value={noduleSize}
+                min={1}
+              />
             </div>
           ) : null}
 
