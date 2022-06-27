@@ -8,6 +8,7 @@ import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
+import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import {
   saveDnResult,
@@ -240,7 +241,6 @@ const Viewer = () => {
     const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
     const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
 
-    console.log(nodeRef.current.showMarker)
     if (nodeRef.current.showMarker === false) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       cornerstone.updateImage(cornerstoneElement)
@@ -509,6 +509,7 @@ const Viewer = () => {
       case 'Angle':
       case 'Length':
       case 'MarkNodule':
+      case 'MeasureRect':
       case 'Zoom':
       case 'Pan':
         changeToolActive(checked, type)
@@ -606,6 +607,8 @@ const Viewer = () => {
     const cornerstoneElement = elementEnabledEvt.detail.element
     setCornerstoneElement(cornerstoneElement)
     cornerstoneTools.addTool(MarkNoduleTool)
+    cornerstoneTools.addTool(MeasureRectTool)
+    
     let flag = true
 
     cornerstoneElement.addEventListener('cornerstonenewimage', newImage => {

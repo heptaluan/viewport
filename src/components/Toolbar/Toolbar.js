@@ -118,13 +118,13 @@ const toolbarList = [
     type: 'RectangleRoi',
     checked: false,
   },
-  // {
-  //   id: 13,
-  //   text: '标记',
-  //   icon: <IconFont style={{ fontSize: '20px' }} type="icon-shizi-" />,
-  //   type: 'MarkNodule',
-  //   checked: false,
-  // },
+  {
+    id: 18,
+    text: '测量矩形',
+    icon: <IconFont style={{ fontSize: '24px' }} type="icon-juxing" />,
+    type: 'MeasureRect',
+    checked: false,
+  },
 ]
 
 const Toolbar = props => {
