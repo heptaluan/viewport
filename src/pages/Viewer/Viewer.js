@@ -32,7 +32,7 @@ const Viewer = () => {
     {
       name: 'Wwwc',
       mode: 'active',
-      modeOptions: { mouseButtonMask: 1 },
+      modeOptions: { mouseButtonMask: 2 },
     },
     { name: 'StackScrollMouseWheel', mode: 'active' },
     {
@@ -105,6 +105,9 @@ const Viewer = () => {
   // 当前 Dicom 文件
   const [currentDicomFileUrl, setCurrentDicomFileUrl] = useState('')
 
+  // 隐藏标注
+  const [showMarker, setShowMarker] = useState(true)
+
   // 临时变量
   const nodeRef = useRef()
 
@@ -112,8 +115,9 @@ const Viewer = () => {
     nodeRef.current = {
       noduleList,
       noduleMapList,
+      showMarker
     }
-  }, [noduleList, noduleMapList])
+  }, [noduleList, noduleMapList, showMarker])
 
   // 初始化结节信息
   useEffect(() => {
@@ -214,6 +218,21 @@ const Viewer = () => {
     visible: false,
   })
 
+  // 是否隐藏标注
+  const handleShowMarker = (e) => {
+    const flag = !showMarker
+    setShowMarker(flag)
+    
+    if (flag) {
+      setTimeout(() => {
+        addNodeTool(cornerstoneElement, currentImageIdIndex)
+      }, 200)
+    } else {
+      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
+      cornerstone.updateImage(cornerstoneElement)
+    }
+  }
+
   // ===========================================================
 
   // 添加结节标注
@@ -221,7 +240,13 @@ const Viewer = () => {
     const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
     const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
 
-    if (item.length >= 1) {
+    console.log(nodeRef.current.showMarker)
+    if (nodeRef.current.showMarker === false) {
+      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
+      cornerstone.updateImage(cornerstoneElement)
+    }
+
+    if (item.length >= 1 && nodeRef.current.showMarker) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       if (checkItme) {
         const checkNode = item.filter(item => item.noduleName === checkItme.noduleName)
@@ -1298,11 +1323,13 @@ const Viewer = () => {
           handleSubmitNodeDetail={handleSubmitNodeDetail}
           handleToolbarClick={handleToolbarClick}
           handleElementEnabledEvt={handleElementEnabledEvt}
+          handleShowMarker={handleShowMarker}
           toolsConfig={toolsConfig}
           imagesConfig={imagesConfig}
           noduleList={noduleList}
           pageType={pageType}
           imageIdIndex={imageIdIndex}
+          showMarker={showMarker}
         />
       </div>
       <NoduleInfo
