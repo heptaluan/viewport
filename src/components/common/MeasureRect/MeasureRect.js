@@ -395,6 +395,10 @@ export default class MeasureRectTool extends BaseAnnotationTool {
 
         data.unit = _getUnit(modality, this.configuration.showHounsfieldUnits);
 
+        console.log(data.handles)
+        console.log(colPixelSpacing)
+        console.log(rowPixelSpacing)
+
         drawLinkedTextBox(
           context,
           element,
