@@ -116,7 +116,7 @@ const Viewer = () => {
     nodeRef.current = {
       noduleList,
       noduleMapList,
-      showMarker
+      showMarker,
     }
   }, [noduleList, noduleMapList, showMarker])
 
@@ -220,10 +220,10 @@ const Viewer = () => {
   })
 
   // 是否隐藏标注
-  const handleShowMarker = (e) => {
+  const handleShowMarker = e => {
     const flag = !showMarker
     setShowMarker(flag)
-    
+
     if (flag) {
       setTimeout(() => {
         addNodeTool(cornerstoneElement, currentImageIdIndex)
@@ -608,7 +608,7 @@ const Viewer = () => {
     setCornerstoneElement(cornerstoneElement)
     cornerstoneTools.addTool(MarkNoduleTool)
     cornerstoneTools.addTool(MeasureRectTool)
-    
+
     let flag = true
 
     cornerstoneElement.addEventListener('cornerstonenewimage', newImage => {
@@ -715,10 +715,12 @@ const Viewer = () => {
         nodulesList.push({
           id: index,
           num: res[i].coord.coordZ,
-          diameter: res[i].diameter,
           type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
           risk: (res[i].scrynMaligant * 100).toFixed(0),
-          scrynMaligant: resultInfo[i] && resultInfo[i].scrynMaligant ? resultInfo[i].scrynMaligant : (res[i].scrynMaligant * 100).toFixed(0),
+          scrynMaligant:
+            resultInfo[i] && resultInfo[i].scrynMaligant
+              ? resultInfo[i].scrynMaligant
+              : (res[i].scrynMaligant * 100).toFixed(0),
           soak: '',
           info: '',
           checked: false,
@@ -734,7 +736,10 @@ const Viewer = () => {
           review: resultInfo[i] ? resultInfo[i].edit : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
+          diameter: res[i].diameter,
           noduleSize: res[i].noduleSize,
+          newDiameter: resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
+          newNoduleSize: resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
           featureLabelG: res[i].featureLabelG,
           suggest: resultInfo[i] ? resultInfo[i].suggest : '',
         })
@@ -781,13 +786,15 @@ const Viewer = () => {
             imageUrl2: resultInfo[i].imageUrl2,
             whu_scrynMaligant: resultInfo[i].whu_scrynMaligant,
             nodeBox: resultInfo[i].nodeBox,
-            diameter: resultInfo[i].diameter,
             maxHu: resultInfo[i].maxHu,
             minHu: resultInfo[i].minHu,
             meanHu: resultInfo[i].meanHu,
             diameterNorm: resultInfo[i].diameterNorm,
-            noduleSize: resultInfo[i].noduleSize,
             centerHu: resultInfo[i].centerHu,
+            diameter: resultInfo[i].diameter,
+            noduleSize: resultInfo[i].noduleSize,
+            newDiameter: resultInfo[i].newDiameter,
+            newNoduleSize: resultInfo[i].newNoduleSize,
           })
 
           index++
@@ -923,6 +930,8 @@ const Viewer = () => {
         centerHu: noduleList[i].centerHu ? noduleList[i].centerHu : '',
         risk: noduleList[i].risk ? noduleList[i].risk : '',
         scrynMaligant: noduleList[i].scrynMaligant ? noduleList[i].scrynMaligant : '',
+        newDiameter: noduleList[i].newDiameter ? noduleList[i].newDiameter : '',
+        newNoduleSize: noduleList[i].newNoduleSize ? noduleList[i].newNoduleSize : '',
       })
     }
 
@@ -1026,13 +1035,14 @@ const Viewer = () => {
   const [modalDisabled, setModalDisabled] = useState(true)
   const [modalBounds, setModalBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 })
   const [toolList, setToolList] = useState([])
+  const [adjustModalVisible, setAdjustModalVisible] = useState(false)
 
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   // 提交结节信息
   const handleSubmitNodeDetail = e => {
     const tool = cornerstoneTools.getToolState(cornerstoneElement, 'RectangleRoi')
-    
+
     // console.log(tool)
     // console.log(cornerstone.getStoredPixels(cornerstoneElement, '265', '95', 1, 1))
     // console.log(cornerstone.getPixels(cornerstoneElement, '265', '95', 1, 1))
@@ -1127,7 +1137,6 @@ const Viewer = () => {
   }
 
   const handleOk = e => {
-    
     for (let i = 0; i < toolList.length; i++) {
       if (!toolList[i].lung) {
         message.warn(`请选择所有结节的肺属性后在进行新增`)
@@ -1193,7 +1202,9 @@ const Viewer = () => {
           scrynMaligant: res.data.scrynMaligant,
           whu_scrynMaligant: res.data.whu_scrynMaligant,
           nodeBox: [startY, startX, endY, endX],
-          diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`,
+          diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
+            Math.abs(endY - startY) * rowPixelSpacing
+          ).toFixed(2)}mm`,
           maxHu: toolList[0].cachedStats.max,
           minHu: toolList[0].cachedStats.min,
           meanHu: toolList[0].cachedStats.mean.toFixed(2),
@@ -1210,7 +1221,7 @@ const Viewer = () => {
 
         noduleList.push(newNodeData)
         setNoduleList([...noduleList])
-        
+
         saveResults()
 
         const index = currentImageIdIndex
@@ -1298,6 +1309,44 @@ const Viewer = () => {
     })
   }
 
+  // 调整结节大小
+  const handleShowAdjustModal = () => {
+    const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
+
+    if (!tool || tool.data.length === 0) {
+      message.warn(`请使用面积测量工具进行标注后在进行调整`)
+      return false
+    }
+
+    if (tool.data.length > 1) {
+      message.warn(`暂时只支持单个结节的调整，请删减后在进行调整`)
+      return false
+    }
+
+    setAdjustModalVisible(true)
+  }
+
+  const handleAdjustNodeOk = () => {
+    const checkItme = noduleList.find(item => item.checked === true)
+
+    if (checkItme) {
+      const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
+      const data = tool.data[0].cachedStats
+      const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
+      const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
+      checkItme.newDiameter = `${data.width.toFixed(2)}mm*${data.height.toFixed(2)}mm`
+      checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
+      setNoduleList([...noduleList])
+    }
+
+    saveResults()
+    setAdjustModalVisible(false)
+  }
+
+  const handleAdjustNodeCancel = () => {
+    setAdjustModalVisible(false)
+  }
+
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
       {/* {taskLength !== imagesConfig.length ? (
@@ -1344,6 +1393,7 @@ const Viewer = () => {
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
         handleUpdateRisk={handleUpdateRisk}
+        handleShowAdjustModal={handleShowAdjustModal}
         pageState={pageState}
       />
       {showMark ? (
@@ -1361,6 +1411,19 @@ const Viewer = () => {
         maskStyle={{ backgroundColor: 'transparent' }}
       >
         <p>是否提交检阅结果</p>
+      </Modal>
+
+      <Modal
+        title="结节大小与体积调整"
+        maskClosable={false}
+        visible={adjustModalVisible}
+        onOk={handleAdjustNodeOk}
+        onCancel={handleAdjustNodeCancel}
+        okText="确认"
+        cancelText="取消"
+        maskStyle={{ backgroundColor: 'transparent' }}
+      >
+        <p>是否使用图中测量的数据自动调整结节的大小与体积</p>
       </Modal>
 
       {pageType === 'review' ? (

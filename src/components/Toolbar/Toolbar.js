@@ -120,8 +120,8 @@ const toolbarList = [
   },
   {
     id: 18,
-    text: '测量矩形',
-    icon: <IconFont style={{ fontSize: '24px' }} type="icon-juxing" />,
+    text: '面积测量',
+    icon: <IconFont style={{ fontSize: '16px' }} type="icon-celiang" />,
     type: 'MeasureRect',
     checked: false,
   },

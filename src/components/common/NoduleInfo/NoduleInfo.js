@@ -79,7 +79,7 @@ const NoduleInfo = props => {
       }
       handleSetButtonActive(num)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.noduleInfo])
 
   const onLungChange = e => {
@@ -111,7 +111,7 @@ const NoduleInfo = props => {
 
   // 设置当中按钮选中
   const handleSetButtonActive = num => {
-    if (num > 99 || num < 0) return false 
+    if (num > 99 || num < 0) return false
     btnGroup.map(item => (item.checked = false))
     const item = btnGroup.find(item => item.id === num)
     item.checked = true
@@ -166,19 +166,38 @@ const NoduleInfo = props => {
               <Option value="其他">其他</Option>
             </Select>
           </div>
-          
-          {props.noduleInfo.diameter ? (
+
+          <div className="list">
+            <em>大小：</em>
+            {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
+          </div>
+          {props.noduleInfo.newDiameter ? (
             <div className="list">
-              <em>大小：</em>
-              {props.noduleInfo.diameter}
+              <em>大小调整后：</em>
+              <span style={{ color: '#ff4d4f' }}>
+                {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
+              </span>
             </div>
           ) : null}
-          {props.noduleInfo.noduleSize ? (
+
+          <div className="list">
+            <em>体积：</em>
+            {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
+          </div>
+          {props.noduleInfo.newNoduleSize ? (
             <div className="list">
-              <em>体积：</em>
-              {props.noduleInfo.noduleSize} mm³
+              <em>体积调整后：</em>
+              <span style={{ color: '#ff4d4f' }}>
+                {props.noduleInfo.newNoduleSize ? props.noduleInfo.newNoduleSize : '-'} mm³
+              </span>
             </div>
           ) : null}
+
+          <div className="list adjust">
+            <Button disabled={props.pageState === 'admin'} size="small" onClick={props.handleShowAdjustModal}>
+              调整
+            </Button>
+          </div>
 
           <div className="list">
             <em>恶性风险：</em>
@@ -212,14 +231,14 @@ const NoduleInfo = props => {
             ))}
           </div>
 
-          <div className="list" style={{marginBottom: 8, height: 'auto'}}>
+          <div className="list" style={{ marginBottom: 8, height: 'auto' }}>
             <em>备注：</em>
             <TextArea
               rows={4}
               disabled={props.pageState === 'admin'}
               placeholder="请输入结节备注信息"
               size="small"
-              style={{ width: 185, marginTop: 2, fontSize: 13, resize: 'none', minHeight: 85 }}
+              style={{ width: 205, marginTop: 2, fontSize: 13, resize: 'none', minHeight: 85 }}
               onChange={props.handleTextareaOnChange}
               onBlur={props.handleInputBlur}
               value={props.noduleInfo?.suggest}
