@@ -12,188 +12,12 @@ import {
   calculateSUV,
   numbersWithCommas,
   drawLinkedTextBox,
+  throttle,
 } from './util'
 import { rectangleRoiCursor } from './cursors/index.js'
 import toolStyle from './toolStyle'
 
 const BaseAnnotationTool = csTools.importInternal('base/BaseAnnotationTool')
-
-const throttle = (func, wait, options) => {
-  let leading = true
-  let trailing = true
-
-  if (typeof func !== 'function') {
-    throw new TypeError('Expected a function')
-  }
-  if (isObject(options)) {
-    leading = 'leading' in options ? Boolean(options.leading) : leading
-    trailing = 'trailing' in options ? Boolean(options.trailing) : trailing
-  }
-
-  return debounce(func, wait, {
-    leading,
-    trailing,
-    maxWait: wait,
-  })
-}
-
-const isObject = value => {
-  const type = typeof value
-
-  return value !== null && (type === 'object' || type === 'function')
-}
-
-const debounce = (func, wait, options) => {
-  let lastArgs, lastThis, maxWait, result, timerId, lastCallTime
-
-  let lastInvokeTime = 0
-  let leading = false
-  let maxing = false
-  let trailing = true
-
-  // Bypass `requestAnimationFrame` by explicitly setting `wait=0`.
-  const useRAF = !wait && wait !== 0 && typeof window.requestAnimationFrame === 'function'
-
-  if (typeof func !== 'function') {
-    throw new TypeError('Expected a function')
-  }
-  wait = Number(wait) || 0
-  if (isObject(options)) {
-    leading = Boolean(options.leading)
-    maxing = 'maxWait' in options
-    maxWait = maxing ? Math.max(Number(options.maxWait) || 0, wait) : maxWait
-    trailing = 'trailing' in options ? Boolean(options.trailing) : trailing
-  }
-
-  function invokeFunc(time) {
-    const args = lastArgs
-    const thisArg = lastThis
-
-    lastArgs = lastThis = undefined
-    lastInvokeTime = time
-    result = func.apply(thisArg, args)
-
-    return result
-  }
-
-  function startTimer(pendingFunc, wait) {
-    if (useRAF) {
-      return window.requestAnimationFrame(pendingFunc)
-    }
-
-    return setTimeout(pendingFunc, wait)
-  }
-
-  function cancelTimer(id) {
-    if (useRAF) {
-      return window.cancelAnimationFrame(id)
-    }
-    clearTimeout(id)
-  }
-
-  function leadingEdge(time) {
-    // Reset any `maxWait` timer.
-    lastInvokeTime = time
-    // Start the timer for the trailing edge.
-    timerId = startTimer(timerExpired, wait)
-
-    // Invoke the leading edge.
-    return leading ? invokeFunc(time) : result
-  }
-
-  function remainingWait(time) {
-    const timeSinceLastCall = time - lastCallTime
-    const timeSinceLastInvoke = time - lastInvokeTime
-    const timeWaiting = wait - timeSinceLastCall
-
-    return maxing ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting
-  }
-
-  function shouldInvoke(time) {
-    const timeSinceLastCall = time - lastCallTime
-    const timeSinceLastInvoke = time - lastInvokeTime
-
-    // Either this is the first call, activity has stopped and we're at the
-    // trailing edge, the system time has gone backwards and we're treating
-    // it as the trailing edge, or we've hit the `maxWait` limit.
-    return (
-      lastCallTime === undefined ||
-      timeSinceLastCall >= wait ||
-      timeSinceLastCall < 0 ||
-      (maxing && timeSinceLastInvoke >= maxWait)
-    )
-  }
-
-  function timerExpired() {
-    const time = Date.now()
-
-    if (shouldInvoke(time)) {
-      return trailingEdge(time)
-    }
-    // Restart the timer.
-    timerId = startTimer(timerExpired, remainingWait(time))
-  }
-
-  function trailingEdge(time) {
-    timerId = undefined
-
-    // Only invoke if we have `lastArgs` which means `func` has been
-    // debounced at least once.
-    if (trailing && lastArgs) {
-      return invokeFunc(time)
-    }
-    lastArgs = lastThis = undefined
-
-    return result
-  }
-
-  function cancel() {
-    if (timerId !== undefined) {
-      cancelTimer(timerId)
-    }
-    lastInvokeTime = 0
-    lastArgs = lastCallTime = lastThis = timerId = undefined
-  }
-
-  function flush() {
-    return timerId === undefined ? result : trailingEdge(Date.now())
-  }
-
-  function pending() {
-    return timerId !== undefined
-  }
-
-  function debounced(...args) {
-    const time = Date.now()
-    const isInvoking = shouldInvoke(time)
-
-    lastArgs = args
-    lastThis = this // eslint-disable-line consistent-this
-    lastCallTime = time
-
-    if (isInvoking) {
-      if (timerId === undefined) {
-        return leadingEdge(lastCallTime)
-      }
-      if (maxing) {
-        // Handle invocations in a tight loop.
-        timerId = startTimer(timerExpired, wait)
-
-        return invokeFunc(lastCallTime)
-      }
-    }
-    if (timerId === undefined) {
-      timerId = startTimer(timerExpired, wait)
-    }
-
-    return result
-  }
-  debounced.cancel = cancel
-  debounced.flush = flush
-  debounced.pending = pending
-
-  return debounced
-}
 
 export default class MeasureRectTool extends BaseAnnotationTool {
   constructor(props = {}) {
@@ -205,7 +29,7 @@ export default class MeasureRectTool extends BaseAnnotationTool {
         drawHandlesOnHover: false,
         hideHandlesIfMoving: false,
         renderDashed: false,
-        handleRadius: 5
+        handleRadius: 5,
       },
       svgCursor: rectangleRoiCursor,
     }
@@ -294,55 +118,48 @@ export default class MeasureRectTool extends BaseAnnotationTool {
   }
 
   renderToolData(evt) {
-    const toolData = getToolState(evt.currentTarget, this.name);
+    const toolData = getToolState(evt.currentTarget, this.name)
 
     if (!toolData) {
-      return;
+      return
     }
 
-    const eventData = evt.detail;
-    const { image, element } = eventData;
-    const lineWidth = toolStyle.getToolWidth();
+    const eventData = evt.detail
+    const { image, element } = eventData
+    const lineWidth = toolStyle.getToolWidth()
     // const lineDash = getModule('globalConfiguration').configuration.lineDash;
-    const {
-      handleRadius,
-      drawHandlesOnHover,
-      hideHandlesIfMoving,
-      renderDashed,
-    } = this.configuration;
-    const context = getNewContext(eventData.canvasContext.canvas);
-    const { rowPixelSpacing, colPixelSpacing } = getPixelSpacing(image);
+    const { handleRadius, drawHandlesOnHover, hideHandlesIfMoving, renderDashed } = this.configuration
+    const context = getNewContext(eventData.canvasContext.canvas)
+    const { rowPixelSpacing, colPixelSpacing } = getPixelSpacing(image)
 
     // Meta
-    const seriesModule =
-      window.cornerstone.metaData.get('generalSeriesModule', image.imageId) ||
-      {};
+    const seriesModule = window.cornerstone.metaData.get('generalSeriesModule', image.imageId) || {}
 
     // Pixel Spacing
-    const modality = seriesModule.modality;
-    const hasPixelSpacing = rowPixelSpacing && colPixelSpacing;
+    const modality = seriesModule.modality
+    const hasPixelSpacing = rowPixelSpacing && colPixelSpacing
 
     draw(context, context => {
       // If we have tool data for this element - iterate over each set and draw it
       for (let i = 0; i < toolData.data.length; i++) {
-        const data = toolData.data[i];
+        const data = toolData.data[i]
 
         if (data.visible === false) {
-          continue;
+          continue
         }
 
         // Configure
-        const color = toolColors.getColorIfActive(data);
+        const color = toolColors.getColorIfActive(data)
         const handleOptions = {
           color,
           handleRadius,
           drawHandlesIfActive: drawHandlesOnHover,
           hideHandlesIfMoving,
-        };
+        }
 
-        setShadow(context, this.configuration);
+        setShadow(context, this.configuration)
 
-        const rectOptions = { color };
+        const rectOptions = { color }
 
         if (renderDashed) {
           // rectOptions.lineDash = lineDash;
@@ -357,47 +174,40 @@ export default class MeasureRectTool extends BaseAnnotationTool {
           rectOptions,
           'pixel',
           data.handles.initialRotation
-        );
+        )
 
         if (this.configuration.drawHandles) {
-          drawHandles(context, eventData, data.handles, handleOptions);
+          drawHandles(context, eventData, data.handles, handleOptions)
         }
 
         // Update textbox stats
         if (data.invalidated === true) {
           if (data.cachedStats) {
-            this.throttledUpdateCachedStats(image, element, data);
+            this.throttledUpdateCachedStats(image, element, data)
           } else {
-            this.updateCachedStats(image, element, data);
+            this.updateCachedStats(image, element, data)
           }
         }
 
         // Default to textbox on right side of ROI
         if (!data.handles.textBox.hasMoved) {
-          const defaultCoords = getROITextBoxCoords(
-            eventData.viewport,
-            data.handles
-          );
+          const defaultCoords = getROITextBoxCoords(eventData.viewport, data.handles)
 
-          Object.assign(data.handles.textBox, defaultCoords);
+          Object.assign(data.handles.textBox, defaultCoords)
         }
 
-        const textBoxAnchorPoints = handles =>
-          _findTextBoxAnchorPoints(handles.start, handles.end);
+        const textBoxAnchorPoints = handles => _findTextBoxAnchorPoints(handles.start, handles.end)
         const textBoxContent = _createTextBoxContent(
           context,
           image.color,
           data.cachedStats,
           modality,
           hasPixelSpacing,
-          this.configuration
-        );
+          this.configuration,
+          { data, colPixelSpacing, rowPixelSpacing }
+        )
 
-        data.unit = _getUnit(modality, this.configuration.showHounsfieldUnits);
-
-        console.log(data.handles)
-        console.log(colPixelSpacing)
-        console.log(rowPixelSpacing)
+        data.unit = _getUnit(modality, this.configuration.showHounsfieldUnits)
 
         drawLinkedTextBox(
           context,
@@ -410,9 +220,9 @@ export default class MeasureRectTool extends BaseAnnotationTool {
           lineWidth,
           10,
           true
-        );
+        )
       }
-    });
+    })
   }
 }
 
@@ -503,6 +313,9 @@ function _calculateStats(image, element, handles, modality, pixelSpacing) {
     roiCoordinates.width * 2 * (pixelSpacing.colPixelSpacing || 1) +
     roiCoordinates.height * 2 * (pixelSpacing.rowPixelSpacing || 1)
 
+  const dx = (handles.end.x - handles.start.x) * (pixelSpacing.colPixelSpacing || 1)
+  const dy = (handles.end.y - handles.start.y) * (pixelSpacing.rowPixelSpacing || 1)
+
   return {
     area: area || 0,
     perimeter,
@@ -513,6 +326,8 @@ function _calculateStats(image, element, handles, modality, pixelSpacing) {
     min: roiMeanStdDev.min || 0,
     max: roiMeanStdDev.max || 0,
     meanStdDevSUV,
+    width: dx,
+    height: dy,
   }
 }
 
@@ -549,7 +364,8 @@ function _createTextBoxContent(
   { area, mean, stdDev, min, max, meanStdDevSUV },
   modality,
   hasPixelSpacing,
-  options = {}
+  options = {},
+  { data, colPixelSpacing, rowPixelSpacing }
 ) {
   const showMinMax = options.showMinMax || false
   const textLines = []
@@ -599,7 +415,13 @@ function _createTextBoxContent(
   }
 
   textLines.push(_formatArea(area, hasPixelSpacing))
-  otherLines.forEach(x => textLines.push(x))
+  // otherLines.forEach(x => textLines.push(x))
+
+  const dx = (data.handles.end.x - data.handles.start.x) * (colPixelSpacing || 1)
+  const dy = (data.handles.end.y - data.handles.start.y) * (rowPixelSpacing || 1)
+
+  textLines.push(`W：${dx.toFixed(2)}`)
+  textLines.push(`H：${dy.toFixed(2)}`)
 
   return textLines
 }

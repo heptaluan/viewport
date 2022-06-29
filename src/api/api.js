@@ -24,7 +24,7 @@ export const getImageList = resource =>
 
 // 查看临床影像
 export const getClinicalFiles = orderId =>
-  axios.get(`${basicUrl}/multiomics/productOrder/orderDetail/relateFiles?orderId=${orderId}&type=1`)
+  axios.get(`${basicUrl}/multiomics/productOrder/orderDetail/relateFiles?orderId=${orderId}&type=2000`)
 
 // 获取病人信息
 export const getPatientsList = id =>

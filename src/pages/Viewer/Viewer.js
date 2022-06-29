@@ -863,6 +863,8 @@ const Viewer = () => {
   // 弹窗
   const handleShowModal = () => {
     console.log(formatPostData())
+    console.log(cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect'))
+    console.log(cornerstoneTools.getToolState(cornerstoneElement, 'MarkNodule'))
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {
