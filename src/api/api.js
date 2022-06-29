@@ -10,7 +10,7 @@ const basicUrl = 'https://ai.feipankang.com/api'
 // const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTY0MjU2ODEsInVzZXJuYW1lIjoiYWRtaW4ifQ.8PzGrqg629LVK6cFXJIiBNlCPbdWKC_s00VfRO1fUcY'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTY1MTQ3NzksInVzZXJuYW1lIjoiYWRtaW4ifQ.JNJUQdq-xqr62KBf372dcX2ZS9YOUtnmwnXo3qWo9XA'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
