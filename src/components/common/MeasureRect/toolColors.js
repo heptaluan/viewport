@@ -1,5 +1,5 @@
-let defaultColor = 'blue',
-  activeColor = 'blue',
+let defaultColor = '#2fbd40',
+  activeColor = '#2fbd40',
   fillColor = 'transparent'
 
 function setFillColor(color) {

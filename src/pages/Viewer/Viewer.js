@@ -738,8 +738,8 @@ const Viewer = () => {
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
           diameter: res[i].diameter,
           noduleSize: res[i].noduleSize,
-          newDiameter: resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
-          newNoduleSize: resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
+          newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
+          newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
           featureLabelG: res[i].featureLabelG,
           suggest: resultInfo[i] ? resultInfo[i].suggest : '',
         })
@@ -1423,7 +1423,7 @@ const Viewer = () => {
         cancelText="取消"
         maskStyle={{ backgroundColor: 'transparent' }}
       >
-        <p>是否使用图中测量的数据自动调整结节的大小与体积</p>
+        <p>是否使用图中测量的数据自动调整当前结节的大小与体积</p>
       </Modal>
 
       {pageType === 'review' ? (
