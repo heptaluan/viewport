@@ -43,11 +43,11 @@
           justify-content: center;
         }
 
-        .num, .type {
+        .lung, .lobe, .type, .doc1, .doc2, .doc3 {
           flex: 2;
         }
 
-        .risk, .suggest, .soak, .action {
+        .action {
           flex: 1;
         }
       }
@@ -89,12 +89,14 @@
           }
         }
 
-        .num, .type {
+        .lung, .lobe, .type, .doc1, .doc2, .doc3 {
           flex: 2;
         }
 
-        .risk, .suggest, .soak, .action {
+        .action {
           flex: 1;
+          color: #ff4d4f;
+          cursor: pointer;
         }
 
         .risk.edit {
@@ -268,11 +270,7 @@
 
 .ant-checkbox-wrapper {
   justify-content: space-between;
-  flex: 2 !important;
-}
-
-.ant-popover-inner-content {
-  padding: 0 !important;
+  flex: 3 !important;
 }
 
 .ant-tag {

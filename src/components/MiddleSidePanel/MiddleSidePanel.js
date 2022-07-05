@@ -1,7 +1,7 @@
 import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox, Tag } from 'antd'
+import { Checkbox, Popconfirm } from 'antd'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
@@ -19,22 +19,16 @@ const MiddleSidePanel = props => {
         <div className="title">结节列表（{props.noduleList.length}）</div>
         <div className="table-box">
           <div className="table-title">
-            {/* <div className="icon">
-              <IconFont style={{ fontSize: '16px' }} type="icon-leimupinleifenleileibie" />
-            </div> */}
-            {/* <Checkbox disabled indeterminate={props.indeterminate} onChange={props.onCheckAllChange} checked={props.checkAll}>
-              <div className="num">中心帧</div>
-            </Checkbox> */}
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
             </Checkbox>
-            <div className="soak">肺</div>
-            <div className="soak">肺叶</div>
+            <div className="lung">肺</div>
+            {/* <div className="lobe">肺叶</div> */}
             <div className="type">类型</div>
-            <div className="risk">风险</div>
-            {/* <div className="suggest">建议</div> */}
-            <div className="soak">结节</div>
-            <div className="action">状态</div>
+            <div className="doc1">医生一</div>
+            <div className="doc2">医生二</div>
+            <div className="doc3">医生三</div>
+            <div className="action">操作</div>
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
@@ -43,30 +37,26 @@ const MiddleSidePanel = props => {
                 className={`table-item ${item.nodeType === 1 ? 'add-item' : ''}`}
                 onClick={e => handleListClick(index, item.num)}
               >
-                {/* <div className="icon">{item.id}</div> */}
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="num">{props.imagesConfig.length - item.num}</div>
                 </Checkbox>
-                <div className="soak">{item.lung}</div>
-                <div className="soak">{item.lobe}</div>
+                <div className="lung">{item.lung}</div>
+                {/* <div className="lobe">{item.lobe}</div> */}
                 <div className="type">{item.type}</div>
-                <div className={`risk ${item.risk && (Number(item.scrynMaligant) !== Number(item.risk)) ? 'edit' : ''}`}>
-                  {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
+                <div className="doc1">111</div>
+                <div className="doc2">222</div>
+                <div className="doc3">333</div>
+                <div className="action">
+                  <Popconfirm
+                    title="确定删除该结节信息？"
+                    okText="确定"
+                    cancelText="取消"
+                    placement="topRight"
+                    onConfirm={e => deleteNodeListHandle (e, item)}
+                  >
+                    删除
+                  </Popconfirm>
                 </div>
-                {/* <div className="suggest">{item.suggest}</div> */}
-                <div className="soak">
-                  <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
-                </div>
-                <div className="action review-state">
-                  <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
-                </div>
-                {item.nodeType === 1 ? (
-                  <div className="del-tips">
-                    <Tag color="#f50" onClick={e => deleteNodeListHandle(e, item)}>
-                      删除
-                    </Tag>
-                  </div>
-                ) : null}
               </div>
             ))}
           </div>

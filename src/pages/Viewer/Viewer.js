@@ -1230,46 +1230,27 @@ const Viewer = () => {
 
   // 删除结节
   const showDeleteConfirm = item => {
-    confirm({
-      title: `是否删除中心帧为 ${item.num} 的结节？`,
-      icon: <ExclamationCircleOutlined />,
-      content: (
-        <div>
-          肺：{item.lung} <br />
-          肺叶：{item.lobe} <br />
-          类型：{item.type} <br />
-        </div>
-      ),
-      okText: '删除',
-      okType: 'danger',
-      cancelText: '取消',
-      onOk() {
-        const itemIndex = noduleList.findIndex(n => n.noduleNum === item.noduleNum)
-        noduleList.splice(itemIndex, 1)
-        setNoduleList([...noduleList])
-        setNoduleInfo(null)
+    const itemIndex = noduleList.findIndex(n => n.noduleNum === item.noduleNum)
+    noduleList.splice(itemIndex, 1)
+    setNoduleList([...noduleList])
+    setNoduleInfo(null)
 
-        saveResults()
+    saveResults()
 
-        const index = currentImageIdIndex
+    const index = currentImageIdIndex
 
-        setTimeout(() => {
-          fetchDoctorData()
-        }, 200)
+    setTimeout(() => {
+      fetchDoctorData()
+    }, 200)
 
-        setTimeout(() => {
-          changeActiveImage(index, cornerstoneElement)
-        }, 1000)
+    setTimeout(() => {
+      changeActiveImage(index, cornerstoneElement)
+    }, 1000)
 
-        cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
-        cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-        cornerstone.updateImage(cornerstoneElement)
-        setModalVisible(false)
-      },
-      onCancel() {
-        console.log('Cancel')
-      },
-    })
+    cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
+    cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
+    cornerstone.updateImage(cornerstoneElement)
+    setModalVisible(false)
   }
 
   const onStart = (event, uiData) => {

@@ -2,7 +2,7 @@
   position: absolute;
   right: 15px;
   top: 95px;
-  width: 260px;
+  width: 180px;
   color: #fff;
   font-size: 14px;
 
@@ -69,3 +69,18 @@
 .ant-radio-disabled + span {
   color: #fff !important;
 }
+
+.nodule-info-box {
+  .ant-descriptions-title, .ant-descriptions-item-label {
+    color: white !important;
+  }
+
+  .ant-descriptions-item-content {
+    color: #ff4d4f !important;
+  }
+  
+  .ant-descriptions-header {
+    margin-bottom: 10px !important;
+  }
+}
+
