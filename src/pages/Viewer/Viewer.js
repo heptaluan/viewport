@@ -708,57 +708,57 @@ const Viewer = () => {
     const nodulesMapList = []
     let index = 0
     if (data.code === 10000) {
-      setOriginNoduleList([...data.detectionResult.nodulesList])
-      const res = data.detectionResult.nodulesList
+      // setOriginNoduleList([...data.detectionResult.nodulesList])
+      // const res = data.detectionResult.nodulesList
       // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
-      for (let i = 0; i < res.length; i++) {
-        nodulesList.push({
-          id: index,
-          num: res[i].coord.coordZ,
-          type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
-          risk: (res[i].scrynMaligant * 100).toFixed(0),
-          scrynMaligant:
-            resultInfo[i] && resultInfo[i].scrynMaligant
-              ? resultInfo[i].scrynMaligant
-              : (res[i].scrynMaligant * 100).toFixed(0),
-          soak: '',
-          info: '',
-          checked: false,
-          active: false,
-          noduleName: res[i].noduleName,
-          noduleNum: res[i].noduleNum,
-          state:
-            resultInfo[i] && Number(resultInfo[i].invisable) === 1
-              ? false
-              : resultInfo[i] && Number(resultInfo[i].invisable) === 0
-              ? true
-              : undefined,
-          review: resultInfo[i] ? resultInfo[i].edit : false,
-          lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
-          lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
-          diameter: res[i].diameter,
-          noduleSize: res[i].noduleSize,
-          newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
-          newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
-          featureLabelG: res[i].featureLabelG,
-          suggest: resultInfo[i] ? resultInfo[i].suggest : '',
-        })
-        index++
-      }
+      // for (let i = 0; i < res.length; i++) {
+      //   nodulesList.push({
+      //     id: index,
+      //     num: res[i].coord.coordZ,
+      //     type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
+      //     risk: (res[i].scrynMaligant * 100).toFixed(0),
+      //     scrynMaligant:
+      //       resultInfo[i] && resultInfo[i].scrynMaligant
+      //         ? resultInfo[i].scrynMaligant
+      //         : (res[i].scrynMaligant * 100).toFixed(0),
+      //     soak: '',
+      //     info: '',
+      //     checked: false,
+      //     active: false,
+      //     noduleName: res[i].noduleName,
+      //     noduleNum: res[i].noduleNum,
+      //     state:
+      //       resultInfo[i] && Number(resultInfo[i].invisable) === 1
+      //         ? false
+      //         : resultInfo[i] && Number(resultInfo[i].invisable) === 0
+      //         ? true
+      //         : undefined,
+      //     review: resultInfo[i] ? resultInfo[i].edit : false,
+      //     lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
+      //     lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
+      //     diameter: res[i].diameter,
+      //     noduleSize: res[i].noduleSize,
+      //     newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
+      //     newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
+      //     featureLabelG: res[i].featureLabelG,
+      //     suggest: resultInfo[i] ? resultInfo[i].suggest : '',
+      //   })
+      //   index++
+      // }
 
-      for (let i = 0; i < res.length; i++) {
-        for (let j = 0; j < res[i].rois.length; j++) {
-          const rois = res[i].rois[j]
-          nodulesMapList.push({
-            noduleName: res[i].noduleName,
-            index: Number(rois.key),
-            startX: rois.bbox[1],
-            startY: rois.bbox[0],
-            endX: rois.bbox[3],
-            endY: rois.bbox[2],
-          })
-        }
-      }
+      // for (let i = 0; i < res.length; i++) {
+      //   for (let j = 0; j < res[i].rois.length; j++) {
+      //     const rois = res[i].rois[j]
+      //     nodulesMapList.push({
+      //       noduleName: res[i].noduleName,
+      //       index: Number(rois.key),
+      //       startX: rois.bbox[1],
+      //       startY: rois.bbox[0],
+      //       endX: rois.bbox[3],
+      //       endY: rois.bbox[2],
+      //     })
+      //   }
+      // }
 
       for (let i = 0; i < resultInfo.length; i++) {
         if (resultInfo[i].nodeType && resultInfo[i].nodeType === 1) {
@@ -821,31 +821,8 @@ const Viewer = () => {
 
   // 缓存图片请求池
   const loadAndCacheImage = (cornerstone, imageList, data) => {
-    try {
-      const coordZList = []
-      for (let i = 0; i < data.length; i++) {
-        coordZList.push(data[i].coord.coordZ)
-      }
-
-      let filterArr = []
-      for (let i = 0; i < coordZList.length; i++) {
-        var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
-        for (let j = 0; j < 10; j++) {
-          filterArr.push(pre + j)
-        }
-      }
-
-      filterArr = [...new Set(filterArr)]
-      const newImageList = []
-      for (let i = 0; i < filterArr.length; i++) {
-        newImageList.push(imageList[filterArr[i]])
-      }
-
-      for (let i = 0; i < newImageList.length; i++) {
-        cornerstone.loadAndCacheImage(newImageList[i])
-      }
-    } catch (error) {
-      console.log(error)
+    for (let i = 0; i < imageList.length; i++) {
+      cornerstone.loadAndCacheImage(imageList[i])
     }
   }
 
