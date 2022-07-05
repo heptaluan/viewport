@@ -1254,7 +1254,7 @@ const Viewer = () => {
   // 删除结节
   const showDeleteConfirm = item => {
     confirm({
-      title: `是否删除中心帧为 ${item.num} 的结节？`,
+      title: `是否删除该中心帧为 ${imagesConfig.length - Number(item.num)} 的结节？`,
       icon: <ExclamationCircleOutlined />,
       content: (
         <div>
