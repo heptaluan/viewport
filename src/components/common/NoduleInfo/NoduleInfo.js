@@ -179,9 +179,13 @@ const NoduleInfo = props => {
           {props.noduleInfo.newDiameter ? (
             <div className="list">
               <em>大小调整后：</em>
-              <span style={{ color: '#ff4d4f' }}>
-                {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
-              </span>
+              {props.noduleInfo.nodeType === 1 ? (
+                <span style={{ color: '#ff4d4f' }}>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</span>
+              ) : (
+                <span style={{ color: '#ff4d4f' }}>
+                  {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
+                </span>
+              )}
             </div>
           ) : null}
 
@@ -192,9 +196,15 @@ const NoduleInfo = props => {
           {props.noduleInfo.newNoduleSize ? (
             <div className="list">
               <em>体积调整后：</em>
-              <span style={{ color: '#ff4d4f' }}>
-                {props.noduleInfo.newNoduleSize ? props.noduleInfo.newNoduleSize : '-'} mm³
-              </span>
+              {props.noduleInfo.nodeType === 1 ? (
+                <span style={{ color: '#ff4d4f' }}>
+                  {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
+                </span>
+              ) : (
+                <span style={{ color: '#ff4d4f' }}>
+                  {props.noduleInfo.newNoduleSize ? props.noduleInfo.newNoduleSize : '-'} mm³
+                </span>
+              )}
             </div>
           ) : null}
 

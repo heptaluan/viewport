@@ -1254,7 +1254,7 @@ const Viewer = () => {
   // 删除结节
   const showDeleteConfirm = item => {
     confirm({
-      title: `是否删除中心帧为 ${item.num} 的结节？`,
+      title: `是否删除该中心帧为 ${imagesConfig.length - Number(item.num)} 的结节？`,
       icon: <ExclamationCircleOutlined />,
       content: (
         <div>
@@ -1334,8 +1334,13 @@ const Viewer = () => {
       const data = tool.data[0].cachedStats
       const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
       const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
-      checkItme.newDiameter = `${data.width.toFixed(2)}mm*${data.height.toFixed(2)}mm`
-      checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
+      if (checkItme.nodeType === 1) {
+        checkItme.diameter = `${data.width.toFixed(2)}mm*${data.height.toFixed(2)}mm`
+        checkItme.noduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
+      } else {
+        checkItme.newDiameter = `${data.width.toFixed(2)}mm*${data.height.toFixed(2)}mm`
+        checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
+      }
       setNoduleList([...noduleList])
     }
 
