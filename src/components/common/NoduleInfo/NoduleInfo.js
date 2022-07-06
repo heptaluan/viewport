@@ -111,7 +111,12 @@ const NoduleInfo = props => {
 
   // 设置当中按钮选中
   const handleSetButtonActive = num => {
-    if (num > 9 || num < 0) return false
+    if (isNaN(num)) {
+      return false
+    }
+    if (num > 9 || num < 0) {
+      return false
+    }
     btnGroup.map(item => (item.checked = false))
     const item = btnGroup.find(item => item.id === num)
     item.checked = true
