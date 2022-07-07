@@ -97,6 +97,10 @@ const NoduleInfo = props => {
     props.checkNoduleList(val, 'type')
   }
 
+  const handleSoakChange = val => {
+    props.checkNoduleList(val, 'soak')
+  }
+
   // 风险值输入框事件
   const handleRishInputChange = val => {
     handleSetButtonActive(parseInt(Number(val / 10)))
@@ -153,6 +157,7 @@ const NoduleInfo = props => {
               <Radio value={'下叶'}>下叶</Radio>
             </Radio.Group>
           </div>
+
           <div className="list">
             <div className="list-title">类型：</div>
             <Select
@@ -171,6 +176,25 @@ const NoduleInfo = props => {
               <Option value="其他">其他</Option>
             </Select>
           </div>
+
+          {props.noduleInfo.newSoak ? (
+            <div className="list" style={{ marginTop: 3 }}>
+              <div className="list-title">浸润类型：</div>
+              <Select
+                disabled={props.pageState === 'admin'}
+                size="small"
+                value={props.noduleInfo.newSoak}
+                style={{ width: 185, fontSize: 13 }}
+                onChange={handleSoakChange}
+              >
+                <Option value="AAH">AAH（非典型腺瘤样增生）</Option>
+                <Option value="AIS">AIS（原位腺癌）</Option>
+                <Option value="MIA">MIA（微浸润性腺癌）</Option>
+                <Option value="IA">IA（浸润性腺癌）</Option>
+                <Option value="OTHER">OTHER（其他）</Option>
+              </Select>
+            </div>
+          ) : null}
 
           <div className="list">
             <em>大小：</em>

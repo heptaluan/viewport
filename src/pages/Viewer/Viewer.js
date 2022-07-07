@@ -421,6 +421,10 @@ const Viewer = () => {
       checkItme.type = val
       checkItme.review = true
     }
+    if (checkItme && type === 'soak') {
+      checkItme.newSoak = val
+      checkItme.review = true
+    }
     setNoduleList([...noduleList])
 
     // 提交结节数据
@@ -721,7 +725,8 @@ const Viewer = () => {
             resultInfo[i] && resultInfo[i].scrynMaligant
               ? resultInfo[i].scrynMaligant
               : (res[i].scrynMaligant * 100).toFixed(0),
-          soak: '',
+          soak: res[i].invisionClassify ? res[i].invisionClassify : '',
+          newSoak: resultInfo[i] && resultInfo[i].newSoak ? resultInfo[i].newSoak : resultInfo[i].soak,
           info: '',
           checked: false,
           active: false,
@@ -811,6 +816,9 @@ const Viewer = () => {
         }
       }
 
+      console.log(nodulesList)
+      console.log(nodulesMapList)
+
       setNoduleList([...nodulesList])
       setNoduleMapList([...nodulesMapList])
     } else {
@@ -870,8 +878,6 @@ const Viewer = () => {
   // 弹窗
   const handleShowModal = () => {
     console.log(formatPostData())
-    console.log(cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect'))
-    console.log(cornerstoneTools.getToolState(cornerstoneElement, 'MarkNodule'))
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {
@@ -932,8 +938,12 @@ const Viewer = () => {
         scrynMaligant: noduleList[i].scrynMaligant ? noduleList[i].scrynMaligant : '',
         newDiameter: noduleList[i].newDiameter ? noduleList[i].newDiameter : '',
         newNoduleSize: noduleList[i].newNoduleSize ? noduleList[i].newNoduleSize : '',
+        soak: noduleList[i].soak ? noduleList[i].soak : '',
+        newSoak: noduleList[i].newSoak ? noduleList[i].newSoak : '',
       })
     }
+
+    console.log(postData.resultInfo)
 
     postData.resultInfo = JSON.stringify(postData.resultInfo)
 
@@ -1335,10 +1345,10 @@ const Viewer = () => {
       const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
       const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
       if (checkItme.nodeType === 1) {
-        checkItme.diameter = `${data.width.toFixed(2)}mm*${data.height.toFixed(2)}mm`
+        checkItme.diameter = `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
         checkItme.noduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
       } else {
-        checkItme.newDiameter = `${data.width.toFixed(2)}mm*${data.height.toFixed(2)}mm`
+        checkItme.newDiameter = `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
         checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
       }
       setNoduleList([...noduleList])
