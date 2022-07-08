@@ -2,6 +2,7 @@ import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Popconfirm } from 'antd'
+import { CheckCircleTwoTone } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
@@ -22,12 +23,12 @@ const MiddleSidePanel = props => {
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
             </Checkbox>
-            <div className="doc1">医生一</div>
-            <div className="doc2">医生二</div>
-            <div className="doc3">医生三</div>
-            <div className="doc4">医生三</div>
-            <div className="doc5">医生三</div>
-            <div className="action">操作</div>
+            <div className="doc1" style={{ color: 'red' }} >医生一</div>
+            <div className="doc2" style={{ color: '#cfcf22' }} >医生二</div>
+            <div className="doc3" style={{ color: '' }} >医生三</div>
+            <div className="doc4" style={{ color: '' }} >医生四</div>
+            <div className="doc5" style={{ color: '' }} >医生五</div>
+            {/* <div className="action">操作</div> */}
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
@@ -39,22 +40,52 @@ const MiddleSidePanel = props => {
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="num">{props.imagesConfig.length - item.num}</div>
                 </Checkbox>
-                <div className="doc1">111</div>
-                <div className="doc2">222</div>
-                <div className="doc3">333</div>
-                <div className="doc4">444</div>
-                <div className="doc5">555</div>
-                <div className="action">
+                <div className="doc1">
+                  {item.doctor.find(n => n === 'xx') ? (
+                    <CheckCircleTwoTone twoToneColor="red" style={{ fontSize: 15 }} />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className="doc2">
+                  {item.doctor.find(n => n === 'lwx') ? (
+                    <CheckCircleTwoTone twoToneColor="#cfcf22" style={{ fontSize: 15 }} />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className="doc3">
+                  {item.doctor.find(n => n === 'xxx') ? (
+                    <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 15 }} />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className="doc4">
+                  {item.doctor.find(n => n === 'ai') ? (
+                    <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 15 }} />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className="doc5">
+                  {item.doctor.find(n => n === 'aa') ? (
+                    <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 15 }} />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                {/* <div className="action">
                   <Popconfirm
                     title="确定删除该结节信息？"
                     okText="确定"
                     cancelText="取消"
                     placement="topRight"
-                    onConfirm={e => deleteNodeListHandle (e, item)}
+                    onConfirm={e => deleteNodeListHandle(e, item)}
                   >
                     删除
                   </Popconfirm>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
@@ -66,7 +97,7 @@ const MiddleSidePanel = props => {
           <div className="report-box">
             <div className="title">影像所见</div>
             <div id="viewerItemBox" className="report-content">
-              {props.noduleList?.map((item, index) => {
+              {/* {props.noduleList?.map((item, index) => {
                 return item.checked ? (
                   <div
                     key={item.id}
@@ -78,7 +109,7 @@ const MiddleSidePanel = props => {
                     <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk}</span> %。
                   </div>
                 ) : null
-              })}
+              })} */}
             </div>
           </div>
           {/* <div className="suggest-box">

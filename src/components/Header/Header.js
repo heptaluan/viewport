@@ -51,7 +51,7 @@ const Header = props => {
       </div>
       {props.pageType === 'review' ? (
         <div className="export">
-          <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
+          {/* <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             { fileData.length === 0 ? '暂无临床影像' : '查看临床影像' }
           </Button>
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
@@ -59,7 +59,7 @@ const Header = props => {
           </Button>
           <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
-          </Button>
+          </Button> */}
         </div>
       ) : null}
 

@@ -71,16 +71,24 @@
 }
 
 .nodule-info-box {
-  .ant-descriptions-title, .ant-descriptions-item-label {
+  .ant-descriptions-title,
+  .ant-descriptions-item-label {
     color: white !important;
   }
 
-  // .ant-descriptions-item-content {
-  //   color: #ff4d4f !important;
-  // }
-  
+  .ant-descriptions.xx {
+    .ant-descriptions-item-content {
+      color: #ff4d4f;
+    }
+  }
+
+  .ant-descriptions.lwx {
+    .ant-descriptions-item-content {
+      color: yellow !important;
+    }
+  }
+
   .ant-descriptions-header {
     margin-bottom: 10px !important;
   }
 }
-

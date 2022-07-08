@@ -263,7 +263,7 @@ const nodeData = [
         ],
       },
       {
-        name: 'xx',
+        name: 'lwx',
         value: {
           index: 5,
           imageIndex: 271,
@@ -549,65 +549,46 @@ const Viewer = () => {
 
   // 添加结节标注
   const addNodeTool = (cornerstoneElement, index = 0) => {
-    const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
+    let item = ''
     const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
+
+    if (checkItme) {
+      item = nodeRef.current.noduleMapList
+        .filter(item => item.noduleNum === checkItme.noduleNum)
+        .filter(item => item.index === index)
+    } else {
+      item = nodeRef.current.noduleMapList.filter(item => item.index === index)
+    }
 
     if (nodeRef.current.showMarker === false) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       cornerstone.updateImage(cornerstoneElement)
     }
 
-    if (item.length >= 1 && nodeRef.current.showMarker) {
+    if (checkItme && item.length >= 1 && nodeRef.current.showMarker) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-      if (checkItme) {
-        const checkNode = item.filter(item => item.noduleName === checkItme.noduleName)
-        for (let i = 0; i < item.length; i++) {
-          const measurementData = {
-            visible: true,
-            active: true,
-            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'white',
-            invalidated: true,
-            handles: {
-              start: {
-                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
-                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
-                highlight: true,
-                active: true,
-              },
-              end: {
-                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
-                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
-                highlight: true,
-                active: true,
-              },
+      for (let i = 0; i < item.length; i++) {
+        const measurementData = {
+          visible: true,
+          active: true,
+          color: item[i].color,
+          invalidated: true,
+          handles: {
+            start: {
+              x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
+              y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
+              highlight: true,
+              active: true,
             },
-          }
-          cornerstoneTools.addToolState(cornerstoneElement, 'MarkNodule', measurementData)
-        }
-      } else {
-        for (let i = 0; i < item.length; i++) {
-          const measurementData = {
-            visible: true,
-            active: true,
-            color: 'white',
-            invalidated: true,
-            handles: {
-              start: {
-                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
-                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
-                highlight: true,
-                active: true,
-              },
-              end: {
-                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
-                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
-                highlight: true,
-                active: true,
-              },
+            end: {
+              x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
+              y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
+              highlight: true,
+              active: true,
             },
-          }
-          cornerstoneTools.addToolState(cornerstoneElement, 'MarkNodule', measurementData)
+          },
         }
+        cornerstoneTools.addToolState(cornerstoneElement, 'MarkNodule', measurementData)
       }
       cornerstone.updateImage(cornerstoneElement)
     }
@@ -1021,6 +1002,9 @@ const Viewer = () => {
     let index = 0
     const res = [...nodeData]
 
+    console.log(res)
+
+
     for (let i = 0; i < res.length; i++) {
       nodulesList.push({
         id: index,
@@ -1043,6 +1027,11 @@ const Viewer = () => {
       }
     }
 
+    const colorMap = {
+      xx: 'red',
+      lwx: 'yellow',
+    }
+
     for (let i = 0; i < doctorNodeList.length; i++) {
       for (let j = 0; j < doctorNodeList[i].rois.length; j++) {
         const rois = doctorNodeList[i].rois[j]
@@ -1054,6 +1043,7 @@ const Viewer = () => {
           startY: rois.bbox[0],
           endX: rois.bbox[3],
           endY: rois.bbox[2],
+          color: colorMap[doctorNodeList[i].name],
         })
       }
     }
