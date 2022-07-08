@@ -28,6 +28,317 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 const { confirm } = Modal
 
+const nodeData = [
+  {
+    key: '144_94242f7b-00da-4be0-9362-cbdbec3bd5bf',
+    index: 144,
+    nodelist: [
+      {
+        name: 'lwx',
+        value: {
+          index: 7,
+          imageIndex: 144,
+          lungLocation: '右肺',
+          lobeLocation: '下叶',
+          featureLabel: '肺内实性',
+          edit_time: '2022-6-2214:58:55',
+          edit: 'true',
+          suggest: '可疑微小结节',
+          invisable: '0',
+          nodeType: 1,
+          noduleName: 'nodule_94242f7b-00da-4be0-9362-cbdbec3bd5bf',
+          noduleNum: '94242f7b-00da-4be0-9362-cbdbec3bd5bf',
+          imageUrl1: 'http://im.ananpan.com/DnResult/new/_106c1b18-e3e7-4909-8e9e-14712d9c220d.jpg',
+          imageUrl2: 'http://im.ananpan.com/DnResult/new/_106c1b18-e3e7-4909-8e9e-14712d9c220d_s.jpg',
+          scrynMaligant: '97',
+          whu_scrynMaligant: '97',
+          nodeBox: ['384.43', '101.21', '388.68', '105.46'],
+          diameter: '2.91mm*2.91mm',
+          maxHu: -516,
+          minHu: -1023,
+          meanHu: '-826.12',
+          diameterNorm: '2.91',
+          noduleSize: '9.65',
+          centerHu: -673,
+        },
+        rois: [
+          {
+            key: 139,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 140,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 141,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 142,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 143,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 144,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 145,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 146,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 147,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 148,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+        ],
+      },
+    ],
+    num: 1,
+    doctor: ['lwx'],
+  },
+  {
+    key: '227_7c62606e-13b0-4059-b843-4e48ca1d6b22',
+    index: 227,
+    nodelist: [
+      {
+        name: 'lwx',
+        value: {
+          index: 7,
+          imageIndex: 227,
+          lungLocation: '右肺',
+          lobeLocation: '上叶',
+          featureLabel: '磨玻璃',
+          edit_time: '2022-6-2214:58:55',
+          edit: 'true',
+          suggest: '随访',
+          invisable: '0',
+          nodeType: 1,
+          noduleName: 'nodule_7c62606e-13b0-4059-b843-4e48ca1d6b22',
+          noduleNum: '7c62606e-13b0-4059-b843-4e48ca1d6b22',
+          imageUrl1: 'http://im.ananpan.com/DnResult/new/_316621fe-37b4-4b3e-a3b6-ec40d4b2a118.jpg',
+          imageUrl2: 'http://im.ananpan.com/DnResult/new/_316621fe-37b4-4b3e-a3b6-ec40d4b2a118_s.jpg',
+          scrynMaligant: '97',
+          whu_scrynMaligant: '97',
+          nodeBox: ['197.32', '116.52', '206.25', '124.17'],
+          diameter: '5.23mm*6.10mm',
+          maxHu: -321,
+          minHu: -1024,
+          meanHu: '-827.18',
+          diameterNorm: '5.65',
+          noduleSize: '70.90',
+          centerHu: -790,
+        },
+        rois: [
+          {
+            key: 222,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 223,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 224,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 225,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 226,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 227,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 228,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 229,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 230,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+          {
+            key: 231,
+            bbox: ['197.32', '116.52', '206.25', '124.17'],
+          },
+        ],
+      },
+    ],
+    num: 1,
+    doctor: ['lwx'],
+  },
+  {
+    key: '271_87c996f9-521e-4332-8bdc-069f7f39372f',
+    index: 271,
+    nodelist: [
+      {
+        name: 'xx',
+        value: {
+          index: 5,
+          imageIndex: 271,
+          lungLocation: '右肺',
+          lobeLocation: '上叶',
+          featureLabel: '磨玻璃',
+          edit_time: '2022-6-2310:24:19',
+          edit: 'true',
+          suggest: '',
+          invisable: '0',
+          nodeType: 1,
+          noduleName: 'nodule_87c996f9-521e-4332-8bdc-069f7f39372f',
+          noduleNum: '87c996f9-521e-4332-8bdc-069f7f39372f',
+          imageUrl1: 'http://im.ananpan.com/DnResult/new/_958e364f-851d-4a91-8055-562835511f6b.jpg',
+          imageUrl2: 'http://im.ananpan.com/DnResult/new/_958e364f-851d-4a91-8055-562835511f6b_s.jpg',
+          scrynMaligant: '98',
+          whu_scrynMaligant: '98',
+          nodeBox: ['271.56', '219.83', '288.77', '239.02'],
+          diameter: '13.12mm*11.76mm',
+          maxHu: 35,
+          minHu: -1024,
+          meanHu: '-738.64',
+          diameterNorm: '12.42',
+          noduleSize: '752.91',
+          centerHu: -807,
+        },
+        rois: [
+          {
+            key: 266,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 267,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 268,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 269,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 270,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 271,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 272,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 273,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 274,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 275,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+        ],
+      },
+      {
+        name: 'xx',
+        value: {
+          index: 5,
+          imageIndex: 271,
+          lungLocation: '右肺',
+          lobeLocation: '上叶',
+          featureLabel: '磨玻璃',
+          edit_time: '2022-6-2310:24:19',
+          edit: 'true',
+          suggest: '',
+          invisable: '0',
+          nodeType: 1,
+          noduleName: 'nodule_87c996f9-521e-4332-8bdc-069f7f39372f',
+          noduleNum: '87c996f9-521e-4332-8bdc-069f7f39372f',
+          imageUrl1: 'http://im.ananpan.com/DnResult/new/_958e364f-851d-4a91-8055-562835511f6b.jpg',
+          imageUrl2: 'http://im.ananpan.com/DnResult/new/_958e364f-851d-4a91-8055-562835511f6b_s.jpg',
+          scrynMaligant: '98',
+          whu_scrynMaligant: '98',
+          nodeBox: ['271.56', '219.83', '288.77', '239.02'],
+          diameter: '13.12mm*11.76mm',
+          maxHu: 35,
+          minHu: -1024,
+          meanHu: '-738.64',
+          diameterNorm: '12.42',
+          noduleSize: '752.91',
+          centerHu: -807,
+        },
+        rois: [
+          {
+            key: 266,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 267,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 268,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 269,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 270,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 271,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 272,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 273,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 274,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+          {
+            key: 275,
+            bbox: ['384.43', '101.21', '388.68', '105.46'],
+          },
+        ],
+      },
+    ],
+    num: 2,
+    doctor: ['xx', 'lwx'],
+  },
+]
+
 const Viewer = () => {
   const defaultTools = [
     {
@@ -704,119 +1015,56 @@ const Viewer = () => {
 
   // 格式化结节数据
   const formatNodeData = (data, resultInfo) => {
+    const doctorNodeList = []
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
-    if (data.code === 10000) {
-      // setOriginNoduleList([...data.detectionResult.nodulesList])
-      // const res = data.detectionResult.nodulesList
-      // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
-      // for (let i = 0; i < res.length; i++) {
-      //   nodulesList.push({
-      //     id: index,
-      //     num: res[i].coord.coordZ,
-      //     type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
-      //     risk: (res[i].scrynMaligant * 100).toFixed(0),
-      //     scrynMaligant:
-      //       resultInfo[i] && resultInfo[i].scrynMaligant
-      //         ? resultInfo[i].scrynMaligant
-      //         : (res[i].scrynMaligant * 100).toFixed(0),
-      //     soak: '',
-      //     info: '',
-      //     checked: false,
-      //     active: false,
-      //     noduleName: res[i].noduleName,
-      //     noduleNum: res[i].noduleNum,
-      //     state:
-      //       resultInfo[i] && Number(resultInfo[i].invisable) === 1
-      //         ? false
-      //         : resultInfo[i] && Number(resultInfo[i].invisable) === 0
-      //         ? true
-      //         : undefined,
-      //     review: resultInfo[i] ? resultInfo[i].edit : false,
-      //     lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
-      //     lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
-      //     diameter: res[i].diameter,
-      //     noduleSize: res[i].noduleSize,
-      //     newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
-      //     newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
-      //     featureLabelG: res[i].featureLabelG,
-      //     suggest: resultInfo[i] ? resultInfo[i].suggest : '',
-      //   })
-      //   index++
-      // }
+    const res = [...nodeData]
 
-      // for (let i = 0; i < res.length; i++) {
-      //   for (let j = 0; j < res[i].rois.length; j++) {
-      //     const rois = res[i].rois[j]
-      //     nodulesMapList.push({
-      //       noduleName: res[i].noduleName,
-      //       index: Number(rois.key),
-      //       startX: rois.bbox[1],
-      //       startY: rois.bbox[0],
-      //       endX: rois.bbox[3],
-      //       endY: rois.bbox[2],
-      //     })
-      //   }
-      // }
-
-      for (let i = 0; i < resultInfo.length; i++) {
-        if (resultInfo[i].nodeType && resultInfo[i].nodeType === 1) {
-          nodulesList.push({
-            id: index,
-            num: resultInfo[i].imageIndex,
-            size: '',
-            type: resultInfo[i].featureLabel,
-            risk: resultInfo[i].risk,
-            scrynMaligant: resultInfo[i].scrynMaligant,
-            soak: '',
-            info: '',
-            checked: false,
-            active: false,
-            noduleName: resultInfo[i].noduleName,
-            noduleNum: resultInfo[i].noduleNum,
-            state: true,
-            review: true,
-            lung: resultInfo[i].lungLocation,
-            lobe: resultInfo[i].lobeLocation,
-            featureLabelG: resultInfo[i].featureLabel,
-            suggest: resultInfo[i].suggest,
-            nodeType: resultInfo[i].nodeType,
-            imageUrl1: resultInfo[i].imageUrl1,
-            imageUrl2: resultInfo[i].imageUrl2,
-            whu_scrynMaligant: resultInfo[i].whu_scrynMaligant,
-            nodeBox: resultInfo[i].nodeBox,
-            maxHu: resultInfo[i].maxHu,
-            minHu: resultInfo[i].minHu,
-            meanHu: resultInfo[i].meanHu,
-            diameterNorm: resultInfo[i].diameterNorm,
-            centerHu: resultInfo[i].centerHu,
-            diameter: resultInfo[i].diameter,
-            noduleSize: resultInfo[i].noduleSize,
-            newDiameter: resultInfo[i].newDiameter,
-            newNoduleSize: resultInfo[i].newNoduleSize,
-          })
-
-          index++
-
-          nodulesMapList.push({
-            noduleName: resultInfo[i].noduleName,
-            nodeType: 1,
-            index: resultInfo[i].imageIndex,
-            startX: resultInfo[i].nodeBox[1],
-            startY: resultInfo[i].nodeBox[0],
-            endX: resultInfo[i].nodeBox[3],
-            endY: resultInfo[i].nodeBox[2],
-          })
-        }
-      }
-
-      setNoduleList([...nodulesList])
-      setNoduleMapList([...nodulesMapList])
-    } else {
-      setNoduleList([])
-      console.log(`数据加载失败`)
+    for (let i = 0; i < res.length; i++) {
+      nodulesList.push({
+        id: index,
+        num: res[i].index,
+        noduleNum: res[i].key,
+        doctor: res[i].doctor,
+        nodelist: res[i].nodelist,
+      })
+      index++
     }
+
+    for (let i = 0; i < res.length; i++) {
+      for (let j = 0; j < res[i].nodelist.length; j++) {
+        const rois = res[i].nodelist[j]
+        doctorNodeList.push({
+          noduleNum: res[i].key,
+          name: rois.name,
+          rois: rois.rois,
+        })
+      }
+    }
+
+    for (let i = 0; i < doctorNodeList.length; i++) {
+      for (let j = 0; j < doctorNodeList[i].rois.length; j++) {
+        const rois = doctorNodeList[i].rois[j]
+        nodulesMapList.push({
+          name: doctorNodeList[i].name,
+          noduleNum: doctorNodeList[i].noduleNum,
+          index: Number(rois.key),
+          startX: rois.bbox[1],
+          startY: rois.bbox[0],
+          endX: rois.bbox[3],
+          endY: rois.bbox[2],
+        })
+      }
+    }
+
+    setNoduleList([...nodulesList])
+    setNoduleMapList([...nodulesMapList])
+
+    // } else {
+    //   setNoduleList([])
+    //   console.log(`数据加载失败`)
+    // }
   }
 
   // 缓存图片请求池
@@ -847,8 +1095,6 @@ const Viewer = () => {
   // 弹窗
   const handleShowModal = () => {
     console.log(formatPostData())
-    console.log(cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect'))
-    console.log(cornerstoneTools.getToolState(cornerstoneElement, 'MarkNodule'))
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {

@@ -175,7 +175,7 @@ const Toolbar = props => {
           )
         })}
       </div>
-      {getURLParameters(window.location.href).page === 'review' &&
+      {/* {getURLParameters(window.location.href).page === 'review' &&
       getURLParameters(window.location.href).user !== 'admin' ? (
         <div className="submit-btn">
           <Button onClick={e => props.handleSubmitNodeDetail(e)} size="small">
@@ -186,7 +186,7 @@ const Toolbar = props => {
             { props.showMarker ? '隐藏标注' : '显示标注'}
           </Button>
         </div>
-      ) : null}
+      ) : null} */}
     </ul>
   )
 }

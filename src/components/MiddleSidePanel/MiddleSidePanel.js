@@ -22,12 +22,11 @@ const MiddleSidePanel = props => {
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
             </Checkbox>
-            <div className="lung">肺</div>
-            {/* <div className="lobe">肺叶</div> */}
-            <div className="type">类型</div>
             <div className="doc1">医生一</div>
             <div className="doc2">医生二</div>
             <div className="doc3">医生三</div>
+            <div className="doc4">医生三</div>
+            <div className="doc5">医生三</div>
             <div className="action">操作</div>
           </div>
           <div id="tableIItemBox" className="table-content">
@@ -40,12 +39,11 @@ const MiddleSidePanel = props => {
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="num">{props.imagesConfig.length - item.num}</div>
                 </Checkbox>
-                <div className="lung">{item.lung}</div>
-                {/* <div className="lobe">{item.lobe}</div> */}
-                <div className="type">{item.type}</div>
                 <div className="doc1">111</div>
                 <div className="doc2">222</div>
                 <div className="doc3">333</div>
+                <div className="doc4">444</div>
+                <div className="doc5">555</div>
                 <div className="action">
                   <Popconfirm
                     title="确定删除该结节信息？"
