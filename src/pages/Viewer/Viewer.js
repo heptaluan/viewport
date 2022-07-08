@@ -1166,13 +1166,29 @@ const Viewer = () => {
 
     const postData = {
       dicom_url: currentDicomFileUrl.replace('wadouri:', '').replace('https://', 'http://'),
-      boxes: [
+      boxes: [],
+    }
+
+    if (toolList[0].startX > toolList[0].endX) {
+      postData.boxes = [
+        parseInt(toolList[0].endY),
+        parseInt(toolList[0].endX),
+        parseInt(toolList[0].startY),
+        parseInt(toolList[0].startX),
+      ].join(',')
+    } else {
+      postData.boxes = [
         parseInt(toolList[0].startY),
         parseInt(toolList[0].startX),
         parseInt(toolList[0].endY),
         parseInt(toolList[0].endX),
-      ].join(','),
+      ].join(',')
     }
+
+    // startX: rois.bbox[1],
+    // startY: rois.bbox[0],
+    // endX: rois.bbox[3],
+    // endY: rois.bbox[2],
 
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
