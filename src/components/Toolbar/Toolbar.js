@@ -183,7 +183,7 @@ const Toolbar = props => {
           </Button>
 
           <Button onClick={e => props.handleShowMarker(e)} size="small">
-            { props.showMarker ? '隐藏标注' : '显示标注'}
+            {props.showMarker ? '隐藏标注' : '显示标注'}
           </Button>
         </div>
       ) : null}

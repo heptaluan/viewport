@@ -50,7 +50,7 @@ const MiddleSidePanel = props => {
                 <div className="soak">{item.lung}</div>
                 <div className="soak">{item.lobe}</div>
                 <div className="type">{item.type}</div>
-                <div className={`risk ${item.risk && (Number(item.scrynMaligant) !== Number(item.risk)) ? 'edit' : ''}`}>
+                <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
                   {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
                 </div>
                 {/* <div className="suggest">{item.suggest}</div> */}
