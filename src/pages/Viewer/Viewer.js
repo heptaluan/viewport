@@ -254,7 +254,7 @@ const Viewer = () => {
           const measurementData = {
             visible: true,
             active: true,
-            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'white',
+            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'red',
             invalidated: true,
             handles: {
               start: {
@@ -278,7 +278,7 @@ const Viewer = () => {
           const measurementData = {
             visible: true,
             active: true,
-            color: 'white',
+            color: 'red',
             invalidated: true,
             handles: {
               start: {
@@ -313,10 +313,12 @@ const Viewer = () => {
 
       setImagesConfig(imageList)
 
+      loadAndCacheImage(cornerstone, imageList, data)
+
       // 缓存图片
-      if (data && data.length > 0) {
-        loadAndCacheImage(cornerstone, imageList, data)
-      }
+      // if (data && data.length > 0) {
+      //   loadAndCacheImage(cornerstone, imageList, data)
+      // }
     }
   }
 
@@ -829,31 +831,34 @@ const Viewer = () => {
 
   // 缓存图片请求池
   const loadAndCacheImage = (cornerstone, imageList, data) => {
-    try {
-      const coordZList = []
-      for (let i = 0; i < data.length; i++) {
-        coordZList.push(data[i].coord.coordZ)
-      }
+    // try {
+    //   const coordZList = []
+    //   for (let i = 0; i < data.length; i++) {
+    //     coordZList.push(data[i].coord.coordZ)
+    //   }
 
-      let filterArr = []
-      for (let i = 0; i < coordZList.length; i++) {
-        var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
-        for (let j = 0; j < 10; j++) {
-          filterArr.push(pre + j)
-        }
-      }
+    //   let filterArr = []
+    //   for (let i = 0; i < coordZList.length; i++) {
+    //     var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
+    //     for (let j = 0; j < 10; j++) {
+    //       filterArr.push(pre + j)
+    //     }
+    //   }
 
-      filterArr = [...new Set(filterArr)]
-      const newImageList = []
-      for (let i = 0; i < filterArr.length; i++) {
-        newImageList.push(imageList[filterArr[i]])
-      }
+    //   filterArr = [...new Set(filterArr)]
+    //   const newImageList = []
+    //   for (let i = 0; i < filterArr.length; i++) {
+    //     newImageList.push(imageList[filterArr[i]])
+    //   }
 
-      for (let i = 0; i < newImageList.length; i++) {
-        cornerstone.loadAndCacheImage(newImageList[i])
-      }
-    } catch (error) {
-      console.log(error)
+    //   for (let i = 0; i < newImageList.length; i++) {
+    //     cornerstone.loadAndCacheImage(newImageList[i])
+    //   }
+    // } catch (error) {
+    //   console.log(error)
+    // }
+    for (let i = 0; i < imageList.length; i++) {
+      cornerstone.loadAndCacheImage(imageList[i])
     }
   }
 
@@ -1193,84 +1198,84 @@ const Viewer = () => {
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    addNewNodeList(JSON.stringify(postData)).then(res => {
-      if (res.data.code === 1) {
-        setTimeout(hide)
-        setConfirmLoading(false)
+    // addNewNodeList(JSON.stringify(postData)).then(res => {
+    //   if (res.data.code === 1) {
+    setTimeout(hide)
+    setConfirmLoading(false)
 
-        const startX = toolList[0].startX.toFixed(2)
-        const startY = toolList[0].startY.toFixed(2)
-        const endX = toolList[0].endX.toFixed(2)
-        const endY = toolList[0].endY.toFixed(2)
-        const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
+    const startX = toolList[0].startX.toFixed(2)
+    const startY = toolList[0].startY.toFixed(2)
+    const endX = toolList[0].endX.toFixed(2)
+    const endY = toolList[0].endY.toFixed(2)
+    const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
 
-        const newNodeData = {
-          active: false,
-          checked: false,
-          featureLabelG: '',
-          id: `id_${toolList[0].uuid}`,
-          info: '',
-          lobe: toolList[0].lobe,
-          lung: toolList[0].lung,
-          noduleName: `nodule_${toolList[0].uuid}`,
-          noduleNum: toolList[0].uuid,
-          num: currentImageIdIndex,
-          review: true,
-          risk: res.data.whu_scrynMaligant,
-          size: '',
-          soak: '',
-          state: true,
-          suggest: toolList[0].suggest,
-          type: toolList[0].type,
-          nodeType: 1,
-          imageUrl1: res.data.imageUrl1,
-          imageUrl2: res.data.imageUrl2,
-          scrynMaligant: res.data.scrynMaligant,
-          whu_scrynMaligant: res.data.whu_scrynMaligant,
-          nodeBox: [startY, startX, endY, endX],
-          diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-            Math.abs(endY - startY) * rowPixelSpacing
-          ).toFixed(2)}mm`,
-          maxHu: toolList[0].cachedStats.max,
-          minHu: toolList[0].cachedStats.min,
-          meanHu: toolList[0].cachedStats.mean.toFixed(2),
-          diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
-          noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
-          centerHu: cornerstone.getPixels(
-            cornerstoneElement,
-            (Number(startX) + Number(endX)) / 2,
-            (Number(startY) + Number(endY)) / 2,
-            1,
-            1
-          )[0],
-        }
+    const newNodeData = {
+      active: false,
+      checked: false,
+      featureLabelG: '',
+      id: `id_${toolList[0].uuid}`,
+      info: '',
+      lobe: toolList[0].lobe,
+      lung: toolList[0].lung,
+      noduleName: `nodule_${toolList[0].uuid}`,
+      noduleNum: toolList[0].uuid,
+      num: currentImageIdIndex,
+      review: true,
+      risk: '0',
+      size: '',
+      soak: '',
+      state: true,
+      suggest: toolList[0].suggest,
+      type: toolList[0].type,
+      nodeType: 1,
+      imageUrl1: '',
+      imageUrl2: '',
+      scrynMaligant: '0',
+      whu_scrynMaligant: '0',
+      nodeBox: [startY, startX, endY, endX],
+      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
+        Math.abs(endY - startY) * rowPixelSpacing
+      ).toFixed(2)}mm`,
+      maxHu: toolList[0].cachedStats.max,
+      minHu: toolList[0].cachedStats.min,
+      meanHu: toolList[0].cachedStats.mean.toFixed(2),
+      diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
+      noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
+      centerHu: cornerstone.getPixels(
+        cornerstoneElement,
+        (Number(startX) + Number(endX)) / 2,
+        (Number(startY) + Number(endY)) / 2,
+        1,
+        1
+      )[0],
+    }
 
-        noduleList.push(newNodeData)
-        setNoduleList([...noduleList])
+    noduleList.push(newNodeData)
+    setNoduleList([...noduleList])
 
-        saveResults()
+    saveResults()
 
-        const index = currentImageIdIndex
+    const index = currentImageIdIndex
 
-        setTimeout(() => {
-          fetchDoctorData()
-          setNoduleInfo(null)
-        }, 200)
+    setTimeout(() => {
+      fetchDoctorData()
+      setNoduleInfo(null)
+    }, 500)
 
-        setTimeout(() => {
-          changeActiveImage(index, cornerstoneElement)
-        }, 1000)
+    setTimeout(() => {
+      changeActiveImage(index, cornerstoneElement)
+    }, 1000)
 
-        cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
-        cornerstone.updateImage(cornerstoneElement)
-        setModalVisible(false)
-      } else {
-        message.error(`新增失败，请重新尝试`)
-        setTimeout(hide)
-        setConfirmLoading(true)
-        return false
-      }
-    })
+    cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
+    cornerstone.updateImage(cornerstoneElement)
+    setModalVisible(false)
+    //   } else {
+    //     message.error(`新增失败，请重新尝试`)
+    //     setTimeout(hide)
+    //     setConfirmLoading(true)
+    //     return false
+    //   }
+    // })
   }
 
   const handleCancel = e => {
