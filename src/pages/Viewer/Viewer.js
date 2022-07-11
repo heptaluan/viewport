@@ -1510,6 +1510,8 @@ const Viewer = () => {
           updateToolList={updateToolList}
           currentImageIdIndex={currentImageIdIndex}
           toolList={toolList}
+          imagesConfig={imagesConfig}
+          cornerstoneElement={cornerstoneElement}
         />
       </Modal>
     </div>
