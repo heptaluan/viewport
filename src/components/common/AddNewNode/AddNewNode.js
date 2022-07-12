@@ -23,14 +23,20 @@ const AddNewNode = props => {
       <div className="title-box">
         <span className="title">当前帧数：</span>
         <span>
-          第 {props.imagesConfig.length - props.imagesConfig.findIndex(index => index === cornerstone.getImage(props.cornerstoneElement).imageId)} 帧
+          第{' '}
+          {props.imagesConfig.length -
+            props.imagesConfig.findIndex(
+              index => index === cornerstone.getImage(props.cornerstoneElement).imageId
+            )}{' '}
+          帧
         </span>
       </div>
 
       {props.toolList?.map((item, index) => (
         <div className="add-box" key={item.uuid}>
           <div className="list-header">
-            结节信息（Area：{parseInt(item.cachedStats.area)}，Mean：{parseInt(item.cachedStats.mean)}，Std Dev：{parseInt(item.cachedStats.stdDev)}）
+            结节信息（Area：{parseInt(item.cachedStats.area)}，Mean：{parseInt(item.cachedStats.mean)}，Std Dev：
+            {parseInt(item.cachedStats.stdDev)}）
           </div>
           <div className="list">
             <span className="list-title">肺：</span>
@@ -43,7 +49,7 @@ const AddNewNode = props => {
             <div className="list-title">肺叶：</div>
             <Radio.Group value={item.lobe} onChange={e => onLobeChange(e, item.uuid)}>
               <Radio value={'上叶'}>上叶</Radio>
-              <Radio value={'中叶'}>中叶</Radio>
+              {item.lung === '左肺' ? null : <Radio value={'中叶'}>中叶</Radio>}
               <Radio value={'下叶'}>下叶</Radio>
             </Radio.Group>
           </div>

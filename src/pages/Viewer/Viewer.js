@@ -241,6 +241,9 @@ const Viewer = () => {
     const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
     const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
 
+    console.log(item)
+    console.log(checkItme)
+
     if (nodeRef.current.showMarker === false) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       cornerstone.updateImage(cornerstoneElement)
@@ -818,8 +821,8 @@ const Viewer = () => {
         }
       }
 
-      console.log(nodulesList)
-      console.log(nodulesMapList)
+      // console.log(nodulesList)
+      // console.log(nodulesMapList)
 
       setNoduleList([...nodulesList])
       setNoduleMapList([...nodulesMapList])
@@ -1154,17 +1157,22 @@ const Viewer = () => {
   const handleOk = e => {
     for (let i = 0; i < toolList.length; i++) {
       if (!toolList[i].lung) {
-        message.warn(`请选择所有结节的肺属性后在进行新增`)
+        message.warn(`请选择结节的肺属性后在进行新增`)
         return false
       }
 
       if (!toolList[i].lobe) {
-        message.warn(`请选择所有结节的肺叶属性后在进行新增`)
+        message.warn(`请选择结节的肺叶属性后在进行新增`)
         return false
       }
 
       if (!toolList[i].type) {
-        message.warn(`请选择所有结节的类型属性后在进行新增`)
+        message.warn(`请选择结节的类型属性后在进行新增`)
+        return false
+      }
+
+      if (toolList[i].lung === '左肺' && toolList[i].lobe === '中叶') {
+        message.warn(`请选择结节的肺叶属性后在进行新增`)
         return false
       }
     }
@@ -1260,7 +1268,7 @@ const Viewer = () => {
     setTimeout(() => {
       fetchDoctorData()
       setNoduleInfo(null)
-    }, 500)
+    }, 200)
 
     setTimeout(() => {
       changeActiveImage(index, cornerstoneElement)
