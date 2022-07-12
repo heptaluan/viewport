@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './Header.scss'
-import { Button, Image } from 'antd'
+import { Button, Image, message } from 'antd'
 import { getURLParameters } from '../../util/index'
-import { getClinicalFiles } from '../../api/api'
+import { getClinicalFiles, downloadZip } from '../../api/api'
 
 const Header = props => {
   const [visible, setVisible] = useState(false)
@@ -17,6 +17,18 @@ const Header = props => {
       '_blank'
     )
   }
+
+  // const handleDownLoad = () => {
+  //   downloadZip(getURLParameters(window.location.href).orderId).then(res=>{
+  //     debugger
+  //     const {result, success, message} = res.data
+  //     if (success) {
+  //       window.open(result, '_blank')
+  //     } else {
+  //       message.warning(message)
+  //     }
+  //   })
+  // }
 
   useEffect(() => {
     const fetchData = async () => {

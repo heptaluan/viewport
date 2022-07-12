@@ -186,16 +186,10 @@ const Viewer = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 初始化影像信息
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   // 初始化病人信息
   useEffect(() => {
     const fetchData = async () => {
       const result = await getPatientsList(getURLParameters(window.location.href).resource)
-      // console.log(result)
       if (result.data.code === 200 && result.data.result) {
         setPatients(result.data.result.records[0])
       }
@@ -240,9 +234,6 @@ const Viewer = () => {
   const addNodeTool = (cornerstoneElement, index = 0) => {
     const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
     const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
-
-    console.log(item)
-    console.log(checkItme)
 
     if (nodeRef.current.showMarker === false) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
@@ -301,6 +292,9 @@ const Viewer = () => {
           cornerstoneTools.addToolState(cornerstoneElement, 'MarkNodule', measurementData)
         }
       }
+      cornerstone.updateImage(cornerstoneElement)
+    } else {
+      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       cornerstone.updateImage(cornerstoneElement)
     }
   }
@@ -565,7 +559,6 @@ const Viewer = () => {
     const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MarkNodule')
     let mark = document.getElementById('mark')
     if (tool && mark && mark.classList.contains('active')) {
-      console.log(tool)
       setShowMark(true)
     }
   }
@@ -821,9 +814,6 @@ const Viewer = () => {
         }
       }
 
-      // console.log(nodulesList)
-      // console.log(nodulesMapList)
-
       setNoduleList([...nodulesList])
       setNoduleMapList([...nodulesMapList])
     } else {
@@ -951,21 +941,20 @@ const Viewer = () => {
       })
     }
 
-    console.log(postData.resultInfo)
-
     postData.resultInfo = JSON.stringify(postData.resultInfo)
 
     return postData
   }
 
   // 暂存结节数据
-  const saveResults = () => {
+  const saveResults = callback => {
     const postData = formatPostData()
     saveDnResult(JSON.stringify(postData)).then(res => {
       if (res.data.code === 200) {
         message.success(`结节信息保存成功`)
+        callback && callback()
       } else {
-        message.error(`结节结果保存失败，请重新尝试`)
+        message.error(`结节结果保存失败，请检查网络后重新尝试`)
       }
     })
   }
@@ -1060,10 +1049,6 @@ const Viewer = () => {
   // 提交结节信息
   const handleSubmitNodeDetail = e => {
     const tool = cornerstoneTools.getToolState(cornerstoneElement, 'RectangleRoi')
-
-    // console.log(tool)
-    // console.log(cornerstone.getStoredPixels(cornerstoneElement, '265', '95', 1, 1))
-    // console.log(cornerstone.getPixels(cornerstoneElement, '265', '95', 1, 1))
     if (!tool || tool.data.length === 0) {
       message.warn(`请进行结节标注后在进行新增`)
       return false
@@ -1081,7 +1066,7 @@ const Viewer = () => {
   }
 
   // 重新请求，刷新数据
-  const fetchDoctorData = async () => {
+  const fetchDoctorData = async callback => {
     const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
     if (result.data.code === 200) {
       if (result.data.result) {
@@ -1089,11 +1074,15 @@ const Viewer = () => {
           const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
           const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
           formatNodeData(data, resultInfo.nodelist)
+          callback && callback()
         } else {
           const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
           formatNodeData(data, [])
+          callback && callback()
         }
       }
+    } else {
+      message.error(`请求数据失败，请检查网络后重新尝试`)
     }
   }
 
@@ -1154,6 +1143,11 @@ const Viewer = () => {
     setModalVisible(true)
   }
 
+  const handleCancel = e => {
+    setModalVisible(false)
+  }
+
+  // 新增结节
   const handleOk = e => {
     for (let i = 0; i < toolList.length; i++) {
       if (!toolList[i].lung) {
@@ -1261,22 +1255,12 @@ const Viewer = () => {
     noduleList.push(newNodeData)
     setNoduleList([...noduleList])
 
-    saveResults()
+    saveResults(callback => {
+      fetchDoctorData(callback => {
+        updateCanvasAndList()
+      })
+    })
 
-    const index = currentImageIdIndex
-
-    setTimeout(() => {
-      fetchDoctorData()
-      setNoduleInfo(null)
-    }, 200)
-
-    setTimeout(() => {
-      changeActiveImage(index, cornerstoneElement)
-    }, 1000)
-
-    cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
-    cornerstone.updateImage(cornerstoneElement)
-    setModalVisible(false)
     //   } else {
     //     message.error(`新增失败，请重新尝试`)
     //     setTimeout(hide)
@@ -1284,10 +1268,6 @@ const Viewer = () => {
     //     return false
     //   }
     // })
-  }
-
-  const handleCancel = e => {
-    setModalVisible(false)
   }
 
   // 删除结节
@@ -1311,27 +1291,27 @@ const Viewer = () => {
         setNoduleList([...noduleList])
         setNoduleInfo(null)
 
-        saveResults()
-
-        const index = currentImageIdIndex
-
-        setTimeout(() => {
-          fetchDoctorData()
-        }, 200)
-
-        setTimeout(() => {
-          changeActiveImage(index, cornerstoneElement)
-        }, 1000)
-
-        cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
-        cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-        cornerstone.updateImage(cornerstoneElement)
-        setModalVisible(false)
+        saveResults(callback => {
+          fetchDoctorData(callback => {
+            updateCanvasAndList()
+          })
+        })
       },
       onCancel() {
         console.log('Cancel')
       },
     })
+  }
+
+  // 更新画布与结节列表
+  const updateCanvasAndList = () => {
+    const index = currentImageIdIndex
+    setNoduleInfo(null)
+    cornerstoneTools.clearToolState(cornerstoneElement, 'RectangleRoi')
+    cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
+    cornerstone.updateImage(cornerstoneElement)
+    addNodeTool(cornerstoneElement, index)
+    setModalVisible(false)
   }
 
   const onStart = (event, uiData) => {
