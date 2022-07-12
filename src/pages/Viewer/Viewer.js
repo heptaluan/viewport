@@ -605,10 +605,12 @@ const Viewer = () => {
 
       setImagesConfig(imageList)
 
+      loadAndCacheImage(cornerstone, imageList)
+
       // 缓存图片
-      if (data && data.length > 0) {
-        loadAndCacheImage(cornerstone, imageList, data)
-      }
+      // if (data && data.length > 0) {
+      //   loadAndCacheImage(cornerstone, imageList, data)
+      // }
     }
   }
 
@@ -972,28 +974,6 @@ const Viewer = () => {
 
   // ===========================================================
 
-  // 保存为图片
-  // const saveAs = (element, filename, mimetype = 'image/png') => {
-  //   const canvas = element.querySelector('canvas')
-  //   if (canvas.msToBlob) {
-  //     const blob = canvas.msToBlob()
-
-  //     return window.navigator.msSaveBlob(blob, filename)
-  //   }
-
-  //   const lnk = document.createElement('a')
-  //   lnk.download = filename
-  //   lnk.href = canvas.toDataURL(mimetype, 1)
-
-  //   if (document.createEvent) {
-  //     const e = document.createEvent('MouseEvents')
-  //     e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-  //     lnk.dispatchEvent(e)
-  //   } else if (lnk.fireEvent) {
-  //     lnk.fireEvent('onclick')
-  //   }
-  // }
-
   // 格式化结节数据
   const formatNodeData = (data, resultInfo) => {
     const doctorNodeList = []
@@ -1003,7 +983,6 @@ const Viewer = () => {
     const res = [...nodeData]
 
     console.log(res)
-
 
     for (let i = 0; i < res.length; i++) {
       nodulesList.push({
@@ -1058,7 +1037,7 @@ const Viewer = () => {
   }
 
   // 缓存图片请求池
-  const loadAndCacheImage = (cornerstone, imageList, data) => {
+  const loadAndCacheImage = (cornerstone, imageList) => {
     for (let i = 0; i < imageList.length; i++) {
       cornerstone.loadAndCacheImage(imageList[i])
     }
