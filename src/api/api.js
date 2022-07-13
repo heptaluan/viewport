@@ -1,16 +1,16 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
-// const basicUrl = getURLParameters(window.location.href).url
-// axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
+const basicUrl = getURLParameters(window.location.href).url
+axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
 // http://localhost:3000/ct/viewer/1?&url=/api&type=undefined&id=1503929871832645633&orderId=1503628225604390914&user=doctor&resource=1503913389228199938&state=undefined&taskId=1503929871832645633&doctorId=1503929871832645633&backId=undefined&backType=check&page=review&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTYyNjg4MTQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.w-8bVodwtdCgOUCTPKa-nWVeYFvTjICQxmUDl3pnGEA
 // // const basicUrl = 'http://139.196.114.118:9999'
-const basicUrl = 'https://yyds.ananpan.com/api'
+// const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
-axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTc1NzQ0NDcsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.-1Za2O4ipYrnol5JhfnsC2F9zEwzi8uT-zhKx26QD68'
+// axios.defaults.headers.common['X-Access-Token'] =
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTc3MjU4NzQsInVzZXJuYW1lIjoiYWRtaW4ifQ._kTRS6yqhVf-QJIOYD04H5lo9iN_sW9KqG0171y9yGk'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
