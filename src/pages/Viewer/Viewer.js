@@ -25,7 +25,6 @@ import { Modal, message, Button } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { nodeData } from './nodeData'
 
 const { confirm } = Modal
 
@@ -82,7 +81,7 @@ const Viewer = () => {
     doctor_lwx: '#cfcf22',
     doctor_diannei: '#37cdb1',
     yz: '#4d4df9',
-    dn: '#19d319'
+    dn: '#19d319',
   }
 
   // 初始化
@@ -136,10 +135,9 @@ const Viewer = () => {
       const result = await getNodeList(getURLParameters(window.location.href).id)
       if (result.data.code === 200) {
         if (result.data.result) {
-          debugger
           const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
           formatNodeData(data, [])
-          fetcImagehData(data.detectionResult?.nodulesList)
+          fetcImagehData(data)
         }
       }
     }
@@ -244,6 +242,32 @@ const Viewer = () => {
     }
   }
 
+  // 结节列表排序
+  const sortNodeList = type => {
+    if (type === 'index') {
+      setNoduleList([...noduleList.sort(compare('num'))])
+    } else if (type === 'num') {
+      setNoduleList([...noduleList.sort(backCompare('orderNum'))])
+    }
+  }
+
+  // 排序函数
+  const compare = p => {
+    return function (m, n) {
+      var a = m[p]
+      var b = n[p]
+      return a - b
+    }
+  }
+
+  const backCompare = p => {
+    return function (m, n) {
+      var a = m[p]
+      var b = n[p]
+      return b - a
+    }
+  }
+
   // ===========================================================
 
   // 添加结节标注
@@ -304,12 +328,38 @@ const Viewer = () => {
 
       setImagesConfig(imageList)
 
-      loadAndCacheImage(cornerstone, imageList)
+      // 缓存
+      loadAndCacheImage(cornerstone, imageList, data)
+    }
+  }
 
-      // 缓存图片
-      // if (data && data.length > 0) {
-      //   loadAndCacheImage(cornerstone, imageList, data)
-      // }
+  // 缓存图片请求池
+  const loadAndCacheImage = (cornerstone, imageList, data) => {
+    try {
+      const coordZList = []
+      for (let i = 0; i < data.length; i++) {
+        coordZList.push(data[i].index)
+      }
+
+      let filterArr = []
+      for (let i = 0; i < coordZList.length; i++) {
+        var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
+        for (let j = 0; j < 10; j++) {
+          filterArr.push(pre + j)
+        }
+      }
+
+      filterArr = [...new Set(filterArr)]
+      const newImageList = []
+      for (let i = 0; i < filterArr.length; i++) {
+        newImageList.push(imageList[filterArr[i]])
+      }
+
+      for (let i = 0; i < newImageList.length; i++) {
+        cornerstone.loadAndCacheImage(newImageList[i])
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -679,9 +729,7 @@ const Viewer = () => {
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
-    const res = [...nodeData]
-
-    console.log(res)
+    const res = [...data]
 
     for (let i = 0; i < res.length; i++) {
       nodulesList.push({
@@ -690,6 +738,7 @@ const Viewer = () => {
         noduleNum: res[i].key,
         doctor: res[i].doctor,
         nodelist: res[i].nodelist,
+        orderNum: res[i].num,
       })
       index++
     }
@@ -728,13 +777,6 @@ const Viewer = () => {
     //   setNoduleList([])
     //   console.log(`数据加载失败`)
     // }
-  }
-
-  // 缓存图片请求池
-  const loadAndCacheImage = (cornerstone, imageList) => {
-    for (let i = 0; i < imageList.length; i++) {
-      cornerstone.loadAndCacheImage(imageList[i])
-    }
   }
 
   // ===========================================================
@@ -1243,6 +1285,7 @@ const Viewer = () => {
             noduleList={noduleList}
             noduleInfo={noduleInfo}
             imagesConfig={imagesConfig}
+            sortNodeList={sortNodeList}
           />
         </div>
         <ViewerMain

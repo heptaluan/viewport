@@ -1,7 +1,7 @@
 import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox, Tooltip } from 'antd'
+import { Checkbox, Tooltip, Button } from 'antd'
 import { CheckCircleTwoTone } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
@@ -9,7 +9,7 @@ const MiddleSidePanel = props => {
     props.onCheckChange(index, num)
   }
 
-  const deleteNodeListHandle = (e, item) => {
+  const sortNodeList = (e, item) => {
     e.stopPropagation()
     props.showDeleteConfirm(item)
   }
@@ -17,7 +17,13 @@ const MiddleSidePanel = props => {
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
-        <div className="title">结节列表（{props.noduleList.length}）</div>
+        <div className="title">
+          <span>结节列表（{props.noduleList.length}）</span>
+          <span>
+            <Button size='small' style={{ marginRight: 10}} onClick={e => props.sortNodeList('index')}>中心帧排序</Button>
+            <Button size='small' onClick={e => props.sortNodeList('num')}>标注数排序</Button>
+          </span>
+        </div>
         <div className="table-box">
           <div className="table-title">
             <Checkbox disabled checked={true}>
@@ -38,12 +44,12 @@ const MiddleSidePanel = props => {
                 医生三
               </div>
             </Tooltip>
-            <Tooltip placement="top" title={'yz'}>
+            <Tooltip placement="top" title={'医准结果'}>
               <div className="doc4" style={{ color: '#4d4df9' }}>
                 医准
               </div>
             </Tooltip>
-            <Tooltip placement="top" title={'dn'}>
+            <Tooltip placement="top" title={'点内结果'}>
               <div className="doc5" style={{ color: '#19d319' }}>
                 点内
               </div>
