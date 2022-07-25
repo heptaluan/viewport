@@ -2,7 +2,7 @@
   position: absolute;
   right: 15px;
   top: 95px;
-  width: 180px;
+  width: 220px;
   color: #fff;
   font-size: 14px;
 
@@ -76,19 +76,37 @@
     color: white !important;
   }
 
-  .ant-descriptions.xx {
-    .ant-descriptions-item-content {
-      color: #ff4d4f;
-    }
-  }
-
-  .ant-descriptions.lwx {
-    .ant-descriptions-item-content {
-      color: yellow !important;
-    }
-  }
-
   .ant-descriptions-header {
     margin-bottom: 10px !important;
+  }
+
+  .ant-descriptions.hbfyxia {
+    .ant-descriptions-item-content {
+      color: red;
+    }
+  }
+
+  .ant-descriptions.doctor_lwx {
+    .ant-descriptions-item-content {
+      color: #cfcf22;
+    }
+  }
+
+  .ant-descriptions.doctor_diannei {
+    .ant-descriptions-item-content {
+      color: #37cdb1;
+    }
+  }
+
+  .ant-descriptions.yz {
+    .ant-descriptions-item-content {
+      color: #4d4df9;
+    }
+  }
+
+  .ant-descriptions.dn {
+    .ant-descriptions-item-content {
+      color: #19d319;
+    }
   }
 }

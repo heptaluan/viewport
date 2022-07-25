@@ -1,4 +1,4 @@
-let defaultWidth = 1,
+let defaultWidth = 2,
   activeWidth = 2
 
 function setToolWidth(width) {

@@ -1,7 +1,7 @@
 import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox, Popconfirm } from 'antd'
+import { Checkbox, Tooltip } from 'antd'
 import { CheckCircleTwoTone } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
@@ -23,11 +23,31 @@ const MiddleSidePanel = props => {
             <Checkbox disabled checked={true}>
               <div className="num">中心帧</div>
             </Checkbox>
-            <div className="doc1" style={{ color: 'red' }} >医生一</div>
-            <div className="doc2" style={{ color: '#cfcf22' }} >医生二</div>
-            <div className="doc3" style={{ color: '' }} >医生三</div>
-            <div className="doc4" style={{ color: '' }} >医生四</div>
-            <div className="doc5" style={{ color: '' }} >医生五</div>
+            <Tooltip placement="top" title={'hbfyxia'}>
+              <div className="doc1" style={{ color: 'red' }}>
+                医生一
+              </div>
+            </Tooltip>
+            <Tooltip placement="top" title={'doctor_lwx'}>
+              <div className="doc2" style={{ color: '#cfcf22' }}>
+                医生二
+              </div>
+            </Tooltip>
+            <Tooltip placement="top" title={'doctor_diannei'}>
+              <div className="doc3" style={{ color: '#37cdb1' }}>
+                医生三
+              </div>
+            </Tooltip>
+            <Tooltip placement="top" title={'yz'}>
+              <div className="doc4" style={{ color: '#4d4df9' }}>
+                医准
+              </div>
+            </Tooltip>
+            <Tooltip placement="top" title={'dn'}>
+              <div className="doc5" style={{ color: '#19d319' }}>
+                点内
+              </div>
+            </Tooltip>
             {/* <div className="action">操作</div> */}
           </div>
           <div id="tableIItemBox" className="table-content">
@@ -38,39 +58,39 @@ const MiddleSidePanel = props => {
                 onClick={e => handleListClick(index, item.num)}
               >
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
-                  <div className="num">{props.imagesConfig.length - item.num}</div>
+                  <div className="num">{item.num}</div>
                 </Checkbox>
                 <div className="doc1">
-                  {item.doctor.find(n => n === 'xx') ? (
+                  {item.doctor.find(n => n === 'hbfyxia') ? (
                     <CheckCircleTwoTone twoToneColor="red" style={{ fontSize: 15 }} />
                   ) : (
                     ''
                   )}
                 </div>
                 <div className="doc2">
-                  {item.doctor.find(n => n === 'lwx') ? (
+                  {item.doctor.find(n => n === 'doctor_lwx') ? (
                     <CheckCircleTwoTone twoToneColor="#cfcf22" style={{ fontSize: 15 }} />
                   ) : (
                     ''
                   )}
                 </div>
                 <div className="doc3">
-                  {item.doctor.find(n => n === 'xxx') ? (
-                    <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 15 }} />
+                  {item.doctor.find(n => n === 'doctor_diannei') ? (
+                    <CheckCircleTwoTone twoToneColor="#37cdb1" style={{ fontSize: 15 }} />
                   ) : (
                     ''
                   )}
                 </div>
                 <div className="doc4">
-                  {item.doctor.find(n => n === 'ai') ? (
-                    <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 15 }} />
+                  {item.doctor.find(n => n === 'yz') ? (
+                    <CheckCircleTwoTone twoToneColor="#4d4df9" style={{ fontSize: 15 }} />
                   ) : (
                     ''
                   )}
                 </div>
                 <div className="doc5">
-                  {item.doctor.find(n => n === 'aa') ? (
-                    <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 15 }} />
+                  {item.doctor.find(n => n === 'dn') ? (
+                    <CheckCircleTwoTone twoToneColor="#19d319" style={{ fontSize: 15 }} />
                   ) : (
                     ''
                   )}

@@ -5,7 +5,6 @@ import { Descriptions } from 'antd'
 const size = 'small'
 
 const NoduleInfo = props => {
-
   const formatNoduleInfo = (data, type) => {
     const info = data.find(item => item.name === type)
     if (info && info.value) {
@@ -19,30 +18,60 @@ const NoduleInfo = props => {
     <div className="nodule-info-box">
       {props.noduleInfo ? (
         <>
-          <Descriptions title="医生一" column={2} size={size} className="xx">
-            <Descriptions.Item label="肺">{formatNoduleInfo(props.noduleInfo.nodelist, 'xx')?.lungLocation}</Descriptions.Item>
-            <Descriptions.Item label="肺叶">{formatNoduleInfo(props.noduleInfo.nodelist, 'xx')?.lobeLocation}</Descriptions.Item>
-            <Descriptions.Item label="类型">{formatNoduleInfo(props.noduleInfo.nodelist, 'xx')?.featureLabel}</Descriptions.Item>
+          <Descriptions title="医生一（hbfyxia）" column={2} size={size} className="hbfyxia">
+            <Descriptions.Item label="肺">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'hbfyxia')?.lungLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="肺叶">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'hbfyxia')?.lobeLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'hbfyxia')?.featureLabel}
+            </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医生二" column={2} size={size} className="lwx">
-            <Descriptions.Item label="肺">{formatNoduleInfo(props.noduleInfo.nodelist, 'lwx')?.lungLocation}</Descriptions.Item>
-            <Descriptions.Item label="肺叶">{formatNoduleInfo(props.noduleInfo.nodelist, 'lwx')?.lobeLocation}</Descriptions.Item>
-            <Descriptions.Item label="类型">{formatNoduleInfo(props.noduleInfo.nodelist, 'lwx')?.featureLabel}</Descriptions.Item>
+          <Descriptions title="医生二（doctor_lwx）" column={2} size={size} className="doctor_lwx">
+            <Descriptions.Item label="肺">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_lwx')?.lungLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="肺叶">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_lwx')?.lobeLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_lwx')?.featureLabel}
+            </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医生三" column={2} size={size}>
-            <Descriptions.Item label="肺">{props.noduleInfo.lung}</Descriptions.Item>
-            <Descriptions.Item label="肺叶">{props.noduleInfo.lobe}</Descriptions.Item>
-            <Descriptions.Item label="类型">{props.noduleInfo.type}</Descriptions.Item>
+          <Descriptions title="医生三（doctor_diannei）" column={2} size={size} className="doctor_diannei">
+            <Descriptions.Item label="肺">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_diannei')?.lungLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="肺叶">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_diannei')?.lobeLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_diannei')?.featureLabel}
+            </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医生四" column={2} size={size}>
-            <Descriptions.Item label="肺">{props.noduleInfo.lung}</Descriptions.Item>
-            <Descriptions.Item label="肺叶">{props.noduleInfo.lobe}</Descriptions.Item>
-            <Descriptions.Item label="类型">{props.noduleInfo.type}</Descriptions.Item>
+          <Descriptions title="医准" column={2} size={size} className="yz">
+            <Descriptions.Item label="肺">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'yz')?.lungLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="肺叶">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'yz')?.lobeLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'yz')?.featureLabel}
+            </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医生五" column={2} size={size}>
-            <Descriptions.Item label="肺">{props.noduleInfo.lung}</Descriptions.Item>
-            <Descriptions.Item label="肺叶">{props.noduleInfo.lobe}</Descriptions.Item>
-            <Descriptions.Item label="类型">{props.noduleInfo.type}</Descriptions.Item>
+          <Descriptions title="点内" column={2} size={size} className="dn">
+            <Descriptions.Item label="肺">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'dn')?.lungLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="肺叶">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'dn')?.lobeLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'dn')?.featureLabel}
+            </Descriptions.Item>
           </Descriptions>
         </>
       ) : null}
