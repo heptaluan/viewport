@@ -724,7 +724,7 @@ const Viewer = () => {
               ? resultInfo[i].scrynMaligant
               : (res[i].scrynMaligant * 100).toFixed(0),
           soak: res[i].invisionClassify ? res[i].invisionClassify : '',
-          newSoak: resultInfo[i] && resultInfo[i].newSoak ? resultInfo[i].newSoak : resultInfo[i].soak,
+          newSoak: resultInfo[i] && resultInfo[i].newSoak ? resultInfo[i].newSoak : (resultInfo[i] && resultInfo[i].soak ? resultInfo[i].soak : ''),
           info: '',
           checked: false,
           active: false,
@@ -1205,10 +1205,10 @@ const Viewer = () => {
     setTimeout(hide)
     setConfirmLoading(false)
 
-    const startX = toolList[0].startX.toFixed(2)
-    const startY = toolList[0].startY.toFixed(2)
-    const endX = toolList[0].endX.toFixed(2)
-    const endY = toolList[0].endY.toFixed(2)
+    const startX = postData.boxes.split(',')[1]
+    const startY = postData.boxes.split(',')[0]
+    const endX = postData.boxes.split(',')[3]
+    const endY = postData.boxes.split(',')[2]
     const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
 
     const newNodeData = {
