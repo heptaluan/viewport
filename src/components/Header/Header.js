@@ -53,11 +53,11 @@ const Header = props => {
         <div className="export">
           {/* <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             { fileData.length === 0 ? '暂无临床影像' : '查看临床影像' }
-          </Button>
+          </Button> */}
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
             影像下载
           </Button>
-          <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
+          {/* <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
           </Button> */}
         </div>

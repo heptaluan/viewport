@@ -2,7 +2,7 @@
   position: absolute;
   right: 15px;
   top: 95px;
-  width: 220px;
+  width: 300px;
   color: #fff;
   font-size: 14px;
 
@@ -109,4 +109,11 @@
       color: #19d319;
     }
   }
+
+  .ant-descriptions.doctor_test {
+    .ant-descriptions-item-content {
+      color: #ac3dd1;
+    }
+  }
+  
 }

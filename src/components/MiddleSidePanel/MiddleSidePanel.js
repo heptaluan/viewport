@@ -54,6 +54,11 @@ const MiddleSidePanel = props => {
                 点内
               </div>
             </Tooltip>
+            <Tooltip placement="top" title={'金标准'}>
+              <div className="doc6" style={{ color: '#ac3dd1' }}>
+                金标准
+              </div>
+            </Tooltip>
             {/* <div className="action">操作</div> */}
           </div>
           <div id="tableIItemBox" className="table-content">
@@ -97,6 +102,13 @@ const MiddleSidePanel = props => {
                 <div className="doc5">
                   {item.doctor.find(n => n === 'dn') ? (
                     <CheckCircleTwoTone twoToneColor="#19d319" style={{ fontSize: 15 }} />
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className="doc6">
+                  {item.doctor.find(n => n === 'doctor_test') ? (
+                    <CheckCircleTwoTone twoToneColor="#ac3dd1" style={{ fontSize: 15 }} />
                   ) : (
                     ''
                   )}

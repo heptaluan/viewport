@@ -19,6 +19,7 @@
 
     .title {
       height: 35px;
+      line-height: 35px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -45,7 +46,7 @@
           justify-content: center;
         }
 
-        .doc1, .doc2, .doc3, .doc4, .doc5 {
+        .doc1, .doc2, .doc3, .doc4, .doc5, .doc6 {
           flex: 2;
           cursor: pointer;
         }
@@ -92,7 +93,7 @@
           }
         }
 
-        .doc1, .doc2, .doc3, .doc4, .doc5 {
+        .doc1, .doc2, .doc3, .doc4, .doc5, .doc6 {
           flex: 2;
         }
 

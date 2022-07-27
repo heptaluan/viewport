@@ -18,7 +18,7 @@ const NoduleInfo = props => {
     <div className="nodule-info-box">
       {props.noduleInfo ? (
         <>
-          <Descriptions title="医生一（hbfyxia）" column={2} size={size} className="hbfyxia">
+          <Descriptions title="医生一（hbfyxia）" size={size} className="hbfyxia">
             <Descriptions.Item label="肺">
               {formatNoduleInfo(props.noduleInfo.nodelist, 'hbfyxia')?.lungLocation}
             </Descriptions.Item>
@@ -29,7 +29,7 @@ const NoduleInfo = props => {
               {formatNoduleInfo(props.noduleInfo.nodelist, 'hbfyxia')?.featureLabel}
             </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医生二（doctor_lwx）" column={2} size={size} className="doctor_lwx">
+          <Descriptions title="医生二（doctor_lwx）" size={size} className="doctor_lwx">
             <Descriptions.Item label="肺">
               {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_lwx')?.lungLocation}
             </Descriptions.Item>
@@ -40,7 +40,7 @@ const NoduleInfo = props => {
               {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_lwx')?.featureLabel}
             </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医生三（doctor_diannei）" column={2} size={size} className="doctor_diannei">
+          <Descriptions title="医生三（doctor_diannei）" size={size} className="doctor_diannei">
             <Descriptions.Item label="肺">
               {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_diannei')?.lungLocation}
             </Descriptions.Item>
@@ -51,7 +51,7 @@ const NoduleInfo = props => {
               {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_diannei')?.featureLabel}
             </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="医准结果" column={2} size={size} className="yz">
+          <Descriptions title="医准结果" size={size} className="yz">
             <Descriptions.Item label="肺">
               {formatNoduleInfo(props.noduleInfo.nodelist, 'yz')?.lungLocation}
             </Descriptions.Item>
@@ -62,7 +62,7 @@ const NoduleInfo = props => {
               {formatNoduleInfo(props.noduleInfo.nodelist, 'yz')?.featureLabel}
             </Descriptions.Item>
           </Descriptions>
-          <Descriptions title="点内结果" column={2} size={size} className="dn">
+          <Descriptions title="点内结果" size={size} className="dn">
             <Descriptions.Item label="肺">
               {formatNoduleInfo(props.noduleInfo.nodelist, 'dn')?.lungLocation}
             </Descriptions.Item>
@@ -71,6 +71,17 @@ const NoduleInfo = props => {
             </Descriptions.Item>
             <Descriptions.Item label="类型">
               {formatNoduleInfo(props.noduleInfo.nodelist, 'dn')?.featureLabel}
+            </Descriptions.Item>
+          </Descriptions>
+          <Descriptions title="金标准结果" size={size} className="doctor_test">
+            <Descriptions.Item label="肺">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_test')?.lungLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="肺叶">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_test')?.lobeLocation}
+            </Descriptions.Item>
+            <Descriptions.Item label="类型">
+              {formatNoduleInfo(props.noduleInfo.nodelist, 'doctor_test')?.featureLabel}
             </Descriptions.Item>
           </Descriptions>
         </>

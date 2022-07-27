@@ -82,6 +82,7 @@ const Viewer = () => {
     doctor_diannei: '#37cdb1',
     yz: '#4d4df9',
     dn: '#19d319',
+    doctor_test: '#ac3dd1'
   }
 
   // 初始化
@@ -730,6 +731,8 @@ const Viewer = () => {
     const nodulesMapList = []
     let index = 0
     const res = [...data]
+    
+    console.log(res);
 
     for (let i = 0; i < res.length; i++) {
       nodulesList.push({
