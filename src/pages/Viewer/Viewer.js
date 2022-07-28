@@ -310,12 +310,12 @@ const Viewer = () => {
 
       setImagesConfig(imageList)
 
-      loadAndCacheImage(cornerstone, imageList, data)
+      // loadAndCacheImage(cornerstone, imageList, data)
 
       // 缓存图片
-      // if (data && data.length > 0) {
-      //   loadAndCacheImage(cornerstone, imageList, data)
-      // }
+      if (data && data.length > 0) {
+        loadAndCacheImage(cornerstone, imageList, data)
+      }
     }
   }
 
@@ -724,7 +724,12 @@ const Viewer = () => {
               ? resultInfo[i].scrynMaligant
               : (res[i].scrynMaligant * 100).toFixed(0),
           soak: res[i].invisionClassify ? res[i].invisionClassify : '',
-          newSoak: resultInfo[i] && resultInfo[i].newSoak ? resultInfo[i].newSoak : (resultInfo[i] && resultInfo[i].soak ? resultInfo[i].soak : ''),
+          newSoak:
+            resultInfo[i] && resultInfo[i].newSoak
+              ? resultInfo[i].newSoak
+              : resultInfo[i] && resultInfo[i].soak
+              ? resultInfo[i].soak
+              : '',
           info: '',
           checked: false,
           active: false,
@@ -824,35 +829,35 @@ const Viewer = () => {
 
   // 缓存图片请求池
   const loadAndCacheImage = (cornerstone, imageList, data) => {
-    // try {
-    //   const coordZList = []
-    //   for (let i = 0; i < data.length; i++) {
-    //     coordZList.push(data[i].coord.coordZ)
-    //   }
+    try {
+      const coordZList = []
+      for (let i = 0; i < data.length; i++) {
+        coordZList.push(data[i].coord.coordZ)
+      }
 
-    //   let filterArr = []
-    //   for (let i = 0; i < coordZList.length; i++) {
-    //     var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
-    //     for (let j = 0; j < 10; j++) {
-    //       filterArr.push(pre + j)
-    //     }
-    //   }
+      let filterArr = []
+      for (let i = 0; i < coordZList.length; i++) {
+        var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
+        for (let j = 0; j < 10; j++) {
+          filterArr.push(pre + j)
+        }
+      }
 
-    //   filterArr = [...new Set(filterArr)]
-    //   const newImageList = []
-    //   for (let i = 0; i < filterArr.length; i++) {
-    //     newImageList.push(imageList[filterArr[i]])
-    //   }
+      filterArr = [...new Set(filterArr)]
+      const newImageList = []
+      for (let i = 0; i < filterArr.length; i++) {
+        newImageList.push(imageList[filterArr[i]])
+      }
 
-    //   for (let i = 0; i < newImageList.length; i++) {
-    //     cornerstone.loadAndCacheImage(newImageList[i])
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-    // }
-    for (let i = 0; i < imageList.length; i++) {
-      cornerstone.loadAndCacheImage(imageList[i])
+      for (let i = 0; i < newImageList.length; i++) {
+        cornerstone.loadAndCacheImage(newImageList[i])
+      }
+    } catch (error) {
+      console.log(error)
     }
+    // for (let i = 0; i < imageList.length; i++) {
+    //   cornerstone.loadAndCacheImage(imageList[i])
+    // }
   }
 
   // ===========================================================
@@ -875,7 +880,7 @@ const Viewer = () => {
 
   // 弹窗
   const handleShowModal = () => {
-    console.log(formatPostData())
+    formatPostData()
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {
@@ -940,6 +945,8 @@ const Viewer = () => {
         newSoak: noduleList[i].newSoak ? noduleList[i].newSoak : '',
       })
     }
+
+    console.log(postData.resultInfo)
 
     postData.resultInfo = JSON.stringify(postData.resultInfo)
 
@@ -1012,27 +1019,6 @@ const Viewer = () => {
         }
       })
     }
-
-    // updateDnResult(JSON.stringify(postData)).then(res => {
-    //   console.log(res)
-    //   if (res.data.code === 200) {
-    //     message.success(`提交审核结果成功`)
-    //     setVisible(false)
-    //     setTimeout(() => {
-    //       window.parent.postMessage(
-    //         {
-    //           code: 200,
-    //           success: true,
-    //           backId: getURLParameters(window.location.href).backId,
-    //           backType: getURLParameters(window.location.href).backType,
-    //         },
-    //         '*'
-    //       )
-    //     }, 1000)
-    //   } else {
-    //     message.error(`提交失败，请刷新后重新尝试`)
-    //   }
-    // })
   }
 
   // ===========================================================
@@ -1200,74 +1186,73 @@ const Viewer = () => {
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    // addNewNodeList(JSON.stringify(postData)).then(res => {
-    //   if (res.data.code === 1) {
-    setTimeout(hide)
-    setConfirmLoading(false)
+    addNewNodeList(JSON.stringify(postData)).then(res => {
+      if (res.data.code === 1) {
+        setTimeout(hide)
+        setConfirmLoading(false)
 
-    const startX = postData.boxes.split(',')[1]
-    const startY = postData.boxes.split(',')[0]
-    const endX = postData.boxes.split(',')[3]
-    const endY = postData.boxes.split(',')[2]
-    const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
+        const startX = postData.boxes.split(',')[1]
+        const startY = postData.boxes.split(',')[0]
+        const endX = postData.boxes.split(',')[3]
+        const endY = postData.boxes.split(',')[2]
+        const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
 
-    const newNodeData = {
-      active: false,
-      checked: false,
-      featureLabelG: '',
-      id: `id_${toolList[0].uuid}`,
-      info: '',
-      lobe: toolList[0].lobe,
-      lung: toolList[0].lung,
-      noduleName: `nodule_${toolList[0].uuid}`,
-      noduleNum: toolList[0].uuid,
-      num: currentImageIdIndex,
-      review: true,
-      risk: '0',
-      size: '',
-      soak: '',
-      state: true,
-      suggest: toolList[0].suggest,
-      type: toolList[0].type,
-      nodeType: 1,
-      imageUrl1: '',
-      imageUrl2: '',
-      scrynMaligant: '0',
-      whu_scrynMaligant: '0',
-      nodeBox: [startY, startX, endY, endX],
-      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-        Math.abs(endY - startY) * rowPixelSpacing
-      ).toFixed(2)}mm`,
-      maxHu: toolList[0].cachedStats.max,
-      minHu: toolList[0].cachedStats.min,
-      meanHu: toolList[0].cachedStats.mean.toFixed(2),
-      diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
-      noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
-      centerHu: cornerstone.getPixels(
-        cornerstoneElement,
-        (Number(startX) + Number(endX)) / 2,
-        (Number(startY) + Number(endY)) / 2,
-        1,
-        1
-      )[0],
-    }
+        const newNodeData = {
+          active: false,
+          checked: false,
+          featureLabelG: '',
+          id: `id_${toolList[0].uuid}`,
+          info: '',
+          lobe: toolList[0].lobe,
+          lung: toolList[0].lung,
+          noduleName: `nodule_${toolList[0].uuid}`,
+          noduleNum: toolList[0].uuid,
+          num: currentImageIdIndex,
+          review: true,
+          risk: '0',
+          size: '',
+          soak: '',
+          state: true,
+          suggest: toolList[0].suggest,
+          type: toolList[0].type,
+          nodeType: 1,
+          imageUrl1: '',
+          imageUrl2: '',
+          scrynMaligant: '0',
+          whu_scrynMaligant: '0',
+          nodeBox: [startY, startX, endY, endX],
+          diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
+            Math.abs(endY - startY) * rowPixelSpacing
+          ).toFixed(2)}mm`,
+          maxHu: toolList[0].cachedStats.max,
+          minHu: toolList[0].cachedStats.min,
+          meanHu: toolList[0].cachedStats.mean.toFixed(2),
+          diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
+          noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
+          centerHu: cornerstone.getPixels(
+            cornerstoneElement,
+            (Number(startX) + Number(endX)) / 2,
+            (Number(startY) + Number(endY)) / 2,
+            1,
+            1
+          )[0],
+        }
 
-    noduleList.push(newNodeData)
-    setNoduleList([...noduleList])
+        noduleList.push(newNodeData)
+        setNoduleList([...noduleList])
 
-    saveResults(callback => {
-      fetchDoctorData(callback => {
-        updateCanvasAndList()
-      })
+        saveResults(callback => {
+          fetchDoctorData(callback => {
+            updateCanvasAndList()
+          })
+        })
+      } else {
+        message.error(`新增失败，请重新尝试`)
+        setTimeout(hide)
+        setConfirmLoading(true)
+        return false
+      }
     })
-
-    //   } else {
-    //     message.error(`新增失败，请重新尝试`)
-    //     setTimeout(hide)
-    //     setConfirmLoading(true)
-    //     return false
-    //   }
-    // })
   }
 
   // 删除结节
@@ -1345,14 +1330,17 @@ const Viewer = () => {
     setAdjustModalVisible(true)
   }
 
+  // 重新计算相关属性
   const handleAdjustNodeOk = () => {
     const checkItme = noduleList.find(item => item.checked === true)
 
     if (checkItme) {
       const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
       const data = tool.data[0].cachedStats
+      // const handle = tool.data[0].handles
       const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
       const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
+      // let nodeBox = []
       if (checkItme.nodeType === 1) {
         checkItme.diameter = `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
         checkItme.noduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
@@ -1360,6 +1348,36 @@ const Viewer = () => {
         checkItme.newDiameter = `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
         checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
       }
+
+      // if (handle.start.x > handle.end.x) {
+      //   nodeBox = [parseInt(handle.end.y), parseInt(handle.end.x), parseInt(handle.start.y), parseInt(handle.start.x)]
+      // } else {
+      //   nodeBox = [parseInt(handle.start.y), parseInt(handle.start.x), parseInt(handle.end.y), parseInt(handle.end.x)]
+      // }
+
+      // startX: rois.bbox[1],
+      // startY: rois.bbox[0],
+      // endX: rois.bbox[3],
+      // endY: rois.bbox[2],
+
+      // const startX = nodeBox[1]
+      // const startY = nodeBox[0]
+      // const endX = nodeBox[3]
+      // const endY = nodeBox[2]
+
+      // checkItme.nodeBox = nodeBox
+      // checkItme.maxHu = data.max
+      // checkItme.minHu = data.min
+      // checkItme.meanHu = data.mean.toFixed(2)
+      checkItme.diameterNorm = Math.sqrt(data.area).toFixed(2)
+      // checkItme.centerHu = cornerstone.getPixels(
+      //   cornerstoneElement,
+      //   (Number(startX) + Number(endX)) / 2,
+      //   (Number(startY) + Number(endY)) / 2,
+      //   1,
+      //   1
+      // )[0]
+
       setNoduleList([...noduleList])
     }
 
@@ -1373,14 +1391,8 @@ const Viewer = () => {
 
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
-      {/* {taskLength !== imagesConfig.length ? (
-        <div className="load-image-mask">
-          <span>图片序列加载中 {taskLength > 0 ? <em>，正在加载第 {taskLength} 张</em> : null}</span>
-        </div>
-      ) : null} */}
       <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} />
       <div className="viewer-center-box">
-        {/* <LeftSidePanel data={sequenceListData} handleSequenceListClick={handleSequenceListClick} /> */}
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel
             handleVisibleChange={handleVisibleChange}
