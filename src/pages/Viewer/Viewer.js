@@ -1186,8 +1186,8 @@ const Viewer = () => {
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    addNewNodeList(JSON.stringify(postData)).then(res => {
-      if (res.data.code === 1) {
+    // addNewNodeList(JSON.stringify(postData)).then(res => {
+      // if (res.data.code === 1) {
         setTimeout(hide)
         setConfirmLoading(false)
 
@@ -1246,13 +1246,13 @@ const Viewer = () => {
             updateCanvasAndList()
           })
         })
-      } else {
-        message.error(`新增失败，请重新尝试`)
-        setTimeout(hide)
-        setConfirmLoading(true)
-        return false
-      }
-    })
+      // } else {
+      //   message.error(`新增失败，请重新尝试`)
+      //   setTimeout(hide)
+      //   setConfirmLoading(true)
+      //   return false
+      // }
+    // })
   }
 
   // 删除结节
