@@ -248,7 +248,7 @@ const Viewer = () => {
           const measurementData = {
             visible: true,
             active: true,
-            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'red',
+            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'white',
             invalidated: true,
             handles: {
               start: {
@@ -272,7 +272,7 @@ const Viewer = () => {
           const measurementData = {
             visible: true,
             active: true,
-            color: 'red',
+            color: 'white',
             invalidated: true,
             handles: {
               start: {
@@ -1186,8 +1186,8 @@ const Viewer = () => {
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    // addNewNodeList(JSON.stringify(postData)).then(res => {
-      // if (res.data.code === 1) {
+    addNewNodeList(JSON.stringify(postData)).then(res => {
+      if (res.data.code === 1) {
         setTimeout(hide)
         setConfirmLoading(false)
 
@@ -1209,7 +1209,7 @@ const Viewer = () => {
           noduleNum: toolList[0].uuid,
           num: currentImageIdIndex,
           review: true,
-          risk: '0',
+          risk: res.whu_scrynMaligant,
           size: '',
           soak: '',
           state: true,
@@ -1218,8 +1218,8 @@ const Viewer = () => {
           nodeType: 1,
           imageUrl1: '',
           imageUrl2: '',
-          scrynMaligant: '0',
-          whu_scrynMaligant: '0',
+          scrynMaligant: res.data.scrynMaligant,
+          whu_scrynMaligant: res.data.whu_scrynMaligant,
           nodeBox: [startY, startX, endY, endX],
           diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
             Math.abs(endY - startY) * rowPixelSpacing
@@ -1246,13 +1246,13 @@ const Viewer = () => {
             updateCanvasAndList()
           })
         })
-      // } else {
-      //   message.error(`新增失败，请重新尝试`)
-      //   setTimeout(hide)
-      //   setConfirmLoading(true)
-      //   return false
-      // }
-    // })
+      } else {
+        message.error(`新增失败，请重新尝试`)
+        setTimeout(hide)
+        setConfirmLoading(true)
+        return false
+      }
+    })
   }
 
   // 删除结节
