@@ -727,9 +727,7 @@ const Viewer = () => {
           newSoak:
             resultInfo[i] && resultInfo[i].newSoak
               ? resultInfo[i].newSoak
-              : resultInfo[i] && resultInfo[i].soak
-              ? resultInfo[i].soak
-              : '',
+              : res[i].invisionClassify ? res[i].invisionClassify : '',
           info: '',
           checked: false,
           active: false,
