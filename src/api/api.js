@@ -69,4 +69,5 @@ export const addNewNodeList = params =>
   })
 
 // 下载文件
-export const downloadZip = orderId => axios.get(`${basicUrl}/multiomics/medicalImage/getPreSignedUrl?orderId=${orderId}`, )
+export const downloadZip = orderId =>
+  axios.get(`${basicUrl}/multiomics/medicalImage/getPreSignedUrl?orderId=${orderId}`)
