@@ -961,7 +961,7 @@ const Viewer = () => {
         message.success(`结节信息保存成功`)
         callback && callback()
       } else {
-        message.error(`结节结果保存失败，请检查网络后重新尝试`)
+        message.error(`结节结果保存失败，请检查网络或是重新登录后再行尝试`)
       }
     })
   }

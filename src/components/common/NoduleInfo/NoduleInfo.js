@@ -177,11 +177,11 @@ const NoduleInfo = props => {
             </Select>
           </div>
 
-          {/* {props.noduleInfo.newSoak ? (
+          {props.noduleInfo.newSoak ? (
             <div className="list" style={{ marginTop: 3 }}>
               <div className="list-title">浸润类型：</div>
               <Select
-                disabled={props.pageState === 'admin'}
+                disabled='disabled'
                 size="small"
                 value={props.noduleInfo.newSoak}
                 style={{ width: 185, fontSize: 13 }}
@@ -194,7 +194,7 @@ const NoduleInfo = props => {
                 <Option value="OTHER">OTHER（其他）</Option>
               </Select>
             </div>
-          ) : null} */}
+          ) : null}
 
           <div className="list">
             <em>大小：</em>
