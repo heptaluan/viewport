@@ -8,27 +8,26 @@ const Header = props => {
   const [visible, setVisible] = useState(false)
   const [fileData, setFileData] = useState([])
 
-  const handleDownLoad = () => {
-    const orderId = getURLParameters(window.location.href).orderId
-    const domian = getURLParameters(window.location.href).url
-    const token = getURLParameters(window.location.href).token
-    window.open(
-      `${domian}/tailai-multiomics/multiomics/medicalImage/downloadZip?token=${token}&orderId=${orderId}`,
-      '_blank'
-    )
-  }
-
   // const handleDownLoad = () => {
-  //   downloadZip(getURLParameters(window.location.href).orderId).then(res=>{
-  //     debugger
-  //     const {result, success, message} = res.data
-  //     if (success) {
-  //       window.open(result, '_blank')
-  //     } else {
-  //       message.warning(message)
-  //     }
-  //   })
+  //   const orderId = getURLParameters(window.location.href).orderId
+  //   const domian = getURLParameters(window.location.href).url
+  //   const token = getURLParameters(window.location.href).token
+  //   window.open(
+  //     `${domian}/tailai-multiomics/multiomics/medicalImage/downloadZip?token=${token}&orderId=${orderId}`,
+  //     '_blank'
+  //   )
   // }
+
+  const handleDownLoad = () => {
+    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(res=>{
+      const {result, success, message} = res.data
+      if (success) {
+        window.open(result, '_blank')
+      } else {
+        message.warning(message)
+      }
+    })
+  }
 
   useEffect(() => {
     const fetchData = async () => {

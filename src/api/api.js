@@ -10,7 +10,7 @@ axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.locati
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 // axios.defaults.headers.common['X-Access-Token'] =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjAwMDA5MTgsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.Taj1WzwwWPtnbujdwx27lUM-ERXuur9RfG-EQpdHrmQ'
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjA3NzI1NTcsInVzZXJuYW1lIjoiYWRtaW4ifQ.L-8RyAG0anHjygAiYFSbVRARGQJN6mNql7A9gjyHGp8'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -69,5 +69,5 @@ export const addNewNodeList = params =>
   })
 
 // 下载文件
-export const downloadZip = orderId =>
-  axios.get(`${basicUrl}/multiomics/medicalImage/getPreSignedUrl?orderId=${orderId}`)
+export const downloadZip = (orderId, resource) =>
+  axios.get(`${basicUrl}/multiomics/medicalImage/getPreSignedUrl?orderId=${orderId}&taskId=${resource}`)
