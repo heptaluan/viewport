@@ -329,38 +329,17 @@ const Viewer = () => {
 
       setImagesConfig(imageList)
 
-      // 缓存
-      loadAndCacheImage(cornerstone, imageList, data)
+      // 缓存图片
+      if (data && data.length > 0) {
+        loadAndCacheImage(cornerstone, imageList, data)
+      }
     }
   }
 
   // 缓存图片请求池
   const loadAndCacheImage = (cornerstone, imageList, data) => {
-    try {
-      const coordZList = []
-      for (let i = 0; i < data.length; i++) {
-        coordZList.push(data[i].index)
-      }
-
-      let filterArr = []
-      for (let i = 0; i < coordZList.length; i++) {
-        var pre = coordZList[i] - 5 > 0 ? coordZList[i] - 5 : 0
-        for (let j = 0; j < 10; j++) {
-          filterArr.push(pre + j)
-        }
-      }
-
-      filterArr = [...new Set(filterArr)]
-      const newImageList = []
-      for (let i = 0; i < filterArr.length; i++) {
-        newImageList.push(imageList[filterArr[i]])
-      }
-
-      for (let i = 0; i < newImageList.length; i++) {
-        cornerstone.loadAndCacheImage(newImageList[i])
-      }
-    } catch (error) {
-      console.log(error)
+    for (let i = 0; i < imageList.length; i++) {
+      cornerstone.loadAndCacheImage(imageList[i])
     }
   }
 
@@ -1128,10 +1107,10 @@ const Viewer = () => {
           suggest: toolList[0].suggest,
           type: toolList[0].type,
           nodeType: 1,
-          imageUrl1: res.data.imageUrl1,
-          imageUrl2: res.data.imageUrl2,
-          scrynMaligant: res.data.scrynMaligant,
-          whu_scrynMaligant: res.data.whu_scrynMaligant,
+          imageUrl1: '',
+          imageUrl2: '',
+          scrynMaligant: '',
+          whu_scrynMaligant: '',
           nodeBox: [startY, startX, endY, endX],
           diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
             Math.abs(endY - startY) * rowPixelSpacing
