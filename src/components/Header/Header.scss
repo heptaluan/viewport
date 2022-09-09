@@ -7,3 +7,20 @@
   justify-content: space-between;
   font-size: 14px;
 }
+
+.ant-image-preview-switch-left,
+.ant-image-preview-switch-right {
+  width: 60px !important;
+  height: 60px !important;
+  background: #d9363e !important;
+
+  .anticon-left,
+  .anticon-right {
+    font-size: 36px !important;
+    color: #fff !important;
+  }
+}
+
+.ant-image-preview-switch-left-disabled, .ant-image-preview-switch-right-disabled {
+  display: none !important;
+}

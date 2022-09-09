@@ -63,7 +63,7 @@ const Header = props => {
       {props.pageType === 'review' ? (
         <div className="export">
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
-            {fileData.length === 0 ? '暂无临床影像' : '查看临床影像'}
+            {fileData.length === 0 ? `暂无临床影像` : `查看临床影像（共${fileData.length}页）`}
           </Button>
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
             影像下载
