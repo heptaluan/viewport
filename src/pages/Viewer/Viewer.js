@@ -155,10 +155,12 @@ const Viewer = () => {
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
+            
             formatNodeData(data, resultInfo.nodelist)
             fetcImagehData(data.detectionResult.nodulesList)
           } else {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+            debugger
             formatNodeData(data, [])
             fetcImagehData(data.detectionResult.nodulesList)
           }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
-import { Tooltip, Button } from 'antd'
+import { Tooltip, Button, Slider, InputNumber } from 'antd'
 import { getURLParameters } from '../../util/index'
 
 const toolbarList = [
@@ -129,6 +129,7 @@ const toolbarList = [
 
 const Toolbar = props => {
   const [state, setstate] = useState(toolbarList)
+  const [inputValue, setInputValue] = useState(1)
 
   const handleToolbarClick = (e, index, type) => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
@@ -152,6 +153,10 @@ const Toolbar = props => {
 
     // 父组件传值
     props.handleToolbarClick(type, state[index].checked)
+  }
+
+  const handleSliderChange = newValue => {
+    setInputValue(newValue)
   }
 
   return (
@@ -185,6 +190,14 @@ const Toolbar = props => {
           <Button onClick={e => props.handleShowMarker(e)} size="small">
             {props.showMarker ? '隐藏标注' : '显示标注'}
           </Button>
+
+          <Slider
+            min={1}
+            max={10}
+            onChange={handleSliderChange}
+            value={typeof inputValue === 'number' ? inputValue : 0}
+          />
+          <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} />
         </div>
       ) : null}
     </ul>
