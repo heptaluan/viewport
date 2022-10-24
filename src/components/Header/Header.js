@@ -49,7 +49,7 @@ const Header = props => {
   return (
     <div className="header-box">
       <div className="user-content">
-        {props.data?.patientName ? (
+        {props.data?.patientName && getURLParameters(window.location.href).page === 'image' ? (
           <div className="patient-detail">
             <span>姓名：{props.data.patientName}，</span>
             <span>性别：{props.data.gender_dictText}，</span>

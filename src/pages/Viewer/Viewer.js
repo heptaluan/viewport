@@ -19,6 +19,7 @@ import {
   getDoctorTask,
   addNewNodeList,
   updateDnResultTemp,
+  getDnReslutByOrderIdUrl,
 } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { Modal, message, Button } from 'antd'
@@ -134,6 +135,18 @@ const Viewer = () => {
       }
     }
 
+    // 订单跳转请求接口
+    const getDnReslutByOrderId = async () => {
+      const result = await getDnReslutByOrderIdUrl(getURLParameters(window.location.href).orderId)
+      if (result.data.code === 200) {
+        if (result.data.result) {
+          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
+          formatNodeData(data, [])
+          fetcImagehData(data.detectionResult.nodulesList)
+        }
+      }
+    }
+
     // 医生请求接口
     const fetchDoctorData = async () => {
       const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
@@ -159,7 +172,11 @@ const Viewer = () => {
     }
 
     if (getURLParameters(window.location.href).user === 'admin') {
-      fetchAdminData()
+      if (getURLParameters(window.location.href).requestType === 'order') {
+        getDnReslutByOrderId()
+      } else {
+        fetchAdminData()
+      }
     } else if (!getURLParameters(window.location.href).user) {
       fetcImagehData(null)
     } else {
@@ -192,11 +209,14 @@ const Viewer = () => {
       const result = await getPatientsList(getURLParameters(window.location.href).resource)
       if (result.data.code === 200 && result.data.result) {
         setPatients(result.data.result.records[0])
+        localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
+      } else {
+        localStorage.setItem('patients', '')
       }
     }
-    if (getURLParameters(window.location.href).page === 'image') {
+    // if (getURLParameters(window.location.href).page === 'image') {
       fetchData()
-    }
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
