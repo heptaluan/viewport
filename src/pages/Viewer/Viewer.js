@@ -155,12 +155,11 @@ const Viewer = () => {
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-            
+
             formatNodeData(data, resultInfo.nodelist)
             fetcImagehData(data.detectionResult.nodulesList)
           } else {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-            debugger
             formatNodeData(data, [])
             fetcImagehData(data.detectionResult.nodulesList)
           }
@@ -217,7 +216,7 @@ const Viewer = () => {
       }
     }
     // if (getURLParameters(window.location.href).page === 'image') {
-      fetchData()
+    fetchData()
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -726,6 +725,28 @@ const Viewer = () => {
   //   }
   // }
 
+  // 格式化中心直径
+  const formatDiameter = diameter => {
+    if (diameter) {
+      return Math.max(...diameter.replace('*', '').split('mm'))
+    } else {
+      return ''
+    }
+  }
+
+  // 根据滑块调整列表的检阅状态
+  const handleSliderChange = val => {
+    for (let i = 0; i < noduleList.length; i++) {
+      if (noduleList[i].diameterSize < val) {
+        noduleList[i].review = true
+      } else {
+        noduleList[i].review = false
+      }
+    }
+    console.log(noduleList)
+    setNoduleList([...noduleList])
+  }
+
   // 格式化结节数据
   const formatNodeData = (data, resultInfo) => {
     const nodulesList = []
@@ -767,6 +788,7 @@ const Viewer = () => {
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
           diameter: res[i].diameter,
+          diameterSize: formatDiameter(res[i].diameter),
           noduleSize: res[i].noduleSize,
           newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
           newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
@@ -822,6 +844,7 @@ const Viewer = () => {
             diameterNorm: resultInfo[i].diameterNorm,
             centerHu: resultInfo[i].centerHu,
             diameter: resultInfo[i].diameter,
+            diameterSize: formatDiameter(resultInfo[i].diameter),
             noduleSize: resultInfo[i].noduleSize,
             newDiameter: resultInfo[i].newDiameter,
             newNoduleSize: resultInfo[i].newNoduleSize,
@@ -953,6 +976,7 @@ const Viewer = () => {
         whu_scrynMaligant: noduleList[i].whu_scrynMaligant ? noduleList[i].whu_scrynMaligant : '',
         nodeBox: noduleList[i].nodeBox ? noduleList[i].nodeBox : '',
         diameter: noduleList[i].diameter ? noduleList[i].diameter : '',
+        diameterSize: noduleList[i].diameter ? formatDiameter(noduleList[i].diameter) : '',
         maxHu: noduleList[i].maxHu ? noduleList[i].maxHu : '',
         minHu: noduleList[i].minHu ? noduleList[i].minHu : '',
         meanHu: noduleList[i].meanHu ? noduleList[i].meanHu : '',
@@ -967,8 +991,6 @@ const Viewer = () => {
         newSoak: noduleList[i].newSoak ? noduleList[i].newSoak : '',
       })
     }
-
-    console.log(postData.resultInfo)
 
     postData.resultInfo = JSON.stringify(postData.resultInfo)
 
@@ -1246,6 +1268,11 @@ const Viewer = () => {
           diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
             Math.abs(endY - startY) * rowPixelSpacing
           ).toFixed(2)}mm`,
+          diameterSize: formatDiameter(
+            `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
+              Math.abs(endY - startY) * rowPixelSpacing
+            ).toFixed(2)}mm`
+          ),
           maxHu: toolList[0].cachedStats.max,
           minHu: toolList[0].cachedStats.min,
           meanHu: toolList[0].cachedStats.mean.toFixed(2),
@@ -1371,6 +1398,11 @@ const Viewer = () => {
         checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
       }
 
+      // 重新计算中心直径
+      checkItme.diameterSize = formatDiameter(
+        `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
+      )
+
       // if (handle.start.x > handle.end.x) {
       //   nodeBox = [parseInt(handle.end.y), parseInt(handle.end.x), parseInt(handle.start.y), parseInt(handle.start.x)]
       // } else {
@@ -1432,6 +1464,7 @@ const Viewer = () => {
           />
         </div>
         <ViewerMain
+          handleSliderChange={handleSliderChange}
           handleSubmitNodeDetail={handleSubmitNodeDetail}
           handleToolbarClick={handleToolbarClick}
           handleElementEnabledEvt={handleElementEnabledEvt}

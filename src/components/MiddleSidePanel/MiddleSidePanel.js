@@ -40,7 +40,7 @@ const MiddleSidePanel = props => {
             {props.noduleList?.map((item, index) => (
               <div
                 key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''}`}
+                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${item.diameterSize < Number(localStorage.getItem('diameterSize')) ? 'auto-item' : ''}`}
                 onClick={e => handleListClick(index, item.num)}
               >
                 {/* <div className="icon">{item.id}</div> */}

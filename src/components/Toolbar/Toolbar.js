@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
 import { Tooltip, Button, Slider, InputNumber } from 'antd'
 import { getURLParameters } from '../../util/index'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const toolbarList = [
   {
@@ -129,7 +130,7 @@ const toolbarList = [
 
 const Toolbar = props => {
   const [state, setstate] = useState(toolbarList)
-  const [inputValue, setInputValue] = useState(1)
+  const [inputValue, setInputValue] = useState(3)
 
   const handleToolbarClick = (e, index, type) => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
@@ -155,8 +156,17 @@ const Toolbar = props => {
     props.handleToolbarClick(type, state[index].checked)
   }
 
+  useEffect(() => {
+    localStorage.setItem('diameterSize', inputValue)
+    handleSliderChange(3)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  
+  // 滑块滑动事件
   const handleSliderChange = newValue => {
     setInputValue(newValue)
+    localStorage.setItem('diameterSize', newValue)
+    props.handleSliderChange(newValue)
   }
 
   return (
@@ -191,13 +201,19 @@ const Toolbar = props => {
             {props.showMarker ? '隐藏标注' : '显示标注'}
           </Button>
 
-          <Slider
-            min={1}
-            max={10}
-            onChange={handleSliderChange}
-            value={typeof inputValue === 'number' ? inputValue : 0}
-          />
-          <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} />
+          <div className="slider-box">
+            <Slider
+              min={1}
+              max={15}
+              onChange={handleSliderChange}
+              value={typeof inputValue === 'number' ? inputValue : 0}
+              size="small"
+            />
+            <InputNumber addonAfter="mm" disabled min={0} max={15} step={1} value={inputValue} size="small" />
+            <Tooltip title="自动检阅小于滑块所选值的结节">
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </div>
         </div>
       ) : null}
     </ul>

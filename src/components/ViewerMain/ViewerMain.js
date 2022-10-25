@@ -17,6 +17,7 @@ const ViewerMain = props => {
       ) : (
         <div>
           <Toolbar
+            handleSliderChange={props.handleSliderChange}
             handleToolbarClick={props.handleToolbarClick}
             handleSubmitNodeDetail={props.handleSubmitNodeDetail}
             handleShowMarker={props.handleShowMarker}

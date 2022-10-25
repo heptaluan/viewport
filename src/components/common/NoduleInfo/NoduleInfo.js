@@ -181,7 +181,7 @@ const NoduleInfo = props => {
             <div className="list" style={{ marginTop: 3 }}>
               <div className="list-title">浸润类型：</div>
               <Select
-                disabled='disabled'
+                disabled="disabled"
                 size="small"
                 value={props.noduleInfo.newSoak}
                 style={{ width: 185, fontSize: 13 }}
@@ -196,47 +196,53 @@ const NoduleInfo = props => {
             </div>
           ) : null}
 
-          <div className="list">
-            <em>大小：</em>
-            {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
-          </div>
-          {props.noduleInfo.newDiameter ? (
-            <div className="list">
-              <em>大小调整后：</em>
-              {props.noduleInfo.nodeType === 1 ? (
-                <span style={{ color: '#ff4d4f' }}>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</span>
-              ) : (
-                <span style={{ color: '#ff4d4f' }}>
-                  {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
-                </span>
-              )}
-            </div>
-          ) : null}
+          {props.noduleInfo.diameterSize &&
+          props.noduleInfo.diameterSize > Number(localStorage.getItem('diameterSize')) ? (
+            <>
+              <div className="list">
+                <em>大小：</em>
+                {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
+              </div>
+              {props.noduleInfo.newDiameter ? (
+                <div className="list">
+                  <em>大小调整后：</em>
+                  {props.noduleInfo.nodeType === 1 ? (
+                    <span style={{ color: '#ff4d4f' }}>
+                      {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
+                    </span>
+                  ) : (
+                    <span style={{ color: '#ff4d4f' }}>
+                      {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
+                    </span>
+                  )}
+                </div>
+              ) : null}
 
-          <div className="list">
-            <em>体积：</em>
-            {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
-          </div>
-          {props.noduleInfo.newNoduleSize ? (
-            <div className="list">
-              <em>体积调整后：</em>
-              {props.noduleInfo.nodeType === 1 ? (
-                <span style={{ color: '#ff4d4f' }}>
-                  {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
-                </span>
-              ) : (
-                <span style={{ color: '#ff4d4f' }}>
-                  {props.noduleInfo.newNoduleSize ? props.noduleInfo.newNoduleSize : '-'} mm³
-                </span>
-              )}
-            </div>
+              <div className="list">
+                <em>体积：</em>
+                {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
+              </div>
+              {props.noduleInfo.newNoduleSize ? (
+                <div className="list">
+                  <em>体积调整后：</em>
+                  {props.noduleInfo.nodeType === 1 ? (
+                    <span style={{ color: '#ff4d4f' }}>
+                      {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
+                    </span>
+                  ) : (
+                    <span style={{ color: '#ff4d4f' }}>
+                      {props.noduleInfo.newNoduleSize ? props.noduleInfo.newNoduleSize : '-'} mm³
+                    </span>
+                  )}
+                </div>
+              ) : null}
+              <div className="list adjust">
+                <Button disabled={props.pageState === 'admin'} size="small" onClick={props.handleShowAdjustModal}>
+                  调整
+                </Button>
+              </div>
+            </>
           ) : null}
-
-          <div className="list adjust">
-            <Button disabled={props.pageState === 'admin'} size="small" onClick={props.handleShowAdjustModal}>
-              调整
-            </Button>
-          </div>
 
           <div className="list">
             <em>恶性风险：</em>

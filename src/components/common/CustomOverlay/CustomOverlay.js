@@ -96,9 +96,6 @@ const CustomOverlay = props => {
       <div className="bottom-box">
         <div>
           <div className="list">
-            检测ID：<span>{data?.studyID}</span>
-          </div>
-          <div className="list">
             姓名：<span>{data?.name}</span>
           </div>
           <div className="list">
@@ -112,6 +109,9 @@ const CustomOverlay = props => {
           </div>
           <div className="list">
             医院：<span>{data?.hospital}</span>
+          </div>
+          <div className="list">
+            检测ID：<span>{data?.studyID}</span>
           </div>
         </div>
         <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>

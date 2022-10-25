@@ -39,9 +39,31 @@
 
   .submit-btn {
     margin-left: 10px;
+    display: flex;
+    align-items: center;
 
     button {
       margin-right: 10px;
+    }
+
+    .slider-box {
+      width: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      .ant-slider {
+        width: 50px;
+        margin-right: 5px;
+      }
+
+      .ant-input-number-group-wrapper {
+        width: 70px;
+
+        .ant-input-number-group-addon {
+          padding: 0 5px
+        }
+      }
     }
   }
 }
