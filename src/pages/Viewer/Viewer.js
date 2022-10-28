@@ -14,10 +14,11 @@ import {
   saveDnResult,
   getImageList,
   getNodeList,
-  updateDnResult,
   getPatientsList,
   getDoctorTask,
   addNewNodeList,
+  updateDnResult,
+  updateSuperDoctorResult,
   updateDnResultTemp,
   getDnReslutByOrderIdUrl,
 } from '../../api/api'
@@ -426,6 +427,15 @@ const Viewer = () => {
     saveResults()
   }
 
+  const updateChiefNoduleList = checkState => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    checkItme.chiefReview = checkState
+    setNoduleList([...noduleList])
+
+    // 提交结节数据
+    saveResults()
+  }
+
   // 更新结节事件
   const checkNoduleList = (val, type) => {
     const checkItme = noduleList.find(item => item.checked === true)
@@ -734,17 +744,26 @@ const Viewer = () => {
     }
   }
 
+  const [preVal, setPreVal] = useState(3)
+
   // 根据滑块调整列表的检阅状态
   const handleSliderChange = val => {
     for (let i = 0; i < noduleList.length; i++) {
-      if (noduleList[i].diameterSize < val) {
+      if (noduleList[i].diameterSize <= val) {
         noduleList[i].review = true
-      } else {
+        noduleList[i].state = true
+      }
+
+      if (noduleList[i].diameterSize >= val && noduleList[i].diameterSize < preVal) {
         noduleList[i].review = false
+        noduleList[i].state = undefined
       }
     }
     console.log(noduleList)
     setNoduleList([...noduleList])
+    if (preVal !== val) {
+      setPreVal(val)
+    }
   }
 
   // 格式化结节数据
@@ -785,6 +804,7 @@ const Viewer = () => {
               ? true
               : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
+          chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
           diameter: res[i].diameter,
@@ -829,6 +849,7 @@ const Viewer = () => {
             noduleNum: resultInfo[i].noduleNum,
             state: true,
             review: true,
+            chiefReview: resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
             lung: resultInfo[i].lungLocation,
             lobe: resultInfo[i].lobeLocation,
             featureLabelG: resultInfo[i].featureLabel,
@@ -923,16 +944,6 @@ const Viewer = () => {
     setVisible(false)
   }
 
-  // 弹窗
-  const handleShowModal = () => {
-    formatPostData()
-    if (noduleList.every(item => item.review === true)) {
-      setVisible(true)
-    } else {
-      message.warning(`请检阅完所有结节列表后在进行结果提交`)
-    }
-  }
-
   // 获取当前时间
   const getCurrentTime = () => {
     let yy = new Date().getFullYear()
@@ -966,6 +977,7 @@ const Viewer = () => {
         featureLabel: noduleList[i].type,
         edit_time: getCurrentTime(),
         edit: noduleList[i].review,
+        chiefReview: noduleList[i].chiefReview,
         suggest: noduleList[i].suggest,
         invisable: noduleList[i].state === false ? '1' : noduleList[i].state === true ? '0' : '-',
         nodeType: noduleList[i].nodeType ? noduleList[i].nodeType : '',
@@ -1010,18 +1022,30 @@ const Viewer = () => {
     })
   }
 
-  // 提交审核结果
-  const handleSubmitResults = () => {
-    const postData = formatPostData()
-    let index = 0
-    for (let i = 0; i < noduleList.length; i++) {
-      if (noduleList[i].nodeType === 1) {
-        index++
+  // 提交审核结果按钮
+  const handleShowModal = () => {
+    formatPostData()
+    if (getURLParameters(window.location.href).user === 'chief_lwx') {
+      if (noduleList.every(item => item.chiefReview === true)) {
+        setVisible(true)
+      } else {
+        message.warning(`请复核完所有结节后在进行结果提交`)
+      }
+    } else {
+      if (noduleList.every(item => item.review === true)) {
+        setVisible(true)
+      } else {
+        message.warning(`请检阅完所有结节后在进行结果提交`)
       }
     }
+  }
 
-    if (index === 0) {
-      updateDnResult(JSON.stringify(postData)).then(res => {
+  // 提交审核结果弹窗
+  const handleSubmitResults = () => {
+    const postData = formatPostData()
+
+    if (getURLParameters(window.location.href).user === 'chief_lwx') {
+      updateSuperDoctorResult(JSON.stringify(postData)).then(res => {
         console.log(res)
         if (res.data.code === 200) {
           message.success(`提交审核结果成功`)
@@ -1042,7 +1066,7 @@ const Viewer = () => {
         }
       })
     } else {
-      updateDnResultTemp(JSON.stringify(postData)).then(res => {
+      updateDnResult(JSON.stringify(postData)).then(res => {
         console.log(res)
         if (res.data.code === 200) {
           message.success(`提交审核结果成功`)
@@ -1253,6 +1277,7 @@ const Viewer = () => {
           noduleNum: toolList[0].uuid,
           num: currentImageIdIndex,
           review: true,
+          chiefReview: true,
           risk: res.whu_scrynMaligant,
           size: '',
           soak: '',
@@ -1483,6 +1508,7 @@ const Viewer = () => {
         handleInputBlur={handleInputBlur}
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
+        updateChiefNoduleList={updateChiefNoduleList}
         handleUpdateRisk={handleUpdateRisk}
         handleShowAdjustModal={handleShowAdjustModal}
         pageState={pageState}
@@ -1492,7 +1518,7 @@ const Viewer = () => {
       ) : null}
 
       <Modal
-        title="提交审核结果"
+        title="提交结果"
         maskClosable={false}
         visible={visible}
         onOk={handleSubmitResults}
@@ -1501,7 +1527,7 @@ const Viewer = () => {
         cancelText="取消"
         maskStyle={{ backgroundColor: 'transparent' }}
       >
-        <p>是否提交检阅结果</p>
+        <p>是否提交结果</p>
       </Modal>
 
       <Modal

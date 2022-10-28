@@ -33,7 +33,6 @@ const CustomOverlay = props => {
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
       const patients = localStorage.getItem('patients') ? JSON.parse(localStorage.getItem('patients')) : ''
-
       const data = {
         name: patients.patientName ? patients.patientName : '**',
         age: patients.age ? patients.age : '**',
@@ -50,8 +49,11 @@ const CustomOverlay = props => {
         sliceThickness: image.data.string('x00180050'),
         sliceLocation: image.data.string('x00201041'),
 
-        day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
+        // day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
+        // time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
+
+        day: patients.studyTime ? patients.studyTime.split(' ')[0] : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
+        time: patients.studyTime ? patients.studyTime.split(' ')[1] : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
 
         Rowsize: image.rows,
         Colsize: image.columns,
@@ -68,7 +70,7 @@ const CustomOverlay = props => {
           <div className="list">
             图像帧：
             <span>
-              {props.stackSize - props.imageIndex + 1} / {props.stackSize}（倒序：{props.imageIndex - 1} /{' '}
+              {props.stackSize - props.imageIndex + 1} / {props.stackSize}（正序：{props.imageIndex - 1} /{' '}
               {props.stackSize}）
             </span>
           </div>
