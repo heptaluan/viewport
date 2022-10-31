@@ -96,7 +96,7 @@ const MiddleSidePanel = props => {
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk}</span> %。
+                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                   </div>
                 ) : null
               })}

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import './Header.scss'
-import { Button, Image, message } from 'antd'
+import { Button, Image, Space, Alert, Popconfirm } from 'antd'
 import { getURLParameters } from '../../util/index'
 import { getClinicalFiles, downloadZip } from '../../api/api'
 
 const Header = props => {
   const [visible, setVisible] = useState(false)
   const [fileData, setFileData] = useState([])
+  const [remark, setRemark] = useState('')
 
   // const handleDownLoad = () => {
   //   const orderId = getURLParameters(window.location.href).orderId
@@ -19,14 +20,16 @@ const Header = props => {
   // }
 
   const handleDownLoad = () => {
-    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(res=>{
-      const {result, success, message} = res.data
-      if (success) {
-        window.open(result, '_blank')
-      } else {
-        message.warning(message)
+    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(
+      res => {
+        const { result, success, message } = res.data
+        if (success) {
+          window.open(result, '_blank')
+        } else {
+          message.warning(message)
+        }
       }
-    })
+    )
   }
 
   useEffect(() => {
@@ -35,7 +38,8 @@ const Header = props => {
       if (result.data.code === 500) {
         setFileData([])
       } else if (result.data.code === 200) {
-        setFileData([...result.data.result])
+        setFileData(result.data.result.appendix)
+        setRemark(result.data.result.remark)
       }
     }
     fetchData()
@@ -62,6 +66,33 @@ const Header = props => {
       </div>
       {props.pageType === 'review' ? (
         <div className="export">
+          {remark && remark !== '' ? (
+            <div className="tips-box">
+              <Alert
+                message={`补充说明：${remark}`}
+                type="warning"
+                action={
+                  <Space>
+                    {remark.length > 20 ? (
+                      <Popconfirm
+                        title={
+                          <>
+                            <div>补充说明</div>
+                            <span className='remark-content'>{remark}</span>
+                          </>
+                        }
+                        okText="确定"
+                      >
+                        <Button size="small" type="ghost">
+                          显示全部
+                        </Button>
+                      </Popconfirm>
+                    ) : null}
+                  </Space>
+                }
+              />
+            </div>
+          ) : null}
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0 ? `暂无临床影像` : `查看临床影像（共${fileData.length}页）`}
           </Button>
