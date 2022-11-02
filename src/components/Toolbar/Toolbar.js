@@ -130,7 +130,7 @@ const toolbarList = [
 
 const Toolbar = props => {
   const [state, setstate] = useState(toolbarList)
-  const [inputValue, setInputValue] = useState(3)
+  const [inputValue, setInputValue] = useState(0)
 
   const handleToolbarClick = (e, index, type) => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
@@ -157,17 +157,19 @@ const Toolbar = props => {
   }
 
   useEffect(() => {
-    localStorage.setItem('diameterSize', inputValue)
-    // handleSliderChange(3)
+    const diameterMaxSize = localStorage.getItem('diameterSize')
+    if (diameterMaxSize && diameterMaxSize !== '') {
+      setInputValue(diameterMaxSize)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   // 滑块滑动事件
-  // const handleSliderChange = newValue => {
-  //   setInputValue(newValue)
-  //   localStorage.setItem('diameterSize', newValue)
-  //   props.handleSliderChange(newValue)
-  // }
+  const handleSliderChange = newValue => {
+    setInputValue(newValue)
+    localStorage.setItem('diameterSize', newValue)
+    props.handleSliderChange(newValue)
+  }
 
   return (
     <ul className="tool-bar-box-wrap">
@@ -202,17 +204,17 @@ const Toolbar = props => {
           </Button>
 
           <div className="slider-box">
-            {/* <Slider
+            <Slider
               min={1}
-              max={15}
+              max={10}
               onChange={handleSliderChange}
               value={typeof inputValue === 'number' ? inputValue : 0}
               size="small"
             />
-            <InputNumber addonAfter="mm" disabled min={0} max={15} step={1} value={inputValue} size="small" />
+            <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />
             <Tooltip title="自动检阅小于滑块所选值的结节">
               <QuestionCircleOutlined />
-            </Tooltip> */}
+            </Tooltip>
           </div>
         </div>
       ) : null}

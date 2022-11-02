@@ -744,6 +744,7 @@ const Viewer = () => {
     }
   }
 
+  // 保存之前滑块的值
   const [preVal, setPreVal] = useState(3)
 
   // 根据滑块调整列表的检阅状态
@@ -764,6 +765,7 @@ const Viewer = () => {
     if (preVal !== val) {
       setPreVal(val)
     }
+    saveResults()
   }
 
   // 格式化结节数据
@@ -808,7 +810,10 @@ const Viewer = () => {
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
           diameter: res[i].diameter,
-          diameterSize: formatDiameter(res[i].diameter),
+          diameterSize:
+            resultInfo[i] && resultInfo[i].newDiameter
+              ? formatDiameter(resultInfo[i].newDiameter)
+              : formatDiameter(res[i].diameter),
           noduleSize: res[i].noduleSize,
           newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
           newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
@@ -865,7 +870,7 @@ const Viewer = () => {
             diameterNorm: resultInfo[i].diameterNorm,
             centerHu: resultInfo[i].centerHu,
             diameter: resultInfo[i].diameter,
-            diameterSize: formatDiameter(resultInfo[i].diameter),
+            diameterSize: resultInfo[i].newDiameter ? formatDiameter(resultInfo[i].newDiameter) : formatDiameter(resultInfo[i].diameter),
             noduleSize: resultInfo[i].noduleSize,
             newDiameter: resultInfo[i].newDiameter,
             newNoduleSize: resultInfo[i].newNoduleSize,
@@ -988,7 +993,11 @@ const Viewer = () => {
         whu_scrynMaligant: noduleList[i].whu_scrynMaligant ? noduleList[i].whu_scrynMaligant : '',
         nodeBox: noduleList[i].nodeBox ? noduleList[i].nodeBox : '',
         diameter: noduleList[i].diameter ? noduleList[i].diameter : '',
-        diameterSize: noduleList[i].diameter ? formatDiameter(noduleList[i].diameter) : '',
+        diameterSize: noduleList[i].newDiameter
+          ? formatDiameter(noduleList[i].newDiameter)
+          : noduleList[i].diameter
+          ? formatDiameter(noduleList[i].diameter)
+          : '',
         maxHu: noduleList[i].maxHu ? noduleList[i].maxHu : '',
         minHu: noduleList[i].minHu ? noduleList[i].minHu : '',
         meanHu: noduleList[i].meanHu ? noduleList[i].meanHu : '',
