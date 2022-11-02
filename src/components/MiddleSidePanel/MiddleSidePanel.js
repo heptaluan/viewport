@@ -1,8 +1,9 @@
 import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox, Tag } from 'antd'
+import { Checkbox, Tag, Tooltip } from 'antd'
 import { getURLParameters } from '../../util/index'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
@@ -14,10 +15,62 @@ const MiddleSidePanel = props => {
     props.showDeleteConfirm(item)
   }
 
+  const tips = (
+    <>
+      <div>当前微小结节的过滤值为：{localStorage.getItem('diameterSize')}mm</div>
+      <div>
+        默认 结节 <span style={{ background: '#fff', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>白色</span>
+      </div>
+      <div>
+        默认 微小结节 <span style={{ background: 'green', padding: '0 4px' }}>绿色</span>
+      </div>
+      <div>
+        非微小结节 调整为 微小结节 <span style={{ background: 'red', padding: '0 4px' }}>红色</span>
+      </div>
+      <div>
+        微小结节 调整为 非微小结节 <span style={{ background: 'purple', padding: '0 4px' }}>紫色</span>
+      </div>
+    </>
+  )
+
+  // 格式化中心直径
+  const formatDiameter = diameter => {
+    if (diameter) {
+      return Math.max(...diameter.replace('*', '').split('mm'))
+    } else {
+      return ''
+    }
+  }
+
+  // 根据结节类型调整背景颜色
+  const formatNode = item => {
+    const maxSize = Number(localStorage.getItem('diameterSize'))
+    const diameterSize = formatDiameter(item.diameter)
+    const newDiameterSize = formatDiameter(item.newDiameter)
+    if (newDiameterSize) {
+      if (diameterSize <= maxSize && newDiameterSize >= maxSize) {
+        return 'purple-item'
+      } else if (diameterSize >= maxSize && newDiameterSize <= maxSize) {
+        return 'red-item'
+      }
+    } else {
+      if (diameterSize < maxSize) {
+        return 'green-item'
+      }
+    }
+  }
+
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
-        <div className="title">结节列表（{props.noduleList.length}）</div>
+        <div className="title">
+          <span>结节列表（{props.noduleList.length}）</span>
+          <span>
+            <Tooltip placement="bottomRight" title={tips}>
+              <QuestionCircleOutlined style={{ fontSize: '18px' }} />
+            </Tooltip>
+          </span>
+        </div>
         <div className="table-box">
           <div className="table-title">
             {/* <div className="icon">
@@ -41,9 +94,7 @@ const MiddleSidePanel = props => {
             {props.noduleList?.map((item, index) => (
               <div
                 key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${
-                  item.diameterSize < Number(localStorage.getItem('diameterSize')) ? 'auto-item' : ''
-                }`}
+                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNode(item)}`}
                 onClick={e => handleListClick(index, item.num)}
               >
                 {/* <div className="icon">{item.id}</div> */}
@@ -96,7 +147,8 @@ const MiddleSidePanel = props => {
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
+                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
+                    <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                   </div>
                 ) : null
               })}

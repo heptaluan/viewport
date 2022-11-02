@@ -130,7 +130,7 @@ const toolbarList = [
 
 const Toolbar = props => {
   const [state, setstate] = useState(toolbarList)
-  const [inputValue, setInputValue] = useState(0)
+  const [inputValue, setInputValue] = useState(null)
 
   const handleToolbarClick = (e, index, type) => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
@@ -208,7 +208,7 @@ const Toolbar = props => {
               min={1}
               max={10}
               onChange={handleSliderChange}
-              value={typeof inputValue === 'number' ? inputValue : 0}
+              value={inputValue}
               size="small"
             />
             <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />

@@ -19,7 +19,9 @@
 
     .title {
       height: 35px;
-      line-height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .table-box {
@@ -79,9 +81,19 @@
             background: #eaeaea;
           }
           
-          &.auto-item {
+          &.green-item {
             border: 1px solid #02b91938;
             background: #02b91938;
+          }
+
+          &.red-item {
+            border: 1px solid red;
+            background: red;
+          }
+
+          &.purple-item {
+            border: 1px solid purple;
+            background: purple;
           }
 
           &.add-item:last-child {

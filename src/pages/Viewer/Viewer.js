@@ -745,18 +745,20 @@ const Viewer = () => {
   }
 
   // 保存之前滑块的值
-  const [preVal, setPreVal] = useState(3)
+  const [preVal, setPreVal] = useState(localStorage.getItem('diameterSize'))
 
   // 根据滑块调整列表的检阅状态
   const handleSliderChange = val => {
     for (let i = 0; i < noduleList.length; i++) {
       if (noduleList[i].diameterSize <= val) {
         noduleList[i].review = true
+        noduleList[i].chiefReview = true
         noduleList[i].state = true
       }
 
       if (noduleList[i].diameterSize >= val && noduleList[i].diameterSize < preVal) {
         noduleList[i].review = false
+        noduleList[i].chiefReview = false
         noduleList[i].state = undefined
       }
     }
@@ -776,6 +778,14 @@ const Viewer = () => {
     if (data.code === 10000) {
       setOriginNoduleList([...data.detectionResult.nodulesList])
       const res = data.detectionResult.nodulesList
+      
+      // 初始化滑块的值
+      if (resultInfo[0].diameterMaxSize) {
+        localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
+      } else {
+        localStorage.setItem('diameterSize', 3)
+      }
+      
       // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
@@ -998,6 +1008,7 @@ const Viewer = () => {
           : noduleList[i].diameter
           ? formatDiameter(noduleList[i].diameter)
           : '',
+        diameterMaxSize: localStorage.getItem('diameterSize'),
         maxHu: noduleList[i].maxHu ? noduleList[i].maxHu : '',
         minHu: noduleList[i].minHu ? noduleList[i].minHu : '',
         meanHu: noduleList[i].meanHu ? noduleList[i].meanHu : '',
