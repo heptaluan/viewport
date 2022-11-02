@@ -158,16 +158,16 @@ const Toolbar = props => {
 
   useEffect(() => {
     localStorage.setItem('diameterSize', inputValue)
-    handleSliderChange(3)
+    // handleSliderChange(3)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   // 滑块滑动事件
-  const handleSliderChange = newValue => {
-    setInputValue(newValue)
-    localStorage.setItem('diameterSize', newValue)
-    props.handleSliderChange(newValue)
-  }
+  // const handleSliderChange = newValue => {
+  //   setInputValue(newValue)
+  //   localStorage.setItem('diameterSize', newValue)
+  //   props.handleSliderChange(newValue)
+  // }
 
   return (
     <ul className="tool-bar-box-wrap">
@@ -202,7 +202,7 @@ const Toolbar = props => {
           </Button>
 
           <div className="slider-box">
-            <Slider
+            {/* <Slider
               min={1}
               max={15}
               onChange={handleSliderChange}
@@ -212,7 +212,7 @@ const Toolbar = props => {
             <InputNumber addonAfter="mm" disabled min={0} max={15} step={1} value={inputValue} size="small" />
             <Tooltip title="自动检阅小于滑块所选值的结节">
               <QuestionCircleOutlined />
-            </Tooltip>
+            </Tooltip> */}
           </div>
         </div>
       ) : null}

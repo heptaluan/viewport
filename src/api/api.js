@@ -10,7 +10,7 @@ const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjY2NDY1NjIsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.I5m7cPlv_XA4SwogEfVXsVSeiW8NI-SflQO4MrpP6dI'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Njc0MTAwNTQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.23XlgKtPm0qwD3C0hnbt4WFV0JuhunKR_Glzh5DaqII'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -24,7 +24,7 @@ export const getImageList = resource =>
 
 // 查看临床影像
 export const getClinicalFiles = orderId =>
-  axios.get(`${basicUrl}/multiomics/bizAppendix/listAppendixes/?bizId=${orderId}&bizType=2000`)
+  axios.get(`${basicUrl}/tailai-multiomics/multiomics/bizAppendix/findCtDiagnoseByOrder/${orderId}`)
 
 // 获取病人信息
 export const getPatientsList = id =>
@@ -58,6 +58,14 @@ export const updateDnResultTemp = params =>
 // 提交审核结果
 export const updateDnResult = params =>
   axios.post(`${basicUrl}/report/image/updateDnResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+
+// 提交审核结果（总医生）
+export const updateSuperDoctorResult = params =>
+  axios.post(`${basicUrl}/report/image/updateSuperDoctorResult`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },

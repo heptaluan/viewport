@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
 import { Radio, Select, Button, Input, InputNumber } from 'antd'
+import { getURLParameters } from '../../../util/index'
 
 const { TextArea } = Input
 
@@ -59,6 +60,8 @@ const NoduleInfo = props => {
       checked: false,
     },
   ])
+
+  console.log(props.noduleInfo)
 
   const [riskData, setRiskData] = useState(0)
 
@@ -196,9 +199,9 @@ const NoduleInfo = props => {
             </div>
           ) : null}
 
-          {props.noduleInfo.diameterSize &&
+          {/* {props.noduleInfo.diameterSize &&
           props.noduleInfo.diameterSize > Number(localStorage.getItem('diameterSize')) ? (
-            <>
+            <> */}
               <div className="list">
                 <em>大小：</em>
                 {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
@@ -241,8 +244,8 @@ const NoduleInfo = props => {
                   调整
                 </Button>
               </div>
-            </>
-          ) : null}
+            {/* </>
+          ) : null} */}
 
           <div className="list">
             <em>恶性风险：</em>
@@ -320,6 +323,30 @@ const NoduleInfo = props => {
               </Button>
             </div>
           </div>
+          {getURLParameters(window.location.href).user === 'chief_lwx' ? (
+            <div className="group-wrap" style={{ marginTop: 5 }}>
+              <span>是否已复核</span>
+              <div className="group">
+                <Button
+                  disabled={props.pageState === 'admin'}
+                  type={props.noduleInfo.chiefReview === false ? 'primary' : null}
+                  style={{ marginRight: '15px' }}
+                  size="small"
+                  onClick={e => props.updateChiefNoduleList(false)}
+                >
+                  否
+                </Button>
+                <Button
+                  disabled={props.pageState === 'admin'}
+                  type={props.noduleInfo.chiefReview === true ? 'primary' : null}
+                  size="small"
+                  onClick={e => props.updateChiefNoduleList(true)}
+                >
+                  是
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Tag } from 'antd'
+import { getURLParameters } from '../../util/index'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
@@ -40,7 +41,9 @@ const MiddleSidePanel = props => {
             {props.noduleList?.map((item, index) => (
               <div
                 key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${item.diameterSize < Number(localStorage.getItem('diameterSize')) ? 'auto-item' : ''}`}
+                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${
+                  item.diameterSize < Number(localStorage.getItem('diameterSize')) ? 'auto-item' : ''
+                }`}
                 onClick={e => handleListClick(index, item.num)}
               >
                 {/* <div className="icon">{item.id}</div> */}
@@ -58,7 +61,13 @@ const MiddleSidePanel = props => {
                   <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
                 <div className="action review-state">
-                  <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
+                  {getURLParameters(window.location.href).user === 'chief_lwx' ? (
+                    <span className={item.chiefReview ? 'review' : null}>
+                      {item.chiefReview === true ? '已复核' : '未复核'}
+                    </span>
+                  ) : (
+                    <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
+                  )}
                 </div>
                 {item.nodeType === 1 ? (
                   <div className="del-tips">
@@ -87,7 +96,7 @@ const MiddleSidePanel = props => {
                   >
                     于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk}</span> %。
+                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为 <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                   </div>
                 ) : null
               })}

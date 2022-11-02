@@ -79,10 +79,10 @@
             background: #eaeaea;
           }
           
-          &.auto-item {
-            border: 1px solid #02b91938;
-            background: #02b91938;
-          }
+          // &.auto-item {
+          //   border: 1px solid #02b91938;
+          //   background: #02b91938;
+          // }
 
           &.add-item:last-child {
             border-bottom: 1px solid #ccc;
@@ -282,10 +282,6 @@
 .ant-checkbox-wrapper {
   justify-content: space-between;
   flex: 2 !important;
-}
-
-.ant-popover-inner-content {
-  padding: 0 !important;
 }
 
 .ant-tag {
