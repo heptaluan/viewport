@@ -778,14 +778,14 @@ const Viewer = () => {
     if (data.code === 10000) {
       setOriginNoduleList([...data.detectionResult.nodulesList])
       const res = data.detectionResult.nodulesList
-      
+
       // 初始化滑块的值
       if (resultInfo[0].diameterMaxSize) {
         localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
       } else {
         localStorage.setItem('diameterSize', 3)
       }
-      
+
       // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
@@ -880,7 +880,9 @@ const Viewer = () => {
             diameterNorm: resultInfo[i].diameterNorm,
             centerHu: resultInfo[i].centerHu,
             diameter: resultInfo[i].diameter,
-            diameterSize: resultInfo[i].newDiameter ? formatDiameter(resultInfo[i].newDiameter) : formatDiameter(resultInfo[i].diameter),
+            diameterSize: resultInfo[i].newDiameter
+              ? formatDiameter(resultInfo[i].newDiameter)
+              : formatDiameter(resultInfo[i].diameter),
             noduleSize: resultInfo[i].noduleSize,
             newDiameter: resultInfo[i].newDiameter,
             newNoduleSize: resultInfo[i].newNoduleSize,
