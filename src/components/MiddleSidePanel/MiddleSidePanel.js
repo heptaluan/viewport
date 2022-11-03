@@ -2,7 +2,7 @@ import React from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Tag, Tooltip } from 'antd'
-import { getURLParameters } from '../../util/index'
+import { getURLParameters, formatNodeStyle, formatMiniNodule } from '../../util/index'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
@@ -18,56 +18,32 @@ const MiddleSidePanel = props => {
   const tips = (
     <>
       <div>当前微小结节的过滤值为：{localStorage.getItem('diameterSize')}mm</div>
+      <div>结节列表中各背景色的含义如下：</div>
       <div>
         默认 结节 <span style={{ background: '#fff', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>白色</span>
       </div>
       <div>
-        默认 微小结节 <span style={{ background: 'green', padding: '0 4px' }}>绿色</span>
+        默认 微小结节 <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span>
       </div>
       <div>
-        非微小结节 调整为 微小结节 <span style={{ background: 'red', padding: '0 4px' }}>红色</span>
+        由 非微小结节 调整为 微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
       </div>
       <div>
-        微小结节 调整为 非微小结节 <span style={{ background: 'purple', padding: '0 4px' }}>紫色</span>
+        由 微小结节 调整为 非微小结节 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span>
       </div>
     </>
   )
-
-  // 格式化中心直径
-  const formatDiameter = diameter => {
-    if (diameter) {
-      return Math.max(...diameter.replace('*', '').split('mm'))
-    } else {
-      return ''
-    }
-  }
-
-  // 根据结节类型调整背景颜色
-  const formatNode = item => {
-    const maxSize = Number(localStorage.getItem('diameterSize'))
-    const diameterSize = formatDiameter(item.diameter)
-    const newDiameterSize = formatDiameter(item.newDiameter)
-    if (newDiameterSize) {
-      if (diameterSize <= maxSize && newDiameterSize >= maxSize) {
-        return 'purple-item'
-      } else if (diameterSize >= maxSize && newDiameterSize <= maxSize) {
-        return 'red-item'
-      }
-    } else {
-      if (diameterSize < maxSize) {
-        return 'green-item'
-      }
-    }
-  }
 
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
         <div className="title">
-          <span>结节列表（{props.noduleList.length}）</span>
+          <span>
+            结节列表（{props.noduleList.length}）微小结节个数（{formatMiniNodule(props.noduleList)}）
+          </span>
           <span>
             <Tooltip placement="bottomRight" title={tips}>
-              <QuestionCircleOutlined style={{ fontSize: '18px' }} />
+              <QuestionCircleOutlined style={{ fontSize: '16px' }} />
             </Tooltip>
           </span>
         </div>
@@ -94,7 +70,7 @@ const MiddleSidePanel = props => {
             {props.noduleList?.map((item, index) => (
               <div
                 key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNode(item)}`}
+                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNodeStyle(item)}`}
                 onClick={e => handleListClick(index, item.num)}
               >
                 {/* <div className="icon">{item.id}</div> */}

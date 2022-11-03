@@ -61,8 +61,6 @@ const NoduleInfo = props => {
     },
   ])
 
-  console.log(props.noduleInfo)
-
   const [riskData, setRiskData] = useState(0)
 
   useEffect(() => {

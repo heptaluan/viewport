@@ -22,7 +22,7 @@ import {
   updateDnResultTemp,
   getDnReslutByOrderIdUrl,
 } from '../../api/api'
-import { getURLParameters } from '../../util/index'
+import { getURLParameters, formatMiniNodule } from '../../util/index'
 import { Modal, message, Button } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
@@ -762,7 +762,6 @@ const Viewer = () => {
         noduleList[i].state = undefined
       }
     }
-    console.log(noduleList)
     setNoduleList([...noduleList])
     if (preVal !== val) {
       setPreVal(val)
@@ -974,18 +973,32 @@ const Viewer = () => {
 
   // 格式化提交数据
   const formatPostData = () => {
+
+    // 微小结节度量
+    const noduleMeasure = Number(localStorage.getItem('diameterSize'))
+
+    // 微小结节总数
+    const miniNodule = formatMiniNodule([...noduleList])
+
     const postData = {
       id:
         getURLParameters(window.location.href).user === 'admin'
           ? getURLParameters(window.location.href).taskId
           : getURLParameters(window.location.href).doctorId,
       resultInfo: {
+        noduleMeasure: noduleMeasure,
+        miniNodule: miniNodule,
         nodelist: [],
       },
     }
 
     for (let i = 0; i < noduleList.length; i++) {
       const index = originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1
+      const diameterSize = noduleList[i].newDiameter
+        ? formatDiameter(noduleList[i].newDiameter)
+        : noduleList[i].diameter
+        ? formatDiameter(noduleList[i].diameter)
+        : ''
       postData.resultInfo.nodelist.push({
         index: index ? index : noduleList.length + 1,
         imageIndex: noduleList[i].num,
@@ -1005,11 +1018,7 @@ const Viewer = () => {
         whu_scrynMaligant: noduleList[i].whu_scrynMaligant ? noduleList[i].whu_scrynMaligant : '',
         nodeBox: noduleList[i].nodeBox ? noduleList[i].nodeBox : '',
         diameter: noduleList[i].diameter ? noduleList[i].diameter : '',
-        diameterSize: noduleList[i].newDiameter
-          ? formatDiameter(noduleList[i].newDiameter)
-          : noduleList[i].diameter
-          ? formatDiameter(noduleList[i].diameter)
-          : '',
+        diameterSize: diameterSize,
         diameterMaxSize: localStorage.getItem('diameterSize'),
         maxHu: noduleList[i].maxHu ? noduleList[i].maxHu : '',
         minHu: noduleList[i].minHu ? noduleList[i].minHu : '',
@@ -1023,8 +1032,11 @@ const Viewer = () => {
         newNoduleSize: noduleList[i].newNoduleSize ? noduleList[i].newNoduleSize : '',
         soak: noduleList[i].soak ? noduleList[i].soak : '',
         newSoak: noduleList[i].newSoak ? noduleList[i].newSoak : '',
+        miniType: diameterSize <= noduleMeasure ? 1 : 0,
       })
     }
+
+    console.log(postData.resultInfo)
 
     postData.resultInfo = JSON.stringify(postData.resultInfo)
 

@@ -87,13 +87,13 @@
           }
 
           &.red-item {
-            border: 1px solid red;
-            background: red;
+            border: 1px solid #ff000052;
+            background: #ff000052;
           }
 
-          &.purple-item {
-            border: 1px solid purple;
-            background: purple;
+          &.blue-item {
+            border: 1px solid #34c0ff66;
+            background: #34c0ff66;
           }
 
           &.add-item:last-child {
@@ -101,7 +101,7 @@
           }
 
           &:hover {
-            border: 1px solid #ccc;
+            border: 1px solid #eaeaea;
             background: #eaeaea;
 
             .del-tips {
