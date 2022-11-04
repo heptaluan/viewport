@@ -16,9 +16,8 @@ const MiddleSidePanel = props => {
   }
 
   const tips = (
-    <>
+    <div style={{ fontSize: '13px' }}>
       <div>当前微小结节的过滤值为：{localStorage.getItem('diameterSize')}mm</div>
-      <div>结节列表中各背景色的含义如下：</div>
       <div>
         默认 结节 <span style={{ background: '#fff', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>白色</span>
       </div>
@@ -26,12 +25,15 @@ const MiddleSidePanel = props => {
         默认 微小结节 <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span>
       </div>
       <div>
-        由 非微小结节 调整为 微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
+        新增 结节 <span style={{ background: '#d1d1d1', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>灰色</span>
       </div>
       <div>
-        由 微小结节 调整为 非微小结节 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span>
+        由 非微小结节 调整为 微小结节 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span>
       </div>
-    </>
+      <div>
+        由 微小结节 调整为 非微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
+      </div>
+    </div>
   )
 
   return (

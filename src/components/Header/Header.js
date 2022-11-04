@@ -65,7 +65,7 @@ const Header = props => {
         ) : null}
       </div>
       {props.pageType === 'review' ? (
-        <div className="export">
+        <div className="export-box">
           {remark && remark !== '' ? (
             <div className="tips-box">
               <Alert

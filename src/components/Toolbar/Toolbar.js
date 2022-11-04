@@ -212,7 +212,7 @@ const Toolbar = props => {
               size="small"
             />
             <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />
-            <Tooltip title="自动检阅小于滑块所选值的结节">
+            <Tooltip title="小于滑块所选值的为微小结节">
               <QuestionCircleOutlined />
             </Tooltip>
           </div>
