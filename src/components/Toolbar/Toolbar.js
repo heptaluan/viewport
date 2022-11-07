@@ -161,9 +161,9 @@ const Toolbar = props => {
     if (diameterMaxSize && diameterMaxSize !== '') {
       setInputValue(diameterMaxSize)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  
+
   // 滑块滑动事件
   const handleSliderChange = newValue => {
     setInputValue(newValue)
@@ -204,13 +204,7 @@ const Toolbar = props => {
           </Button>
 
           <div className="slider-box">
-            <Slider
-              min={1}
-              max={10}
-              onChange={handleSliderChange}
-              value={inputValue}
-              size="small"
-            />
+            <Slider min={1} max={10} onChange={handleSliderChange} value={inputValue} size="small" />
             <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />
             <Tooltip title="小于滑块所选值的为微小结节">
               <QuestionCircleOutlined />

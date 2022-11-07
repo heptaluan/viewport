@@ -78,7 +78,7 @@ const Header = props => {
                         title={
                           <>
                             <div>补充说明</div>
-                            <span className='remark-content'>{remark}</span>
+                            <span className="remark-content">{remark}</span>
                           </>
                         }
                         okText="确定"

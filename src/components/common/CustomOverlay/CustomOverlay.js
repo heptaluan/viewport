@@ -52,8 +52,12 @@ const CustomOverlay = props => {
         // day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
         // time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
 
-        day: patients.studyTime ? patients.studyTime.split(' ')[0] : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        time: patients.studyTime ? patients.studyTime.split(' ')[1] : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
+        day: patients.studyTime
+          ? patients.studyTime.split(' ')[0]
+          : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
+        time: patients.studyTime
+          ? patients.studyTime.split(' ')[1]
+          : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
 
         Rowsize: image.rows,
         Colsize: image.columns,

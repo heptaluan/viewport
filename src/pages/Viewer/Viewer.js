@@ -975,7 +975,6 @@ const Viewer = () => {
 
   // 格式化提交数据
   const formatPostData = () => {
-
     // 微小结节度量
     const noduleMeasure = Number(localStorage.getItem('diameterSize'))
 
