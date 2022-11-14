@@ -139,10 +139,7 @@ const NoduleInfo = props => {
     <div className="nodule-info-box">
       {props.noduleInfo ? (
         <div className="nodule-detail">
-          {/* <div className="list">
-            <em>影像层：</em>
-            {props.noduleInfo.num}
-          </div> */}
+
           <div className="list">
             <span className="list-title">肺：</span>
             <Radio.Group disabled={props.pageState === 'admin'} onChange={onLungChange} value={props.noduleInfo.lung}>
@@ -150,6 +147,7 @@ const NoduleInfo = props => {
               <Radio value={'左肺'}>左肺</Radio>
             </Radio.Group>
           </div>
+
           <div className="list">
             <div className="list-title">肺叶：</div>
             <Radio.Group disabled={props.pageState === 'admin'} onChange={onLobeChange} value={props.noduleInfo.lobe}>
@@ -201,6 +199,7 @@ const NoduleInfo = props => {
             <em>大小：</em>
             {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
           </div>
+
           {props.noduleInfo.newDiameter ? (
             <div className="list">
               <em>大小调整后：</em>
@@ -218,6 +217,7 @@ const NoduleInfo = props => {
             <em>体积：</em>
             {props.noduleInfo.noduleSize ? props.noduleInfo.noduleSize : '-'} mm³
           </div>
+
           {props.noduleInfo.newNoduleSize ? (
             <div className="list">
               <em>体积调整后：</em>
@@ -232,6 +232,7 @@ const NoduleInfo = props => {
               )}
             </div>
           ) : null}
+
           <div className="list adjust">
             <Button disabled={props.pageState === 'admin'} size="small" onClick={props.handleShowAdjustModal}>
               调整
@@ -284,12 +285,9 @@ const NoduleInfo = props => {
             />
           </div>
 
-          {/* <div className="list">
-            <em>形态类型：</em>
-            {props.noduleInfo.type}
-          </div> */}
         </div>
       ) : null}
+      
       {props.noduleInfo ? (
         <div className="check-group">
           <div className="group-wrap">
