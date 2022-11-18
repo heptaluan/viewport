@@ -1503,6 +1503,43 @@ const Viewer = () => {
     setAdjustModalVisible(false)
   }
 
+  // 标记为结节
+  const [showMarkModal, setshowMarkModal] = useState(false)
+
+  const handleShowMarkModal = () => {
+    setshowMarkModal(true)
+  }
+
+  const handleMarkModalOk = () => {
+    const checkItme = noduleList.find(item => item.checked === true)
+
+    if (checkItme) {
+      const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
+      const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
+      const newArea = (0.99 * 0.99).toFixed(2)
+
+      if (checkItme.nodeType === 1) {
+        checkItme.diameter = `0.99mm*0.99mm`
+        checkItme.noduleSize = (checkItme.noduleSize * Math.pow(newArea / oldArea, 1.5)).toFixed(2)
+      } else {
+        checkItme.newDiameter = `0.99mm*0.99mm`
+        checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(newArea / oldArea, 1.5)).toFixed(2)
+      }
+
+      checkItme.diameterSize = formatDiameter(`0.99mm*0.99mm`)
+      checkItme.diameterNorm = Math.sqrt(newArea).toFixed(2)
+
+      setNoduleList([...noduleList])
+    }
+
+    saveResults()
+    setshowMarkModal(false)
+  }
+
+  const handleMarkModalCancel = () => {
+    setshowMarkModal(false)
+  }
+
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
       <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} />
@@ -1546,6 +1583,7 @@ const Viewer = () => {
         updateChiefNoduleList={updateChiefNoduleList}
         handleUpdateRisk={handleUpdateRisk}
         handleShowAdjustModal={handleShowAdjustModal}
+        handleShowMarkModal={handleShowMarkModal}
         pageState={pageState}
       />
       {showMark ? (
@@ -1576,6 +1614,19 @@ const Viewer = () => {
         maskStyle={{ backgroundColor: 'transparent' }}
       >
         <p>是否使用图中测量的数据自动调整当前结节的大小与体积</p>
+      </Modal>
+
+      <Modal
+        title="标记微小结节"
+        maskClosable={false}
+        visible={showMarkModal}
+        onOk={handleMarkModalOk}
+        onCancel={handleMarkModalCancel}
+        okText="确认"
+        cancelText="取消"
+        maskStyle={{ backgroundColor: 'transparent' }}
+      >
+        <p>是否将当前结节标记为微小结节</p>
       </Modal>
 
       {pageType === 'review' ? (

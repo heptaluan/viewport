@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
-import { Radio, Select, Button, Input, InputNumber } from 'antd'
+import { Radio, Select, Button, Input, InputNumber, Modal } from 'antd'
 import { getURLParameters } from '../../../util/index'
 
 const { TextArea } = Input
@@ -139,7 +139,6 @@ const NoduleInfo = props => {
     <div className="nodule-info-box">
       {props.noduleInfo ? (
         <div className="nodule-detail">
-
           <div className="list">
             <span className="list-title">肺：</span>
             <Radio.Group disabled={props.pageState === 'admin'} onChange={onLungChange} value={props.noduleInfo.lung}>
@@ -237,6 +236,15 @@ const NoduleInfo = props => {
             <Button disabled={props.pageState === 'admin'} size="small" onClick={props.handleShowAdjustModal}>
               调整
             </Button>
+
+            <Button
+              disabled={props.pageState === 'admin'}
+              size="small"
+              style={{ marginLeft: 10 }}
+              onClick={props.handleShowMarkModal}
+            >
+              标记微小结节
+            </Button>
           </div>
 
           <div className="list">
@@ -284,10 +292,9 @@ const NoduleInfo = props => {
               value={props.noduleInfo?.suggest}
             />
           </div>
-
         </div>
       ) : null}
-      
+
       {props.noduleInfo ? (
         <div className="check-group">
           <div className="group-wrap">

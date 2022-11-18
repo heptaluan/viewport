@@ -33,6 +33,9 @@ const MiddleSidePanel = props => {
       <div>
         由 微小结节 调整为 非微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
       </div>
+      <hr />
+      注意：只有 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span> 与{' '}
+      <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span> 为微小结节
     </div>
   )
 
@@ -58,8 +61,9 @@ const MiddleSidePanel = props => {
               <div className="num">中心帧</div>
             </Checkbox> */}
             <Checkbox disabled checked={true}>
-              <div className="num">中心帧</div>
+              <div className="index">序号</div>
             </Checkbox>
+            <div className="num">中心帧</div>
             <div className="soak">肺</div>
             <div className="soak">肺叶</div>
             <div className="type">类型</div>
@@ -77,8 +81,9 @@ const MiddleSidePanel = props => {
               >
                 {/* <div className="icon">{item.id}</div> */}
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
-                  <div className="num">{props.imagesConfig.length - item.num}</div>
+                  <div className="index">{index + 1}</div>
                 </Checkbox>
+                <div className="num">{props.imagesConfig.length - item.num}</div>
                 <div className="soak">{item.lung}</div>
                 <div className="soak">{item.lobe}</div>
                 <div className="type">{item.type}</div>

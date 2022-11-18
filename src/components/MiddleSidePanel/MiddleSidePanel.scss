@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
   font-size: 12px;
-  max-width: 420px;
-  min-width: 420px;
+  max-width: 460px;
+  min-width: 460px;
   padding-bottom: 12px;
   // border-left: 1px solid #ccc;
 
@@ -45,11 +45,12 @@
           justify-content: center;
         }
 
-        .num,
+        .index,
         .type {
           flex: 2;
         }
 
+        .num,
         .risk,
         .suggest,
         .soak,
@@ -110,11 +111,12 @@
           }
         }
 
-        .num,
+        .index,
         .type {
           flex: 2;
         }
 
+        .num,
         .risk,
         .suggest,
         .soak,
