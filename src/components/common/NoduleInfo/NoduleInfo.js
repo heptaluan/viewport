@@ -103,7 +103,7 @@ const NoduleInfo = props => {
   }
 
   // 风险值输入框事件
-  const handleRishInputChange = val => {
+  const handleRiskInputChange = val => {
     handleSetButtonActive(parseInt(Number(val / 10)))
     setRiskData(val)
     props.handleUpdateRisk(val, 'inputChange')
@@ -256,7 +256,7 @@ const NoduleInfo = props => {
               placeholder="请输入风险值"
               size="small"
               style={{ width: 110, height: 24, marginTop: 2, marginLeft: 18, fontSize: 13 }}
-              onChange={val => handleRishInputChange(val)}
+              onChange={val => handleRiskInputChange(val)}
               onBlur={e => handleRishInputBlur(e)}
               value={riskData}
               min={1}

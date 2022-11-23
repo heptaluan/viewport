@@ -23,7 +23,7 @@ import {
   getDnReslutByOrderIdUrl,
 } from '../../api/api'
 import { getURLParameters, formatMiniNodule } from '../../util/index'
-import { Modal, message, Button } from 'antd'
+import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -1237,6 +1237,80 @@ const Viewer = () => {
   }
 
   // 新增结节
+  const [showRisk, setShowRisk] = useState(false)
+  const [riskVal, setRiskVal] = useState(0)
+  const [postData, setPostData] = useState(null)
+  const [res, setRes] = useState(null)
+  
+
+  const handleRiskOk = () => {
+    setConfirmLoading(false)
+
+    const startX = postData.boxes.split(',')[1]
+    const startY = postData.boxes.split(',')[0]
+    const endX = postData.boxes.split(',')[3]
+    const endY = postData.boxes.split(',')[2]
+    const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
+
+    const newNodeData = {
+      active: false,
+      checked: false,
+      featureLabelG: '',
+      id: `id_${toolList[0].uuid}`,
+      info: '',
+      lobe: toolList[0].lobe,
+      lung: toolList[0].lung,
+      noduleName: `nodule_${toolList[0].uuid}`,
+      noduleNum: toolList[0].uuid,
+      num: currentImageIdIndex,
+      review: getURLParameters(window.location.href).user === 'chief_lwx' ? false : true,
+      chiefReview: getURLParameters(window.location.href).user === 'chief_lwx' ? true : false,
+      size: '',
+      soak: '',
+      state: true,
+      suggest: toolList[0].suggest,
+      type: toolList[0].type,
+      nodeType: 1,
+      imageUrl1: res.data.imageUrl1,
+      imageUrl2: res.data.imageUrl2,
+      risk: res.data.scrynMaligant,
+      scrynMaligant: riskVal ? riskVal : res.data.scrynMaligant,
+      whu_scrynMaligant: riskVal ? riskVal : res.data.whu_scrynMaligant,
+      nodeBox: [startY, startX, endY, endX],
+      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
+        Math.abs(endY - startY) * rowPixelSpacing
+      ).toFixed(2)}mm`,
+      diameterSize: formatDiameter(
+        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
+          Math.abs(endY - startY) * rowPixelSpacing
+        ).toFixed(2)}mm`
+      ),
+      maxHu: toolList[0].cachedStats.max,
+      minHu: toolList[0].cachedStats.min,
+      meanHu: toolList[0].cachedStats.mean.toFixed(2),
+      diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
+      noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
+      centerHu: cornerstone.getPixels(
+        cornerstoneElement,
+        (Number(startX) + Number(endX)) / 2,
+        (Number(startY) + Number(endY)) / 2,
+        1,
+        1
+      )[0],
+    }
+
+    noduleList.push(newNodeData)
+    setNoduleList([...noduleList])
+
+    saveResults(callback => {
+      fetchDoctorData(callback => {
+        updateCanvasAndList()
+      })
+    })
+
+    setShowRisk(false)
+  }
+
   const handleOk = e => {
     for (let i = 0; i < toolList.length; i++) {
       if (!toolList[i].lung) {
@@ -1281,6 +1355,8 @@ const Viewer = () => {
       ].join(',')
     }
 
+    setPostData(postData)
+
     // startX: rois.bbox[1],
     // startY: rois.bbox[0],
     // endX: rois.bbox[3],
@@ -1292,69 +1368,9 @@ const Viewer = () => {
     addNewNodeList(JSON.stringify(postData)).then(res => {
       if (res.data.code === 1) {
         setTimeout(hide)
-        setConfirmLoading(false)
-
-        const startX = postData.boxes.split(',')[1]
-        const startY = postData.boxes.split(',')[0]
-        const endX = postData.boxes.split(',')[3]
-        const endY = postData.boxes.split(',')[2]
-        const rowPixelSpacing = cornerstone.getImage(cornerstoneElement).rowPixelSpacing
-
-        const newNodeData = {
-          active: false,
-          checked: false,
-          featureLabelG: '',
-          id: `id_${toolList[0].uuid}`,
-          info: '',
-          lobe: toolList[0].lobe,
-          lung: toolList[0].lung,
-          noduleName: `nodule_${toolList[0].uuid}`,
-          noduleNum: toolList[0].uuid,
-          num: currentImageIdIndex,
-          review: getURLParameters(window.location.href).user === 'chief_lwx' ? false : true,
-          chiefReview: getURLParameters(window.location.href).user === 'chief_lwx' ? true : false,
-          risk: res.whu_scrynMaligant,
-          size: '',
-          soak: '',
-          state: true,
-          suggest: toolList[0].suggest,
-          type: toolList[0].type,
-          nodeType: 1,
-          imageUrl1: res.data.imageUrl1,
-          imageUrl2: res.data.imageUrl2,
-          scrynMaligant: res.data.scrynMaligant,
-          whu_scrynMaligant: res.data.whu_scrynMaligant,
-          nodeBox: [startY, startX, endY, endX],
-          diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-            Math.abs(endY - startY) * rowPixelSpacing
-          ).toFixed(2)}mm`,
-          diameterSize: formatDiameter(
-            `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-              Math.abs(endY - startY) * rowPixelSpacing
-            ).toFixed(2)}mm`
-          ),
-          maxHu: toolList[0].cachedStats.max,
-          minHu: toolList[0].cachedStats.min,
-          meanHu: toolList[0].cachedStats.mean.toFixed(2),
-          diameterNorm: Math.sqrt(toolList[0].cachedStats.area).toFixed(2),
-          noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
-          centerHu: cornerstone.getPixels(
-            cornerstoneElement,
-            (Number(startX) + Number(endX)) / 2,
-            (Number(startY) + Number(endY)) / 2,
-            1,
-            1
-          )[0],
-        }
-
-        noduleList.push(newNodeData)
-        setNoduleList([...noduleList])
-
-        saveResults(callback => {
-          fetchDoctorData(callback => {
-            updateCanvasAndList()
-          })
-        })
+        setRiskVal(res.data.scrynMaligant)
+        setRes(res)
+        setShowRisk(true)
       } else {
         message.error(`新增失败，请重新尝试`)
         setTimeout(hide)
@@ -1589,6 +1605,22 @@ const Viewer = () => {
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
       ) : null}
+
+      <Modal
+        title="确认模型风险结果"
+        className="risk-modal"
+        visible={showRisk}
+        onOk={handleRiskOk}
+        okText="确认"
+        closable="false"
+        keyboard="false"
+        maskClosable="false"
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <p>当前模型风险结果为：</p>
+          <InputNumber onChange={setRiskVal} value={riskVal} addonAfter="%" min={1} max={99} />
+        </div>
+      </Modal>
 
       <Modal
         title="提交结果"

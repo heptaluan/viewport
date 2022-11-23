@@ -131,3 +131,15 @@
   // transition: all 0.3s;
   transform: translateX(0);
 }
+
+.risk-modal .ant-modal-footer button:first-child {
+  display: none;
+}
+
+.risk-modal .ant-modal-close {
+  display: none;
+}
+
+.risk-box {
+  margin-top: 15px;
+}
