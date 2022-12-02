@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
+export const getCodeImg = time => axios.get(`https://ai.feipankang.com/api/sys/randomImage/${time}`)
+
 // const basicUrl = getURLParameters(window.location.href).url
 // axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
@@ -10,7 +12,7 @@ const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjkyMzA3NzgsInVzZXJuYW1lIjoiYWRtaW4ifQ.TVfnLPKRtLPX8DYtz3i1TYtnb-r0297ny_wkMiFWDiU'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Njk4Mzc3MDUsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.kjanlmuloCYuTUSQkHZhevnOil9hsmnoUvrDMJA2RZg'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
