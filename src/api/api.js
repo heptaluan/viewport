@@ -12,11 +12,7 @@ const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Njk4Mzc3MDUsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.kjanlmuloCYuTUSQkHZhevnOil9hsmnoUvrDMJA2RZg'
-
-// 获取序列列表（0-详情，1-订单跳转）
-export const getMedicalList = (id, type) =>
-  axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/series/list?resource=${id}&type=${type}`)
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzAyNTE1NzYsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.o5OQ2LyvlCwHtGhqGczU5ZrhJUTjHplfhBIA6RVpVho'
 
 // 获取影像列表
 export const getImageList = resource =>
@@ -32,26 +28,12 @@ export const getClinicalFiles = orderId =>
 export const getPatientsList = id =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
 
-// 获取结节列表（管理员）
-export const getNodeList = id => axios.get(`${basicUrl}/report/image/getDnResult?id=${id}`)
-
-// 获取结节列表（订单列表跳转）
-export const getDnReslutByOrderIdUrl = id => axios.get(`${basicUrl}/report/image/getDnReslutByOrderId?Oid=${id}`)
-
 // 获取结节列表（医生）
 export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task?id=${id}`)
 
 // 保存结果
 export const saveDnResult = params =>
   axios.post(`${basicUrl}/report/doctorTask/saveTask`, params, {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-    },
-  })
-
-// 提交审核结果（测试用）
-export const updateDnResultTemp = params =>
-  axios.post(`${basicUrl}/report/image/updateDnResultTemp`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },

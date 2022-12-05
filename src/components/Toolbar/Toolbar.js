@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
 import { Tooltip, Button, Slider, InputNumber } from 'antd'
-import { getURLParameters } from '../../util/index'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const toolbarList = [
@@ -192,26 +191,24 @@ const Toolbar = props => {
           )
         })}
       </div>
-      {getURLParameters(window.location.href).page === 'review' &&
-      getURLParameters(window.location.href).user !== 'admin' ? (
-        <div className="submit-btn">
-          <Button onClick={e => props.handleSubmitNodeDetail(e)} size="small">
-            新增结节
-          </Button>
 
-          <Button onClick={e => props.handleShowMarker(e)} size="small">
-            {props.showMarker ? '隐藏标注' : '显示标注'}
-          </Button>
+      <div className="submit-btn">
+        <Button onClick={e => props.handleSubmitNodeDetail(e)} size="small">
+          新增结节
+        </Button>
 
-          <div className="slider-box">
-            <Slider min={1} max={10} onChange={handleSliderChange} value={inputValue} size="small" />
-            <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />
-            <Tooltip title="小于滑块所选值的为微小结节">
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </div>
+        <Button onClick={e => props.handleShowMarker(e)} size="small">
+          {props.showMarker ? '隐藏标注' : '显示标注'}
+        </Button>
+
+        <div className="slider-box">
+          <Slider min={1} max={10} onChange={handleSliderChange} value={inputValue} size="small" />
+          <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />
+          <Tooltip title="小于滑块所选值的为微小结节">
+            <QuestionCircleOutlined />
+          </Tooltip>
         </div>
-      ) : null}
+      </div>
     </ul>
   )
 }

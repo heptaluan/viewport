@@ -31,7 +31,7 @@ const ViewerMain = props => {
             imageIds={props.imagesConfig}
             style={{
               minWidth: '100%',
-              height: props.pageType === 'detail' ? `${size.height}px` : `${size.height - 85}px`,
+              height: `${size.height - 85}px`,
               flex: '1',
             }}
           />

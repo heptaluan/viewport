@@ -22,7 +22,7 @@ import {
   updateDnResultTemp,
   getDnReslutByOrderIdUrl,
 } from '../../api/api'
-import { getURLParameters, formatMiniNodule } from '../../util/index'
+import { formatMiniNodule } from '../../util/index'
 import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
@@ -33,7 +33,6 @@ import qs from 'query-string'
 const { confirm } = Modal
 
 const Viewer = () => {
-  const params = qs.parse(useLocation().search)
   const defaultTools = [
     {
       name: 'Wwwc',
@@ -98,10 +97,6 @@ const Viewer = () => {
   // 结节详情
   const [noduleInfo, setNoduleInfo] = useState(null)
 
-  // 页面类型和状态
-  const [pageType, setPageType] = useState('')
-  const [pageState, setPageState] = useState('')
-
   // 跳转帧数
   const [imageIdIndex, setImageIdIndex] = useState(0)
 
@@ -125,41 +120,19 @@ const Viewer = () => {
     }
   }, [noduleList, noduleMapList, showMarker])
 
-  // 初始化结节信息
+  // 获取路由参数
+  const params = qs.parse(useLocation().search)
+
+  // 初始化结节与影像列表信息
   useEffect(() => {
-    // 管理员请求接口
-    const fetchAdminData = async () => {
-      const result = await getNodeList(getURLParameters(window.location.href).id)
-      if (result.data.code === 200) {
-        if (result.data.result) {
-          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-          formatNodeData(data, [])
-          fetcImagehData(data.detectionResult.nodulesList)
-        }
-      }
-    }
 
-    // 订单跳转请求接口
-    const getDnReslutByOrderId = async () => {
-      const result = await getDnReslutByOrderIdUrl(getURLParameters(window.location.href).orderId)
-      if (result.data.code === 200) {
-        if (result.data.result) {
-          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-          formatNodeData(data, [])
-          fetcImagehData(data.detectionResult.nodulesList)
-        }
-      }
-    }
-
-    // 医生请求接口
-    const fetchDoctorData = async () => {
-      const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
+    const fetchNodeListData = async () => {
+      const result = await getDoctorTask(params.id)
       if (result.data.code === 200) {
         if (result.data.result) {
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-
             formatNodeData(data, resultInfo.nodelist)
             fetcImagehData(data.detectionResult.nodulesList)
           } else {
@@ -172,46 +145,18 @@ const Viewer = () => {
     }
 
     const fetcImagehData = async data => {
-      const res = await getImageList(getURLParameters(window.location.href).resource)
+      const res = await getImageList(params.taskId)
       setImageList(res, data)
     }
 
-    if (getURLParameters(window.location.href).user === 'admin') {
-      if (getURLParameters(window.location.href).requestType === 'order') {
-        getDnReslutByOrderId()
-      } else {
-        fetchAdminData()
-      }
-    } else if (!getURLParameters(window.location.href).user) {
-      fetcImagehData(null)
-    } else {
-      fetchDoctorData()
-    }
-
-    if (getURLParameters(window.location.href).state === 'admin') {
-      setPageState('admin')
-    }
-
-    if (getURLParameters(window.location.href).page === 'review') {
-      setPageType('review')
-    } else if (getURLParameters(window.location.href).page === 'image') {
-      setPageType('image')
-    } else if (getURLParameters(window.location.href).page === 'detail') {
-      setPageType('detail')
-      const index = getURLParameters(window.location.href).index
-      if (index) {
-        setImageIdIndex(Number(index))
-      } else {
-        setImageIdIndex(0)
-      }
-    }
+    fetchNodeListData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 初始化病人信息
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getPatientsList(getURLParameters(window.location.href).resource)
+      const result = await getPatientsList(params.taskId)
       if (result.data.code === 200 && result.data.result) {
         setPatients(result.data.result.records[0])
         localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
@@ -219,9 +164,7 @@ const Viewer = () => {
         localStorage.setItem('patients', '')
       }
     }
-    // if (getURLParameters(window.location.href).page === 'image') {
     fetchData()
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -361,7 +304,7 @@ const Viewer = () => {
     }
 
     const checkItme = noduleList.find(item => item.checked === true)
-    if (checkItme && pageType !== 'detail') {
+    if (checkItme) {
       setNoduleInfo(checkItme)
     } else {
       setNoduleInfo(null)
@@ -985,10 +928,7 @@ const Viewer = () => {
     const miniNodule = formatMiniNodule([...noduleList])
 
     const postData = {
-      id:
-        getURLParameters(window.location.href).user === 'admin'
-          ? getURLParameters(window.location.href).taskId
-          : getURLParameters(window.location.href).doctorId,
+      id: params.taskId,
       resultInfo: {
         noduleMeasure: noduleMeasure,
         miniNodule: miniNodule,
@@ -1063,68 +1003,26 @@ const Viewer = () => {
   // 提交审核结果按钮
   const handleShowModal = () => {
     formatPostData()
-    if (getURLParameters(window.location.href).user === 'chief_lwx') {
-      if (noduleList.every(item => item.chiefReview === true)) {
-        setVisible(true)
-      } else {
-        message.warning(`请复核完所有结节后在进行结果提交`)
-      }
+    if (noduleList.every(item => item.review === true)) {
+      setVisible(true)
     } else {
-      if (noduleList.every(item => item.review === true)) {
-        setVisible(true)
-      } else {
-        message.warning(`请检阅完所有结节后在进行结果提交`)
-      }
+      message.warning(`请检阅完所有结节后在进行结果提交`)
     }
   }
 
   // 提交审核结果弹窗
   const handleSubmitResults = () => {
     const postData = formatPostData()
-
-    if (getURLParameters(window.location.href).user === 'chief_lwx') {
-      updateSuperDoctorResult(JSON.stringify(postData)).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          message.success(`提交审核结果成功`)
-          setVisible(false)
-          setTimeout(() => {
-            window.parent.postMessage(
-              {
-                code: 200,
-                success: true,
-                backId: getURLParameters(window.location.href).backId,
-                backType: getURLParameters(window.location.href).backType,
-              },
-              '*'
-            )
-          }, 1000)
-        } else {
-          message.error(`提交失败，请刷新后重新尝试`)
-        }
-      })
-    } else {
-      updateDnResult(JSON.stringify(postData)).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          message.success(`提交审核结果成功`)
-          setVisible(false)
-          setTimeout(() => {
-            window.parent.postMessage(
-              {
-                code: 200,
-                success: true,
-                backId: getURLParameters(window.location.href).backId,
-                backType: getURLParameters(window.location.href).backType,
-              },
-              '*'
-            )
-          }, 1000)
-        } else {
-          message.error(`提交失败，请刷新后重新尝试`)
-        }
-      })
-    }
+    updateDnResult(JSON.stringify(postData)).then(res => {
+      console.log(res)
+      if (res.data.code === 200) {
+        message.success(`提交审核结果成功`)
+        setVisible(false)
+        // 路由跳转回去
+      } else {
+        message.error(`提交失败，请刷新后重新尝试`)
+      }
+    })
   }
 
   // ===========================================================
@@ -1159,7 +1057,7 @@ const Viewer = () => {
 
   // 重新请求，刷新数据
   const fetchDoctorData = async callback => {
-    const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
+    const result = await getDoctorTask(params.id)
     if (result.data.code === 200) {
       if (result.data.result) {
         if (result.data.result.doctorTask.resultInfo) {
@@ -1266,8 +1164,8 @@ const Viewer = () => {
       noduleName: `nodule_${toolList[0].uuid}`,
       noduleNum: toolList[0].uuid,
       num: currentImageIdIndex,
-      review: getURLParameters(window.location.href).user === 'chief_lwx' ? false : true,
-      chiefReview: getURLParameters(window.location.href).user === 'chief_lwx' ? true : false,
+      review: false,
+      chiefReview: false,
       size: '',
       soak: '',
       state: true,
@@ -1560,8 +1458,8 @@ const Viewer = () => {
   }
 
   return (
-    <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
-      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} />
+    <div className='viewer-box'>
+      <Header data={patients} handleShowModal={handleShowModal} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel
@@ -1588,7 +1486,6 @@ const Viewer = () => {
           toolsConfig={toolsConfig}
           imagesConfig={imagesConfig}
           noduleList={noduleList}
-          pageType={pageType}
           imageIdIndex={imageIdIndex}
           showMarker={showMarker}
         />
@@ -1603,7 +1500,6 @@ const Viewer = () => {
         handleUpdateRisk={handleUpdateRisk}
         handleShowAdjustModal={handleShowAdjustModal}
         handleShowMarkModal={handleShowMarkModal}
-        pageState={pageState}
       />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
@@ -1664,17 +1560,9 @@ const Viewer = () => {
         <p>是否将当前结节标记为微小结节</p>
       </Modal>
 
-      {pageType === 'review' ? (
-        <div className="show-button">
-          <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
-          {getURLParameters(window.location.href).patientId &&
-          getURLParameters(window.location.href).patientId !== 'null' ? (
-            <span className="infor-detail">
-              patientId: <em>{getURLParameters(window.location.href).patientId}</em>
-            </span>
-          ) : null}
-        </div>
-      ) : null}
+      <div className="show-button">
+        <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
+      </div>
 
       <Modal
         title={
