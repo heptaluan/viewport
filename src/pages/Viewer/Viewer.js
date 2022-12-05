@@ -27,10 +27,13 @@ import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
 
 const { confirm } = Modal
 
 const Viewer = () => {
+  const params = qs.parse(useLocation().search)
   const defaultTools = [
     {
       name: 'Wwwc',

@@ -21,7 +21,7 @@ const routes = [
         // render: () => <Redirect to={'/viewer/1'} />,
       },
       {
-        path: '/viewer/:studyInstanceUids',
+        path: '/viewer',
         component: Viewer,
         routes: [],
       },

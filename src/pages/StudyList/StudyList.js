@@ -78,7 +78,7 @@ const StudyList = () => {
   const history = useHistory()
 
   const handleShowDetail = record => {
-    history.push(`/viewer/${record.id}`)
+    history.push(`/viewer?taskId=1586963547788226561&id=1588354347327078402`)
   }
 
   const rowSelection = {
