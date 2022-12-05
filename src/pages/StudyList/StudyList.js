@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Input, Button, Space } from 'antd'
+import { LogoutOutlined } from '@ant-design/icons'
 
 const StudyList = () => {
   const [dataSource, setDataSource] = useState([
@@ -80,32 +81,60 @@ const StudyList = () => {
     history.push(`/viewer/${record.id}`)
   }
 
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User',
+      // Column configuration not to be checked
+      name: record.name,
+    }),
+  }
+
   return (
-    <div className="study-list-container">
-      <div className="search-box-wrap">
-        <div className="header">
-          <Button type="primary">搜索</Button>
-          <Button type="primary" style={{ marginLeft: 15 }}>
-            重置
-          </Button>
+    <div className="study-list-box">
+      <header>
+        <div className="logo">
+          <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
+          <h1>泰莱生物商检系统</h1>
         </div>
-        <div className="search-box">
-          <Input style={{ width: 200 }} placeholder="请输入姓名" />
-          <Input style={{ width: 200 }} placeholder="请输入身份证号" />
-          <Input style={{ width: 200 }} placeholder="请输入年龄" />
+        <Button type="text" icon={<LogoutOutlined />}>
+          退出登录
+        </Button>
+      </header>
+      <div className="study-list-container-wrap">
+        <div className="study-list-container">
+          <div className="search-box-wrap">
+            <div className="header">
+              <Button type="primary">搜索</Button>
+              <Button type="primary" style={{ marginLeft: 15 }}>
+                重置
+              </Button>
+            </div>
+            <div className="search-box">
+              <Input style={{ width: 200 }} placeholder="请输入姓名" />
+              <Input style={{ width: 200 }} placeholder="请输入身份证号" />
+              <Input style={{ width: 200 }} placeholder="请输入年龄" />
+            </div>
+          </div>
+          <Table
+            rowSelection={{
+              type: 'checkbox',
+              ...rowSelection,
+            }}
+            dataSource={dataSource}
+            columns={columns}
+            onRow={record => {
+              return {
+                onDoubleClick: event => {
+                  console.log(event)
+                },
+              }
+            }}
+          />
         </div>
       </div>
-      <Table
-        dataSource={dataSource}
-        columns={columns}
-        onRow={record => {
-          return {
-            onDoubleClick: event => {
-              console.log(event)
-            },
-          }
-        }}
-      />
     </div>
   )
 }

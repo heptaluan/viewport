@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 export default memo(
   withRouter(function IndexComponent(props) {
     if (props.location.pathname === '/') {
-      props.history.push('/studyList')
+      props.history.push('/login')
     }
     return (
       <>

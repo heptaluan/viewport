@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './Login.scss'
 import { useHistory } from 'react-router-dom'
-import { LockOutlined, UserOutlined, FrownOutlined } from '@ant-design/icons'
+import { LockOutlined, UserOutlined, BellOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Form, Input } from 'antd'
 import { getCodeImg } from '../../api/api'
 
@@ -20,11 +20,10 @@ const Login = () => {
     }
     fetchData()
   }, [])
-  
 
   const onFinish = values => {
     console.log('Success:', values)
-    // history.push(`/studyList`)
+    history.push(`/studyList`)
   }
 
   const handleChangeImg = async () => {
@@ -38,67 +37,90 @@ const Login = () => {
   return (
     <div className="login-box-wrap">
       <div className="login-box">
-        <Form
-          name="normal_login"
-          className="login-form"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-        >
-          <Form.Item
-            name="username"
-            rules={[
-              {
-                required: true,
-                message: '请输入用户名',
-              },
-            ]}
-          >
-            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="用户名" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: '请输入密码',
-              },
-            ]}
-          >
-            <Input prefix={<LockOutlined className="site-form-item-icon" />} type="password" placeholder="密码" />
-          </Form.Item>
+        <div class="top">
+          <div class="header">
+            <a href="/">
+              <img src="https://ai.feipankang.com/img/logo.02944b67.png" alt="logo" class="logo" />
+            </a>
+          </div>
+          <div class="desc">
+            <p>泰莱生物多组学商检管理系统</p>
+            <p>TaiLai Biological Multi-OMics Laboratory</p>
+          </div>
+        </div>
 
-          <div
-            className="code-box"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}
+        <div className="router-container">
+          <Form
+            name="normal_login"
+            className="login-form"
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
           >
             <Form.Item
-              name="code"
+              name="username"
               rules={[
                 {
                   required: true,
-                  message: '请输入验证码',
+                  message: '请输入用户名',
                 },
               ]}
-              style={{ width: '80%' }}
             >
-              <Input prefix={<FrownOutlined />} type="code" placeholder="验证码" />
+              <Input
+                size="large"
+                prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                placeholder="用户名"
+              />
             </Form.Item>
-            <img className="code-img" onClick={handleChangeImg} src={imgSrc} alt="code" />
-          </div>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入密码',
+                },
+              ]}
+            >
+              <Input
+                size="large"
+                prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                type="password"
+                placeholder="密码"
+              />
+            </Form.Item>
 
-          <Form.Item
-            wrapperCol={{
-              offset: 22,
-              span: 16,
-            }}
-          >
-            <Button type="primary" htmlType="submit" className="login-form-button">
-              登录
-            </Button>
-          </Form.Item>
-        </Form>
+            <div
+              className="code-box"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}
+            >
+              <Form.Item
+                name="code"
+                rules={[
+                  {
+                    required: true,
+                    message: '请输入验证码',
+                  },
+                ]}
+                style={{ width: '60%' }}
+              >
+                <Input
+                  size="large"
+                  prefix={<BellOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />}
+                  type="code"
+                  placeholder="验证码"
+                />
+              </Form.Item>
+              <img className="code-img" onClick={handleChangeImg} src={imgSrc} alt="code" />
+            </div>
+
+            <Form.Item>
+              <Button size="large" type="primary" htmlType="submit" className="login-form-button">
+                登录
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
       </div>
     </div>
   )
