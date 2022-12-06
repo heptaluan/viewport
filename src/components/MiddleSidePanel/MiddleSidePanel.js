@@ -15,42 +15,43 @@ const MiddleSidePanel = props => {
     props.showDeleteConfirm(item)
   }
 
-  const tips = (
-    <div style={{ fontSize: '13px' }}>
-      <div>当前微小结节的过滤值为：{localStorage.getItem('diameterSize')}mm</div>
-      <div>
-        默认 结节 <span style={{ background: '#fff', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>白色</span>
-      </div>
-      <div>
-        默认 微小结节 <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span>
-      </div>
-      <div>
-        新增 结节 <span style={{ background: '#d1d1d1', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>灰色</span>
-      </div>
-      <div>
-        由 非微小结节 调整为 微小结节 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span>
-      </div>
-      <div>
-        由 微小结节 调整为 非微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
-      </div>
-      <hr />
-      注意：只有 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span> 与{' '}
-      <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span> 为微小结节
-    </div>
-  )
+  // const tips = (
+  //   <div style={{ fontSize: '13px' }}>
+  //     <div>当前微小结节的过滤值为：{localStorage.getItem('diameterSize')}mm</div>
+  //     <div>
+  //       默认 结节 <span style={{ background: '#fff', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>白色</span>
+  //     </div>
+  //     <div>
+  //       默认 微小结节 <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span>
+  //     </div>
+  //     <div>
+  //       新增 结节 <span style={{ background: '#d1d1d1', padding: '0 4px', color: 'rgba(0, 0, 0, 0.85)' }}>灰色</span>
+  //     </div>
+  //     <div>
+  //       由 非微小结节 调整为 微小结节 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span>
+  //     </div>
+  //     <div>
+  //       由 微小结节 调整为 非微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
+  //     </div>
+  //     <hr />
+  //     注意：只有 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span> 与{' '}
+  //     <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span> 为微小结节
+  //   </div>
+  // )
 
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
         <div className="title">
           <span>
-            结节列表（{props.noduleList.length}）微小结节个数（{formatMiniNodule(props.noduleList)}）
+            结节列表（{props.noduleList.length}）
+            {/* 结节列表（{props.noduleList.length}）微小结节个数（{formatMiniNodule(props.noduleList)}） */}
           </span>
-          <span>
+          {/* <span>
             <Tooltip placement="bottomRight" title={tips}>
               <QuestionCircleOutlined style={{ fontSize: '16px' }} />
             </Tooltip>
-          </span>
+          </span> */}
         </div>
         <div className="table-box">
           <div className="table-title">
@@ -76,7 +77,7 @@ const MiddleSidePanel = props => {
             {props.noduleList?.map((item, index) => (
               <div
                 key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNodeStyle(item)}`}
+                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} `}
                 onClick={e => handleListClick(index, item.num)}
               >
                 {/* <div className="icon">{item.id}</div> */}

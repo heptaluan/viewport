@@ -6,6 +6,16 @@
   color: #fff;
   font-size: 14px;
 
+  // 新增部分
+  .nodule-info {
+    .list {
+      display: flex;
+      justify-content: space-between;
+      height: 28px;
+      line-height: 28px;
+    }
+  }
+
   .nodule-detail {
     .list {
       display: flex;

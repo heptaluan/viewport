@@ -137,6 +137,52 @@ const NoduleInfo = props => {
   return (
     <div className="nodule-info-box">
       {props.noduleInfo ? (
+        <div className="nodule-info">
+          <div className="list">
+            <div className="list-title">类型：</div>
+            <Select
+              size="small"
+              value={props.noduleInfo.type}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={handleSelectChange}
+            >
+              <Option value="肺内实性">肺内实性</Option>
+              <Option value="部分实性">部分实性</Option>
+              <Option value="磨玻璃">磨玻璃</Option>
+              <Option value="肺内钙化">肺内钙化</Option>
+              <Option value="胸膜实性">胸膜实性</Option>
+              <Option value="胸膜钙化">胸膜钙化</Option>
+              <Option value="其他">其他</Option>
+            </Select>
+          </div>
+
+          <div className="check-group">
+            <div className="group-wrap">
+              <span>是否为结节</span>
+              <div className="group">
+                <Button
+                  type={props.noduleInfo.state === false ? 'primary' : null}
+                  style={{ marginRight: '15px' }}
+                  size="small"
+                  onClick={e => props.updateNoduleList(false)}
+                >
+                  否
+                </Button>
+                <Button
+                  type={props.noduleInfo.state === true ? 'primary' : null}
+                  size="small"
+                  onClick={e => props.updateNoduleList(true)}
+                >
+                  是
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/*       
+      {props.noduleInfo ? (
         <div className="nodule-detail">
           <div className="list">
             <span className="list-title">肺：</span>
@@ -312,7 +358,7 @@ const NoduleInfo = props => {
             </div>
           </div>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   )
 }

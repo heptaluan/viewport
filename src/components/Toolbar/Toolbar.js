@@ -118,18 +118,18 @@ const toolbarList = [
     type: 'RectangleRoi',
     checked: false,
   },
-  {
-    id: 18,
-    text: '面积测量',
-    icon: <IconFont style={{ fontSize: '16px' }} type="icon-celiang" />,
-    type: 'MeasureRect',
-    checked: false,
-  },
+  // {
+  //   id: 18,
+  //   text: '面积测量',
+  //   icon: <IconFont style={{ fontSize: '16px' }} type="icon-celiang" />,
+  //   type: 'MeasureRect',
+  //   checked: false,
+  // },
 ]
 
 const Toolbar = props => {
   const [state, setstate] = useState(toolbarList)
-  const [inputValue, setInputValue] = useState(null)
+  // const [inputValue, setInputValue] = useState(null)
 
   const handleToolbarClick = (e, index, type) => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
@@ -155,20 +155,19 @@ const Toolbar = props => {
     props.handleToolbarClick(type, state[index].checked)
   }
 
-  useEffect(() => {
-    const diameterMaxSize = localStorage.getItem('diameterSize')
-    if (diameterMaxSize && diameterMaxSize !== '') {
-      setInputValue(diameterMaxSize)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // useEffect(() => {
+  //   const diameterMaxSize = localStorage.getItem('diameterSize')
+  //   if (diameterMaxSize && diameterMaxSize !== '') {
+  //     setInputValue(diameterMaxSize)
+  //   }
+  // }, [])
 
   // 滑块滑动事件
-  const handleSliderChange = newValue => {
-    setInputValue(newValue)
-    localStorage.setItem('diameterSize', newValue)
-    props.handleSliderChange(newValue)
-  }
+  // const handleSliderChange = newValue => {
+  //   setInputValue(newValue)
+  //   localStorage.setItem('diameterSize', newValue)
+  //   props.handleSliderChange(newValue)
+  // }
 
   return (
     <ul className="tool-bar-box-wrap">
@@ -201,13 +200,13 @@ const Toolbar = props => {
           {props.showMarker ? '隐藏标注' : '显示标注'}
         </Button>
 
-        <div className="slider-box">
+        {/* <div className="slider-box">
           <Slider min={1} max={10} onChange={handleSliderChange} value={inputValue} size="small" />
           <InputNumber addonAfter="mm" disabled min={0} max={10} step={1} value={inputValue} size="small" />
           <Tooltip title="小于滑块所选值的为微小结节">
             <QuestionCircleOutlined />
           </Tooltip>
-        </div>
+        </div> */}
       </div>
     </ul>
   )

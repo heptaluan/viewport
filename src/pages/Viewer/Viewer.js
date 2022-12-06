@@ -13,14 +13,10 @@ import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import {
   saveDnResult,
   getImageList,
-  getNodeList,
   getPatientsList,
   getDoctorTask,
   addNewNodeList,
   updateDnResult,
-  updateSuperDoctorResult,
-  updateDnResultTemp,
-  getDnReslutByOrderIdUrl,
 } from '../../api/api'
 import { formatMiniNodule } from '../../util/index'
 import { Modal, message, Button, InputNumber } from 'antd'
