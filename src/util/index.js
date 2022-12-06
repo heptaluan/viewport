@@ -34,6 +34,20 @@ export const formatNodeStyle = item => {
   }
 }
 
+// 格式化微小结节
+export const formatMiniNode = val => {
+  if (!val) {
+    return '-'
+  }
+  const maxSize = Number(localStorage.getItem('diameterSize'))
+  const diameterSize = formatDiameter(val)
+  if (diameterSize >= maxSize) {
+    return val
+  } else {
+    return '微小结节'
+  }
+}
+
 // 计算微小结节个数
 export const formatMiniNodule = list => {
   const maxSize = Number(localStorage.getItem('diameterSize'))

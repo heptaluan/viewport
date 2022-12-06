@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
 import { Radio, Select, Button, Input, InputNumber, Modal } from 'antd'
-import { getURLParameters } from '../../../util/index'
+import { getURLParameters, formatMiniNode } from '../../../util/index'
 
 const { TextArea } = Input
 
@@ -196,17 +196,21 @@ const NoduleInfo = props => {
 
           <div className="list">
             <em>大小：</em>
-            {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
+            {props.noduleInfo.nodeType === 1 ? (
+                <>{formatMiniNode(props.noduleInfo.diameter)}</>
+              ) : (
+                <>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</>
+              )}
           </div>
 
           {props.noduleInfo.newDiameter ? (
             <div className="list">
               <em>大小调整后：</em>
               {props.noduleInfo.nodeType === 1 ? (
-                <span style={{ color: '#ff4d4f' }}>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</span>
+                <span style={{ color: '#ff4d4f' }}>{formatMiniNode(props.noduleInfo.diameter)}</span>
               ) : (
                 <span style={{ color: '#ff4d4f' }}>
-                  {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
+                  {formatMiniNode(props.noduleInfo.newDiameter)}
                 </span>
               )}
             </div>
