@@ -158,7 +158,7 @@ const NoduleInfo = props => {
 
           <div className="check-group">
             <div className="group-wrap">
-              <span>是否为结节</span>
+              <span>是否标注为良性样本</span>
               <div className="group">
                 <Button
                   type={props.noduleInfo.state === false ? 'primary' : null}

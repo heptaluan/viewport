@@ -1,96 +1,69 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './AllotList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Input, Button, Space, Popconfirm, message, Menu } from 'antd'
-import { LogoutOutlined, AppstoreOutlined  } from '@ant-design/icons'
+import { Table, Modal, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { getAssignList, assignList, getDefaultList } from '../../api/api'
 
 const AllotList = () => {
-  const [dataSource, setDataSource] = useState([
-    {
-      id: 1,
-      key: '1',
-      name: '张三',
-      age: 32,
-      day: '2020-02-02',
-      date: '08:45:14',
-      mm: '1.5',
-      fps: '100',
-    },
-    {
-      id: 2,
-      key: '2',
-      name: '李四',
-      age: 32,
-      day: '2020-02-02',
-      date: '08:45:14',
-      mm: '1.5',
-      fps: '100',
-    },
-  ])
+  const [dataSource, setDataSource] = useState([])
 
   const columns = [
     {
-      title: '受检者编号',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
       title: '姓名',
       dataIndex: 'name',
-      key: 'name',
     },
     {
       title: '年龄',
       dataIndex: 'age',
-      key: 'age',
     },
     {
-      title: '检查日期',
-      dataIndex: 'day',
-      key: 'day',
+      title: '性别',
+      dataIndex: 'sex',
+      render: (_, record) => {
+        return record.sex === '1' ? '男' : '女'
+      },
     },
     {
-      title: '检查时间',
-      dataIndex: 'date',
-      key: 'date',
+      title: '订单编号',
+      dataIndex: 'orderId',
     },
     {
-      title: '层厚（mm）',
-      dataIndex: 'mm',
-      key: 'mm',
+      title: '病例编号',
+      dataIndex: 'code',
     },
     {
-      title: '图像帧数',
-      dataIndex: 'fps',
-      key: 'fps',
+      title: '病人编号',
+      dataIndex: 'pcode',
     },
     {
-      title: '操作',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a onClick={() => handleShowDetail(record)}>查看详情</a>
-        </Space>
-      ),
+      title: '影像来源医院',
+      dataIndex: 'source',
+    },
+    {
+      title: '订单创建日期',
+      dataIndex: 'orderCreateTime',
     },
   ]
 
   const history = useHistory()
 
-  const handleShowDetail = record => {
-    history.push(`/viewer?taskId=1586963547788226561&id=1588354347327078402&orderId=1586923002017689602`)
+  // 请求列表数据
+  const fetchList = async () => {
+    const result = await getDefaultList()
+    if (result.data.code === 200) {
+      setDataSource(result.data.rows)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
   }
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
-    },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User',
-      // Column configuration not to be checked
-      name: record.name,
-    }),
-  }
+  // 初始列表数据
+  useEffect(() => {
+    fetchList()
+  }, [])
 
   const handleLogout = _ => {
     localStorage.setItem('token', '')
@@ -106,6 +79,34 @@ const AllotList = () => {
     }
   }
 
+  // 任务分配
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedList, setSelectedList] = useState([])
+
+  const showModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const handleOk = async () => {
+    console.log(selectedList)
+    const result = await assignList()
+    debugger
+    if (result.data.code === 200) {
+      setDataSource(result.data.rows)
+    }
+    // setIsModalOpen(false)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
+  }
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedList(selectedRows)
+    }
+  }
+
   return (
     <div className="study-list-box">
       <header>
@@ -113,38 +114,38 @@ const AllotList = () => {
           <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
           <h1>泰莱生物商检系统</h1>
         </div>
-        <Popconfirm
-          placement="bottomRight"
-          title="是否退出登录？"
-          onConfirm={handleLogout}
-          okText="确定"
-          cancelText="取消"
-          className="logout"
-        >
-          <Button type="text" icon={<LogoutOutlined />}>
-            退出登录
-          </Button>
-        </Popconfirm>
+        <div className='logout-box'>
+          <div className='user-box'>
+            <Avatar size={26} icon={<UserOutlined />} />
+            <span className='user-name'>用户123</span>
+          </div>
+          <Popconfirm
+            placement="bottomRight"
+            title="是否退出登录？"
+            onConfirm={handleLogout}
+            okText="确定"
+            cancelText="取消"
+            className="logout"
+          >
+            <Button type="text" icon={<LogoutOutlined />}>
+              退出登录
+            </Button>
+          </Popconfirm>
+        </div>
       </header>
       <div className="study-list-container-wrap">
-        <div className='meau-box'>
-        <Menu defaultSelectedKeys={['2']} onClick={e => handleChangeMenu(e)}>
-          <Menu.Item key="1">默认列表</Menu.Item>
-          <Menu.Item key="2">分配列表</Menu.Item>
-        </Menu>
+        <div className="meau-box">
+          <Menu defaultSelectedKeys={['2']} onClick={e => handleChangeMenu(e)}>
+            <Menu.Item key="1">默认列表</Menu.Item>
+            <Menu.Item key="2">分配列表</Menu.Item>
+          </Menu>
         </div>
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header">
-              <Button type="primary">搜索2222</Button>
-              <Button type="primary" style={{ marginLeft: 15 }}>
-                重置
+              <Button type="primary" onClick={showModal}>
+                分配任务
               </Button>
-            </div>
-            <div className="search-box">
-              <Input style={{ width: 200 }} placeholder="请输入姓名" />
-              <Input style={{ width: 200 }} placeholder="请输入身份证号" />
-              <Input style={{ width: 200 }} placeholder="请输入年龄" />
             </div>
           </div>
           <Table
@@ -164,6 +165,17 @@ const AllotList = () => {
           />
         </div>
       </div>
+
+      <Modal
+        title="任务分配"
+        visible={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        cancelText="取消"
+        okText="确定"
+      >
+        <p>是否将所选列表进行分配</p>
+      </Modal>
     </div>
   )
 }

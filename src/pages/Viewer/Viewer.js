@@ -10,11 +10,7 @@ import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import {
-  getNodeList,
-  getImageList,
-} from '../../api/api'
-import { formatMiniNodule } from '../../util/index'
+import { getNodeList, getImageList, addNewResult } from '../../api/api'
 import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
@@ -134,12 +130,11 @@ const Viewer = () => {
 
     const fetcImagehData = async _ => {
       const res = await getImageList(params.dicomId)
-      debugger
       if (res.data.code === 200 && res.data.data.length > 0) {
         const newList = res.data.data
         const imageList = []
         newList.forEach(item => {
-          imageList.push(`wadouri:${item.ossUrl.replace('http://', 'https://')}`)
+          imageList.push(`wadouri:${item.replace('http://', 'https://')}`)
         })
         setImagesConfig(imageList)
       }
@@ -153,13 +148,13 @@ const Viewer = () => {
   // 初始化病人信息
   useEffect(() => {
     // const fetchData = async () => {
-      // const result = await getPatientsList(params.dicomId)
-      // if (result.data.code === 200 && result.data.result) {
-      //   setPatients(result.data.result.records[0])
-      //   localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
-      // } else {
-        localStorage.setItem('patients', '')
-      // }
+    // const result = await getPatientsList(params.dicomId)
+    // if (result.data.code === 200 && result.data.result) {
+    //   setPatients(result.data.result.records[0])
+    //   localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
+    // } else {
+    localStorage.setItem('patients', '')
+    // }
     // }
     // fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -345,9 +340,6 @@ const Viewer = () => {
     checkItme.review = true
     checkItme.state = checkState
     setNoduleList([...noduleList])
-
-    // 提交结节数据
-    saveResults()
   }
 
   const updateChiefNoduleList = checkState => {
@@ -885,83 +877,51 @@ const Viewer = () => {
     setVisible(false)
   }
 
-  // 获取当前时间
-  const getCurrentTime = () => {
-    let yy = new Date().getFullYear()
-    let mm = new Date().getMonth() + 1
-    let dd = new Date().getDate()
-    let hh = new Date().getHours()
-    let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
-    let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
-    return yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
-  }
-
   // 格式化提交数据
   const formatPostData = () => {
-    // 微小结节度量
-    const noduleMeasure = Number(localStorage.getItem('diameterSize'))
-
-    // 微小结节总数
-    const miniNodule = formatMiniNodule([...noduleList])
-
+    const patients = JSON.parse(localStorage.getItem('record'))
     const postData = {
-      id: params.dicomId,
-      resultInfo: {
-        noduleMeasure: noduleMeasure,
-        miniNodule: miniNodule,
-        nodelist: [],
-      },
+      ...patients,
+      nodeText: [],
     }
 
     for (let i = 0; i < noduleList.length; i++) {
-      const index = originNoduleList.findIndex(item => item.noduleNum === noduleList[i].noduleNum) + 1
-      const diameterSize = noduleList[i].newDiameter
-        ? formatDiameter(noduleList[i].newDiameter)
-        : noduleList[i].diameter
-        ? formatDiameter(noduleList[i].diameter)
-        : ''
-      postData.resultInfo.nodelist.push({
-        index: index ? index : noduleList.length + 1,
-        imageIndex: noduleList[i].num,
-        lungLocation: noduleList[i].lung,
-        lobeLocation: noduleList[i].lobe,
-        featureLabel: noduleList[i].type,
-        edit_time: getCurrentTime(),
-        edit: noduleList[i].review,
-        chiefReview: noduleList[i].chiefReview,
-        suggest: noduleList[i].suggest,
-        invisable: noduleList[i].state === false ? '1' : noduleList[i].state === true ? '0' : '-',
-        nodeType: noduleList[i].nodeType ? noduleList[i].nodeType : '',
-        noduleName: noduleList[i].noduleName ? noduleList[i].noduleName : '',
-        noduleNum: noduleList[i].noduleNum ? noduleList[i].noduleNum : '',
-        imageUrl1: noduleList[i].imageUrl1 ? noduleList[i].imageUrl1 : '',
-        imageUrl2: noduleList[i].imageUrl2 ? noduleList[i].imageUrl2 : '',
-        whu_scrynMaligant: noduleList[i].whu_scrynMaligant ? noduleList[i].whu_scrynMaligant : '',
-        nodeBox: noduleList[i].nodeBox ? noduleList[i].nodeBox : '',
-        diameter: noduleList[i].diameter ? noduleList[i].diameter : '',
-        diameterSize: diameterSize,
-        diameterMaxSize: localStorage.getItem('diameterSize'),
-        maxHu: noduleList[i].maxHu ? noduleList[i].maxHu : '',
-        minHu: noduleList[i].minHu ? noduleList[i].minHu : '',
-        meanHu: noduleList[i].meanHu ? noduleList[i].meanHu : '',
-        diameterNorm: noduleList[i].diameterNorm ? noduleList[i].diameterNorm : '',
-        noduleSize: noduleList[i].noduleSize ? noduleList[i].noduleSize : '',
-        centerHu: noduleList[i].centerHu ? noduleList[i].centerHu : '',
-        risk: noduleList[i].risk ? noduleList[i].risk : '',
-        scrynMaligant: noduleList[i].scrynMaligant ? noduleList[i].scrynMaligant : '',
-        newDiameter: noduleList[i].newDiameter ? noduleList[i].newDiameter : '',
-        newNoduleSize: noduleList[i].newNoduleSize ? noduleList[i].newNoduleSize : '',
-        soak: noduleList[i].soak ? noduleList[i].soak : '',
-        newSoak: noduleList[i].newSoak ? noduleList[i].newSoak : '',
-        miniType: diameterSize <= noduleMeasure ? 1 : 0,
-      })
+      if (noduleList[i].state) {
+        postData.nodeText.push({
+          index: noduleList[i].id + 1,
+          imageIndex: noduleList[i].num,
+          featureLabel: noduleList[i].type,
+          box: getBox(noduleList[i]),
+          acrossCoordz: getAcrossCoordz(noduleList[i]),
+        })
+      }
     }
 
-    console.log(postData.resultInfo)
+    console.log(postData.nodeText)
 
-    postData.resultInfo = JSON.stringify(postData.resultInfo)
+    postData.nodeText = JSON.stringify(postData.nodeText)
 
     return postData
+  }
+
+  // 获取结节坐标
+  const getBox = list => {
+    let box = ''
+    const item = noduleMapList.filter(item => item.index === list.num)[0]
+    if (item.startX > item.endX) {
+      box = `${item.endY}, ${item.endX}, ${item.startY}, ${item.startX}`
+    } else {
+      box = `${item.startY}, ${item.startX}, ${item.endY}, ${item.endX}`
+    }
+    return box
+  }
+
+  // 获取穿梭帧
+  const getAcrossCoordz = list => {
+    const item = noduleMapList.filter(item => item.noduleName === list.noduleName)
+    const crossCoordz = []
+    item.map(n => crossCoordz.push(n.index))
+    return crossCoordz.join(',')
   }
 
   // 暂存结节数据
@@ -988,18 +948,16 @@ const Viewer = () => {
   }
 
   // 提交审核结果弹窗
-  const handleSubmitResults = () => {
-    // const postData = formatPostData()
-    // updateDnResult(JSON.stringify(postData)).then(res => {
-    //   console.log(res)
-    //   if (res.data.code === 200) {
-    //     message.success(`提交审核结果成功`)
-    //     setVisible(false)
-    //     // 路由跳转回去
-    //   } else {
-    //     message.error(`提交失败，请刷新后重新尝试`)
-    //   }
-    // })
+  const handleSubmitResults = async () => {
+    const postData = formatPostData()
+    const result = await addNewResult(JSON.stringify(postData))
+    if (result.data.code === 200) {
+        message.success(`提交审核结果成功`)
+        setVisible(false)
+        // 路由跳转回去
+      } else {
+        message.error(`提交失败，请稍后重新尝试`)
+      }
   }
 
   // ===========================================================
@@ -1119,7 +1077,6 @@ const Viewer = () => {
   const [riskVal, setRiskVal] = useState(0)
   const [postData, setPostData] = useState(null)
   const [res, setRes] = useState(null)
-  
 
   const handleRiskOk = () => {
     setConfirmLoading(false)
@@ -1434,8 +1391,14 @@ const Viewer = () => {
     setshowMarkModal(false)
   }
 
+  // 返回列表
+  const handleGoBackList = () => {
+    localStorage.setItem('record', '')
+    history.push('/studyList')
+  }
+
   return (
-    <div className='viewer-box'>
+    <div className="viewer-box">
       <Header data={patients} handleShowModal={handleShowModal} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
@@ -1539,7 +1502,7 @@ const Viewer = () => {
 
       <div className="show-button">
         {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-        <Button onClick={e => history.push('/studyList')}>返回列表</Button>
+        <Button onClick={handleGoBackList}>返回列表</Button>
       </div>
 
       <Modal

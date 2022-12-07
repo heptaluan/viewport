@@ -118,13 +118,13 @@ const toolbarList = [
     type: 'RectangleRoi',
     checked: false,
   },
-  // {
-  //   id: 18,
-  //   text: '面积测量',
-  //   icon: <IconFont style={{ fontSize: '16px' }} type="icon-celiang" />,
-  //   type: 'MeasureRect',
-  //   checked: false,
-  // },
+  {
+    id: 18,
+    text: '面积测量',
+    icon: <IconFont style={{ fontSize: '16px' }} type="icon-celiang" />,
+    type: 'MeasureRect',
+    checked: false,
+  },
 ]
 
 const Toolbar = props => {
@@ -192,7 +192,7 @@ const Toolbar = props => {
       </div>
 
       <div className="submit-btn">
-        <Button onClick={e => props.handleSubmitNodeDetail(e)} size="small">
+        <Button disabled onClick={e => props.handleSubmitNodeDetail(e)} size="small">
           新增结节
         </Button>
 

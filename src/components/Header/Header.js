@@ -73,14 +73,14 @@ const Header = props => {
             />
           </div>
         ) : null}
-        <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
+        {/* <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
           {fileData.length === 0 ? `暂无临床影像` : `查看临床影像（共${fileData.length}页）`}
-        </Button>
+        </Button> */}
         <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
           影像下载
         </Button>
         <Button type="primary" onClick={props.handleShowModal}>
-          提交审核结果
+          提交结果
         </Button>
       </div>
 

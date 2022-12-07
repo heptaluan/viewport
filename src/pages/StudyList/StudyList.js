@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Input, Button, Space, Popconfirm, message, Menu } from 'antd'
-import { LogoutOutlined  } from '@ant-design/icons'
+import { Table, Input, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { getDefaultList } from '../../api/api'
 
 const StudyList = () => {
@@ -25,12 +25,24 @@ const StudyList = () => {
       },
     },
     {
-      title: '订单创建日期',
-      dataIndex: 'orderCreateTime',
-    },
-    {
       title: '订单编号',
       dataIndex: 'orderId',
+    },
+    {
+      title: '病例编号',
+      dataIndex: 'code',
+    },
+    {
+      title: '病人编号',
+      dataIndex: 'pcode',
+    },
+    {
+      title: '影像来源医院',
+      dataIndex: 'source',
+    },
+    {
+      title: '订单创建日期',
+      dataIndex: 'orderCreateTime',
     },
     {
       title: '操作',
@@ -57,24 +69,20 @@ const StudyList = () => {
     }
   }
 
-  // 初始化病人信息
+  // 初始列表数据
   useEffect(() => {
     fetchList()
   }, [])
 
   const handleShowDetail = record => {
+    localStorage.setItem('record', JSON.stringify(record))
     history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
   }
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
     },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User',
-      // Column configuration not to be checked
-      name: record.name,
-    }),
   }
 
   const handleLogout = _ => {
@@ -98,25 +106,31 @@ const StudyList = () => {
           <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
           <h1>泰莱生物商检系统</h1>
         </div>
-        <Popconfirm
-          placement="bottomRight"
-          title="是否退出登录？"
-          onConfirm={handleLogout}
-          okText="确定"
-          cancelText="取消"
-          className="logout"
-        >
-          <Button type="text" icon={<LogoutOutlined />}>
-            退出登录
-          </Button>
-        </Popconfirm>
+        <div className='logout-box'>
+          <div className='user-box'>
+            <Avatar size={26} icon={<UserOutlined />} />
+            <span className='user-name'>用户123</span>
+          </div>
+          <Popconfirm
+            placement="bottomRight"
+            title="是否退出登录？"
+            onConfirm={handleLogout}
+            okText="确定"
+            cancelText="取消"
+            className="logout"
+          >
+            <Button type="text" icon={<LogoutOutlined />}>
+              退出登录
+            </Button>
+          </Popconfirm>
+        </div>
       </header>
       <div className="study-list-container-wrap">
-        <div className='meau-box'>
-        <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
-          <Menu.Item key="1">默认列表</Menu.Item>
-          <Menu.Item key="2">分配列表</Menu.Item>
-        </Menu>
+        <div className="meau-box">
+          <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
+            <Menu.Item key="1">默认列表</Menu.Item>
+            <Menu.Item key="2">分配列表</Menu.Item>
+          </Menu>
         </div>
         <div className="study-list-container">
           <div className="search-box-wrap">
@@ -137,6 +151,7 @@ const StudyList = () => {
               type: 'checkbox',
               ...rowSelection,
             }}
+            rowKey={record => record.orderId}
             dataSource={dataSource}
             columns={columns}
             onRow={record => {

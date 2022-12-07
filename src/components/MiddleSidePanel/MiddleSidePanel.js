@@ -92,7 +92,7 @@ const MiddleSidePanel = props => {
                   {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
                 </div>
                 {/* <div className="suggest">{item.suggest}</div> */}
-                <div className="soak">
+                <div className={`soak ${item.state ? 'yes' : 'no'}`}>
                   <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
                 <div className="action review-state">

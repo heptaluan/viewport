@@ -28,6 +28,14 @@ export const getDefaultList = _ => {
   )
 }
 
+// 获取分配列表
+export const getAssignList = _ => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/primary/missionList`
+  )
+}
+
 // 获取结节列表
 export const getNodeList = orderId =>{
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
@@ -44,6 +52,25 @@ export const getImageList = dicomId => {
   )
 }
 
+// 新增初筛结果
+export const addNewResult = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`${basicUrl}/primary`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
+
+// 分配任务
+export const assignList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`${basicUrl}/assign`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
 
 // const basicUrl = getURLParameters(window.location.href).url
 // axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token

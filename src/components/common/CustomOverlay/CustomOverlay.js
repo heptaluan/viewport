@@ -32,15 +32,15 @@ const CustomOverlay = props => {
 
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
-      const patients = localStorage.getItem('patients') ? JSON.parse(localStorage.getItem('patients')) : ''
+      const patients = localStorage.getItem('record') ? JSON.parse(localStorage.getItem('record')) : ''
       const data = {
-        name: patients.patientName ? patients.patientName : '**',
+        name: patients.name ? patients.name : '**',
         age: patients.age ? patients.age : '**',
-        sex: patients.gender_dictText ? patients.gender_dictText : '**',
-        birth: patients.identityNumber ? getBirth(patients.identityNumber) : '**',
+        sex: patients.sex === '1' ? '男' : '女',
+        hospital: patients.source ? patients.source : '**',
+        birth: '**',
 
         patientId: image.data.string('x00100020'),
-        hospital: image.data.string('x00080080'),
         studyID: image.data.string('x00200010'),
 
         seriesNo: image.data.string('x00200011'),
@@ -52,12 +52,8 @@ const CustomOverlay = props => {
         // day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
         // time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
 
-        day: patients.studyTime
-          ? patients.studyTime.split(' ')[0]
-          : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        time: patients.studyTime
-          ? patients.studyTime.split(' ')[1]
-          : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
+        day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
+        time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
 
         Rowsize: image.rows,
         Colsize: image.columns,

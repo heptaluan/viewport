@@ -32,6 +32,21 @@
       }
     }
 
+    .logout-box {
+      display: flex;
+      align-items: center;
+
+      .user-box {
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+
+        .user-name {
+          margin-left: 5px;
+        }
+      }
+    }
+
     .ant-btn.ant-btn-text {
       color: #fff;
 
