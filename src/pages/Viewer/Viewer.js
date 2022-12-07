@@ -11,12 +11,8 @@ import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleToo
 import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import {
-  saveDnResult,
+  getNodeList,
   getImageList,
-  getPatientsList,
-  getDoctorTask,
-  addNewNodeList,
-  updateDnResult,
 } from '../../api/api'
 import { formatMiniNodule } from '../../util/index'
 import { Modal, message, Button, InputNumber } from 'antd'
@@ -25,10 +21,13 @@ import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
+import { useHistory } from 'react-router-dom'
 
 const { confirm } = Modal
 
 const Viewer = () => {
+  const history = useHistory()
+
   const defaultTools = [
     {
       name: 'Wwwc',
@@ -121,46 +120,48 @@ const Viewer = () => {
 
   // 初始化结节与影像列表信息
   useEffect(() => {
-
     const fetchNodeListData = async () => {
-      const result = await getDoctorTask(params.id)
+      const result = await getNodeList(params.orderId)
       if (result.data.code === 200) {
-        if (result.data.result) {
-          if (result.data.result.doctorTask.resultInfo) {
-            const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-            const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-            formatNodeData(data, resultInfo.nodelist)
-            fetcImagehData(data.detectionResult.nodulesList)
-          } else {
-            const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-            formatNodeData(data, [])
-            fetcImagehData(data.detectionResult.nodulesList)
-          }
-        }
+        const data = JSON.parse(result.data.data.replace(/'/g, '"'))
+        formatNodeData(data, [])
+      } else if (result.data.code === 401) {
+        localStorage.setItem('token', '')
+        message.warning(`登录已失效，请重新登录`)
+        history.push('/login')
       }
     }
 
-    const fetcImagehData = async data => {
-      const res = await getImageList(params.taskId)
-      setImageList(res, data)
+    const fetcImagehData = async _ => {
+      const res = await getImageList(params.dicomId)
+      debugger
+      if (res.data.code === 200 && res.data.data.length > 0) {
+        const newList = res.data.data
+        const imageList = []
+        newList.forEach(item => {
+          imageList.push(`wadouri:${item.ossUrl.replace('http://', 'https://')}`)
+        })
+        setImagesConfig(imageList)
+      }
     }
 
     fetchNodeListData()
+    fetcImagehData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // 初始化病人信息
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await getPatientsList(params.taskId)
-      if (result.data.code === 200 && result.data.result) {
-        setPatients(result.data.result.records[0])
-        localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
-      } else {
+    // const fetchData = async () => {
+      // const result = await getPatientsList(params.dicomId)
+      // if (result.data.code === 200 && result.data.result) {
+      //   setPatients(result.data.result.records[0])
+      //   localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
+      // } else {
         localStorage.setItem('patients', '')
-      }
-    }
-    fetchData()
+      // }
+    // }
+    // fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -260,26 +261,6 @@ const Viewer = () => {
     } else {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       cornerstone.updateImage(cornerstoneElement)
-    }
-  }
-
-  // 设置图片列表
-  const setImageList = (res, data) => {
-    if (res.data.code === 200 && res.data.result.length > 0) {
-      const newList = res.data.result
-      const imageList = []
-      newList.forEach(item => {
-        imageList.push(`wadouri:${item.ossUrl.replace('http://', 'https://')}`)
-      })
-
-      setImagesConfig(imageList)
-
-      // loadAndCacheImage(cornerstone, imageList, data)
-
-      // 缓存图片
-      if (data && data.length > 0) {
-        loadAndCacheImage(cornerstone, imageList, data)
-      }
     }
   }
 
@@ -723,11 +704,11 @@ const Viewer = () => {
       const res = data.detectionResult.nodulesList
 
       // 初始化滑块的值
-      if (resultInfo[0] && resultInfo[0].diameterMaxSize) {
-        localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
-      } else {
-        localStorage.setItem('diameterSize', 3)
-      }
+      // if (resultInfo[0] && resultInfo[0].diameterMaxSize) {
+      //   localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
+      // } else {
+      //   localStorage.setItem('diameterSize', 3)
+      // }
 
       // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
       for (let i = 0; i < res.length; i++) {
@@ -924,7 +905,7 @@ const Viewer = () => {
     const miniNodule = formatMiniNodule([...noduleList])
 
     const postData = {
-      id: params.taskId,
+      id: params.dicomId,
       resultInfo: {
         noduleMeasure: noduleMeasure,
         miniNodule: miniNodule,
@@ -985,15 +966,15 @@ const Viewer = () => {
 
   // 暂存结节数据
   const saveResults = callback => {
-    const postData = formatPostData()
-    saveDnResult(JSON.stringify(postData)).then(res => {
-      if (res.data.code === 200) {
-        message.success(`结节信息保存成功`)
-        callback && callback()
-      } else {
-        message.error(`结节结果保存失败，请检查网络或是重新登录后再行尝试`)
-      }
-    })
+    // const postData = formatPostData()
+    // saveDnResult(JSON.stringify(postData)).then(res => {
+    //   if (res.data.code === 200) {
+    //     message.success(`结节信息保存成功`)
+    //     callback && callback()
+    //   } else {
+    //     message.error(`结节结果保存失败，请检查网络或是重新登录后再行尝试`)
+    //   }
+    // })
   }
 
   // 提交审核结果按钮
@@ -1008,17 +989,17 @@ const Viewer = () => {
 
   // 提交审核结果弹窗
   const handleSubmitResults = () => {
-    const postData = formatPostData()
-    updateDnResult(JSON.stringify(postData)).then(res => {
-      console.log(res)
-      if (res.data.code === 200) {
-        message.success(`提交审核结果成功`)
-        setVisible(false)
-        // 路由跳转回去
-      } else {
-        message.error(`提交失败，请刷新后重新尝试`)
-      }
-    })
+    // const postData = formatPostData()
+    // updateDnResult(JSON.stringify(postData)).then(res => {
+    //   console.log(res)
+    //   if (res.data.code === 200) {
+    //     message.success(`提交审核结果成功`)
+    //     setVisible(false)
+    //     // 路由跳转回去
+    //   } else {
+    //     message.error(`提交失败，请刷新后重新尝试`)
+    //   }
+    // })
   }
 
   // ===========================================================
@@ -1053,7 +1034,7 @@ const Viewer = () => {
 
   // 重新请求，刷新数据
   const fetchDoctorData = async callback => {
-    const result = await getDoctorTask(params.id)
+    const result = await getNodeList(params.orderId)
     if (result.data.code === 200) {
       if (result.data.result) {
         if (result.data.result.doctorTask.resultInfo) {
@@ -1262,19 +1243,19 @@ const Viewer = () => {
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    addNewNodeList(JSON.stringify(postData)).then(res => {
-      if (res.data.code === 1) {
-        setTimeout(hide)
-        setRiskVal(res.data.scrynMaligant)
-        setRes(res)
-        setShowRisk(true)
-      } else {
-        message.error(`新增失败，请重新尝试`)
-        setTimeout(hide)
-        setConfirmLoading(true)
-        return false
-      }
-    })
+    // addNewNodeList(JSON.stringify(postData)).then(res => {
+    //   if (res.data.code === 1) {
+    //     setTimeout(hide)
+    //     setRiskVal(res.data.scrynMaligant)
+    //     setRes(res)
+    //     setShowRisk(true)
+    //   } else {
+    //     message.error(`新增失败，请重新尝试`)
+    //     setTimeout(hide)
+    //     setConfirmLoading(true)
+    //     return false
+    //   }
+    // })
   }
 
   // 删除结节
@@ -1557,7 +1538,8 @@ const Viewer = () => {
       </Modal>
 
       <div className="show-button">
-        <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
+        {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
+        <Button onClick={e => history.push('/studyList')}>返回列表</Button>
       </div>
 
       <Modal

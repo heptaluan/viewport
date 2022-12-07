@@ -2,36 +2,45 @@ import React, { useState, useEffect } from 'react'
 import './Login.scss'
 import { useHistory } from 'react-router-dom'
 import { LockOutlined, UserOutlined, BellOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Form, Input } from 'antd'
-import { getCodeImg } from '../../api/api'
+import { Button, message, Form, Input } from 'antd'
+import { getCodeImg, userLogin } from '../../api/api'
 
 const Login = () => {
   const history = useHistory()
 
   const [imgSrc, setImgSrc] = useState('')
+  const [uuid, setUuid] = useState('')
+
+  const fetchCodeImg = async () => {
+    const result = await getCodeImg()
+    if (result.data.code === 200 && result.data.img) {
+      setImgSrc('data:image/gif;base64,' + result.data.img)
+      setUuid(result.data.uuid)
+    }
+  }
 
   useEffect(() => {
-    const time = new Date().getTime().toString()
-    const fetchData = async () => {
-      const result = await getCodeImg(time)
-      if (result.data.code === 0 && result.data.result) {
-        setImgSrc(result.data.result)
-      }
-    }
-    fetchData()
+    fetchCodeImg()
   }, [])
 
-  const onFinish = values => {
-    console.log('Success:', values)
-    history.push(`/studyList`)
+  const onFinish = async values => {
+    const params = {
+      uuid: uuid,
+      ...values,
+    }
+    const result = await userLogin(params)
+    if (result.data.code === 500) {
+      message.warning(result.data.msg)
+      fetchCodeImg()
+    } else if (result.data.code === 200) {
+      message.success(`登录成功`)
+      localStorage.setItem('token', result.data.token)
+      history.push(`/studyList`)
+    }
   }
 
   const handleChangeImg = async () => {
-    const time = new Date().getTime().toString()
-    const result = await getCodeImg(time)
-    if (result.data.code === 0 && result.data.result) {
-      setImgSrc(result.data.result)
-    }
+    fetchCodeImg()
   }
 
   return (

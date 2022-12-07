@@ -26,16 +26,16 @@ const Header = props => {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await getClinicalFiles(params.orderId)
-      if (result.data.code === 500) {
-        setFileData([])
-      } else if (result.data.code === 200) {
-        setFileData(result.data.result.appendix)
-        setRemark(result.data.result.remark)
-      }
-    }
-    fetchData()
+    // const fetchData = async () => {
+    //   const result = await getClinicalFiles(params.orderId)
+    //   if (result.data.code === 500) {
+    //     setFileData([])
+    //   } else if (result.data.code === 200) {
+    //     setFileData(result.data.result.appendix)
+    //     setRemark(result.data.result.remark)
+    //   }
+    // }
+    // fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
