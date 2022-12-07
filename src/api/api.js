@@ -10,7 +10,10 @@ axios.interceptors.request.use(config => {
 })
 
 // 获取验证码
-export const getCodeImg = _ => axios.get(`${basicUrl}/captchaImage`)
+export const getCodeImg = _ => {
+  axios.defaults.headers.common['Authorization'] = ''
+  return axios.get(`${basicUrl}/captchaImage`)
+}
 
 // 登录
 export const userLogin = params =>
@@ -20,11 +23,27 @@ export const userLogin = params =>
     },
   })
 
-// 获取默认列表
-export const getDefaultList = _ => {
+// 获取用户角色
+export const getInfo = _ => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/getInfo`
+  )
+}
+
+// 获取总医生列表
+export const getChiefList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
     `${basicUrl}/primary/missionList`
+  )
+}
+
+// 获取普通医生列表
+export const getDoctorList = _ => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}//secondprimary/list`
   )
 }
 

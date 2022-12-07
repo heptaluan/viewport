@@ -123,6 +123,7 @@ const Viewer = () => {
         formatNodeData(data, [])
       } else if (result.data.code === 401) {
         localStorage.setItem('token', '')
+        localStorage.setItem('info', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -759,61 +760,6 @@ const Viewer = () => {
             startY: rois.bbox[0],
             endX: rois.bbox[3],
             endY: rois.bbox[2],
-          })
-        }
-      }
-
-      for (let i = 0; i < resultInfo.length; i++) {
-        if (resultInfo[i].nodeType && resultInfo[i].nodeType === 1) {
-          nodulesList.push({
-            id: index,
-            num: resultInfo[i].imageIndex,
-            size: '',
-            type: resultInfo[i].featureLabel,
-            risk: resultInfo[i].risk,
-            scrynMaligant: resultInfo[i].scrynMaligant,
-            soak: '',
-            info: '',
-            checked: false,
-            active: false,
-            noduleName: resultInfo[i].noduleName,
-            noduleNum: resultInfo[i].noduleNum,
-            state: true,
-            review: true,
-            chiefReview: resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
-            lung: resultInfo[i].lungLocation,
-            lobe: resultInfo[i].lobeLocation,
-            featureLabelG: resultInfo[i].featureLabel,
-            suggest: resultInfo[i].suggest,
-            nodeType: resultInfo[i].nodeType,
-            imageUrl1: resultInfo[i].imageUrl1,
-            imageUrl2: resultInfo[i].imageUrl2,
-            whu_scrynMaligant: resultInfo[i].whu_scrynMaligant,
-            nodeBox: resultInfo[i].nodeBox,
-            maxHu: resultInfo[i].maxHu,
-            minHu: resultInfo[i].minHu,
-            meanHu: resultInfo[i].meanHu,
-            diameterNorm: resultInfo[i].diameterNorm,
-            centerHu: resultInfo[i].centerHu,
-            diameter: resultInfo[i].diameter,
-            diameterSize: resultInfo[i].newDiameter
-              ? formatDiameter(resultInfo[i].newDiameter)
-              : formatDiameter(resultInfo[i].diameter),
-            noduleSize: resultInfo[i].noduleSize,
-            newDiameter: resultInfo[i].newDiameter,
-            newNoduleSize: resultInfo[i].newNoduleSize,
-          })
-
-          index++
-
-          nodulesMapList.push({
-            noduleName: resultInfo[i].noduleName,
-            nodeType: 1,
-            index: resultInfo[i].imageIndex,
-            startX: resultInfo[i].nodeBox[1],
-            startY: resultInfo[i].nodeBox[0],
-            endX: resultInfo[i].nodeBox[3],
-            endY: resultInfo[i].nodeBox[2],
           })
         }
       }

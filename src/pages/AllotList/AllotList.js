@@ -3,7 +3,7 @@ import './AllotList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Modal, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getAssignList, assignList, getDefaultList } from '../../api/api'
+import { getAssignList, assignList, getChiefList } from '../../api/api'
 
 const AllotList = () => {
   const [dataSource, setDataSource] = useState([])
@@ -47,14 +47,16 @@ const AllotList = () => {
   ]
 
   const history = useHistory()
+  const [userInfo, setUserInfo] = useState('')
 
   // 请求列表数据
   const fetchList = async () => {
-    const result = await getDefaultList()
+    const result = await getChiefList()
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -62,11 +64,13 @@ const AllotList = () => {
 
   // 初始列表数据
   useEffect(() => {
+    setUserInfo(localStorage.getItem('info'))
     fetchList()
   }, [])
 
   const handleLogout = _ => {
     localStorage.setItem('token', '')
+    localStorage.setItem('info', '')
     message.success(`退出成功`)
     history.push('/login')
   }
@@ -117,7 +121,7 @@ const AllotList = () => {
         <div className='logout-box'>
           <div className='user-box'>
             <Avatar size={26} icon={<UserOutlined />} />
-            <span className='user-name'>用户123</span>
+            <span className='user-name'>{userInfo}</span>
           </div>
           <Popconfirm
             placement="bottomRight"

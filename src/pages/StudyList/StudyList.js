@@ -3,12 +3,12 @@ import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Input, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getDefaultList } from '../../api/api'
+import { getChiefList, getDoctorList } from '../../api/api'
 
 const StudyList = () => {
   const [dataSource, setDataSource] = useState([])
 
-  const columns = [
+  const chiefColumns = [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -49,21 +49,63 @@ const StudyList = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => handleShowDetail(record)}>查看详情</a>
+          <a onClick={() => handleShowChiefDetail(record)}>查看详情</a>
+        </Space>
+      ),
+    },
+  ]
+
+  const doctorColumns = [
+    {
+      title: '审阅人',
+      dataIndex: 'createBy',
+    },
+    {
+      title: '审阅时间',
+      dataIndex: 'createTime',
+    },
+    {
+      title: '是否完成',
+      dataIndex: 'isFinish',
+      render: (_, record) => {
+        return record.isFinish === 1 ? '完成' : '未完成'
+      },
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <a onClick={() => handleShowDoctorDetail(record)}>查看详情</a>
         </Space>
       ),
     },
   ]
 
   const history = useHistory()
+  const [userInfo, setUserInfo] = useState('')
 
-  // 请求列表数据
-  const fetchList = async () => {
-    const result = await getDefaultList()
+  // 获取总医生列表数据
+  const fetchChiefList = async () => {
+    const result = await getChiefList()
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
+  }
+
+  // 获取普通医生列表数据
+  const fetchDoctorList = async () => {
+    const result = await getDoctorList()
+    if (result.data.code === 200) {
+      setDataSource(result.data.rows)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -71,12 +113,26 @@ const StudyList = () => {
 
   // 初始列表数据
   useEffect(() => {
-    fetchList()
+    const info = localStorage.getItem('info')
+    setUserInfo(info)
+
+    if (info === 'chief') {
+      fetchChiefList()
+    } else if (info === 'doctor') {
+      fetchDoctorList()
+    }
   }, [])
 
-  const handleShowDetail = record => {
+  // 总医生详情
+  const handleShowChiefDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
     history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
+  }
+
+  // 普通医生详情
+  const handleShowDoctorDetail = record => {
+    localStorage.setItem('record', JSON.stringify(record))
+    history.push(`/viewer?id=${record.id}`)
   }
 
   const rowSelection = {
@@ -87,6 +143,7 @@ const StudyList = () => {
 
   const handleLogout = _ => {
     localStorage.setItem('token', '')
+    localStorage.setItem('info', '')
     message.success(`退出成功`)
     history.push('/login')
   }
@@ -106,10 +163,10 @@ const StudyList = () => {
           <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
           <h1>泰莱生物商检系统</h1>
         </div>
-        <div className='logout-box'>
-          <div className='user-box'>
+        <div className="logout-box">
+          <div className="user-box">
             <Avatar size={26} icon={<UserOutlined />} />
-            <span className='user-name'>用户123</span>
+            <span className="user-name">{userInfo}</span>
           </div>
           <Popconfirm
             placement="bottomRight"
@@ -129,7 +186,7 @@ const StudyList = () => {
         <div className="meau-box">
           <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">默认列表</Menu.Item>
-            <Menu.Item key="2">分配列表</Menu.Item>
+            {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
           </Menu>
         </div>
         <div className="study-list-container">
@@ -153,7 +210,7 @@ const StudyList = () => {
             }}
             rowKey={record => record.orderId}
             dataSource={dataSource}
-            columns={columns}
+            columns={userInfo === 'chief' ? chiefColumns : doctorColumns}
             onRow={record => {
               return {
                 onDoubleClick: event => {

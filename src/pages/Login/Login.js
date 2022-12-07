@@ -3,7 +3,7 @@ import './Login.scss'
 import { useHistory } from 'react-router-dom'
 import { LockOutlined, UserOutlined, BellOutlined } from '@ant-design/icons'
 import { Button, message, Form, Input } from 'antd'
-import { getCodeImg, userLogin } from '../../api/api'
+import { getCodeImg, userLogin, getInfo } from '../../api/api'
 
 const Login = () => {
   const history = useHistory()
@@ -33,9 +33,18 @@ const Login = () => {
       message.warning(result.data.msg)
       fetchCodeImg()
     } else if (result.data.code === 200) {
-      message.success(`登录成功`)
       localStorage.setItem('token', result.data.token)
-      history.push(`/studyList`)
+      const info = await getInfo()
+      if (info.data.code === 200) {
+        localStorage.setItem('info', info.data.roles[0])
+        message.success(`登录成功`)
+        history.push(`/studyList`)
+      } else if (info.data.code === 500) {
+        localStorage.setItem('token', '')
+        localStorage.setItem('info', '')
+        message.warning(`获取用户角色失败，请重新登录`)
+        fetchCodeImg()
+      }
     }
   }
 
