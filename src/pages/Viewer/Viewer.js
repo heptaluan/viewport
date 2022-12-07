@@ -10,7 +10,7 @@ import NoduleInfo from '../../components/common/NoduleInfo/NoduleInfo'
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import { getNodeList, getImageList, addNewResult } from '../../api/api'
+import { getNodeList, getImageList, addNewResult, getSecondprimaryDetail } from '../../api/api'
 import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
@@ -114,6 +114,9 @@ const Viewer = () => {
   // 获取路由参数
   const params = qs.parse(useLocation().search)
 
+  // 角色
+  const [userInfo, setUserInfo] = useState('')
+
   // 初始化结节与影像列表信息
   useEffect(() => {
     const fetchNodeListData = async () => {
@@ -141,8 +144,32 @@ const Viewer = () => {
       }
     }
 
-    fetchNodeListData()
-    fetcImagehData()
+    const fetchSecondprimaryDetail = async () => {
+      const result = await getSecondprimaryDetail(params.id)
+      debugger
+      if (result.data.code === 200) {
+        const data = JSON.parse(result.data.data.replace(/'/g, '"'))
+        formatNodeData(data, [])
+      } else if (result.data.code === 401) {
+        localStorage.setItem('token', '')
+        localStorage.setItem('info', '')
+        message.warning(`登录已失效，请重新登录`)
+        history.push('/login')
+      }
+    }
+
+    // 保存用户角色
+    const info = localStorage.getItem('info')
+    setUserInfo(info)
+
+    // 根据角色请求不同的数据
+    if (info === 'chief') {
+      fetchNodeListData()
+      fetcImagehData()
+    } else if (info === 'doctor') {
+      fetchSecondprimaryDetail()
+    }
+    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -828,6 +855,7 @@ const Viewer = () => {
     const patients = JSON.parse(localStorage.getItem('record'))
     const postData = {
       ...patients,
+      imageCount: imagesConfig.length,
       nodeText: [],
     }
 

@@ -43,7 +43,7 @@ export const getChiefList = _ => {
 export const getDoctorList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}//secondprimary/list`
+    `${basicUrl}/secondprimary/list`
   )
 }
 
@@ -51,8 +51,26 @@ export const getDoctorList = _ => {
 export const getAssignList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}/primary/missionList`
+    `${basicUrl}/primary/primaryList`
   )
+}
+
+// 获取可分配医生列表
+export const getAssignUsersList = _ => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/primary/assignUsers`
+  )
+}
+
+// 提交分配结果
+export const addAssignResult = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`${basicUrl}/primary/assign`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
 }
 
 // 获取结节列表
@@ -68,6 +86,14 @@ export const getImageList = dicomId => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
     `${basicUrl}/primary/image/${dicomId}`
+  )
+}
+
+// 获取二次筛选详情
+export const getSecondprimaryDetail = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/secondprimary/detail/${id}`
   )
 }
 

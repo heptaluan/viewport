@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import './AllotList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Modal, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
+import { Table, Modal, Button, Select, Popconfirm, message, Menu, Avatar } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getAssignList, assignList, getChiefList } from '../../api/api'
+import { getAssignList, assignList, getAssignUsersList, addAssignResult } from '../../api/api'
 
 const AllotList = () => {
   const [dataSource, setDataSource] = useState([])
@@ -47,11 +47,16 @@ const AllotList = () => {
   ]
 
   const history = useHistory()
+
+  // 用户角色
   const [userInfo, setUserInfo] = useState('')
 
-  // 请求列表数据
+  // 分配医生列表
+  const [selectOptions, setSelectOptions] = useState([])
+
+  // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getChiefList()
+    const result = await getAssignList()
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
@@ -62,12 +67,31 @@ const AllotList = () => {
     }
   }
 
+  // 请求可分配医生列表
+  const fetchAssignUsersList = async () => {
+    const result = await getAssignUsersList()
+    if (result.data.code === 200) {
+      const list = result.data.rows
+      const users = []
+      for (let i = 0; i < list.length; i++) {
+        users.push({
+          key: i,
+          value: list[i].userName,
+          label: list[i].userName,
+        })
+      }
+      setSelectOptions(users)
+    }
+  }
+
   // 初始列表数据
   useEffect(() => {
     setUserInfo(localStorage.getItem('info'))
     fetchList()
+    fetchAssignUsersList()
   }, [])
 
+  // 退出
   const handleLogout = _ => {
     localStorage.setItem('token', '')
     localStorage.setItem('info', '')
@@ -75,6 +99,7 @@ const AllotList = () => {
     history.push('/login')
   }
 
+  // 菜单切换
   const handleChangeMenu = e => {
     if (e.key === '1') {
       history.push('/studyList')
@@ -86,19 +111,37 @@ const AllotList = () => {
   // 任务分配
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedList, setSelectedList] = useState([])
+  const [assignUsers, setAssignUsers] = useState('')
 
   const showModal = () => {
-    setIsModalOpen(true)
+    if (selectedList.length === 0) {
+      message.warning(`请先选择需要进行分配的列表`)
+    } else {
+      setIsModalOpen(true)
+    }
   }
 
+  // 提交分配任务
   const handleOk = async () => {
-    console.log(selectedList)
-    const result = await assignList()
-    debugger
-    if (result.data.code === 200) {
-      setDataSource(result.data.rows)
+    if (!assignUsers) {
+      message.warning(`请选择医生进行分配`)
+      return
     }
-    // setIsModalOpen(false)
+    const ids = []
+    for (let i = 0; i < selectedList.length; i++) {
+      ids.push(selectedList[i].id)
+    }
+    const postData = {
+      users: assignUsers.join(','),
+      ids: ids.join(','),
+    }
+    const result = await addAssignResult(postData)
+    if (result.data.code === 200) {
+      message.success(`分配成功`)
+      setIsModalOpen(false)
+    } else if (result.data.code === 500) {
+      message.error(result.data.msg ? result.data.msg : `任务分配失败，请重新尝试`)
+    }
   }
 
   const handleCancel = () => {
@@ -108,7 +151,12 @@ const AllotList = () => {
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectedList(selectedRows)
-    }
+    },
+  }
+
+  // 选择分配医生
+  const handleSelectedChange = value => {
+    setAssignUsers(value)
   }
 
   return (
@@ -118,10 +166,10 @@ const AllotList = () => {
           <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
           <h1>泰莱生物商检系统</h1>
         </div>
-        <div className='logout-box'>
-          <div className='user-box'>
+        <div className="logout-box">
+          <div className="user-box">
             <Avatar size={26} icon={<UserOutlined />} />
-            <span className='user-name'>{userInfo}</span>
+            <span className="user-name">{userInfo}</span>
           </div>
           <Popconfirm
             placement="bottomRight"
@@ -157,6 +205,7 @@ const AllotList = () => {
               type: 'checkbox',
               ...rowSelection,
             }}
+            rowKey={record => record.orderId}
             dataSource={dataSource}
             columns={columns}
             onRow={record => {
@@ -177,8 +226,19 @@ const AllotList = () => {
         onCancel={handleCancel}
         cancelText="取消"
         okText="确定"
+        maskClosable={false}
       >
-        <p>是否将所选列表进行分配</p>
+        <div className="modal-box">
+          <p>请选择医生进行分配：</p>
+          <Select
+            mode="multiple"
+            allowClear
+            style={{ width: '100%' }}
+            onChange={handleSelectedChange}
+            options={selectOptions}
+            placeholder="请选择需要进行分配的医生"
+          />
+        </div>
       </Modal>
     </div>
   )
