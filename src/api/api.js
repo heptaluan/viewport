@@ -107,6 +107,22 @@ export const addNewResult = params => {
   })
 }
 
+// 提交二筛结果
+export const addSecondprimaryResult = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.put(`${basicUrl}/secondprimary/updateList/${id}`)
+}
+
+// 暂存二筛结果
+export const saveSecondprimaryResult = (id, params) => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`${basicUrl}/secondprimary/updateResult/${id}`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
+
 // 分配任务
 export const assignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')

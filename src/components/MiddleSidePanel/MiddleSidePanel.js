@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Tag, Tooltip } from 'antd'
@@ -14,6 +14,14 @@ const MiddleSidePanel = props => {
     e.stopPropagation()
     props.showDeleteConfirm(item)
   }
+
+  // 保存用户角色
+  const [userInfo, setUserInfo] = useState('')
+
+  useEffect(() => {
+    const info = localStorage.getItem('info')
+    setUserInfo(info)
+  }, [])
 
   // const tips = (
   //   <div style={{ fontSize: '13px' }}>
@@ -65,11 +73,14 @@ const MiddleSidePanel = props => {
               <div className="index">序号</div>
             </Checkbox>
             <div className="num">中心帧</div>
-            <div className="soak">肺</div>
-            <div className="soak">肺叶</div>
+            {userInfo === 'chief' ? (
+              <>
+                <div className="soak">肺</div>
+                <div className="soak">肺叶</div>
+              </>
+            ) : null}
             <div className="type">类型</div>
-            <div className="risk">风险</div>
-            {/* <div className="suggest">建议</div> */}
+            {userInfo === 'chief' ? <div className="risk">风险</div> : null}
             <div className="soak">结节</div>
             <div className="action">状态</div>
           </div>
@@ -80,18 +91,26 @@ const MiddleSidePanel = props => {
                 className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} `}
                 onClick={e => handleListClick(index, item.num)}
               >
-                {/* <div className="icon">{item.id}</div> */}
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="index">{index + 1}</div>
                 </Checkbox>
                 <div className="num">{props.imagesConfig.length - item.num}</div>
-                <div className="soak">{item.lung}</div>
-                <div className="soak">{item.lobe}</div>
+                {userInfo === 'chief' ? (
+                  <>
+                    <div className="soak">{item.lung}</div>
+                    <div className="soak">{item.lobe}</div>
+                  </>
+                ) : null}
+
                 <div className="type">{item.type}</div>
-                <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
-                  {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
-                </div>
-                {/* <div className="suggest">{item.suggest}</div> */}
+                {userInfo === 'chief' ? (
+                  <div
+                    className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}
+                  >
+                    {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
+                  </div>
+                ) : null}
+
                 <div className={`soak ${item.state ? 'yes' : 'no'}`}>
                   <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                 </div>
@@ -132,30 +151,6 @@ const MiddleSidePanel = props => {
               })}
             </div>
           </div>
-          {/* <div className="suggest-box">
-            <div className="title">影像建议</div>
-            <div className="suggest-content">
-              <div className="suggest-content-wrap">
-                <TextArea
-                  placeholder="请输入建议"
-                  bordered={false}
-                  rows={6}
-                  maxLength={150}
-                  style={{
-                    width: '100%',
-                    resize: 'none',
-                  }}
-                  value={props.noduleInfo?.suggest}
-                  onChange={props.handleTextareaOnChange}
-                />
-              </div>
-              <div className="save">
-                <Button type="primary" size="small">
-                  保存
-                </Button>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
