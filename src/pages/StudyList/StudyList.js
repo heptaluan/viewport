@@ -190,7 +190,7 @@ const StudyList = () => {
           </Menu>
         </div>
         <div className="study-list-container">
-          <div className="search-box-wrap">
+          {/* <div className="search-box-wrap">
             <div className="header">
               <Button type="primary">搜索</Button>
               <Button type="primary" style={{ marginLeft: 15 }}>
@@ -202,13 +202,13 @@ const StudyList = () => {
               <Input style={{ width: 200 }} placeholder="请输入身份证号" />
               <Input style={{ width: 200 }} placeholder="请输入年龄" />
             </div>
-          </div>
+          </div> */}
           <Table
             rowSelection={{
               type: 'checkbox',
               ...rowSelection,
             }}
-            rowKey={record => record.orderId}
+            rowKey={record => userInfo === 'chief' ? record.orderId : record.id}
             dataSource={dataSource}
             columns={userInfo === 'chief' ? chiefColumns : doctorColumns}
             onRow={record => {

@@ -110,7 +110,11 @@ export const addNewResult = params => {
 // 提交二筛结果
 export const addSecondprimaryResult = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.put(`${basicUrl}/secondprimary/updateList/${id}`)
+  return axios.post(`${basicUrl}/secondprimary/updateList/${id}`, {}, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
 }
 
 // 暂存二筛结果

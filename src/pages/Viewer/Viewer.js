@@ -128,8 +128,12 @@ const Viewer = () => {
     const fetchNodeListData = async () => {
       const result = await getNodeList(params.orderId)
       if (result.data.code === 200) {
-        const data = JSON.parse(result.data.data.replace(/'/g, '"'))
-        formatNodeData(data, [])
+        try {
+          const data = JSON.parse(result.data.data.replace(/'/g, '"'))
+          formatNodeData(data, [])
+        } catch (error) {
+          console.log(error)
+        }
       } else if (result.data.code === 401) {
         localStorage.setItem('token', '')
         localStorage.setItem('info', '')
@@ -317,7 +321,7 @@ const Viewer = () => {
       const res = data.nodeInfo[i]
       nodulesList.push({
         id: index,
-        num: res.index,
+        num: data.imageList.length - res.index,
         checked: false,
         state: undefined,
         review: false,
@@ -344,6 +348,8 @@ const Viewer = () => {
         })
       }
     }
+
+    debugger
 
     // 格式化影像信息
     const newList = data.imageList
@@ -536,7 +542,7 @@ const Viewer = () => {
     }
     if (checkItme && type === 'type') {
       checkItme.type = val
-      checkItme.review = true
+      // checkItme.review = true
     }
     if (checkItme && type === 'soak') {
       checkItme.newSoak = val
@@ -544,8 +550,9 @@ const Viewer = () => {
     }
     setNoduleList([...noduleList])
 
-    // 提交结节数据
-    saveResults()
+    if (userInfo === 'doctor') {
+      saveSecondprimaryResults()
+    }
   }
 
   // 更新医生影像建议内容
@@ -917,16 +924,15 @@ const Viewer = () => {
   }
 
   // 暂存二筛数据
-  const saveSecondprimaryResults = callback => {
+  const saveSecondprimaryResults = async () => {
     const postData = formatSecondprimaryData()
-    saveSecondprimaryResult(params.id, JSON.stringify(postData)).then(res => {
-      // if (res.data.code === 200) {
-      //   message.success(`结节信息保存成功`)
-      //   callback && callback()
-      // } else {
-      //   message.error(`结节结果保存失败，请检查网络或是重新登录后再行尝试`)
-      // }
-    })
+    const result = await saveSecondprimaryResult(params.id, postData)
+    debugger
+    if (res.data.code === 200) {
+      message.success(`结节信息暂存成功`)
+    } else {
+      message.error(`结节信息暂存失败，请检查网络后重新尝试`)
+    }
   }
 
   // 格式化提交数据
@@ -971,7 +977,7 @@ const Viewer = () => {
 
   // 提交审核结果按钮
   const handleShowModal = () => {
-    formatPostData()
+    // formatPostData()
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {
@@ -993,12 +999,11 @@ const Viewer = () => {
       }
     } else {
       const result = await addSecondprimaryResult(params.id)
-      debugger
       // saveResults
       if (result.data.code === 200) {
         message.success(`提交审核结果成功`)
         setVisible(false)
-        // 路由跳转回去
+        history.push('/studyList')
       } else {
         message.error(`提交失败，请稍后重新尝试`)
       }
