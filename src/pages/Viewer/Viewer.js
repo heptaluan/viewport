@@ -316,18 +316,20 @@ const Viewer = () => {
     const nodulesMapList = []
     let index = 0
 
+    console.log(data)
+
     // 格式化结节列表信息
     for (let i = 0; i < data.nodeInfo.length; i++) {
       const res = data.nodeInfo[i]
+      const resultInfo = data.resultInfo[i]
       nodulesList.push({
         id: index,
         num: data.imageList.length - res.index,
         checked: false,
         state: undefined,
         review: false,
-        featureLabelG: res.featuresType,
         type: res.featuresType,
-        kyTaskId: data.kyTask.id,
+        kyTaskId: resultInfo.id,
       })
       index++
     }
@@ -348,8 +350,6 @@ const Viewer = () => {
         })
       }
     }
-
-    debugger
 
     // 格式化影像信息
     const newList = data.imageList
@@ -509,17 +509,6 @@ const Viewer = () => {
     }
   }
 
-  // 更新列表事件
-  const updateNoduleList = checkState => {
-    const checkItme = noduleList.find(item => item.checked === true)
-    checkItme.review = true
-    checkItme.state = checkState
-    setNoduleList([...noduleList])
-    if (userInfo === 'doctor') {
-      saveSecondprimaryResults()
-    }
-  }
-
   const updateChiefNoduleList = checkState => {
     const checkItme = noduleList.find(item => item.checked === true)
     checkItme.chiefReview = checkState
@@ -527,6 +516,17 @@ const Viewer = () => {
 
     // 提交结节数据
     saveResults()
+  }
+
+  // 更新列表结节状态
+  const updateNoduleList = checkState => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    checkItme.review = true
+    checkItme.state = checkState
+    setNoduleList([...noduleList])
+    if (userInfo === 'doctor') {
+      saveSecondprimaryResults(checkItme)
+    }
   }
 
   // 更新结节事件
@@ -551,7 +551,7 @@ const Viewer = () => {
     setNoduleList([...noduleList])
 
     if (userInfo === 'doctor') {
-      saveSecondprimaryResults()
+      saveSecondprimaryResults(checkItme)
     }
   }
 
@@ -924,11 +924,14 @@ const Viewer = () => {
   }
 
   // 暂存二筛数据
-  const saveSecondprimaryResults = async () => {
-    const postData = formatSecondprimaryData()
-    const result = await saveSecondprimaryResult(params.id, postData)
-    debugger
-    if (res.data.code === 200) {
+  const saveSecondprimaryResults = async (checkItme) => {
+    const postData = {
+      id: checkItme.kyTaskId,
+      featuresType: checkItme.type,
+      isBenign: checkItme.state ? 1 : 0,
+    }
+    const result = await saveSecondprimaryResult(postData)
+    if (result.data.code === 200) {
       message.success(`结节信息暂存成功`)
     } else {
       message.error(`结节信息暂存失败，请检查网络后重新尝试`)
@@ -949,7 +952,7 @@ const Viewer = () => {
         postData.nodeText.push({
           index: noduleList[i].id + 1,
           imageIndex: noduleList[i].num,
-          featuresType: noduleList[i].type,
+          featureLabel: noduleList[i].type,
           box: getBox(noduleList[i]),
           acrossCoordz: getAcrossCoordz(noduleList[i]),
         })
@@ -963,21 +966,10 @@ const Viewer = () => {
     return postData
   }
 
-  // 格式化二筛提交数据
-  const formatSecondprimaryData = () => {
-    const postData = []
-    for (let i = 0; i < noduleList.length; i++) {
-      postData.push({
-        featuresType: noduleList[i].type,
-        isBenign: noduleList[i].state ? 1 : 0,
-      })
-    }
-    return postData
-  }
-
   // 提交审核结果按钮
   const handleShowModal = () => {
     // formatPostData()
+    console.log(noduleList)
     if (noduleList.every(item => item.review === true)) {
       setVisible(true)
     } else {
@@ -993,7 +985,7 @@ const Viewer = () => {
       if (result.data.code === 200) {
         message.success(`提交审核结果成功`)
         setVisible(false)
-        // 路由跳转回去
+        history.push('/studyList')
       } else {
         message.error(`提交失败，请稍后重新尝试`)
       }

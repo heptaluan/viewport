@@ -136,10 +136,11 @@ const AllotList = () => {
       ids: ids.join(','),
     }
     const result = await addAssignResult(postData)
-    debugger
     if (result.data.code === 200) {
       message.success(`分配成功`)
       setIsModalOpen(false)
+      fetchList()
+      setSelectedList([])
     } else if (result.data.code === 500) {
       message.error(result.data.msg ? result.data.msg : `任务分配失败，请重新尝试`)
     }
@@ -150,8 +151,9 @@ const AllotList = () => {
   }
 
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedList(selectedRows)
+    selectedRowKeys: selectedList,
+    onChange: newSelectedRowKeys => {
+      setSelectedList(newSelectedRowKeys)
     },
   }
 
@@ -202,10 +204,7 @@ const AllotList = () => {
             </div>
           </div>
           <Table
-            rowSelection={{
-              type: 'checkbox',
-              ...rowSelection,
-            }}
+            rowSelection={rowSelection}
             rowKey={record => record.orderId}
             dataSource={dataSource}
             columns={columns}

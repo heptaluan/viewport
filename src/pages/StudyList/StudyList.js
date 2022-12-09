@@ -68,7 +68,7 @@ const StudyList = () => {
       title: '是否完成',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? '完成' : '未完成'
+        return record.isFinish === 1 ? <span style={{color: '#73d13d'}}>完成</span> : <span style={{color: '#ff4d4f'}}>未完成</span>
       },
     },
     {

@@ -135,20 +135,21 @@ const MiddleSidePanel = props => {
           <div className="report-box">
             <div className="title">影像所见</div>
             <div id="viewerItemBox" className="report-content">
-              {props.noduleList?.map((item, index) => {
-                return item.checked ? (
-                  <div
-                    key={item.id}
-                    className={`viewer-item ${item.active ? 'item-active' : ''}`}
-                    onClick={e => props.handleCheckedListClick(item.num)}
-                  >
-                    于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
-                    结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
-                    <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
-                  </div>
-                ) : null
-              })}
+              {userInfo === 'chief' &&
+                props.noduleList?.map((item, index) => {
+                  return item.checked ? (
+                    <div
+                      key={item.id}
+                      className={`viewer-item ${item.active ? 'item-active' : ''}`}
+                      onClick={e => props.handleCheckedListClick(item.num)}
+                    >
+                      于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
+                      结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
+                      <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
+                      <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
+                    </div>
+                  ) : null
+                })}
             </div>
           </div>
         </div>

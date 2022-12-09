@@ -2,13 +2,17 @@ import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
 // const basicUrl = `http://192.168.11.99:18080/dev-api`
-const basicUrl = `http://192.168.11.53:16880`
+// const basicUrl = `http://192.168.11.53:16880`
+const basicUrl = `/`
 
-axios.interceptors.request.use(config => {
-  return config
-}, err => {
-  return Promise.reject(err)
-})
+axios.interceptors.request.use(
+  config => {
+    return config
+  },
+  err => {
+    return Promise.reject(err)
+  }
+)
 
 // 获取验证码
 export const getCodeImg = _ => {
@@ -27,75 +31,55 @@ export const userLogin = params =>
 // 获取用户角色
 export const getInfo = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/getInfo`
-  )
+  return axios.get(`${basicUrl}/getInfo`)
 }
 
 // 获取总医生列表
 export const getChiefList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/primary/missionList`
-  )
+  return axios.get(`${basicUrl}/primary/missionList`)
 }
 
 // 获取普通医生列表
 export const getDoctorList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/secondprimary/list`
-  )
+  return axios.get(`${basicUrl}/secondprimary/list`)
 }
 
 // 获取分配列表
 export const getAssignList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/primary/primaryList`
-  )
+  return axios.get(`${basicUrl}/primary/primaryList`)
 }
 
 // 获取可分配医生列表
 export const getAssignUsersList = _ => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/primary/assignUsers`
-  )
+  return axios.get(`${basicUrl}/primary/assignUsers`)
 }
 
 // 提交分配结果
 export const addAssignResult = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.post(`${basicUrl}/primary/assign`, params, {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-    },
-  })
+  return axios.post(`${basicUrl}/primary/assign?users=${params.users}&ids=${params.ids}`)
 }
 
 // 获取结节列表
-export const getNodeList = orderId =>{
+export const getNodeList = orderId => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/primary/node/${orderId}`
-  )
+  return axios.get(`${basicUrl}/primary/node/${orderId}`)
 }
 
 // 获取影像列表
 export const getImageList = dicomId => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/primary/image/${dicomId}`
-  )
+  return axios.get(`${basicUrl}/primary/image/${dicomId}`)
 }
 
 // 获取二次筛选详情
 export const getSecondprimaryDetail = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/secondprimary/detail/${id}`
-  )
+  return axios.get(`${basicUrl}/secondprimary/detail/${id}`)
 }
 
 // 新增初筛结果
@@ -111,17 +95,21 @@ export const addNewResult = params => {
 // 提交二筛结果
 export const addSecondprimaryResult = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.post(`${basicUrl}/secondprimary/updateList/${id}`, {}, {
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-    },
-  })
+  return axios.post(
+    `${basicUrl}/secondprimary/updateList/${id}`,
+    {},
+    {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    }
+  )
 }
 
 // 暂存二筛结果
-export const saveSecondprimaryResult = (id, params) => {
+export const saveSecondprimaryResult = (params) => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.post(`${basicUrl}/secondprimary/updateResult/${id}`, params, {
+  return axios.post(`${basicUrl}/secondprimary/updateResult`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },
@@ -147,7 +135,7 @@ export const assignList = params => {
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 // axios.defaults.headers.common['X-Access-Token'] =
-  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzAyNTE1NzYsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.o5OQ2LyvlCwHtGhqGczU5ZrhJUTjHplfhBIA6RVpVho'
+// 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzAyNTE1NzYsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.o5OQ2LyvlCwHtGhqGczU5ZrhJUTjHplfhBIA6RVpVho'
 
 // 获取影像列表
 // export const getImageList = resource =>
