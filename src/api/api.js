@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { getURLParameters } from '../util/index'
 
-const basicUrl = `http://192.168.11.99:18080/dev-api`
+// const basicUrl = `http://192.168.11.99:18080/dev-api`
+const basicUrl = `http://192.168.11.53:16880`
 
 axios.interceptors.request.use(config => {
   return config
