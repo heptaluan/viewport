@@ -152,7 +152,7 @@ const NoduleInfo = props => {
               <Option value="肺内钙化">肺内钙化</Option>
               <Option value="胸膜实性">胸膜实性</Option>
               <Option value="胸膜钙化">胸膜钙化</Option>
-              <Option value="其他">其他</Option>
+              <Option value="其它（包括不可分辨）">其它（包括不可分辨）</Option>
             </Select>
           </div>
 

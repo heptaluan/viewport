@@ -47,9 +47,9 @@ export const getDoctorList = _ => {
 }
 
 // 获取分配列表
-export const getAssignList = _ => {
+export const getAssignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/primary/primaryList`)
+  return axios.get(`${basicUrl}/primary/primaryList?isAssign=${params.isAssign}&name=${params.name}&pcode=${params.pcode}`)
 }
 
 // 获取可分配医生列表

@@ -25,6 +25,13 @@ const StudyList = () => {
       },
     },
     {
+      title: '选用状态',
+      dataIndex: 'sex',
+      render: (_, record) => {
+        return record.isKy === 1 ? <span style={{color: '#73d13d'}}>已选用</span> : <span style={{color: '#ff4d4f'}}>未选用</span>
+      },
+    },
+    {
       title: '订单编号',
       dataIndex: 'orderId',
     },
@@ -56,6 +63,10 @@ const StudyList = () => {
   ]
 
   const doctorColumns = [
+    {
+      title: '良性样本Id',
+      dataIndex: 'kyPrimaryId',
+    },
     {
       title: '审阅人',
       dataIndex: 'createBy',

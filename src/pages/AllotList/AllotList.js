@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './AllotList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Modal, Button, Select, Popconfirm, message, Menu, Avatar } from 'antd'
+import { Table, Modal, Button, Select, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { getAssignList, assignList, getAssignUsersList, addAssignResult } from '../../api/api'
 
@@ -9,6 +9,10 @@ const AllotList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
+    {
+      title: '良性样本Id',
+      dataIndex: 'id',
+    },
     {
       title: '姓名',
       dataIndex: 'name',
@@ -22,6 +26,13 @@ const AllotList = () => {
       dataIndex: 'sex',
       render: (_, record) => {
         return record.sex === '1' ? '男' : '女'
+      },
+    },
+    {
+      title: '分配状态',
+      dataIndex: 'sex',
+      render: (_, record) => {
+        return record.isAssign === 1 ? <span style={{color: '#73d13d'}}>已分配</span> : <span style={{color: '#ff4d4f'}}>未分配</span>
       },
     },
     {
@@ -54,9 +65,58 @@ const AllotList = () => {
   // 分配医生列表
   const [selectOptions, setSelectOptions] = useState([])
 
+  // 查询
+  const [params, setParams] = useState({
+    isAssign: 0,
+    name: '',
+    pcode: '',
+  })
+
+  const handleNameSearch = (val) => {
+    const newParams = Object.assign({}, params)
+    newParams.name = val
+    setParams(newParams)
+  }
+
+  const handlePcodeSearch = (val) => {
+    const newParams = Object.assign({}, params)
+    newParams.pcode = val
+    setParams(newParams)
+  }
+
+  const handleIsAssignSearch = (val) => {
+    const newParams = Object.assign({}, params)
+    newParams.isAssign = val
+    setParams(newParams)
+  }
+
+  const handleSearch = () => {
+    fetchList()
+  }
+
+  const handleReset = async () => {
+    const newParams = {
+      isAssign: 0,
+      name: '',
+      pcode: '',
+    }
+    setParams(newParams)
+    const result = await getAssignList(newParams)
+    if (result.data.code === 200) {
+      setDataSource([])
+      setDataSource(result.data.rows)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
+  }
+
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getAssignList()
+    const result = await getAssignList(params)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
@@ -113,6 +173,7 @@ const AllotList = () => {
   // 任务分配
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedList, setSelectedList] = useState([])
+  const [selectedIds, setSelectedIds] = useState([])
   const [assignUsers, setAssignUsers] = useState('')
 
   const showModal = () => {
@@ -141,8 +202,8 @@ const AllotList = () => {
     if (result.data.code === 200) {
       message.success(`分配成功`)
       setIsModalOpen(false)
-      fetchList()
       setSelectedList([])
+      fetchList()
     } else if (result.data.code === 500) {
       message.error(result.data.msg ? result.data.msg : `任务分配失败，请重新尝试`)
     }
@@ -153,9 +214,10 @@ const AllotList = () => {
   }
 
   const rowSelection = {
-    selectedRowKeys: selectedList,
-    onChange: newSelectedRowKeys => {
-      setSelectedList(newSelectedRowKeys)
+    selectedRowKeys: selectedIds,
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedIds(selectedRowKeys)
+      setSelectedList(selectedRows)
     },
   }
 
@@ -200,6 +262,33 @@ const AllotList = () => {
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header">
+              <Button onClick={handleSearch} type="primary">搜索</Button>
+              <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
+                重置
+              </Button>
+            </div>
+            <div className="search-box">
+              <Input value={params.name} onChange={e => handleNameSearch(e.target.value)} style={{ width: 200 }} placeholder="请输入姓名" />
+              <Input value={params.pcode} onChange={e => handlePcodeSearch(e.target.value)} style={{ width: 200 }} placeholder="请输入病人编号" />
+              <Select
+                value={params.isAssign}
+                style={{ width: 200 }}
+                onChange={handleIsAssignSearch}
+                options={[
+                  {
+                    value: 0,
+                    label: '未分配',
+                  },
+                  {
+                    value: 1,
+                    label: '已分配',
+                  },
+                ]}
+              />
+            </div>
+          </div>
+          <div className="search-box-wrap">
+            <div className="header">
               <Button type="primary" onClick={showModal}>
                 分配任务
               </Button>
@@ -207,7 +296,7 @@ const AllotList = () => {
           </div>
           <Table
             rowSelection={rowSelection}
-            rowKey={record => record.orderId}
+            rowKey={record => record.id}
             dataSource={dataSource}
             columns={columns}
             onRow={record => {
