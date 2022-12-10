@@ -62,6 +62,7 @@ const AllotList = () => {
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -95,6 +96,7 @@ const AllotList = () => {
   const handleLogout = _ => {
     localStorage.setItem('token', '')
     localStorage.setItem('info', '')
+    localStorage.setItem('username', '')
     message.success(`退出成功`)
     history.push('/login')
   }
@@ -172,7 +174,7 @@ const AllotList = () => {
         <div className="logout-box">
           <div className="user-box">
             <Avatar size={26} icon={<UserOutlined />} />
-            <span className="user-name">{userInfo}</span>
+            <span className="user-name">{localStorage.getItem('username')}</span>
           </div>
           <Popconfirm
             placement="bottomRight"

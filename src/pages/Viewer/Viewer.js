@@ -137,6 +137,7 @@ const Viewer = () => {
       } else if (result.data.code === 401) {
         localStorage.setItem('token', '')
         localStorage.setItem('info', '')
+        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -161,6 +162,7 @@ const Viewer = () => {
       } else if (result.data.code === 401) {
         localStorage.setItem('token', '')
         localStorage.setItem('info', '')
+        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -326,9 +328,9 @@ const Viewer = () => {
         id: index,
         num: data.imageList.length - res.index,
         checked: false,
-        state: undefined,
-        review: false,
-        type: res.featuresType,
+        state: resultInfo.isFinish === 0 ? undefined : resultInfo.isBenign === 1 ? true : false,
+        review: resultInfo.isFinish === 1 ? true : false,
+        type: resultInfo.featuresType ? resultInfo.featuresType : res.featuresType,
         kyTaskId: resultInfo.id,
       })
       index++
@@ -924,7 +926,7 @@ const Viewer = () => {
   }
 
   // 暂存二筛数据
-  const saveSecondprimaryResults = async (checkItme) => {
+  const saveSecondprimaryResults = async checkItme => {
     const postData = {
       id: checkItme.kyTaskId,
       featuresType: checkItme.type,

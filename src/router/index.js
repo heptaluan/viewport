@@ -6,7 +6,7 @@ import routes from './config'
 const Router = () => {
   return (
     <>
-      <BrowserRouter basename='/'>{renderRoutes(routes)}</BrowserRouter>
+      <HashRouter basename='/'>{renderRoutes(routes)}</HashRouter>
     </>
   )
 }

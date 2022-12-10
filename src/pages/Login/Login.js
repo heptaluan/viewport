@@ -37,11 +37,13 @@ const Login = () => {
       const info = await getInfo()
       if (info.data.code === 200) {
         localStorage.setItem('info', info.data.roles[0])
+        localStorage.setItem('username', info.data.user.nickName)
         message.success(`登录成功`)
         history.push(`/studyList`)
       } else if (info.data.code === 500) {
         localStorage.setItem('token', '')
         localStorage.setItem('info', '')
+        localStorage.setItem('username', '')
         message.warning(`获取用户角色失败，请重新登录`)
         fetchCodeImg()
       }

@@ -3,7 +3,7 @@ import { getURLParameters } from '../util/index'
 
 // const basicUrl = `http://192.168.11.99:18080/dev-api`
 // const basicUrl = `http://192.168.11.53:16880`
-const basicUrl = `/`
+const basicUrl = `http://ky.feipankang.com/api`
 
 axios.interceptors.request.use(
   config => {
@@ -85,7 +85,7 @@ export const getSecondprimaryDetail = id => {
 // 新增初筛结果
 export const addNewResult = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.post(`${basicUrl}/primary`, params, {
+  return axios.post(`${basicUrl}/primary/add`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },
