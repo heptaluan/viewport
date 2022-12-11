@@ -304,6 +304,9 @@ const Viewer = () => {
         }
       }
 
+      console.log(nodulesList)
+      console.log(nodulesMapList)
+
       setNoduleList([...nodulesList])
       setNoduleMapList([...nodulesMapList])
     } else {
@@ -318,39 +321,35 @@ const Viewer = () => {
     const nodulesMapList = []
     let index = 0
 
-    console.log(data)
-
-    // 格式化结节列表信息
+    // 格式化结节信息
     for (let i = 0; i < data.nodeInfo.length; i++) {
       const res = data.nodeInfo[i]
       const resultInfo = data.resultInfo[i]
       nodulesList.push({
         id: index,
-        num: data.imageList.length - res.index,
+        num: Number(res.coordz),
         checked: false,
         state: resultInfo.isFinish === 0 ? undefined : resultInfo.isBenign === 1 ? true : false,
         review: resultInfo.isFinish === 1 ? true : false,
         type: resultInfo.featuresType ? resultInfo.featuresType : res.featuresType,
         kyTaskId: resultInfo.id,
+        noduleName: `nodule_${res.id}`,
       })
-      index++
-    }
 
-    // 格式化结节位置信息
-    const info = data.nodeInfo
-    for (let i = 0; i < info.length; i++) {
-      const acrossCoordz = info[i].acrossCoordz.split(',')
-      const box = info[i].box.split(',')
+      const acrossCoordz = res.acrossCoordz.split(',')
+      const box = res.box.split(',')
       for (let j = 0; j < acrossCoordz.length; j++) {
         nodulesMapList.push({
-          noduleName: `nodule_${info[i].id}`,
+          noduleName: `nodule_${res.id}`,
           index: Number(acrossCoordz[j]),
-          startX: box[1],
-          startY: box[0],
-          endX: box[3],
-          endY: box[2],
+          startX: Number(box[1].trim()),
+          startY: Number(box[0].trim()),
+          endX: Number(box[3].trim()),
+          endY: Number(box[2].trim()),
         })
       }
+
+      index++
     }
 
     // 格式化影像信息
@@ -359,6 +358,9 @@ const Viewer = () => {
     newList.forEach(item => {
       imageList.push(`wadouri:${item.replace('http://', 'https://')}`)
     })
+
+    console.log(nodulesList)
+    console.log(nodulesMapList)
 
     setNoduleList([...nodulesList])
     setNoduleMapList([...nodulesMapList])
@@ -935,6 +937,12 @@ const Viewer = () => {
     const result = await saveSecondprimaryResult(postData)
     if (result.data.code === 200) {
       message.success(`结节信息暂存成功`)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
     } else {
       message.error(`结节信息暂存失败，请检查网络后重新尝试`)
     }
@@ -988,6 +996,12 @@ const Viewer = () => {
         message.success(`提交审核结果成功`)
         setVisible(false)
         history.push('/studyList')
+      } else if (result.data.code === 401) {
+        localStorage.setItem('token', '')
+        localStorage.setItem('info', '')
+        localStorage.setItem('username', '')
+        message.warning(`登录已失效，请重新登录`)
+        history.push('/login')
       } else {
         message.error(`提交失败，请稍后重新尝试`)
       }
@@ -998,6 +1012,12 @@ const Viewer = () => {
         message.success(`提交审核结果成功`)
         setVisible(false)
         history.push('/studyList')
+      } else if (result.data.code === 401) {
+        localStorage.setItem('token', '')
+        localStorage.setItem('info', '')
+        localStorage.setItem('username', '')
+        message.warning(`登录已失效，请重新登录`)
+        history.push('/login')
       } else {
         message.error(`提交失败，请稍后重新尝试`)
       }

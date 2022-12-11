@@ -15,7 +15,7 @@ export default memo(
         }
       }
 
-      if (props.location.pathname === '/studyList') {
+      if (props.location.pathname === '/studyList' || props.location.pathname === '/viewer') {
         if (!localStorage.getItem('token')) {
           props.history.push('/login')
         }

@@ -111,6 +111,13 @@
           }
         }
 
+        .type {
+          width: 84px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
         .index,
         .type {
           flex: 2;
