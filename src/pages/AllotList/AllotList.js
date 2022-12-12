@@ -65,6 +65,7 @@ const AllotList = () => {
         return t1 - t2
       },
       createTime: ['descend', 'ascend'],
+      showSorterTooltip: false,
     },
     {
       title: '订单创建日期',

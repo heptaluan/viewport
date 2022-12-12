@@ -145,6 +145,7 @@ const NoduleInfo = props => {
               value={props.noduleInfo.type}
               style={{ width: 185, fontSize: 13 }}
               onChange={handleSelectChange}
+              disabled={props.noduleInfo.state === false || props.noduleInfo.state === undefined}
             >
               <Option value="肺内实性">肺内实性</Option>
               <Option value="部分实性">部分实性</Option>

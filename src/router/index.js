@@ -6,7 +6,7 @@ import routes from './config'
 const Router = () => {
   return (
     <>
-      <HashRouter basename='/'>{renderRoutes(routes)}</HashRouter>
+      <HashRouter basename="/">{renderRoutes(routes)}</HashRouter>
     </>
   )
 }

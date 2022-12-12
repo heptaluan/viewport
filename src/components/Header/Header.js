@@ -13,16 +13,14 @@ const Header = props => {
   const params = qs.parse(useLocation().search)
 
   const handleDownLoad = () => {
-    downloadZip(params.orderId, params.taskId).then(
-      res => {
-        const { result, success, message } = res.data
-        if (success) {
-          window.open(result, '_blank')
-        } else {
-          message.warning(message)
-        }
+    downloadZip(params.orderId, params.taskId).then(res => {
+      const { result, success, message } = res.data
+      if (success) {
+        window.open(result, '_blank')
+      } else {
+        message.warning(message)
       }
-    )
+    })
   }
 
   useEffect(() => {

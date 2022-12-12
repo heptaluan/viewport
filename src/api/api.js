@@ -49,7 +49,9 @@ export const getDoctorList = _ => {
 // 获取分配列表
 export const getAssignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/primary/primaryList?isAssign=${params.isAssign}&name=${params.name}&pcode=${params.pcode}`)
+  return axios.get(
+    `${basicUrl}/primary/primaryList?isAssign=${params.isAssign}&name=${params.name}&pcode=${params.pcode}`
+  )
 }
 
 // 获取可分配医生列表
@@ -107,7 +109,7 @@ export const addSecondprimaryResult = id => {
 }
 
 // 暂存二筛结果
-export const saveSecondprimaryResult = (params) => {
+export const saveSecondprimaryResult = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.post(`${basicUrl}/secondprimary/updateResult`, params, {
     headers: {

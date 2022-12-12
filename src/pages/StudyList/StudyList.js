@@ -96,6 +96,7 @@ const StudyList = () => {
         return t1 - t2
       },
       createTime: ['descend', 'ascend'],
+      showSorterTooltip: false,
     },
     {
       title: '操作',
