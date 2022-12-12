@@ -32,7 +32,11 @@ const AllotList = () => {
       title: '分配状态',
       dataIndex: 'sex',
       render: (_, record) => {
-        return record.isAssign === 1 ? <span style={{color: '#73d13d'}}>已分配</span> : <span style={{color: '#ff4d4f'}}>未分配</span>
+        return record.isAssign === 1 ? (
+          <span style={{ color: '#73d13d' }}>已分配</span>
+        ) : (
+          <span style={{ color: '#ff4d4f' }}>未分配</span>
+        )
       },
     },
     {
@@ -50,6 +54,17 @@ const AllotList = () => {
     {
       title: '影像来源医院',
       dataIndex: 'source',
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => {
+        const t1 = new Date(a.updateTime).getTime()
+        const t2 = new Date(b.updateTime).getTime()
+        return t1 - t2
+      },
+      createTime: ['descend', 'ascend'],
     },
     {
       title: '订单创建日期',
@@ -72,19 +87,19 @@ const AllotList = () => {
     pcode: '',
   })
 
-  const handleNameSearch = (val) => {
+  const handleNameSearch = val => {
     const newParams = Object.assign({}, params)
     newParams.name = val
     setParams(newParams)
   }
 
-  const handlePcodeSearch = (val) => {
+  const handlePcodeSearch = val => {
     const newParams = Object.assign({}, params)
     newParams.pcode = val
     setParams(newParams)
   }
 
-  const handleIsAssignSearch = (val) => {
+  const handleIsAssignSearch = val => {
     const newParams = Object.assign({}, params)
     newParams.isAssign = val
     setParams(newParams)
@@ -262,14 +277,26 @@ const AllotList = () => {
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header">
-              <Button onClick={handleSearch} type="primary">搜索</Button>
+              <Button onClick={handleSearch} type="primary">
+                搜索
+              </Button>
               <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
                 重置
               </Button>
             </div>
             <div className="search-box">
-              <Input value={params.name} onChange={e => handleNameSearch(e.target.value)} style={{ width: 200 }} placeholder="请输入姓名" />
-              <Input value={params.pcode} onChange={e => handlePcodeSearch(e.target.value)} style={{ width: 200 }} placeholder="请输入病人编号" />
+              <Input
+                value={params.name}
+                onChange={e => handleNameSearch(e.target.value)}
+                style={{ width: 200 }}
+                placeholder="请输入姓名"
+              />
+              <Input
+                value={params.pcode}
+                onChange={e => handlePcodeSearch(e.target.value)}
+                style={{ width: 200 }}
+                placeholder="请输入病人编号"
+              />
               <Select
                 value={params.isAssign}
                 style={{ width: 200 }}

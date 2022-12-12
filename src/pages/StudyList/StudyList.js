@@ -28,7 +28,11 @@ const StudyList = () => {
       title: '选用状态',
       dataIndex: 'sex',
       render: (_, record) => {
-        return record.isKy === 1 ? <span style={{color: '#73d13d'}}>已选用</span> : <span style={{color: '#ff4d4f'}}>未选用</span>
+        return record.isKy === 1 ? (
+          <span style={{ color: '#73d13d' }}>已选用</span>
+        ) : (
+          <span style={{ color: '#ff4d4f' }}>未选用</span>
+        )
       },
     },
     {
@@ -72,15 +76,26 @@ const StudyList = () => {
       dataIndex: 'createBy',
     },
     {
-      title: '审阅时间',
-      dataIndex: 'createTime',
-    },
-    {
       title: '是否完成',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? <span style={{color: '#73d13d'}}>完成</span> : <span style={{color: '#ff4d4f'}}>未完成</span>
+        return record.isFinish === 1 ? (
+          <span style={{ color: '#73d13d' }}>完成</span>
+        ) : (
+          <span style={{ color: '#ff4d4f' }}>未完成</span>
+        )
       },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => {
+        const t1 = new Date(a.createTime).getTime()
+        const t2 = new Date(b.createTime).getTime()
+        return t1 - t2
+      },
+      createTime: ['descend', 'ascend'],
     },
     {
       title: '操作',
@@ -222,7 +237,7 @@ const StudyList = () => {
               type: 'checkbox',
               ...rowSelection,
             }}
-            rowKey={record => userInfo === 'chief' ? record.orderId : record.id}
+            rowKey={record => (userInfo === 'chief' ? record.orderId : record.id)}
             dataSource={dataSource}
             columns={userInfo === 'chief' ? chiefColumns : doctorColumns}
             onRow={record => {
