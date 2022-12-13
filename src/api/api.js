@@ -41,9 +41,9 @@ export const getChiefList = _ => {
 }
 
 // 获取普通医生列表
-export const getDoctorList = params => {
+export const getDoctorList = isFinish => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/secondprimary/list?isAssign=${params.isFinish}`)
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}`)
 }
 
 // 获取分配列表

@@ -279,12 +279,7 @@ const AllotList = () => {
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header">
-              <Button onClick={handleSearch} type="primary">
-                搜索
-              </Button>
-              <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
-                重置
-              </Button>
+   
             </div>
             <div className="search-box">
               <Input
@@ -314,6 +309,13 @@ const AllotList = () => {
                   },
                 ]}
               />
+
+              <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
+                搜索
+              </Button>
+              <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
+                重置
+              </Button>
             </div>
           </div>
           <div className="search-box-wrap">

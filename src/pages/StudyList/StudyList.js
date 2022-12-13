@@ -187,6 +187,36 @@ const StudyList = () => {
     setPagination(newPagination)
   }
 
+  // 查询
+  const [isFinish, setIsFinish] = useState(0)
+
+  const handleIsFinishSearch = val => {
+    setIsFinish(val)
+  }
+
+  const handleSearch = () => {
+    localStorage.setItem('pagination', '')
+    fetchDoctorList()
+  }
+
+  const handleReset = async () => {
+    const isFinish = 0
+    setIsFinish(isFinish)
+    localStorage.setItem('pagination', '')
+    const result = await getDoctorList(isFinish)
+    if (result.data.code === 200) {
+      setDataSource([])
+      setDataSource(result.data.rows)
+      initPagination(result)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
+  }
+
   // 总医生详情
   const handleShowChiefDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
@@ -224,33 +254,6 @@ const StudyList = () => {
     }
   }
 
-  // 查询
-  const [isFinish, setIsFinish] = useState(0)
-
-  const handleIsFinishSearch = val => {
-    setIsFinish(val)
-  }
-
-  const handleSearch = () => {
-    fetchDoctorList()
-  }
-
-  const handleReset = async () => {
-    const isFinish = 0
-    setIsFinish(isFinish)
-    const result = await getDoctorList(isFinish)
-    if (result.data.code === 200) {
-      setDataSource([])
-      setDataSource(result.data.rows)
-    } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      message.warning(`登录已失效，请重新登录`)
-      history.push('/login')
-    }
-  }
-
   return (
     <div className="study-list-box">
       <header>
@@ -285,35 +288,34 @@ const StudyList = () => {
           </Menu>
         </div>
         <div className="study-list-container">
-          {
-            userInfo === 'doctor' ? <div className="search-box-wrap">
-            <div className="header">
-              <Button onClick={handleSearch} type="primary">
-                搜索
-              </Button>
-              <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
-                重置
-              </Button>
+          {userInfo === 'doctor' ? (
+            <div className="search-box-wrap">
+              <div className="header"></div>
+              <div className="search-box">
+                <Select
+                  value={isFinish}
+                  style={{ width: 200 }}
+                  onChange={handleIsFinishSearch}
+                  options={[
+                    {
+                      value: 0,
+                      label: '未完成',
+                    },
+                    {
+                      value: 1,
+                      label: '已完成',
+                    },
+                  ]}
+                />
+                <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
+                  搜索
+                </Button>
+                <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
+                  重置
+                </Button>
+              </div>
             </div>
-            <div className="search-box">
-              <Select
-                value={isFinish}
-                style={{ width: 200 }}
-                onChange={handleIsFinishSearch}
-                options={[
-                  {
-                    value: 0,
-                    label: '未分配',
-                  },
-                  {
-                    value: 1,
-                    label: '已分配',
-                  },
-                ]}
-              />
-            </div>
-          </div> : null
-          }
+          ) : null}
           <Table
             scroll={{ x: 'max-content' }}
             rowSelection={{
