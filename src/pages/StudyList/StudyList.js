@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Input, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
+import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { getChiefList, getDoctorList } from '../../api/api'
 
@@ -112,15 +112,32 @@ const StudyList = () => {
   const history = useHistory()
   const [userInfo, setUserInfo] = useState('')
 
+  const initPagination = result => {
+    let page = localStorage.getItem('pagination') ? JSON.parse(localStorage.getItem('pagination')) : ''
+    const newPagination = Object.assign({}, pagination)
+    if (page) {
+      newPagination.current = page.current
+      newPagination.pageSize = page.pageSize
+      newPagination.total = page.total
+    } else {
+      newPagination.current = 1
+      newPagination.pageSize = 10
+      newPagination.total = result.data.rows.length
+    }
+    setPagination(newPagination)
+  }
+
   // 获取总医生列表数据
   const fetchChiefList = async () => {
     const result = await getChiefList()
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
+      initPagination(result)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
+      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -128,19 +145,21 @@ const StudyList = () => {
 
   // 获取普通医生列表数据
   const fetchDoctorList = async () => {
-    const result = await getDoctorList()
+    const result = await getDoctorList(isFinish)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
+      initPagination(result)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
+      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
   }
 
-  // 初始列表数据
+  // 初始用户数据
   useEffect(() => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
@@ -152,15 +171,33 @@ const StudyList = () => {
     }
   }, [])
 
+  // 分页设置
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  })
+
+  const onPageChange = e => {
+    const newPagination = Object.assign({}, pagination)
+    newPagination.current = e.current
+    newPagination.pageSize = e.pageSize
+    newPagination.total = e.total
+    localStorage.setItem('pagination', JSON.stringify(newPagination))
+    setPagination(newPagination)
+  }
+
   // 总医生详情
   const handleShowChiefDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
+    localStorage.setItem('pagination', JSON.stringify(pagination))
     history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
   }
 
   // 普通医生详情
   const handleShowDoctorDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
+    localStorage.setItem('pagination', JSON.stringify(pagination))
     history.push(`/viewer?id=${record.id}`)
   }
 
@@ -174,6 +211,7 @@ const StudyList = () => {
     localStorage.setItem('token', '')
     localStorage.setItem('info', '')
     localStorage.setItem('username', '')
+    localStorage.setItem('pagination', '')
     message.success(`退出成功`)
     history.push('/login')
   }
@@ -183,6 +221,33 @@ const StudyList = () => {
       history.push('/studyList')
     } else if (e.key === '2') {
       history.push('/allotList')
+    }
+  }
+
+  // 查询
+  const [isFinish, setIsFinish] = useState(0)
+
+  const handleIsFinishSearch = val => {
+    setIsFinish(val)
+  }
+
+  const handleSearch = () => {
+    fetchDoctorList()
+  }
+
+  const handleReset = async () => {
+    const isFinish = 0
+    setIsFinish(isFinish)
+    const result = await getDoctorList(isFinish)
+    if (result.data.code === 200) {
+      setDataSource([])
+      setDataSource(result.data.rows)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
     }
   }
 
@@ -220,23 +285,46 @@ const StudyList = () => {
           </Menu>
         </div>
         <div className="study-list-container">
-          {/* <div className="search-box-wrap">
+          {
+            userInfo === 'doctor' ? <div className="search-box-wrap">
             <div className="header">
-              <Button type="primary">搜索</Button>
-              <Button type="primary" style={{ marginLeft: 15 }}>
+              <Button onClick={handleSearch} type="primary">
+                搜索
+              </Button>
+              <Button onClick={handleReset} type="primary" style={{ marginLeft: 15 }}>
                 重置
               </Button>
             </div>
             <div className="search-box">
-              <Input style={{ width: 200 }} placeholder="请输入姓名" />
-              <Input style={{ width: 200 }} placeholder="请输入身份证号" />
-              <Input style={{ width: 200 }} placeholder="请输入年龄" />
+              <Select
+                value={isFinish}
+                style={{ width: 200 }}
+                onChange={handleIsFinishSearch}
+                options={[
+                  {
+                    value: 0,
+                    label: '未分配',
+                  },
+                  {
+                    value: 1,
+                    label: '已分配',
+                  },
+                ]}
+              />
             </div>
-          </div> */}
+          </div> : null
+          }
           <Table
+            scroll={{ x: 'max-content' }}
             rowSelection={{
               type: 'checkbox',
               ...rowSelection,
+            }}
+            onChange={onPageChange}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
             }}
             rowKey={record => (userInfo === 'chief' ? record.orderId : record.id)}
             dataSource={dataSource}

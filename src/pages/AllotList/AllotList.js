@@ -173,6 +173,7 @@ const AllotList = () => {
     localStorage.setItem('token', '')
     localStorage.setItem('info', '')
     localStorage.setItem('username', '')
+    localStorage.setItem('pagination', '')
     message.success(`退出成功`)
     history.push('/login')
   }
@@ -323,6 +324,7 @@ const AllotList = () => {
             </div>
           </div>
           <Table
+            scroll={{ x: 'max-content' }}
             rowSelection={rowSelection}
             rowKey={record => record.id}
             dataSource={dataSource}
