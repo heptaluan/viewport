@@ -77,6 +77,7 @@ const Header = props => {
         {/* <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
           影像下载
         </Button> */}
+        <Button onClick={props.handleGoBackList}>返回列表</Button>
         <Button type="primary" onClick={props.handleShowModal}>
           提交结果
         </Button>

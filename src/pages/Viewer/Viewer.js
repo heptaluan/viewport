@@ -1463,7 +1463,7 @@ const Viewer = () => {
 
   return (
     <div className="viewer-box">
-      <Header data={patients} handleShowModal={handleShowModal} />
+      <Header data={patients} handleShowModal={handleShowModal} handleGoBackList={handleGoBackList} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel
@@ -1566,7 +1566,7 @@ const Viewer = () => {
 
       <div className="show-button">
         {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-        <Button onClick={handleGoBackList}>返回列表</Button>
+        {/* <Button onClick={handleGoBackList}>返回列表</Button> */}
       </div>
 
       <Modal
