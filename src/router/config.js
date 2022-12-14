@@ -1,7 +1,8 @@
 import IndexComponent from '../components/index'
 import Viewer from '../pages/Viewer/Viewer'
 import StudyList from '../pages/StudyList/StudyList'
-import TaskList from '../pages/TaskList/TaskList'
+import AllotList from '../pages/AllotList/AllotList'
+import Login from '../pages/Login/Login'
 import { Redirect } from 'react-router-dom'
 
 const routes = [
@@ -10,19 +11,24 @@ const routes = [
     component: IndexComponent,
     routes: [
       {
+        path: '/login',
+        component: Login,
+        routes: [],
+      },
+      {
         path: '/studyList',
         component: StudyList,
         routes: [],
-        render: () => <Redirect to={'/viewer/1'} />,
+        // render: () => <Redirect to={'/viewer/1'} />,
       },
       {
-        path: '/taskList',
-        component: TaskList,
+        path: '/allotList',
+        component: AllotList,
         routes: [],
-        render: () => <Redirect to={'/viewer/1'} />,
+        // render: () => <Redirect to={'/viewer/1'} />,
       },
       {
-        path: '/viewer/:studyInstanceUids',
+        path: '/viewer',
         component: Viewer,
         routes: [],
       },

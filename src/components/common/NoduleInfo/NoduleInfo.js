@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
-import { Radio, Select, Button, Input, InputNumber, Modal } from 'antd'
-import { getURLParameters, formatMiniNode } from '../../../util/index'
+import { Radio, Select, Button, Input, InputNumber } from 'antd'
 
 const { TextArea } = Input
 
@@ -138,10 +137,57 @@ const NoduleInfo = props => {
   return (
     <div className="nodule-info-box">
       {props.noduleInfo ? (
+        <div className="nodule-info">
+          <div className="list">
+            <div className="list-title">类型：</div>
+            <Select
+              size="small"
+              value={props.noduleInfo.type}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={handleSelectChange}
+              disabled={props.noduleInfo.state === false || props.noduleInfo.state === undefined}
+            >
+              <Option value="肺内实性">肺内实性</Option>
+              <Option value="部分实性">部分实性</Option>
+              <Option value="磨玻璃">磨玻璃</Option>
+              <Option value="肺内钙化">肺内钙化</Option>
+              <Option value="胸膜实性">胸膜实性</Option>
+              <Option value="胸膜钙化">胸膜钙化</Option>
+              <Option value="其它（包括不可分辨）">其它（包括不可分辨）</Option>
+            </Select>
+          </div>
+
+          <div className="check-group">
+            <div className="group-wrap">
+              <span>是否标注为良性样本</span>
+              <div className="group">
+                <Button
+                  type={props.noduleInfo.state === false ? 'primary' : null}
+                  style={{ marginRight: '15px' }}
+                  size="small"
+                  onClick={e => props.updateNoduleList(false)}
+                >
+                  否
+                </Button>
+                <Button
+                  type={props.noduleInfo.state === true ? 'primary' : null}
+                  size="small"
+                  onClick={e => props.updateNoduleList(true)}
+                >
+                  是
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {/*       
+      {props.noduleInfo ? (
         <div className="nodule-detail">
           <div className="list">
             <span className="list-title">肺：</span>
-            <Radio.Group disabled={props.pageState === 'admin'} onChange={onLungChange} value={props.noduleInfo.lung}>
+            <Radio.Group onChange={onLungChange} value={props.noduleInfo.lung}>
               <Radio value={'右肺'}>右肺</Radio>
               <Radio value={'左肺'}>左肺</Radio>
             </Radio.Group>
@@ -149,7 +195,7 @@ const NoduleInfo = props => {
 
           <div className="list">
             <div className="list-title">肺叶：</div>
-            <Radio.Group disabled={props.pageState === 'admin'} onChange={onLobeChange} value={props.noduleInfo.lobe}>
+            <Radio.Group onChange={onLobeChange} value={props.noduleInfo.lobe}>
               <Radio value={'上叶'}>上叶</Radio>
               {props.noduleInfo.lung === '左肺' ? null : <Radio value={'中叶'}>中叶</Radio>}
               <Radio value={'下叶'}>下叶</Radio>
@@ -159,7 +205,6 @@ const NoduleInfo = props => {
           <div className="list">
             <div className="list-title">类型：</div>
             <Select
-              disabled={props.pageState === 'admin'}
               size="small"
               value={props.noduleInfo.type}
               style={{ width: 185, fontSize: 13 }}
@@ -196,21 +241,17 @@ const NoduleInfo = props => {
 
           <div className="list">
             <em>大小：</em>
-            {props.noduleInfo.nodeType === 1 ? (
-                <>{formatMiniNode(props.noduleInfo.diameter)}</>
-              ) : (
-                <>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</>
-              )}
+            {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
           </div>
 
           {props.noduleInfo.newDiameter ? (
             <div className="list">
               <em>大小调整后：</em>
               {props.noduleInfo.nodeType === 1 ? (
-                <span style={{ color: '#ff4d4f' }}>{formatMiniNode(props.noduleInfo.diameter)}</span>
+                <span style={{ color: '#ff4d4f' }}>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</span>
               ) : (
                 <span style={{ color: '#ff4d4f' }}>
-                  {formatMiniNode(props.noduleInfo.newDiameter)}
+                  {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
                 </span>
               )}
             </div>
@@ -237,12 +278,11 @@ const NoduleInfo = props => {
           ) : null}
 
           <div className="list adjust">
-            <Button disabled={props.pageState === 'admin'} size="small" onClick={props.handleShowAdjustModal}>
+            <Button size="small" onClick={props.handleShowAdjustModal}>
               调整
             </Button>
 
             <Button
-              disabled={props.pageState === 'admin'}
               size="small"
               style={{ marginLeft: 10 }}
               onClick={props.handleShowMarkModal}
@@ -256,7 +296,6 @@ const NoduleInfo = props => {
             {props.noduleInfo.risk ? `${props.noduleInfo.risk}%` : '-'}
             <InputNumber
               addonAfter="%"
-              disabled={props.pageState === 'admin'}
               placeholder="请输入风险值"
               size="small"
               style={{ width: 110, height: 24, marginTop: 2, marginLeft: 18, fontSize: 13 }}
@@ -272,7 +311,6 @@ const NoduleInfo = props => {
             {btnGroup.map((item, index) => (
               <div className="list-btn-group" key={item.id}>
                 <Button
-                  disabled={props.pageState === 'admin'}
                   type={item.checked === true ? 'primary' : null}
                   size="small"
                   onClick={e => handleRishButtonClick(item.val)}
@@ -287,7 +325,6 @@ const NoduleInfo = props => {
             <em>备注：</em>
             <TextArea
               rows={4}
-              disabled={props.pageState === 'admin'}
               placeholder="请输入结节备注信息"
               size="small"
               style={{ width: 205, marginTop: 2, fontSize: 13, resize: 'none', minHeight: 85 }}
@@ -305,7 +342,6 @@ const NoduleInfo = props => {
             <span>是否为结节</span>
             <div className="group">
               <Button
-                disabled={props.pageState === 'admin'}
                 type={props.noduleInfo.state === false ? 'primary' : null}
                 style={{ marginRight: '15px' }}
                 size="small"
@@ -314,7 +350,6 @@ const NoduleInfo = props => {
                 否
               </Button>
               <Button
-                disabled={props.pageState === 'admin'}
                 type={props.noduleInfo.state === true ? 'primary' : null}
                 size="small"
                 onClick={e => props.updateNoduleList(true)}
@@ -323,32 +358,8 @@ const NoduleInfo = props => {
               </Button>
             </div>
           </div>
-          {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-            <div className="group-wrap" style={{ marginTop: 5 }}>
-              <span>是否已复核</span>
-              <div className="group">
-                <Button
-                  disabled={props.pageState === 'admin'}
-                  type={props.noduleInfo.chiefReview === false ? 'primary' : null}
-                  style={{ marginRight: '15px' }}
-                  size="small"
-                  onClick={e => props.updateChiefNoduleList(false)}
-                >
-                  否
-                </Button>
-                <Button
-                  disabled={props.pageState === 'admin'}
-                  type={props.noduleInfo.chiefReview === true ? 'primary' : null}
-                  size="small"
-                  onClick={e => props.updateChiefNoduleList(true)}
-                >
-                  是
-                </Button>
-              </div>
-            </div>
-          ) : null}
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   )
 }

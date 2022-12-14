@@ -12,7 +12,7 @@ const ViewerMain = props => {
     <div className="viewer-main-box">
       {props.imagesConfig.length === 0 ? (
         <div className="error-tips">
-          <Spin tip="加载失败，请重新尝试" />
+          <Spin tip="正在加载，请稍后……" />
         </div>
       ) : (
         <div>
@@ -31,7 +31,7 @@ const ViewerMain = props => {
             imageIds={props.imagesConfig}
             style={{
               minWidth: '100%',
-              height: props.pageType === 'detail' ? `${size.height}px` : `${size.height - 85}px`,
+              height: `${size.height - 85}px`,
               flex: '1',
             }}
           />
