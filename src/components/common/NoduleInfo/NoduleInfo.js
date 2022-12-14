@@ -241,21 +241,17 @@ const NoduleInfo = props => {
 
           <div className="list">
             <em>大小：</em>
-            {props.noduleInfo.nodeType === 1 ? (
-                <>{formatMiniNode(props.noduleInfo.diameter)}</>
-              ) : (
-                <>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</>
-              )}
+            {props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}
           </div>
 
           {props.noduleInfo.newDiameter ? (
             <div className="list">
               <em>大小调整后：</em>
               {props.noduleInfo.nodeType === 1 ? (
-                <span style={{ color: '#ff4d4f' }}>{formatMiniNode(props.noduleInfo.diameter)}</span>
+                <span style={{ color: '#ff4d4f' }}>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</span>
               ) : (
                 <span style={{ color: '#ff4d4f' }}>
-                  {formatMiniNode(props.noduleInfo.newDiameter)}
+                  {props.noduleInfo.newDiameter ? props.noduleInfo.newDiameter : '-'}
                 </span>
               )}
             </div>
