@@ -35,9 +35,9 @@ export const getInfo = _ => {
 }
 
 // 获取总医生列表
-export const getChiefList = _ => {
+export const getChiefList = isFinish => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/primary/missionList`)
+  return axios.get(`${basicUrl}/primary/missionList?isFinish=${isFinish}`)
 }
 
 // 获取普通医生列表
