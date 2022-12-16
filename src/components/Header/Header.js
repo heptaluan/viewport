@@ -37,10 +37,6 @@ const Header = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleViewClinicalImages = () => {
-    setVisible(true)
-  }
-
   return (
     <div className="header-box">
       <div className="export-box">
