@@ -427,9 +427,20 @@ const Viewer = () => {
     saveResults()
   }
 
+  // 是否已复核
   const updateChiefNoduleList = checkState => {
     const checkItme = noduleList.find(item => item.checked === true)
     checkItme.chiefReview = checkState
+    setNoduleList([...noduleList])
+
+    // 提交结节数据
+    saveResults()
+  }
+
+  // 是否标记为良性样本
+  const updateChiefMarkNode = checkState => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    checkItme.markNode = checkState
     setNoduleList([...noduleList])
 
     // 提交结节数据
@@ -816,6 +827,7 @@ const Viewer = () => {
               : resultInfo[i] && Number(resultInfo[i].invisable) === 0
               ? true
               : undefined,
+          markNode: resultInfo[i] && resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
           chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
@@ -863,7 +875,12 @@ const Viewer = () => {
             active: false,
             noduleName: resultInfo[i].noduleName,
             noduleNum: resultInfo[i].noduleNum,
-            state: true,
+            state: Number(resultInfo[i].invisable) === 1
+            ? false
+            : Number(resultInfo[i].invisable) === 0
+            ? true
+            : true,
+            markNode: resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : true,
             review: true,
             chiefReview: resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
             lung: resultInfo[i].lungLocation,
@@ -1009,6 +1026,7 @@ const Viewer = () => {
         edit_time: getCurrentTime(),
         edit: noduleList[i].review,
         chiefReview: noduleList[i].chiefReview,
+        markNode: noduleList[i].markNode,
         suggest: noduleList[i].suggest,
         invisable: noduleList[i].state === false ? '1' : noduleList[i].state === true ? '0' : '-',
         nodeType: noduleList[i].nodeType ? noduleList[i].nodeType : '',
@@ -1061,11 +1079,16 @@ const Viewer = () => {
   const handleShowModal = () => {
     formatPostData()
     if (getURLParameters(window.location.href).user === 'chief_lwx') {
-      if (noduleList.every(item => item.chiefReview === true)) {
-        setVisible(true)
-      } else {
+      if (!noduleList.every(item => item.chiefReview === true)) {
         message.warning(`请复核完所有结节后在进行结果提交`)
+        return false
       }
+      
+      if (!noduleList.every(item => item.markNode === true)) {
+        message.warning(`请标记完所有良性样本后在进行结果提交`)
+        return false
+      }
+      setVisible(true)
     } else {
       if (noduleList.every(item => item.review === true)) {
         setVisible(true)
@@ -1267,6 +1290,7 @@ const Viewer = () => {
       chiefReview: getURLParameters(window.location.href).user === 'chief_lwx' ? true : false,
       size: '',
       soak: '',
+      markNode: true,
       state: true,
       suggest: toolList[0].suggest,
       type: toolList[0].type,
@@ -1597,6 +1621,7 @@ const Viewer = () => {
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
         updateChiefNoduleList={updateChiefNoduleList}
+        updateChiefMarkNode={updateChiefMarkNode}
         handleUpdateRisk={handleUpdateRisk}
         handleShowAdjustModal={handleShowAdjustModal}
         handleShowMarkModal={handleShowMarkModal}

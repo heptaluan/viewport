@@ -197,10 +197,10 @@ const NoduleInfo = props => {
           <div className="list">
             <em>大小：</em>
             {props.noduleInfo.nodeType === 1 ? (
-                <>{formatMiniNode(props.noduleInfo.diameter)}</>
-              ) : (
-                <>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</>
-              )}
+              <>{formatMiniNode(props.noduleInfo.diameter)}</>
+            ) : (
+              <>{props.noduleInfo.diameter ? props.noduleInfo.diameter : '-'}</>
+            )}
           </div>
 
           {props.noduleInfo.newDiameter ? (
@@ -209,9 +209,7 @@ const NoduleInfo = props => {
               {props.noduleInfo.nodeType === 1 ? (
                 <span style={{ color: '#ff4d4f' }}>{formatMiniNode(props.noduleInfo.diameter)}</span>
               ) : (
-                <span style={{ color: '#ff4d4f' }}>
-                  {formatMiniNode(props.noduleInfo.newDiameter)}
-                </span>
+                <span style={{ color: '#ff4d4f' }}>{formatMiniNode(props.noduleInfo.newDiameter)}</span>
               )}
             </div>
           ) : null}
@@ -324,28 +322,52 @@ const NoduleInfo = props => {
             </div>
           </div>
           {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-            <div className="group-wrap" style={{ marginTop: 5 }}>
-              <span>是否已复核</span>
-              <div className="group">
-                <Button
-                  disabled={props.pageState === 'admin'}
-                  type={props.noduleInfo.chiefReview === false ? 'primary' : null}
-                  style={{ marginRight: '15px' }}
-                  size="small"
-                  onClick={e => props.updateChiefNoduleList(false)}
-                >
-                  否
-                </Button>
-                <Button
-                  disabled={props.pageState === 'admin'}
-                  type={props.noduleInfo.chiefReview === true ? 'primary' : null}
-                  size="small"
-                  onClick={e => props.updateChiefNoduleList(true)}
-                >
-                  是
-                </Button>
+            <>
+              <div className="group-wrap" style={{ marginTop: 5 }}>
+                <span>是否已复核</span>
+                <div className="group">
+                  <Button
+                    disabled={props.pageState === 'admin'}
+                    type={props.noduleInfo.chiefReview === false ? 'primary' : null}
+                    style={{ marginRight: '15px' }}
+                    size="small"
+                    onClick={e => props.updateChiefNoduleList(false)}
+                  >
+                    否
+                  </Button>
+                  <Button
+                    disabled={props.pageState === 'admin'}
+                    type={props.noduleInfo.chiefReview === true ? 'primary' : null}
+                    size="small"
+                    onClick={e => props.updateChiefNoduleList(true)}
+                  >
+                    是
+                  </Button>
+                </div>
               </div>
-            </div>
+              <div className="group-wrap" style={{ marginTop: 5 }}>
+                <span>是否标记为良性样本</span>
+                <div className="group">
+                  <Button
+                    disabled={props.pageState === 'admin'}
+                    type={props.noduleInfo.markNode === false ? 'primary' : null}
+                    style={{ marginRight: '15px' }}
+                    size="small"
+                    onClick={e => props.updateChiefMarkNode(false)}
+                  >
+                    否
+                  </Button>
+                  <Button
+                    disabled={props.pageState === 'admin'}
+                    type={props.noduleInfo.markNode === true ? 'primary' : null}
+                    size="small"
+                    onClick={e => props.updateChiefMarkNode(true)}
+                  >
+                    是
+                  </Button>
+                </div>
+              </div>
+            </>
           ) : null}
         </div>
       ) : null}
