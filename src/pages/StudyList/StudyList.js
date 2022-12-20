@@ -26,7 +26,7 @@ const StudyList = () => {
     },
     {
       title: '选用状态',
-      dataIndex: 'sex',
+      dataIndex: 'isKy',
       render: (_, record) => {
         return record.isKy === 1 ? (
           <span style={{ color: '#73d13d' }}>已选用</span>
