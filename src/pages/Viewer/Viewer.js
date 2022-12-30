@@ -16,6 +16,7 @@ import {
   getNodeList,
   getPatientsList,
   getDoctorTask,
+  getDoctorHistoryTask,
   addNewNodeList,
   updateDnResult,
   updateSuperDoctorResult,
@@ -114,6 +115,9 @@ const Viewer = () => {
   // 临时变量
   const nodeRef = useRef()
 
+  // 历史记录
+  const [historyList, setHistoryList] = useState([])
+
   useEffect(() => {
     nodeRef.current = {
       noduleList,
@@ -156,7 +160,26 @@ const Viewer = () => {
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
+            setHistoryList(result.data.result.historyReportList)
+            formatNodeData(data, resultInfo.nodelist)
+            fetcImagehData(data.detectionResult.nodulesList)
+          } else {
+            const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+            formatNodeData(data, [])
+            fetcImagehData(data.detectionResult.nodulesList)
+          }
+        }
+      }
+    }
 
+    // 历史记录请求接口
+    const fetchDoctorHistoryData = async () => {
+      const result = await getDoctorHistoryTask(getURLParameters(window.location.href).taskId)
+      if (result.data.code === 200) {
+        if (result.data.result) {
+          if (result.data.result.doctorTask.resultInfo) {
+            const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
+            const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
             formatNodeData(data, resultInfo.nodelist)
             fetcImagehData(data.detectionResult.nodulesList)
           } else {
@@ -173,35 +196,42 @@ const Viewer = () => {
       setImageList(res, data)
     }
 
-    if (getURLParameters(window.location.href).user === 'admin') {
-      if (getURLParameters(window.location.href).requestType === 'order') {
-        getDnReslutByOrderId()
-      } else {
-        fetchAdminData()
-      }
-    } else if (!getURLParameters(window.location.href).user) {
-      fetcImagehData(null)
-    } else {
-      fetchDoctorData()
-    }
-
-    if (getURLParameters(window.location.href).state === 'admin') {
-      setPageState('admin')
-    }
-
-    if (getURLParameters(window.location.href).page === 'review') {
+    if (getURLParameters(window.location.href).from === 'history') {
       setPageType('review')
-    } else if (getURLParameters(window.location.href).page === 'image') {
-      setPageType('image')
-    } else if (getURLParameters(window.location.href).page === 'detail') {
-      setPageType('detail')
-      const index = getURLParameters(window.location.href).index
-      if (index) {
-        setImageIdIndex(Number(index))
+      setPageState('admin')
+      fetchDoctorHistoryData()
+    } else {
+      if (getURLParameters(window.location.href).user === 'admin') {
+        if (getURLParameters(window.location.href).requestType === 'order') {
+          getDnReslutByOrderId()
+        } else {
+          fetchAdminData()
+        }
+      } else if (!getURLParameters(window.location.href).user) {
+        fetcImagehData(null)
       } else {
-        setImageIdIndex(0)
+        fetchDoctorData()
+      }
+
+      if (getURLParameters(window.location.href).state === 'admin') {
+        setPageState('admin')
+      }
+
+      if (getURLParameters(window.location.href).page === 'review') {
+        setPageType('review')
+      } else if (getURLParameters(window.location.href).page === 'image') {
+        setPageType('image')
+      } else if (getURLParameters(window.location.href).page === 'detail') {
+        setPageType('detail')
+        const index = getURLParameters(window.location.href).index
+        if (index) {
+          setImageIdIndex(Number(index))
+        } else {
+          setImageIdIndex(0)
+        }
       }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -827,7 +857,12 @@ const Viewer = () => {
               : resultInfo[i] && Number(resultInfo[i].invisable) === 0
               ? true
               : undefined,
-          markNode: resultInfo[i] && resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : undefined,
+          markNode:
+            resultInfo[i] && resultInfo[i].markNode === true
+              ? true
+              : resultInfo[i] && resultInfo[i].markNode === false
+              ? false
+              : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
           chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
@@ -875,11 +910,7 @@ const Viewer = () => {
             active: false,
             noduleName: resultInfo[i].noduleName,
             noduleNum: resultInfo[i].noduleNum,
-            state: Number(resultInfo[i].invisable) === 1
-            ? false
-            : Number(resultInfo[i].invisable) === 0
-            ? true
-            : true,
+            state: Number(resultInfo[i].invisable) === 1 ? false : Number(resultInfo[i].invisable) === 0 ? true : true,
             markNode: resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : true,
             review: true,
             chiefReview: resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
@@ -1083,7 +1114,7 @@ const Viewer = () => {
         message.warning(`请复核完所有结节后在进行结果提交`)
         return false
       }
-      
+
       if (!noduleList.every(item => item.markNode === true)) {
         message.warning(`请标记完所有良性样本后在进行结果提交`)
         return false
@@ -1264,7 +1295,6 @@ const Viewer = () => {
   const [riskVal, setRiskVal] = useState(0)
   const [postData, setPostData] = useState(null)
   const [res, setRes] = useState(null)
-  
 
   const handleRiskOk = () => {
     setConfirmLoading(false)
@@ -1582,7 +1612,13 @@ const Viewer = () => {
 
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
-      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} />
+      <Header
+        data={patients}
+        handleShowModal={handleShowModal}
+        pageType={pageType}
+        pageState={pageState}
+        historyList={historyList}
+      />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel

@@ -345,7 +345,7 @@ const NoduleInfo = props => {
                   </Button>
                 </div>
               </div>
-              <div className="group-wrap" style={{ marginTop: 5 }}>
+              {/* <div className="group-wrap" style={{ marginTop: 5 }}>
                 <span>是否标记为良性样本</span>
                 <div className="group">
                   <Button
@@ -366,7 +366,7 @@ const NoduleInfo = props => {
                     是
                   </Button>
                 </div>
-              </div>
+              </div> */}
             </>
           ) : null}
         </div>

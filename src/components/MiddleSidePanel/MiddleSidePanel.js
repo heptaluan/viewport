@@ -71,7 +71,7 @@ const MiddleSidePanel = props => {
             {/* <div className="suggest">建议</div> */}
             <div className="soak">结节</div>
             <div className="action">状态</div>
-            {getURLParameters(window.location.href).user === 'chief_lwx' ? <div className="soak">标记</div> : null}
+            {/* {getURLParameters(window.location.href).user === 'chief_lwx' ? <div className="soak">标记</div> : null} */}
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
@@ -104,11 +104,11 @@ const MiddleSidePanel = props => {
                     <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
                   )}
                 </div>
-                {getURLParameters(window.location.href).user === 'chief_lwx' ? (
+                {/* {getURLParameters(window.location.href).user === 'chief_lwx' ? (
                   <div className="soak">
                     <span>{item.markNode === undefined ? '-' : item.markNode ? '是' : '否'}</span>
                   </div>
-                ) : null}
+                ) : null} */}
                 {item.nodeType === 1 ? (
                   <div className="del-tips">
                     <Tag color="#f50" onClick={e => deleteNodeListHandle(e, item)}>

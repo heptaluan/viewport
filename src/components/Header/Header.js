@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './Header.scss'
-import { Button, Image, Space, Alert, Popconfirm } from 'antd'
+import { Button, Image, Space, Alert, Popconfirm, Dropdown, Menu } from 'antd'
 import { getURLParameters } from '../../util/index'
 import { getClinicalFiles, downloadZip } from '../../api/api'
 
@@ -45,6 +45,46 @@ const Header = props => {
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const [viewerList, setViewerList] = useState([])
+  const [reportList, setReportList] = useState([])
+
+  useEffect(() => {
+    if (props.historyList.length > 0) {
+      const list = props.historyList
+      console.log(list)
+      const viewerList = []
+      const reportList = []
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].historyCreateTime) {
+          viewerList.push({
+            key: i,
+            label: (
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`/ct/viewer/1?&url=/api&taskId=${list[i].historyTaskId}&orderId=${list[i].historyOrderId}&resource=${list[i].historyDicomId}&token=${
+                  getURLParameters(window.location.href).token
+                }&user=admin&page=review&from=history`}
+              >
+                {`历史影像记录${i + 1}：${list[i].historyCreateTime}`}
+              </a>
+            ),
+          })
+          reportList.push({
+            key: i,
+            label: (
+              <a target="_blank" rel="noopener noreferrer" href={`https://yyds.ananpan.com/preview/${list[i].historyOrderId}`}>
+                {`历史报告记录${i + 1}：${list[i].historyCreateTime}`}
+              </a>
+            ),
+          })
+        }
+      }
+      setViewerList(viewerList)
+      setReportList(reportList)
+    }
+  }, [props.historyList])
 
   const handleViewClinicalImages = () => {
     setVisible(true)
@@ -93,13 +133,38 @@ const Header = props => {
               />
             </div>
           ) : null}
+
+          {props.historyList.length > 0 ? (
+            <>
+              <Dropdown
+                overlay={<Menu items={reportList} />}
+                trigger={['click']}
+                placement="bottom"
+                arrow={{ pointAtCenter: true }}
+              >
+                <Button style={{ marginRight: 10 }}>查看历史报告</Button>
+              </Dropdown>
+
+              <Dropdown
+                overlay={<Menu items={viewerList} />}
+                trigger={['click']}
+                placement="bottom"
+                arrow={{ pointAtCenter: true }}
+              >
+                <Button style={{ marginRight: 10 }}>查看历史影像</Button>
+              </Dropdown>
+            </>
+          ) : null}
+
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0 ? `暂无临床影像` : `查看临床影像（共${fileData.length}页）`}
           </Button>
+
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
             影像下载
           </Button>
-          <Button disabled={props.pageState === 'admin'} type="primary" onClick={props.handleShowModal}>
+
+          <Button disabled={props.pageState === 'admin' || getURLParameters(window.location.href).from === 'history'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
           </Button>
         </div>
