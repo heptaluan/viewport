@@ -42,7 +42,6 @@ export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task
 // 查看结节列表历史记录
 export const getDoctorHistoryTask = id => axios.get(`${basicUrl}/report/doctorTask/historyTask?id=${id}`)
 
-
 // 保存结果
 export const saveDnResult = params =>
   axios.post(`${basicUrl}/report/doctorTask/saveTask`, params, {

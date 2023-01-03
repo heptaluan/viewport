@@ -1115,10 +1115,10 @@ const Viewer = () => {
         return false
       }
 
-      if (!noduleList.every(item => item.markNode === true)) {
-        message.warning(`请标记完所有良性样本后在进行结果提交`)
-        return false
-      }
+      // if (!noduleList.every(item => item.markNode === true)) {
+      //   message.warning(`请标记完所有良性样本后在进行结果提交`)
+      //   return false
+      // }
       setVisible(true)
     } else {
       if (noduleList.every(item => item.review === true)) {
