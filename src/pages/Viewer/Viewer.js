@@ -157,10 +157,10 @@ const Viewer = () => {
       const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
       if (result.data.code === 200) {
         if (result.data.result) {
+          setHistoryList(result.data.result.historyReportList)
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-            setHistoryList(result.data.result.historyReportList)
             formatNodeData(data, resultInfo.nodelist)
             fetcImagehData(data.detectionResult.nodulesList)
           } else {
