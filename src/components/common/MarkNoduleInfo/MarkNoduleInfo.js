@@ -60,13 +60,14 @@ const MarkNoduleInfo = props => {
         <div className="mark-content">
           <Select
             size="small"
-            value={'右肺上叶（RUL）'}
             style={{ width: 180, fontSize: 13 }}
             onChange={handleSelectChange}
+            value={undefined}
+            placeholder="请选择位置"
           >
             <Option value="右肺上叶（RUL）">右肺上叶（RUL）</Option>
             <Option value="右肺中叶（RML）">右肺中叶（RML）</Option>
-            <Option value="右肺下页叶（RLL）">右肺下页叶（RLL）</Option>
+            <Option value="右肺下叶（RLL）">右肺下叶（RLL）</Option>
             <Option value="左肺上叶（LUL）">左肺上叶（LUL）</Option>
             <Option value="左肺下叶（LLL）">左肺下叶（LLL）</Option>
           </Select>
@@ -75,7 +76,13 @@ const MarkNoduleInfo = props => {
       <div className="mark-box flex">
         <div className="mark-title">大小</div>
         <div className="mark-content">
-          <Select size="small" value={'微小结节'} style={{ width: 180, fontSize: 13 }} onChange={handleSelectChange}>
+          <Select
+            size="small"
+            style={{ width: 180, fontSize: 13 }}
+            onChange={handleSelectChange}
+            value={undefined}
+            placeholder="请选择大小"
+          >
             <Option value="微小结节">微小结节（＜5mm;≤3mm的结节不测量大小）</Option>
             <Option value="小结节">小结节（≥5mm-＜10mm）</Option>
             <Option value="结节/大结节">结节/大结节（≥10mm-≤30mm）</Option>
@@ -87,9 +94,15 @@ const MarkNoduleInfo = props => {
         </Button>
       </div>
       <div className="mark-box flex">
-        <div className="mark-title">形态分页</div>
+        <div className="mark-title">形态分叶</div>
         <div className="mark-content">
-          <Select size="small" value={'无分叶'} style={{ width: 180, fontSize: 13 }} onChange={handleSelectChange}>
+          <Select
+            size="small"
+            style={{ width: 180, fontSize: 13 }}
+            onChange={handleSelectChange}
+            value={undefined}
+            placeholder="请选择形态分叶"
+          >
             <Option value="无分叶">无分叶</Option>
             <Option value="浅分叶">浅分叶</Option>
             <Option value="中度分叶">中度分叶</Option>
@@ -101,7 +114,13 @@ const MarkNoduleInfo = props => {
       <div className="mark-box flex">
         <div className="mark-title">球形</div>
         <div className="mark-content">
-          <Select size="small" value={'线条形'} style={{ width: 180, fontSize: 13 }} onChange={handleSelectChange}>
+          <Select
+            size="small"
+            style={{ width: 180, fontSize: 13 }}
+            onChange={handleSelectChange}
+            value={undefined}
+            placeholder="请选择球形"
+          >
             <Option value="线条形">线条形</Option>
             <Option value="近卵形">近卵形</Option>
             <Option value="卵形">卵形</Option>
@@ -115,9 +134,10 @@ const MarkNoduleInfo = props => {
         <div className="mark-content">
           <Select
             size="small"
-            value={'光整（无毛刺）'}
             style={{ width: 180, fontSize: 13 }}
             onChange={handleSelectChange}
+            value={undefined}
+            placeholder="请选择边缘/毛刺"
             options={[
               {
                 label: '光整（无毛刺）',
@@ -223,7 +243,13 @@ const MarkNoduleInfo = props => {
       <div className="list-title">结节类型</div>
       <div className="mark-box flex">
         <div className="mark-content">
-          <Select size="small" value={'肺内实性'} style={{ width: 180, fontSize: 13 }} onChange={handleNodeTypeChange}>
+          <Select
+            size="small"
+            style={{ width: 180, fontSize: 13 }}
+            onChange={handleNodeTypeChange}
+            value={undefined}
+            placeholder="请选择结节类型"
+          >
             <Option value="肺内实性">肺内实性</Option>
             <Option value="部分实性">部分实性</Option>
             <Option value="磨玻璃">磨玻璃</Option>

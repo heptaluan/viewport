@@ -167,7 +167,7 @@ const MarkList = () => {
 
   // 查看详情
   const handleShowDetail = record => {
-    history.push(`/markViewer?dicomId=${record.dicomId}&orderId=${record.orderId}&from=mark`)
+    history.push(`/markViewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
   }
 
   return (

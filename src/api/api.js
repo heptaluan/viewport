@@ -128,6 +128,21 @@ export const assignList = params => {
   })
 }
 
+// ========================================================
+// ========================================================
+
+// 新的结节列表 
+export const getNewNodeList = orderId => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.11.99:16880/thirdMark/detail/900543`)
+}
+
+// 新的影像列表
+export const getNewImageList = url => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.1.107:19000/sortlist/${url}/`)
+}
+
 // const basicUrl = getURLParameters(window.location.href).url
 // axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 

@@ -12,6 +12,8 @@ import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
 import {
   getNodeList,
+  getNewNodeList,
+  getNewImageList,
   getImageList,
   addNewResult,
   getSecondprimaryDetail,
@@ -126,11 +128,12 @@ const MarkViewer = () => {
   // 初始化结节与影像列表信息
   useEffect(() => {
     const fetchNodeListData = async () => {
-      const result = await getNodeList(params.orderId)
+      const result = await getNewNodeList(params.orderId)
       if (result.data.code === 200) {
         try {
-          const data = JSON.parse(result.data.data.replace(/'/g, '"'))
-          formatNodeData(data, [])
+          const data = result.data.data
+          formatNodeData(data)
+          fetcImagehData(data[0].imageUrl)
         } catch (error) {
           console.log(error)
         }
@@ -143,42 +146,25 @@ const MarkViewer = () => {
       }
     }
 
-    const fetcImagehData = async _ => {
-      const res = await getImageList(params.dicomId)
-      if (res.data.code === 200 && res.data.data.length > 0) {
-        const newList = res.data.data
+    const fetcImagehData = async url => {
+      if (!url) return;
+      const newUrl = `-${url.split('/')[2]}-${url.split('/')[3]}`
+      const res = await getNewImageList(newUrl)
+      // if (res.data.code === 200 && res.data.data.length > 0) {
+        const newList = res.data
         const imageList = []
-        newList.forEach(item => {
-          imageList.push(`wadouri:${item.replace('http://', 'https://')}`)
-        })
+        for (let i = 0; i < newList.length; i++) {
+          imageList.push(`wadouri:http://192.168.1.107:19000/download/${newList[i][1]}`)
+        }
         setImagesConfig(imageList)
-      }
-    }
-
-    const fetchSecondprimaryDetail = async () => {
-      const result = await getSecondprimaryDetail(params.id)
-      if (result.data.code === 200) {
-        formatSecondprimaryNodeData(result.data.data)
-      } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
-        message.warning(`登录已失效，请重新登录`)
-        history.push('/login')
-      }
+      // }
     }
 
     // 保存用户角色
     const info = localStorage.getItem('info')
     setUserInfo(info)
 
-    // 根据角色请求不同的数据
-    if (info === 'chief') {
-      fetchNodeListData()
-      fetcImagehData()
-    } else if (info === 'doctor') {
-      fetchSecondprimaryDetail()
-    }
+    fetchNodeListData()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -229,118 +215,28 @@ const MarkViewer = () => {
   // ===========================================================
 
   // 格式化结节数据
-  const formatNodeData = (data, resultInfo) => {
-    const nodulesList = []
-    const nodulesMapList = []
-    let index = 0
-    if (data.code === 10000) {
-      const res = data.detectionResult.nodulesList
-
-      // 初始化滑块的值
-      // if (resultInfo[0] && resultInfo[0].diameterMaxSize) {
-      //   localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
-      // } else {
-      //   localStorage.setItem('diameterSize', 3)
-      // }
-
-      // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
-      for (let i = 0; i < res.length; i++) {
-        nodulesList.push({
-          id: index,
-          num: res[i].coord.coordZ,
-          type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
-          risk: (res[i].scrynMaligant * 100).toFixed(0),
-          scrynMaligant:
-            resultInfo[i] && resultInfo[i].scrynMaligant
-              ? resultInfo[i].scrynMaligant
-              : (res[i].scrynMaligant * 100).toFixed(0),
-          soak: res[i].invisionClassify ? res[i].invisionClassify : '',
-          newSoak:
-            resultInfo[i] && resultInfo[i].newSoak
-              ? resultInfo[i].newSoak
-              : res[i].invisionClassify
-              ? res[i].invisionClassify
-              : '',
-          info: '',
-          checked: false,
-          active: false,
-          noduleName: res[i].noduleName,
-          noduleNum: res[i].noduleNum,
-          state:
-            resultInfo[i] && Number(resultInfo[i].invisable) === 1
-              ? false
-              : resultInfo[i] && Number(resultInfo[i].invisable) === 0
-              ? true
-              : undefined,
-          review: resultInfo[i] ? resultInfo[i].edit : false,
-          chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
-          lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
-          lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
-          diameter: res[i].diameter,
-          diameterSize:
-            resultInfo[i] && resultInfo[i].newDiameter
-              ? formatDiameter(resultInfo[i].newDiameter)
-              : formatDiameter(res[i].diameter),
-          noduleSize: res[i].noduleSize,
-          newDiameter: resultInfo[i] && resultInfo[i].newDiameter ? resultInfo[i].newDiameter : '',
-          newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
-          featureLabelG: res[i].featureLabelG,
-          suggest: resultInfo[i] ? resultInfo[i].suggest : '',
-        })
-        index++
-      }
-
-      for (let i = 0; i < res.length; i++) {
-        for (let j = 0; j < res[i].rois.length; j++) {
-          const rois = res[i].rois[j]
-          nodulesMapList.push({
-            noduleName: res[i].noduleName,
-            index: Number(rois.key),
-            startX: rois.bbox[1],
-            startY: rois.bbox[0],
-            endX: rois.bbox[3],
-            endY: rois.bbox[2],
-          })
-        }
-      }
-
-      console.log(nodulesList)
-      console.log(nodulesMapList)
-
-      setNoduleList([...nodulesList])
-      setNoduleMapList([...nodulesMapList])
-    } else {
-      setNoduleList([])
-      console.log(`数据加载失败`)
-    }
-  }
-
-  // 格式化二次筛选结节数据
-  const formatSecondprimaryNodeData = data => {
+  const formatNodeData = data => {
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
 
     // 格式化结节信息
-    for (let i = 0; i < data.nodeInfo.length; i++) {
-      const res = data.nodeInfo[i]
-      const resultInfo = data.resultInfo[i]
+    for (let i = 0; i < data.length; i++) {
       nodulesList.push({
         id: index,
-        num: Number(res.coordz),
+        num: Number(data[i].coordz),
         checked: false,
-        state: resultInfo.isFinish === 0 ? undefined : resultInfo.isBenign === 1 ? true : false,
-        review: resultInfo.isFinish === 1 ? true : false,
-        type: resultInfo.featuresType ? resultInfo.featuresType : res.featuresType,
-        kyTaskId: resultInfo.id,
-        noduleName: `nodule_${res.id}`,
+        state: false,
+        review: false,
+        type: '',
+        noduleName: `nodule_${data[i].id}`,
       })
 
-      const acrossCoordz = res.acrossCoordz.split(',')
-      const box = res.box.split(',')
+      const acrossCoordz = data[i].acrossCoordz.split(',')
+      const box = data[i].box.split(',')
       for (let j = 0; j < acrossCoordz.length; j++) {
         nodulesMapList.push({
-          noduleName: `nodule_${res.id}`,
+          noduleName: `nodule_${data[i].id}`,
           index: Number(acrossCoordz[j]),
           startX: Number(box[1].trim()),
           startY: Number(box[0].trim()),
@@ -352,19 +248,11 @@ const MarkViewer = () => {
       index++
     }
 
-    // 格式化影像信息
-    const newList = data.imageList
-    const imageList = []
-    newList.forEach(item => {
-      imageList.push(`wadouri:${item.replace('http://', 'https://')}`)
-    })
-
     console.log(nodulesList)
     console.log(nodulesMapList)
 
     setNoduleList([...nodulesList])
     setNoduleMapList([...nodulesMapList])
-    setImagesConfig(imageList)
   }
 
   // ===========================================================
