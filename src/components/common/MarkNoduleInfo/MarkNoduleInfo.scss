@@ -1,0 +1,84 @@
+.mark-box-wrap {
+  position: absolute;
+  right: 10px;
+  top: 95px;
+  width: 330px;
+  color: #fff;
+  font-size: 14px;
+  user-select: none;
+
+  .box-title {
+    text-align: center;
+    font-size: 16px;
+  }
+
+  .list-title {
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+
+  .mark-box {
+    position: relative;
+    margin-bottom: 5px;
+
+    &.flex {
+      display: flex;
+      align-items: center;
+
+      &.left {
+        align-items: start;
+
+        .mark-title {
+          margin-top: 5px;
+        }
+      }
+    }
+
+    .mark-title {
+      display: inline-block;
+      margin-right: 10px;
+      width: 95px;
+
+      &.w250 {
+        width: 250px;
+      }
+    }
+
+    .mark-content {
+      width: 360px;
+    }
+
+    .ant-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .tips {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}
+
+.ant-segmented {
+  margin-top: 5px !important;
+  background: #fff !important;
+
+  .ant-segmented-item-label {
+    color: rgba(0, 0, 0, 0.85) !important;
+  }
+
+  .ant-segmented-thumb, .ant-segmented-item-selected {
+    background: #1890ff !important;
+    color: #fff !important;
+
+    .ant-segmented-item-label {
+      color: #fff !important;
+    }
+  }
+}
+
+.ant-checkbox-group .ant-checkbox-wrapper {
+  color: #fff !important;
+}

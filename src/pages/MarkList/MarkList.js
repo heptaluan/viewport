@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import './AllotList.scss'
+import './MarkList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Modal, Button, Select, Popconfirm, message, Menu, Avatar, Input } from 'antd'
+import { Table, Space, Button, Select, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getAssignList, assignList, getAssignUsersList, addAssignResult } from '../../api/api'
+import { getAssignList, getChiefList, getAssignUsersList, addAssignResult } from '../../api/api'
 
-const AllotList = () => {
+const MarkList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
-    {
-      title: '良性样本Id',
-      dataIndex: 'id',
-    },
     {
       title: '姓名',
       dataIndex: 'name',
@@ -29,13 +25,13 @@ const AllotList = () => {
       },
     },
     {
-      title: '分配状态',
-      dataIndex: 'sex',
+      title: '选用状态',
+      dataIndex: 'isKy',
       render: (_, record) => {
-        return record.isAssign === 1 ? (
-          <span style={{ color: '#73d13d' }}>已分配</span>
+        return record.isKy === 1 ? (
+          <span style={{ color: '#73d13d' }}>已选用</span>
         ) : (
-          <span style={{ color: '#ff4d4f' }}>未分配</span>
+          <span style={{ color: '#ff4d4f' }}>未选用</span>
         )
       },
     },
@@ -56,20 +52,17 @@ const AllotList = () => {
       dataIndex: 'source',
     },
     {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => {
-        const t1 = new Date(a.updateTime).getTime()
-        const t2 = new Date(b.updateTime).getTime()
-        return t1 - t2
-      },
-      createTime: ['descend', 'ascend'],
-      showSorterTooltip: false,
-    },
-    {
       title: '订单创建日期',
       dataIndex: 'orderCreateTime',
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="middle">
+          <a onClick={() => handleShowDetail(record)}>查看详情</a>
+        </Space>
+      ),
     },
   ]
 
@@ -132,32 +125,16 @@ const AllotList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getAssignList(params)
+    const result = await getChiefList(0)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
+      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
-    }
-  }
-
-  // 请求可分配医生列表
-  const fetchAssignUsersList = async () => {
-    const result = await getAssignUsersList()
-    if (result.data.code === 200) {
-      const list = result.data.rows
-      const users = []
-      for (let i = 0; i < list.length; i++) {
-        users.push({
-          key: i,
-          value: list[i].userName,
-          label: list[i].userName,
-        })
-      }
-      setSelectOptions(users)
     }
   }
 
@@ -165,7 +142,6 @@ const AllotList = () => {
   useEffect(() => {
     setUserInfo(localStorage.getItem('info'))
     fetchList()
-    fetchAssignUsersList()
   }, [])
 
   // 退出
@@ -189,60 +165,9 @@ const AllotList = () => {
     }
   }
 
-  // 任务分配
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedList, setSelectedList] = useState([])
-  const [selectedIds, setSelectedIds] = useState([])
-  const [assignUsers, setAssignUsers] = useState('')
-
-  const showModal = () => {
-    if (selectedList.length === 0) {
-      message.warning(`请先选择需要进行分配的列表`)
-    } else {
-      setIsModalOpen(true)
-    }
-  }
-
-  // 提交分配任务
-  const handleOk = async () => {
-    if (!assignUsers) {
-      message.warning(`请选择医生进行分配`)
-      return
-    }
-    const ids = []
-    for (let i = 0; i < selectedList.length; i++) {
-      ids.push(selectedList[i].id)
-    }
-    const postData = {
-      users: assignUsers.join(','),
-      ids: ids.join(','),
-    }
-    const result = await addAssignResult(postData)
-    if (result.data.code === 200) {
-      message.success(`分配成功`)
-      setIsModalOpen(false)
-      setSelectedList([])
-      fetchList()
-    } else if (result.data.code === 500) {
-      message.error(result.data.msg ? result.data.msg : `任务分配失败，请重新尝试`)
-    }
-  }
-
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
-
-  const rowSelection = {
-    selectedRowKeys: selectedIds,
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedIds(selectedRowKeys)
-      setSelectedList(selectedRows)
-    },
-  }
-
-  // 选择分配医生
-  const handleSelectedChange = value => {
-    setAssignUsers(value)
+  // 查看详情
+  const handleShowDetail = record => {
+    history.push(`/markViewer?dicomId=${record.dicomId}&orderId=${record.orderId}&from=mark`)
   }
 
   return (
@@ -273,7 +198,7 @@ const AllotList = () => {
       </header>
       <div className="study-list-container-wrap">
         <div className="meau-box">
-          <Menu defaultSelectedKeys={['2']} onClick={e => handleChangeMenu(e)}>
+          <Menu defaultSelectedKeys={['3']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">审核列表</Menu.Item>
             <Menu.Item key="2">分配列表</Menu.Item>
             <Menu.Item key="3">标记列表</Menu.Item>
@@ -321,16 +246,9 @@ const AllotList = () => {
               </Button>
             </div>
           </div>
-          <div className="search-box-wrap">
-            <div className="header">
-              <Button type="primary" onClick={showModal}>
-                分配任务
-              </Button>
-            </div>
-          </div>
+  
           <Table
             scroll={{ x: 'max-content' }}
-            rowSelection={rowSelection}
             rowKey={record => record.id}
             dataSource={dataSource}
             columns={columns}
@@ -344,30 +262,8 @@ const AllotList = () => {
           />
         </div>
       </div>
-
-      <Modal
-        title="任务分配"
-        visible={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        cancelText="取消"
-        okText="确定"
-        maskClosable={false}
-      >
-        <div className="modal-box">
-          <p>请选择医生进行分配：</p>
-          <Select
-            mode="multiple"
-            allowClear
-            style={{ width: '100%' }}
-            onChange={handleSelectedChange}
-            options={selectOptions}
-            placeholder="请选择需要进行分配的医生"
-          />
-        </div>
-      </Modal>
     </div>
   )
 }
 
-export default AllotList
+export default MarkList

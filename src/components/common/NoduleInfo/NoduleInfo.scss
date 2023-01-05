@@ -120,25 +120,3 @@
 .ant-radio-disabled + span {
   color: #fff !important;
 }
-
-.ant-segmented {
-  margin-top: 5px !important;
-  background: #fff !important;
-
-  .ant-segmented-item-label {
-    color: rgba(0, 0, 0, 0.85) !important;
-  }
-
-  .ant-segmented-thumb, .ant-segmented-item-selected {
-    background: #1890ff !important;
-    color: #fff !important;
-
-    .ant-segmented-item-label {
-      color: #fff !important;
-    }
-  }
-}
-
-.ant-checkbox-group .ant-checkbox-wrapper {
-  color: #fff !important;
-}
