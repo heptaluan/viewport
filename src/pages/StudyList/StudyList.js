@@ -124,6 +124,12 @@ const StudyList = () => {
       newPagination.pageSize = 10
       newPagination.total = result.data.rows.length
     }
+
+    if (result.data.rows.length === 0) {
+      newPagination.current = 1
+      newPagination.pageSize = 10
+      newPagination.total = 0
+    }
     setPagination(newPagination)
   }
 

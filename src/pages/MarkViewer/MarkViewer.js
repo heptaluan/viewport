@@ -3,7 +3,7 @@ import './MarkViewer.scss'
 import Header from '../../components/Header/Header'
 // import LeftSidePanel from '../../components/LeftSidePanel/LeftSidePanel'
 import ViewerMain from '../../components/ViewerMain/ViewerMain'
-import MiddleSidePanel from '../../components/MiddleSidePanel/MiddleSidePanel'
+import MarkMiddleSidePanel from '../../components/MarkMiddleSidePanel/MarkMiddleSidePanel'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 import MarkNoduleInfo from '../../components/common/MarkNoduleInfo/MarkNoduleInfo'
@@ -151,7 +151,7 @@ const MarkViewer = () => {
       const newUrl = `-${url.split('/')[2]}-${url.split('/')[3]}`
       const res = await getNewImageList(newUrl)
       // if (res.data.code === 200 && res.data.data.length > 0) {
-        const newList = res.data
+        const newList = res.data.list
         const imageList = []
         for (let i = 0; i < newList.length; i++) {
           imageList.push(`wadouri:http://192.168.1.107:19000/download/${newList[i][1]}`)
@@ -226,10 +226,25 @@ const MarkViewer = () => {
         id: index,
         num: Number(data[i].coordz),
         checked: false,
-        state: false,
         review: false,
-        type: '',
         noduleName: `nodule_${data[i].id}`,
+        difficultyLevel: '非常微妙',
+        position: undefined,
+        size: undefined,
+        paging: undefined,
+        sphere: undefined,
+        rag: undefined,
+        spinous: '非常微妙',
+        lungInterface: '非常微妙',
+        proximityRelation: [],
+        structuralConstitution: [],
+        structuralConstitutionCalcific: [],
+        structuralRelation: [],
+        nodeType: undefined,
+        nodeTypePartSolid: '非常微妙',
+        nodeTypeLungCalcific: '非常微妙',
+        nodeTypePleuraCalcific: '非常微妙',
+        danger: '良性'
       })
 
       const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -248,8 +263,8 @@ const MarkViewer = () => {
       index++
     }
 
-    console.log(nodulesList)
-    console.log(nodulesMapList)
+    // console.log(nodulesList)
+    // console.log(nodulesMapList)
 
     setNoduleList([...nodulesList])
     setNoduleMapList([...nodulesMapList])
@@ -1349,12 +1364,61 @@ const MarkViewer = () => {
     history.push('/studyList')
   }
 
+  // ===========================================================
+  // ===========================================================
+  // ===========================================================
+
+  // 更新滑块内容
+  const handleUpdateNoduleInfo = (val, type) => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme) {
+      switch (type) {
+        // 滑块
+        case 'difficultyLevel':
+        case 'spinous':
+        case 'lungInterface':
+        case 'nodeTypePartSolid':
+        case 'nodeTypeLungCalcific':
+        case 'nodeTypePleuraCalcific':
+        case 'danger':
+          checkItme[type] = val
+          break;
+
+        // 下拉菜单
+        case 'position':
+        case 'size':
+        case 'paging':
+        case 'sphere':
+        case 'rag':
+          checkItme[type] = val
+          break;
+
+        // 多选框
+        case 'proximityRelation':
+        case 'structuralConstitution':
+        case 'structuralConstitutionCalcific':
+        case 'structuralRelation':
+          checkItme[type] = val
+          break;
+
+        // 结节类型
+        case 'nodeType':
+          checkItme[type] = val
+          break;
+      
+        default:
+          break;
+      }
+    }
+    setNoduleList([...noduleList])
+  }
+
   return (
     <div className="viewer-box">
       <Header data={patients} handleShowModal={handleShowModal} handleGoBackList={handleGoBackList} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
-          <MiddleSidePanel
+          <MarkMiddleSidePanel
             handleVisibleChange={handleVisibleChange}
             handleCheckedListClick={handleCheckedListClick}
             handleHideNodule={handleHideNodule}
@@ -1384,14 +1448,8 @@ const MarkViewer = () => {
       </div>
       <MarkNoduleInfo
         noduleInfo={noduleInfo}
-        handleTextareaOnChange={handleTextareaOnChange}
-        handleInputBlur={handleInputBlur}
-        checkNoduleList={checkNoduleList}
-        updateNoduleList={updateNoduleList}
-        updateChiefNoduleList={updateChiefNoduleList}
-        handleUpdateRisk={handleUpdateRisk}
         handleShowAdjustModal={handleShowAdjustModal}
-        handleShowMarkModal={handleShowMarkModal}
+        handleUpdateNoduleInfo={handleUpdateNoduleInfo}
       />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
