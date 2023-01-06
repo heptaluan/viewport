@@ -328,6 +328,8 @@ const Viewer = () => {
       nodulesList.push({
         id: index,
         num: Number(res.coordz),
+        error: res.error,
+        error_mark: res.error_mark,
         checked: false,
         state: resultInfo.isFinish === 0 ? undefined : resultInfo.isBenign === 1 ? true : false,
         review: resultInfo.isFinish === 1 ? true : false,

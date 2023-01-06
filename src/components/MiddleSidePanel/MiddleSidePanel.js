@@ -86,45 +86,47 @@ const MiddleSidePanel = props => {
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
-              <div
-                key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} `}
-                onClick={e => handleListClick(index, item.num)}
-              >
-                <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
-                  <div className="index">{index + 1}</div>
-                </Checkbox>
-                <div className="num">{props.imagesConfig.length - item.num}</div>
-                {userInfo === 'chief' ? (
-                  <>
-                    <div className="soak">{item.lung}</div>
-                    <div className="soak">{item.lobe}</div>
-                  </>
-                ) : null}
+              <Tooltip placement="top" title={item.error_mark}>
+                <div
+                  key={item.id}
+                  className={`table-item ${item.error === 1 ? 'add-item' : ''} `}
+                  onClick={e => handleListClick(index, item.num)}
+                >
+                  <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
+                    <div className="index">{index + 1}</div>
+                  </Checkbox>
+                  <div className="num">{props.imagesConfig.length - item.num}</div>
+                  {userInfo === 'chief' ? (
+                    <>
+                      <div className="soak">{item.lung}</div>
+                      <div className="soak">{item.lobe}</div>
+                    </>
+                  ) : null}
 
-                <div className="type">{item.type}</div>
-                {userInfo === 'chief' ? (
-                  <div
-                    className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}
-                  >
-                    {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
-                  </div>
-                ) : null}
+                  <div className="type">{item.type}</div>
+                  {userInfo === 'chief' ? (
+                    <div
+                      className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}
+                    >
+                      {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
+                    </div>
+                  ) : null}
 
-                <div className={`soak ${item.state ? 'yes' : 'no'}`}>
-                  <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
-                </div>
-                <div className="action review-state">
-                  <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
-                </div>
-                {item.nodeType === 1 ? (
-                  <div className="del-tips">
-                    <Tag color="#f50" onClick={e => deleteNodeListHandle(e, item)}>
-                      删除
-                    </Tag>
+                  <div className={`soak ${item.state ? 'yes' : 'no'}`}>
+                    <span>{item.state === undefined ? '-' : item.state ? '是' : '否'}</span>
                   </div>
-                ) : null}
-              </div>
+                  <div className="action review-state">
+                    <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
+                  </div>
+                  {item.nodeType === 1 ? (
+                    <div className="del-tips">
+                      <Tag color="#f50" onClick={e => deleteNodeListHandle(e, item)}>
+                        删除
+                      </Tag>
+                    </div>
+                  ) : null}
+                </div>
+              </Tooltip>
             ))}
           </div>
         </div>

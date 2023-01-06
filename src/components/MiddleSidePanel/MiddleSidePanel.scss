@@ -79,8 +79,8 @@
           position: relative;
 
           &.add-item {
-            border-top: 1px solid #ccc;
-            background: #eaeaea;
+            border-top: 1px solid #ff000030;
+            background: #ff000030;
           }
 
           &.green-item {
@@ -105,6 +105,11 @@
           &:hover {
             border: 1px solid #eaeaea;
             background: #eaeaea;
+
+            &.add-item {
+              border-top: 1px solid #ff000030;
+              background: #ff000030;
+            }
 
             .del-tips {
               display: flex;

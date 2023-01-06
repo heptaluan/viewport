@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
+import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { getChiefList, getDoctorList } from '../../api/api'
 
@@ -151,7 +151,7 @@ const StudyList = () => {
 
   // 获取普通医生列表数据
   const fetchDoctorList = async () => {
-    const result = await getDoctorList(isFinish)
+    const result = await getDoctorList(isFinish, searchId)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -195,9 +195,14 @@ const StudyList = () => {
 
   // 医生查询
   const [isFinish, setIsFinish] = useState(0)
+  const [searchId, setSearchId] = useState('')
 
   const handleIsFinishSearch = val => {
     setIsFinish(val)
+  }
+
+  const handleDoctorIdSearch = val => {
+    setSearchId(val)
   }
 
   const handleSearch = () => {
@@ -208,8 +213,9 @@ const StudyList = () => {
   const handleReset = async () => {
     const isFinish = 0
     setIsFinish(isFinish)
+    setSearchId('')
     localStorage.setItem('pagination', '')
-    const result = await getDoctorList(isFinish)
+    const result = await getDoctorList(isFinish, searchId)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -236,8 +242,8 @@ const StudyList = () => {
   }
 
   const handleChiefReset = async () => {
-    const isFinish = 0
-    setIsChiefFinish(isFinish)
+    const isChiefFinish = 0
+    setIsChiefFinish(isChiefFinish)
     localStorage.setItem('pagination', '')
     const result = await getChiefList(isChiefFinish)
     if (result.data.code === 200) {
@@ -323,7 +329,7 @@ const StudyList = () => {
           <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">审核列表</Menu.Item>
             {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
-            <Menu.Item key="3">标记列表</Menu.Item>
+            {/* <Menu.Item key="3">标记列表</Menu.Item> */}
           </Menu>
         </div>
         <div className="study-list-container">
@@ -345,6 +351,12 @@ const StudyList = () => {
                       label: '已完成',
                     },
                   ]}
+                />
+                <Input
+                  value={searchId}
+                  onChange={e => handleDoctorIdSearch(e.target.value)}
+                  style={{ width: 200, marginLeft: 15 }}
+                  placeholder="请输入良性样本Id"
                 />
                 <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                   搜索
