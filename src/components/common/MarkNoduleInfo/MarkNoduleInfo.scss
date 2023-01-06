@@ -46,6 +46,10 @@
 
     .mark-content {
       width: 360px;
+
+      &.slider {
+        width: 330px;
+      }
     }
 
     .ant-btn {
@@ -81,4 +85,20 @@
 
 .ant-checkbox-group .ant-checkbox-wrapper {
   color: #fff !important;
+}
+
+.ant-slider-mark-text {
+  color: #fff !important;
+}
+
+.ant-tooltip {
+
+  .ant-tooltip-arrow-content {
+    --antd-arrow-background-color: #fff !important;
+  }
+
+  .ant-tooltip-inner {
+    background: #fff;
+    color: #000 !important;
+  }
 }

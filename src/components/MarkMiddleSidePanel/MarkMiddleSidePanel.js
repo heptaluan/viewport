@@ -40,7 +40,7 @@ const MarkMiddleSidePanel = props => {
             <div className="num">中心帧</div>
             <div className="type">检测难易度</div>
             <div className="type">位置</div>
-            <div className="action">状态</div>
+            <div className="type">大小</div>
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
@@ -55,9 +55,7 @@ const MarkMiddleSidePanel = props => {
                 <div className="num">{props.imagesConfig.length - item.num}</div>
                 <div className="type">{item.difficultyLevel}</div>
                 <div className="type">{item.position}</div>
-                <div className="action review-state">
-                  <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
-                </div>
+                <div className="type">{item.size}</div>
               </div>
             ))}
           </div>

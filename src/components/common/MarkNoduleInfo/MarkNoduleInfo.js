@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './MarkNoduleInfo.scss'
-import { Radio, Select, Button, Input, Segmented, Checkbox } from 'antd'
+import { Slider, Select, Button, Tooltip, Segmented, Checkbox } from 'antd'
 
 const { Option } = Select
 
@@ -83,25 +83,91 @@ const MarkNoduleInfo = props => {
             </div>
           </div>
           <div className="mark-box flex">
-            <div className="mark-title">大小</div>
+            <div className="mark-title" style={{ width: 180 }}>
+              大小（原）
+            </div>
             <div className="mark-content">
-              <Select
-                size="small"
-                style={{ width: 180, fontSize: 13 }}
-                placeholder="请选择大小"
-                onChange={e => props.handleUpdateNoduleInfo(e, 'size')}
-                value={props.noduleInfo.size}
-              >
-                <Option value="微小结节">微小结节（＜5mm;≤3mm的结节不测量大小）</Option>
-                <Option value="小结节">小结节（≥5mm-＜10mm）</Option>
-                <Option value="结节/大结节">结节/大结节（≥10mm-≤30mm）</Option>
-                <Option value="肿块">肿块（大于30mm）</Option>
-              </Select>
+              <span>{props.noduleInfo.sizeBefore}</span>
             </div>
             <Button size="small" onClick={props.handleShowAdjustModal}>
               调整
             </Button>
+
+            
           </div>
+          <div className="mark-box flex">
+            <div className="mark-title" style={{ width: 180 }}>
+              大小（测量后）
+            </div>
+            <div className="mark-content">
+              <span>{props.noduleInfo.sizeAfter}</span>
+            </div>
+            <Button
+              size="small"
+              style={{ marginLeft: 10 }}
+              onClick={props.handleShowMarkModal}
+            >
+              标记微小结节
+            </Button>
+          </div>
+
+          <div className="mark-box flex">
+            <div className="mark-content">
+              <Slider
+                max={30}
+                min={1}
+                marks={{
+                  5: {
+                    label: (
+                      <Tooltip
+                        placement="bottom"
+                        color="#fff"
+                        overlayClassName="resize-box"
+                        title="微小结节（＜5mm;≤3mm的结节不测量大小）"
+                      >
+                        <span>微小结节</span>
+                      </Tooltip>
+                    ),
+                  },
+                  10: {
+                    label: (
+                      <Tooltip
+                        placement="bottom"
+                        color="#fff"
+                        overlayClassName="resize-box"
+                        title="小结节（≥5mm-＜10mm）"
+                      >
+                        <span>小结节</span>
+                      </Tooltip>
+                    ),
+                  },
+                  20: {
+                    label: (
+                      <Tooltip
+                        placement="bottom"
+                        color="#fff"
+                        overlayClassName="resize-box"
+                        title="结节/大结节（≥10mm-≤30mm）"
+                      >
+                        <span>结节/大结节</span>
+                      </Tooltip>
+                    ),
+                  },
+                  30: {
+                    label: (
+                      <Tooltip placement="bottom" color="#fff" overlayClassName="resize-box" title="肿块（大于30mm）">
+                        <span>肿块</span>
+                      </Tooltip>
+                    ),
+                  },
+                }}
+                included={false}
+                onChange={e => props.handleUpdateNoduleInfo(e, 'size')}
+                value={props.noduleInfo.size}
+              />
+            </div>
+          </div>
+
           <div className="mark-box flex">
             <div className="mark-title">形态分叶</div>
             <div className="mark-content">
@@ -177,11 +243,11 @@ const MarkNoduleInfo = props => {
             </div>
           </div>
           <div className="mark-box">
-            <div className="mark-title w250">结节-肺界面（清晰度分级）</div>
+            <div className="mark-title w250">棘突（分级）</div>
             <div className="mark-content">
               <Segmented
-                onChange={e => props.handleUpdateNoduleInfo(e, 'lungInterface')}
-                value={props.noduleInfo.lungInterface}
+                onChange={e => props.handleUpdateNoduleInfo(e, 'spinous')}
+                value={props.noduleInfo.spinous}
                 size="small"
                 options={['显而易见', '中度明显', '微妙', '适度微妙', '非常微妙']}
               />
@@ -269,7 +335,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Select
                 size="small"
-                style={{ width: 180, fontSize: 13 }}
+                style={{ width: 180, fontSize: 13, marginBottom: 5 }}
                 onChange={handleNodeTypeChange}
                 value={undefined}
                 placeholder="请选择结节类型"
@@ -288,12 +354,18 @@ const MarkNoduleInfo = props => {
           {showTypePartSolid ? (
             <div className="mark-box">
               <div className="mark-title w250">部分实性（分级，实性成分比例）</div>
-              <div className="mark-content">
-                <Segmented
+              <div className="mark-content slider">
+                <Slider
+                  marks={{
+                    10: '显而易见',
+                    30: '中度明显',
+                    50: '微妙',
+                    70: '适度微妙',
+                    90: '非常微妙',
+                  }}
+                  included={false}
                   onChange={e => props.handleUpdateNoduleInfo(e, 'nodeTypePartSolid')}
                   value={props.noduleInfo.nodeTypePartSolid}
-                  size="small"
-                  options={['显而易见', '中度明显', '微妙', '适度微妙', '非常微妙']}
                 />
               </div>
             </div>
@@ -302,11 +374,17 @@ const MarkNoduleInfo = props => {
             <div className="mark-box">
               <div className="mark-title w250">肺内钙化（钙化程度分级）</div>
               <div className="mark-content">
-                <Segmented
+                <Slider
+                  marks={{
+                    10: '显而易见',
+                    30: '中度明显',
+                    50: '微妙',
+                    70: '适度微妙',
+                    90: '非常微妙',
+                  }}
+                  included={false}
                   onChange={e => props.handleUpdateNoduleInfo(e, 'nodeTypeLungCalcific')}
                   value={props.noduleInfo.nodeTypeLungCalcific}
-                  size="small"
-                  options={['显而易见', '中度明显', '微妙', '适度微妙', '非常微妙']}
                 />
               </div>
             </div>
@@ -315,11 +393,17 @@ const MarkNoduleInfo = props => {
             <div className="mark-box">
               <div className="mark-title w250">胸膜钙化（钙化程度分级）</div>
               <div className="mark-content">
-                <Segmented
+                <Slider
+                  marks={{
+                    10: '显而易见',
+                    30: '中度明显',
+                    50: '微妙',
+                    70: '适度微妙',
+                    90: '非常微妙',
+                  }}
+                  included={false}
                   onChange={e => props.handleUpdateNoduleInfo(e, 'nodeTypePleuraCalcific')}
                   value={props.noduleInfo.nodeTypePleuraCalcific}
-                  size="small"
-                  options={['显而易见', '中度明显', '微妙', '适度微妙', '非常微妙']}
                 />
               </div>
             </div>

@@ -27,6 +27,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { useHistory } from 'react-router-dom'
+import { formatSizeMean } from '../../util/index'
 
 const { confirm } = Modal
 
@@ -230,20 +231,21 @@ const MarkViewer = () => {
         noduleName: `nodule_${data[i].id}`,
         difficultyLevel: '非常微妙',
         position: undefined,
-        size: undefined,
+        size: formatSizeMean('14mm*17mm'),
+        sizeBefore: '14mm*17mm',
+        sizeAfter: undefined,
         paging: undefined,
         sphere: undefined,
         rag: undefined,
         spinous: '非常微妙',
-        lungInterface: '非常微妙',
         proximityRelation: [],
         structuralConstitution: [],
         structuralConstitutionCalcific: [],
         structuralRelation: [],
         nodeType: undefined,
-        nodeTypePartSolid: '非常微妙',
-        nodeTypeLungCalcific: '非常微妙',
-        nodeTypePleuraCalcific: '非常微妙',
+        nodeTypePartSolid: 0,
+        nodeTypeLungCalcific: 0,
+        nodeTypePleuraCalcific: 0,
         danger: '良性'
       })
 
@@ -1264,56 +1266,12 @@ const MarkViewer = () => {
     if (checkItme) {
       const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
       const data = tool.data[0].cachedStats
-      // const handle = tool.data[0].handles
-      const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
-      const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
-      // let nodeBox = []
-      if (checkItme.nodeType === 1) {
-        checkItme.diameter = `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
-        checkItme.noduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
-      } else {
-        checkItme.newDiameter = `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
-        checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(data.area / oldArea, 1.5)).toFixed(2)
-      }
-
-      // 重新计算中心直径
-      checkItme.diameterSize = formatDiameter(
-        `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
-      )
-
-      // if (handle.start.x > handle.end.x) {
-      //   nodeBox = [parseInt(handle.end.y), parseInt(handle.end.x), parseInt(handle.start.y), parseInt(handle.start.x)]
-      // } else {
-      //   nodeBox = [parseInt(handle.start.y), parseInt(handle.start.x), parseInt(handle.end.y), parseInt(handle.end.x)]
-      // }
-
-      // startX: rois.bbox[1],
-      // startY: rois.bbox[0],
-      // endX: rois.bbox[3],
-      // endY: rois.bbox[2],
-
-      // const startX = nodeBox[1]
-      // const startY = nodeBox[0]
-      // const endX = nodeBox[3]
-      // const endY = nodeBox[2]
-
-      // checkItme.nodeBox = nodeBox
-      // checkItme.maxHu = data.max
-      // checkItme.minHu = data.min
-      // checkItme.meanHu = data.mean.toFixed(2)
-      checkItme.diameterNorm = Math.sqrt(data.area).toFixed(2)
-      // checkItme.centerHu = cornerstone.getPixels(
-      //   cornerstoneElement,
-      //   (Number(startX) + Number(endX)) / 2,
-      //   (Number(startY) + Number(endY)) / 2,
-      //   1,
-      //   1
-      // )[0]
-
+      const sizeAfter = `${data.width.toFixed()}mm*${data.height.toFixed()}mm`
+      checkItme.sizeAfter = sizeAfter
+      checkItme.size = formatSizeMean(sizeAfter)
       setNoduleList([...noduleList])
     }
 
-    saveResults()
     setAdjustModalVisible(false)
   }
 
@@ -1373,14 +1331,17 @@ const MarkViewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
       switch (type) {
-        // 滑块
+        // 滑动组件
         case 'difficultyLevel':
         case 'spinous':
-        case 'lungInterface':
+        case 'danger':
+          checkItme[type] = val
+          break;
+
+        // 滑块
         case 'nodeTypePartSolid':
         case 'nodeTypeLungCalcific':
         case 'nodeTypePleuraCalcific':
-        case 'danger':
           checkItme[type] = val
           break;
 
@@ -1494,7 +1455,7 @@ const MarkViewer = () => {
         cancelText="取消"
         maskStyle={{ backgroundColor: 'transparent' }}
       >
-        <p>是否使用图中测量的数据自动调整当前结节的大小与体积</p>
+        <p>是否使用图中测量的数据自动调整当前结节的大小</p>
       </Modal>
 
       <Modal

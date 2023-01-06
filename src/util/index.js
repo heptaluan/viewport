@@ -45,3 +45,15 @@ export const formatMiniNodule = list => {
   }
   return target.length
 }
+
+// 计算结节大小平均值
+export const formatSizeMean = val => {
+  if (val) {
+    const list = val.replace('*', '').split('mm').filter(n => n)
+    const max = Math.max(...list) > 30 ? 30 : Math.max(...list)
+    const min = Math.min(...list) > 30 ? 30 : Math.min(...list)
+    return ((max + min) / 2).toFixed()
+  } else {
+    return ''
+  }
+}
