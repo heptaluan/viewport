@@ -76,7 +76,7 @@ const MarkNoduleInfo = props => {
           </div>
           <div className="mark-box flex" style={{ height: 24 }}>
             <div className="mark-title" style={{ width: 160 }}>
-              大小（原）
+              大小
             </div>
             <div className="mark-content">
               <span>{props.noduleInfo.sizeBefore}</span>
@@ -107,58 +107,28 @@ const MarkNoduleInfo = props => {
           <div className="mark-box flex">
             <div className="mark-content">
               <Slider
-                max={30}
+                max={35}
                 min={1}
-                marks={{
-                  5: {
-                    label: (
-                      <Tooltip
-                        placement="bottom"
-                        color="#fff"
-                        overlayClassName="resize-box"
-                        title="微小结节（＜5mm;≤3mm的结节不测量大小）"
-                      >
-                        <span>微小结节</span>
-                      </Tooltip>
-                    ),
-                  },
-                  10: {
-                    label: (
-                      <Tooltip
-                        placement="bottom"
-                        color="#fff"
-                        overlayClassName="resize-box"
-                        title="小结节（≥5mm-＜10mm）"
-                      >
-                        <span>小结节</span>
-                      </Tooltip>
-                    ),
-                  },
-                  20: {
-                    label: (
-                      <Tooltip
-                        placement="bottom"
-                        color="#fff"
-                        overlayClassName="resize-box"
-                        title="结节/大结节（≥10mm-≤30mm）"
-                      >
-                        <span>结节/大结节</span>
-                      </Tooltip>
-                    ),
-                  },
-                  30: {
-                    label: (
-                      <Tooltip placement="bottom" color="#fff" overlayClassName="resize-box" title="肿块（大于30mm）">
-                        <span>肿块</span>
-                      </Tooltip>
-                    ),
-                  },
-                }}
+                // marks={{
+                //   5: '微小结节',
+                //   10: '小结节',
+                //   20: '结节/大结节',
+                //   30: '肿块',
+                // }}
                 included={false}
                 onChange={e => props.handleUpdateNoduleInfo(e, 'size')}
                 value={props.noduleInfo.size}
               />
             </div>
+          </div>
+          <div className="tips" style={{marginBottom: 5}}>
+            微小结节（＜5mm，≤3mm 的结节不测量大小）
+            <br />
+            小结节（≥5mm -＜10mm）
+            <br />
+            结节/大结节（≥10mm - ≤30mm）
+            <br />
+            肿块（大于 30mm）
           </div>
 
           <div className="mark-box flex">
@@ -371,7 +341,7 @@ const MarkNoduleInfo = props => {
           <div className="list-title">良恶性</div>
           <div className="mark-box">
             <div className="mark-title" style={{ width: 300 }}>
-              危险程度（分级），目前所选程度：{formatDanger(Number(props.noduleInfo.danger))}
+              危险程度（分级），目前所选分级：{formatDanger(Number(props.noduleInfo.danger))}
             </div>
             <div className="mark-content slider">
               <Slider

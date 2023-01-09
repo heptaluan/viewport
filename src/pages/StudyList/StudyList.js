@@ -295,6 +295,8 @@ const StudyList = () => {
       history.push('/allotList')
     } else if (e.key === '3') {
       history.push('/markList')
+    } else if (e.key === '4') {
+      history.push('/benignNoduleList')
     }
   }
 
@@ -329,7 +331,8 @@ const StudyList = () => {
           <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">审核列表</Menu.Item>
             {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
-            <Menu.Item key="3">标记列表</Menu.Item>
+            <Menu.Item key="3">金标准列表</Menu.Item>
+            {/* <Menu.Item key="4">良性结节列表</Menu.Item> */}
           </Menu>
         </div>
         <div className="study-list-container">

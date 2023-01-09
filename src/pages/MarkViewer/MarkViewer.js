@@ -134,7 +134,7 @@ const MarkViewer = () => {
       const result = await getNewNodeList(params.imageCode)
       if (result.data.code === 200) {
         try {
-          const data = result.data.data.samlpDataList
+          const data = result.data.data.samlpeDataList
           const info = result.data.data.doctorResult
           formatNodeData(data, info)
           fetcImagehData(data[0].imageUrl)
@@ -1274,7 +1274,7 @@ const MarkViewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
 
     if (checkItme) {
-      const sizeAfter = `1mm*1mm`
+      const sizeAfter = `3mm*3mm`
       checkItme.sizeAfter = sizeAfter
       checkItme.size = formatSizeMean(sizeAfter)
       setNoduleList([...noduleList])

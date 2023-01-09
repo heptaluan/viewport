@@ -3,57 +3,34 @@ import './BenignNoduleList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getAssignList, getBenignNoduleList, getAssignUsersList, addAssignResult } from '../../api/api'
+import { getMarkList } from '../../api/api'
 
 const BenignNoduleList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
     {
-      title: '姓名',
-      dataIndex: 'name',
+      title: '审阅人',
+      dataIndex: 'createBy',
     },
     {
-      title: '年龄',
-      dataIndex: 'age',
+      title: '影像编号',
+      dataIndex: 'imageCode',
     },
     {
-      title: '性别',
-      dataIndex: 'sex',
+      title: '完成状态',
+      dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.sex === '1' ? '男' : '女'
-      },
-    },
-    {
-      title: '选用状态',
-      dataIndex: 'isKy',
-      render: (_, record) => {
-        return record.isKy === 1 ? (
-          <span style={{ color: '#73d13d' }}>已选用</span>
+        return record.isFinish === 1 ? (
+          <span style={{ color: '#73d13d' }}>已完成</span>
         ) : (
-          <span style={{ color: '#ff4d4f' }}>未选用</span>
+          <span style={{ color: '#ff4d4f' }}>未完成</span>
         )
       },
     },
     {
-      title: '订单编号',
-      dataIndex: 'orderId',
-    },
-    {
-      title: '病例编号',
-      dataIndex: 'code',
-    },
-    {
-      title: '病人编号',
-      dataIndex: 'pcode',
-    },
-    {
-      title: '影像来源医院',
-      dataIndex: 'source',
-    },
-    {
-      title: '订单创建日期',
-      dataIndex: 'orderCreateTime',
+      title: '更新时间',
+      dataIndex: 'updateTime',
     },
     {
       title: '操作',
@@ -68,34 +45,24 @@ const BenignNoduleList = () => {
 
   const history = useHistory()
 
-  // 用户角色
+  // 用户信息
   const [userInfo, setUserInfo] = useState('')
-
-  // 分配医生列表
-  const [selectOptions, setSelectOptions] = useState([])
 
   // 查询
   const [params, setParams] = useState({
-    isAssign: 0,
-    name: '',
-    pcode: '',
+    isFinish: 0,
+    imageCode: '',
   })
 
-  const handleNameSearch = val => {
+  const handleImageCodeSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.name = val
+    newParams.imageCode = val
     setParams(newParams)
   }
 
-  const handlePcodeSearch = val => {
+  const handleIsFinishSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.pcode = val
-    setParams(newParams)
-  }
-
-  const handleIsAssignSearch = val => {
-    const newParams = Object.assign({}, params)
-    newParams.isAssign = val
+    newParams.isFinish = val
     setParams(newParams)
   }
 
@@ -105,12 +72,11 @@ const BenignNoduleList = () => {
 
   const handleReset = async () => {
     const newParams = {
-      isAssign: 0,
-      name: '',
-      pcode: '',
+      isFinish: 0,
+      imageCode: '',
     }
     setParams(newParams)
-    const result = await getAssignList(newParams)
+    const result = await getMarkList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -125,7 +91,7 @@ const BenignNoduleList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getBenignNoduleList()
+    const result = await getMarkList(params)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
@@ -140,7 +106,8 @@ const BenignNoduleList = () => {
 
   // 初始列表数据
   useEffect(() => {
-    setUserInfo(localStorage.getItem('info'))
+    const info = localStorage.getItem('info')
+    setUserInfo(info)
     fetchList()
   }, [])
 
@@ -167,9 +134,9 @@ const BenignNoduleList = () => {
     }
   }
 
-  // 查看详情
+  // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
-    history.push(`/markViewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
+    history.push(`/markViewer?id=${record.id}&imageCode=${record.imageCode}&type=2`)
   }
 
   return (
@@ -202,9 +169,9 @@ const BenignNoduleList = () => {
         <div className="meau-box">
           <Menu defaultSelectedKeys={['4']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">审核列表</Menu.Item>
-            <Menu.Item key="2">分配列表</Menu.Item>
+            {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
             <Menu.Item key="3">金标准列表</Menu.Item>
-            <Menu.Item key="4">良性结节列表</Menu.Item>
+            {/* <Menu.Item key="4">良性结节列表</Menu.Item> */}
           </Menu>
         </div>
         <div className="study-list-container">
@@ -212,29 +179,23 @@ const BenignNoduleList = () => {
             <div className="header"></div>
             <div className="search-box">
               <Input
-                value={params.name}
-                onChange={e => handleNameSearch(e.target.value)}
+                value={params.imageCode}
+                onChange={e => handleImageCodeSearch(e.target.value)}
                 style={{ width: 200 }}
-                placeholder="请输入姓名"
-              />
-              <Input
-                value={params.pcode}
-                onChange={e => handlePcodeSearch(e.target.value)}
-                style={{ width: 200 }}
-                placeholder="请输入病人编号"
+                placeholder="请输入影像编号"
               />
               <Select
-                value={params.isAssign}
+                value={params.isFinish}
                 style={{ width: 200 }}
-                onChange={handleIsAssignSearch}
+                onChange={handleIsFinishSearch}
                 options={[
                   {
                     value: 0,
-                    label: '未分配',
+                    label: '未完成',
                   },
                   {
                     value: 1,
-                    label: '已分配',
+                    label: '已完成',
                   },
                 ]}
               />

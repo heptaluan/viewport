@@ -68,9 +68,9 @@ export const formatNodeSize = size => {
       return `微小结节`
     } else if (size >= 5 && size < 10) {
       return `小结节`
-    } else if (size >= 10 && size < 30) {
+    } else if (size >= 10 && size <= 30) {
       return `结节/大结节`
-    } else if (size >= 30) {
+    } else if (size > 30) {
       return `肿块`
     }
   } else {
