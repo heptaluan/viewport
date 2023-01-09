@@ -132,9 +132,9 @@ export const assignList = params => {
 // ========================================================
 
 // 新的结节列表 
-export const getNewNodeList = orderId => {
+export const getNewNodeList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`http://192.168.11.99:16880/thirdMark/detail/900543`)
+  return axios.get(`http://192.168.11.99:16880/thirdMark/detail/${id}`)
 }
 
 // 新的影像列表
@@ -146,13 +146,37 @@ export const getNewImageList = url => {
 // 获取金标准列表
 export const getMarkList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=2`)
+  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
 }
 
 // 获取良性结节列表
 export const getBenignNoduleList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=1`)
+}
+
+// 完成软标签详细结果
+export const updateResult = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`http://192.168.11.99:16880/thirdMark/updateResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
+
+// 完成软标签（检阅完成后提交最终结果）
+export const updateList = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(
+    `http://192.168.11.99:16880/thirdMark/updateList/${id}`,
+    {},
+    {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    }
+  )
 }
 
 // const basicUrl = getURLParameters(window.location.href).url

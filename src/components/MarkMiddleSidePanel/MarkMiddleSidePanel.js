@@ -37,11 +37,11 @@ const MarkMiddleSidePanel = props => {
             <Checkbox disabled checked={true}>
               <div className="index">序号</div>
             </Checkbox>
-            <div className="num">中心帧</div>
-            <div className="type">检测难易度</div>
+            <div className="type">中心帧</div>
             <div className="type">位置</div>
-            <div className="type">形态分叶</div>
-            <div className="type">球形</div>
+            <div className="type">类型</div>
+            <div className="type">检测难易度</div>
+            <div className="type">结节状态</div>
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
@@ -53,13 +53,14 @@ const MarkMiddleSidePanel = props => {
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="index">{index + 1}</div>
                 </Checkbox>
-                <div className="num">{props.imagesConfig.length - item.num}</div>
-                <div className="type">{item.difficultyLevel}</div>
+                <div className="type">{props.imagesConfig.length - item.num}</div>
+                
                 <Tooltip title={item.position}>
                   <div className="type">{item.position}</div>
                 </Tooltip>
-                <div className="type">{item.paging}</div>
-                <div className="type">{item.sphere}</div>
+                <div className="type">{item.nodeType}</div>
+                <div className="type">{item.difficultyLevel}</div>
+                <div className={`type ${item.state ? 'yes' : 'no'}`}>{item.state ? '已提交' : '未提交'}</div>
               </div>
             ))}
           </div>
