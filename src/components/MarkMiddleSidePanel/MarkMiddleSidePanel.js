@@ -40,7 +40,8 @@ const MarkMiddleSidePanel = props => {
             <div className="num">中心帧</div>
             <div className="type">检测难易度</div>
             <div className="type">位置</div>
-            <div className="type">大小</div>
+            <div className="type">形态分叶</div>
+            <div className="type">球形</div>
           </div>
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
@@ -54,8 +55,11 @@ const MarkMiddleSidePanel = props => {
                 </Checkbox>
                 <div className="num">{props.imagesConfig.length - item.num}</div>
                 <div className="type">{item.difficultyLevel}</div>
-                <div className="type">{item.position}</div>
-                <div className="type">{item.size}</div>
+                <Tooltip title={item.position}>
+                  <div className="type">{item.position}</div>
+                </Tooltip>
+                <div className="type">{item.paging}</div>
+                <div className="type">{item.sphere}</div>
               </div>
             ))}
           </div>

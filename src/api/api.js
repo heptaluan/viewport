@@ -143,6 +143,18 @@ export const getNewImageList = url => {
   return axios.get(`http://192.168.1.107:19000/sortlist/${url}/`)
 }
 
+// 获取金标准列表
+export const getMarkList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=2`)
+}
+
+// 获取良性结节列表
+export const getBenignNoduleList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=1`)
+}
+
 // const basicUrl = getURLParameters(window.location.href).url
 // axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 

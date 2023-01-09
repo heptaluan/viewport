@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import './MarkList.scss'
+import './BenignNoduleList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getAssignList, getMarkList, getAssignUsersList, addAssignResult } from '../../api/api'
+import { getAssignList, getBenignNoduleList, getAssignUsersList, addAssignResult } from '../../api/api'
 
-const MarkList = () => {
+const BenignNoduleList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
@@ -125,7 +125,7 @@ const MarkList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getMarkList()
+    const result = await getBenignNoduleList()
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
@@ -200,7 +200,7 @@ const MarkList = () => {
       </header>
       <div className="study-list-container-wrap">
         <div className="meau-box">
-          <Menu defaultSelectedKeys={['3']} onClick={e => handleChangeMenu(e)}>
+          <Menu defaultSelectedKeys={['4']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">审核列表</Menu.Item>
             <Menu.Item key="2">分配列表</Menu.Item>
             <Menu.Item key="3">金标准列表</Menu.Item>
@@ -209,9 +209,7 @@ const MarkList = () => {
         </div>
         <div className="study-list-container">
           <div className="search-box-wrap">
-            <div className="header">
-   
-            </div>
+            <div className="header"></div>
             <div className="search-box">
               <Input
                 value={params.name}
@@ -249,7 +247,7 @@ const MarkList = () => {
               </Button>
             </div>
           </div>
-  
+
           <Table
             scroll={{ x: 'max-content' }}
             rowKey={record => record.id}
@@ -269,4 +267,4 @@ const MarkList = () => {
   )
 }
 
-export default MarkList
+export default BenignNoduleList

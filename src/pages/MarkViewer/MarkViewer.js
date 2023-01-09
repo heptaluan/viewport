@@ -148,16 +148,16 @@ const MarkViewer = () => {
     }
 
     const fetcImagehData = async url => {
-      if (!url) return;
+      if (!url) return
       const newUrl = `-${url.split('/')[2]}-${url.split('/')[3]}`
       const res = await getNewImageList(newUrl)
       // if (res.data.code === 200 && res.data.data.length > 0) {
-        const newList = res.data.list
-        const imageList = []
-        for (let i = 0; i < newList.length; i++) {
-          imageList.push(`wadouri:http://192.168.1.107:19000/download/${newList[i][1]}`)
-        }
-        setImagesConfig(imageList)
+      const newList = res.data.list
+      const imageList = []
+      for (let i = 0; i < newList.length; i++) {
+        imageList.push(`wadouri:http://192.168.1.107:19000/download/${newList[i][1]}`)
+      }
+      setImagesConfig(imageList)
       // }
     }
 
@@ -238,6 +238,7 @@ const MarkViewer = () => {
         sphere: undefined,
         rag: undefined,
         spinous: '非常微妙',
+        lungInterface: '非常微妙',
         proximityRelation: [],
         structuralConstitution: [],
         structuralConstitutionCalcific: [],
@@ -246,7 +247,7 @@ const MarkViewer = () => {
         nodeTypePartSolid: 0,
         nodeTypeLungCalcific: 0,
         nodeTypePleuraCalcific: 0,
-        danger: '良性'
+        danger: '良性',
       })
 
       const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -1290,25 +1291,12 @@ const MarkViewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
 
     if (checkItme) {
-      const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
-      const oldArea = (oldDiameter[0] * oldDiameter[1]).toFixed(2)
-      const newArea = (0.99 * 0.99).toFixed(2)
-
-      if (checkItme.nodeType === 1) {
-        checkItme.diameter = `0.99mm*0.99mm`
-        checkItme.noduleSize = (checkItme.noduleSize * Math.pow(newArea / oldArea, 1.5)).toFixed(2)
-      } else {
-        checkItme.newDiameter = `0.99mm*0.99mm`
-        checkItme.newNoduleSize = (checkItme.noduleSize * Math.pow(newArea / oldArea, 1.5)).toFixed(2)
-      }
-
-      checkItme.diameterSize = formatDiameter(`0.99mm*0.99mm`)
-      checkItme.diameterNorm = Math.sqrt(newArea).toFixed(2)
-
+      const sizeAfter = `1.99mm*1.99mm`
+      checkItme.sizeAfter = sizeAfter
+      checkItme.size = formatSizeMean(sizeAfter)
       setNoduleList([...noduleList])
     }
 
-    saveResults()
     setshowMarkModal(false)
   }
 
@@ -1326,7 +1314,7 @@ const MarkViewer = () => {
   // ===========================================================
   // ===========================================================
 
-  // 更新滑块内容
+  // 更新内容
   const handleUpdateNoduleInfo = (val, type) => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
@@ -1334,44 +1322,68 @@ const MarkViewer = () => {
         // 滑动组件
         case 'difficultyLevel':
         case 'spinous':
+        case 'lungInterface':
         case 'danger':
           checkItme[type] = val
-          break;
+          break
 
         // 滑块
         case 'nodeTypePartSolid':
         case 'nodeTypeLungCalcific':
         case 'nodeTypePleuraCalcific':
           checkItme[type] = val
-          break;
+          break
 
         // 下拉菜单
         case 'position':
-        case 'size':
         case 'paging':
         case 'sphere':
         case 'rag':
           checkItme[type] = val
-          break;
+          break
 
-        // 多选框
-        case 'proximityRelation':
+        // 大小单独处理
+        case 'size':
+          checkItme['size'] = val
+          checkItme['sizeAfter'] = `${val}mm*${val}mm`
+          break
+
+        // 结构成分与结构成分（钙化）
         case 'structuralConstitution':
         case 'structuralConstitutionCalcific':
-        case 'structuralRelation':
           checkItme[type] = val
-          break;
+          break
+
+        // 临近关系与结构关系单独处理
+        case 'proximityRelation':
+        case 'structuralRelation':
+          if (val.includes('无特殊') && !checkItme[type].includes('无特殊')) {
+            checkItme[type] = []
+            checkItme[type] = ['无特殊']
+          } else if (checkItme[type].includes('无特殊')) {
+            checkItme[type] = val.filter(v => v !== '无特殊')
+          } else {
+            checkItme[type] = val
+          }
+
+          break
 
         // 结节类型
         case 'nodeType':
           checkItme[type] = val
-          break;
-      
+          break
+
         default:
-          break;
+          break
       }
     }
     setNoduleList([...noduleList])
+  }
+
+  // 提交单个结果
+  const updateSingleNodeResult = _ => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    console.log(checkItme)
   }
 
   return (
@@ -1411,6 +1423,8 @@ const MarkViewer = () => {
         noduleInfo={noduleInfo}
         handleShowAdjustModal={handleShowAdjustModal}
         handleUpdateNoduleInfo={handleUpdateNoduleInfo}
+        handleShowMarkModal={handleShowMarkModal}
+        updateSingleNodeResult={updateSingleNodeResult}
       />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
@@ -1468,7 +1482,7 @@ const MarkViewer = () => {
         cancelText="取消"
         maskStyle={{ backgroundColor: 'transparent' }}
       >
-        <p>是否将当前结节标记为微小结节</p>
+        <p>是否将当前结节自动标记为微小结节</p>
       </Modal>
 
       <div className="show-button">

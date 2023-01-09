@@ -1,6 +1,7 @@
 import IndexComponent from '../components/index'
 import Viewer from '../pages/Viewer/Viewer'
 import MarkViewer from '../pages/MarkViewer/MarkViewer'
+import BenignNoduleList from '../pages/BenignNoduleList/BenignNoduleList'
 import StudyList from '../pages/StudyList/StudyList'
 import AllotList from '../pages/AllotList/AllotList'
 import MarkList from '../pages/MarkList/MarkList'
@@ -43,6 +44,11 @@ const routes = [
       {
         path: '/markViewer',
         component: MarkViewer,
+        routes: [],
+      },
+      {
+        path: '/benignNoduleList',
+        component: BenignNoduleList,
         routes: [],
       },
     ],

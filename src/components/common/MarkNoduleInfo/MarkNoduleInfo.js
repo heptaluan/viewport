@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './MarkNoduleInfo.scss'
 import { Slider, Select, Button, Tooltip, Segmented, Checkbox } from 'antd'
+import { formatSizeMean } from '../../../util/index'
 
 const { Option } = Select
 
@@ -39,6 +40,22 @@ const MarkNoduleInfo = props => {
       setShowTypeLungCalcific(true)
     } else if (val === '胸膜钙化') {
       setShowTypePleuraCalcific(true)
+    }
+  }
+
+  const formatNodeSize = size => {
+    if (size) {
+      if (size < 5) {
+        return `微小结节`
+      } else if (size >= 5 && size < 10) {
+        return `小结节`
+      } else if (size >= 10 && size < 30) {
+        return `结节/大结节`
+      } else if (size >= 30) {
+        return `肿块`
+      }
+    } else {
+      return ''
     }
   }
 
@@ -82,8 +99,8 @@ const MarkNoduleInfo = props => {
               </Select>
             </div>
           </div>
-          <div className="mark-box flex">
-            <div className="mark-title" style={{ width: 180 }}>
+          <div className="mark-box flex" style={{ height: 24 }}>
+            <div className="mark-title" style={{ width: 160 }}>
               大小（原）
             </div>
             <div className="mark-content">
@@ -92,23 +109,28 @@ const MarkNoduleInfo = props => {
             <Button size="small" onClick={props.handleShowAdjustModal}>
               调整
             </Button>
-
-            
+            <Button size="small" onClick={props.handleShowMarkModal} style={{right: 55}}>
+              标记
+            </Button>
           </div>
-          <div className="mark-box flex">
-            <div className="mark-title" style={{ width: 180 }}>
+          <div className="mark-box flex" style={{ height: 24, marginBottom: 0 }}>
+            <div className="mark-title" style={{ width: 160 }}>
               大小（测量后）
             </div>
             <div className="mark-content">
-              <span>{props.noduleInfo.sizeAfter}</span>
+              <span>
+                {props.noduleInfo.sizeAfter}
+                {props.noduleInfo.sizeAfter ? (
+                  <>
+                    （
+                    <span style={{ fontSize: 12 }}>
+                      {formatNodeSize(props.noduleInfo.size)}
+                    </span>
+                    ）
+                  </>
+                ) : null}
+              </span>
             </div>
-            <Button
-              size="small"
-              style={{ marginLeft: 10 }}
-              onClick={props.handleShowMarkModal}
-            >
-              标记微小结节
-            </Button>
           </div>
 
           <div className="mark-box flex">
@@ -243,11 +265,11 @@ const MarkNoduleInfo = props => {
             </div>
           </div>
           <div className="mark-box">
-            <div className="mark-title w250">棘突（分级）</div>
+            <div className="mark-title w250">结节-肺界面（清晰度分级）</div>
             <div className="mark-content">
               <Segmented
-                onChange={e => props.handleUpdateNoduleInfo(e, 'spinous')}
-                value={props.noduleInfo.spinous}
+                onChange={e => props.handleUpdateNoduleInfo(e, 'lungInterface')}
+                value={props.noduleInfo.lungInterface}
                 size="small"
                 options={['显而易见', '中度明显', '微妙', '适度微妙', '非常微妙']}
               />
@@ -433,6 +455,15 @@ const MarkNoduleInfo = props => {
             恶性可能，对应概率：中等（40-65%）
             <br />
             考虑恶性，对应概率：高度（大于65%）
+          </div>
+
+          <div className="mark-box">
+            <div className="mark-title w250"></div>
+            <div className="mark-content">
+            <Button size="small" onClick={props.updateSingleNodeResult}>
+              暂存当前结节
+            </Button>
+            </div>
           </div>
         </>
       ) : null}
