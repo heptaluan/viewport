@@ -6,22 +6,9 @@ import { formatNodeSize, formatDanger } from '../../../util/index'
 const { Option } = Select
 
 const MarkNoduleInfo = props => {
-  const handleSelectChange = val => {}
 
   // ==================================================
   // ==================================================
-
-  const [showStructuralCheckbox, setShowStructuralCheckbox] = useState(false)
-
-  // 内部特征-结构成分
-  const handleInnerIngredientChange = list => {
-    props.handleUpdateNoduleInfo(list, 'structuralConstitution')
-    if (list.includes('钙化')) {
-      setShowStructuralCheckbox(true)
-    } else {
-      setShowStructuralCheckbox(false)
-    }
-  }
 
   // 格式化标题
   const formatNodeTypeTitle = val => {
@@ -248,12 +235,12 @@ const MarkNoduleInfo = props => {
                   { label: '磨玻璃', value: '磨玻璃' },
                   { label: '钙化', value: '钙化' },
                 ]}
-                onChange={handleInnerIngredientChange}
+                onChange={e => props.handleUpdateNoduleInfo(e, 'structuralConstitution')}
                 value={props.noduleInfo.structuralConstitution}
               />
             </div>
           </div>
-          {showStructuralCheckbox ? (
+          {props.noduleInfo.structuralConstitution.includes('钙化') ? (
             <div className="mark-box flex left">
               <div className="mark-title">结构成分（钙化）</div>
               <div className="mark-content">

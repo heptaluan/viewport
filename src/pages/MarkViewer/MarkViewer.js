@@ -196,7 +196,6 @@ const MarkViewer = () => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
 
-    console.log(params.type)
     if (Number(params.type) === 2) {
       fetchNodeListData()
     } else if (Number(params.type) === 1) {
@@ -874,7 +873,6 @@ const MarkViewer = () => {
 
   // 隐藏和显示结节列表
   const showNoduleList = () => {
-    console.log(showState)
     setShowState(!showState)
   }
 
@@ -1305,7 +1303,7 @@ const MarkViewer = () => {
     if (checkItme) {
       const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
       const data = tool.data[0].cachedStats
-      const sizeAfter = `${data.width.toFixed()}mm*${data.height.toFixed()}mm`
+      const sizeAfter = `${Math.abs(data.width.toFixed())}mm*${Math.abs(data.height.toFixed())}mm`
       checkItme.sizeAfter = sizeAfter
       checkItme.size = formatSizeMean(sizeAfter)
       setNoduleList([...noduleList])
