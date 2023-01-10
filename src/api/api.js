@@ -3,7 +3,9 @@ import { getURLParameters } from '../util/index'
 
 // const basicUrl = `http://192.168.11.99:18080/dev-api`
 // const basicUrl = `http://192.168.11.53:16880`
-const basicUrl = `http://ky.feipankang.com/api`
+// const basicUrl = `http://ky.feipankang.com/api`
+const basicUrl = `http://192.168.1.64:16880`
+// const basicUrl = `http://192.168.11.99:16880`
 
 axios.interceptors.request.use(
   config => {
@@ -131,10 +133,16 @@ export const assignList = params => {
 // ========================================================
 // ========================================================
 
-// 新的结节列表 
+// 新的结节列表（金标准）
 export const getNewNodeList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`http://192.168.11.99:16880/thirdMark/detail/${id}`)
+  return axios.get(`${basicUrl}/thirdMark/detail/${id}`)
+}
+
+// 新的结节列表（良性结节）
+export const getBenignNodeList = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/thirdMark/detail1/${id}`)
 }
 
 // 新的影像列表
@@ -146,19 +154,19 @@ export const getNewImageList = url => {
 // 获取金标准列表
 export const getMarkList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
+  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
 }
 
 // 获取良性结节列表
 export const getBenignNoduleList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=1`)
+  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId}&isFinish=${params.isFinish}`)
 }
 
 // 完成软标签详细结果
 export const updateResult = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.post(`http://192.168.11.99:16880/thirdMark/updateResult`, params, {
+  return axios.post(`${basicUrl}/thirdMark/updateResult`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },
@@ -169,7 +177,7 @@ export const updateResult = params => {
 export const updateList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.post(
-    `http://192.168.11.99:16880/thirdMark/updateList/${id}`,
+    `${basicUrl}/thirdMark/updateList/${id}`,
     {},
     {
       headers: {

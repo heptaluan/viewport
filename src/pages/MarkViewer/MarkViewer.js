@@ -14,10 +14,7 @@ import {
   getNodeList,
   getNewNodeList,
   getNewImageList,
-  getImageList,
-  addNewResult,
-  getSecondprimaryDetail,
-  addSecondprimaryResult,
+  getBenignNodeList,
   saveSecondprimaryResult,
   updateResult,
   updateList
@@ -150,6 +147,25 @@ const MarkViewer = () => {
       }
     }
 
+    const fetchBenignNodeListData = async () => {
+      const result = await getBenignNodeList(params.id)
+      if (result.data.code === 200) {
+        try {
+          const data = result.data.data
+          formatBenignNodeData(data.nodeInfo, data.resultInfo)
+          formatImagehData(data.imageList)
+        } catch (error) {
+          console.log(error)
+        }
+      } else if (result.data.code === 401) {
+        localStorage.setItem('token', '')
+        localStorage.setItem('info', '')
+        localStorage.setItem('username', '')
+        message.warning(`登录已失效，请重新登录`)
+        history.push('/login')
+      }
+    }
+
     const fetcImagehData = async url => {
       if (!url) return
       const newUrl = `-${url.split('/')[2]}-${url.split('/')[3]}`
@@ -164,11 +180,28 @@ const MarkViewer = () => {
       // }
     }
 
+    const formatImagehData = async list => {
+      if (list.length > 0) {
+        const imageList = []
+        for (let i = 0; i < list.length; i++) {
+          imageList.push(`wadouri:${list[i]}`)
+        }
+        setImagesConfig(imageList)
+      } else {
+        setImagesConfig([])
+      }
+    }
+
     // 保存用户角色
     const info = localStorage.getItem('info')
     setUserInfo(info)
 
-    fetchNodeListData()
+    console.log(params.type)
+    if (Number(params.type) === 2) {
+      fetchNodeListData()
+    } else if (Number(params.type) === 1) {
+      fetchBenignNodeListData()
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -218,7 +251,7 @@ const MarkViewer = () => {
 
   // ===========================================================
 
-  // 格式化结节数据
+  // 格式化结节数据（金标准）
   const formatNodeData = (data, info) => {
     const nodulesList = []
     const nodulesMapList = []
@@ -246,6 +279,60 @@ const MarkViewer = () => {
         structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
         structuralRelation: item.relation ? item.relation.split(',') : [],
         nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
+        nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
+        danger: item.tumorPercent ? item.tumorPercent : 0,
+        state: item.isFinish === 1 ? true : false,
+      })
+
+      const acrossCoordz = data[i].acrossCoordz.split(',')
+      const box = data[i].box.split(',')
+      for (let j = 0; j < acrossCoordz.length; j++) {
+        nodulesMapList.push({
+          noduleName: `nodule_${data[i].id}`,
+          index: Number(acrossCoordz[j]),
+          startX: Number(box[1].trim()),
+          startY: Number(box[0].trim()),
+          endX: Number(box[3].trim()),
+          endY: Number(box[2].trim()),
+        })
+      }
+    }
+
+    // console.log(nodulesList)
+    // console.log(nodulesMapList)
+
+    setNoduleList([...nodulesList])
+    setNoduleMapList([...nodulesMapList])
+  }
+
+  // 格式化结节数据（良性结节）
+  const formatBenignNodeData = (data, info) => {
+    const nodulesList = []
+    const nodulesMapList = []
+
+    for (let i = 0; i < data.length; i++) {
+      const item = info.find(item => item.nodeId === data[i].id) || {}
+      nodulesList.push({
+        id: item.nodeId ? item.nodeId : data[i].id,
+        imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
+        num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
+        checked: false,
+        noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
+        difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
+        position: item.position ? item.position : data[i].surgicalLocation ? data[i].surgicalLocation : undefined,
+        size: item.sizenum ? formatSizeMean(item.sizenum) : '',
+        sizeBefore: '',
+        sizeAfter: item.sizenum ? item.sizenum : undefined,
+        paging: item.shape ? item.shape : undefined,
+        sphere: item.spherical ? item.spherical : undefined,
+        rag: item.edge ? item.edge : undefined,
+        spinous: item.burr ? item.burr : '非常微妙',
+        lungInterface: item.definition ? item.definition : '非常微妙',
+        proximityRelation: item.proximity ? item.proximity.split(',') : [],
+        structuralConstitution: item.component ? item.component.split(',') : [],
+        structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
+        structuralRelation: item.relation ? item.relation.split(',') : [],
+        nodeType: item.featuresType ? item.featuresType : data[i].featuresType ? data[i].featuresType : undefined,
         nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
         danger: item.tumorPercent ? item.tumorPercent : 0,
         state: item.isFinish === 1 ? true : false,
@@ -881,38 +968,6 @@ const MarkViewer = () => {
     return postData
   }
 
-  // 提交审核结果按钮
-  const handleShowModal = () => {
-    console.log(noduleList)
-    if (noduleList.every(item => item.state === true)) {
-      setVisible(true)
-    } else {
-      message.warning(`请确认完所有结节后在进行最终结果提交`)
-    }
-  }
-
-  // 提交审核结果弹窗
-  const handleSubmitResults = async () => {
-    const result = await updateList(params.id)
-    if (result.data.code === 200) {
-      message.success(`提交审核结果成功`)
-      setVisible(false)
-      if (params.type === '2') {
-        history.push('/markList')
-      } else if (params.type === '1') {
-        history.push('/benignNoduleList')
-      }
-    } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      message.warning(`登录已失效，请重新登录`)
-      history.push('/login')
-    } else {
-      message.error(`提交失败，请稍后重新尝试`)
-    }
-  }
-
   // ===========================================================
 
   const draggleRef = React.createRef()
@@ -1426,8 +1481,10 @@ const MarkViewer = () => {
     }
 
     const postData = {
-      nodeId: checkItme.id.toString(),
+      kyRemarkId: params.id,
+      kyPrimaryId: params.kyPrimaryId,
       type: params.type,
+      nodeId: checkItme.id.toString(),
       imageCode: checkItme.imageCode,
       nodeIndex: checkItme.num.toString(),
       findpercent: checkItme.difficultyLevel,
@@ -1457,6 +1514,38 @@ const MarkViewer = () => {
         message.error(`当前结节结果保存失败，请重新进行尝试`)
       }
     })
+  }
+
+  // 提交审核结果按钮
+  const handleShowModal = () => {
+    console.log(noduleList)
+    if (noduleList.every(item => item.state === true)) {
+      setVisible(true)
+    } else {
+      message.warning(`请确认完所有结节后在进行最终结果提交`)
+    }
+  }
+
+  // 提交审核结果弹窗
+  const handleSubmitResults = async () => {
+    const result = await updateList(params.id)
+    if (result.data.code === 200) {
+      message.success(`提交审核结果成功`)
+      setVisible(false)
+      if (params.type === '2') {
+        history.push('/markList')
+      } else if (params.type === '1') {
+        history.push('/benignNoduleList')
+      }
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    } else {
+      message.error(`提交失败，请稍后重新尝试`)
+    }
   }
 
   return (

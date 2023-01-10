@@ -74,7 +74,7 @@ const Header = props => {
           影像下载
         </Button> */}
         <Button onClick={props.handleGoBackList}>返回列表</Button>
-        <Button type="primary" onClick={props.handleShowModal}>
+        <Button type="primary" onClick={props.handleShowModal} disabled={params.isFinish === '1'}>
           提交结果
         </Button>
       </div>
