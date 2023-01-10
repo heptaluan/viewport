@@ -1,11 +1,15 @@
 .mark-box-wrap {
   position: absolute;
-  right: 30px;
+  right: 17px;
   top: 95px;
   width: 330px;
   color: #fff;
   font-size: 14px;
+  -webkit-user-select: none;
   user-select: none;
+  overflow-y: overlay;
+  overflow-x: hidden;
+  height: 75%;
 
   .box-title {
     text-align: center;
