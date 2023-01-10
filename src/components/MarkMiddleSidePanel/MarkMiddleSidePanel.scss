@@ -37,7 +37,7 @@
         line-height: 25px;
         text-align: center;
         border: 1px solid transparent;
-        padding: 0 10px 0 5px;
+        padding: 0 5px;
 
         .icon,
         .more {
@@ -75,46 +75,41 @@
           text-align: center;
           border: 1px solid transparent;
           transition: all 0.1s;
-          padding: 0 10px 0 5px;
+          padding: 0 5px;
           position: relative;
 
-          &.add-item {
-            border-top: 1px solid #ff000030;
-            background: #ff000030;
-          }
+          // &.add-item {
+          //   border-top: 1px solid #ccc;
+          //   background: #eaeaea;
+          // }
 
-          &.green-item {
-            border: 1px solid #02b91938;
-            background: #02b91938;
-          }
+          // &.green-item {
+          //   border: 1px solid #02b91938;
+          //   background: #02b91938;
+          // }
 
-          &.blue-item {
-            border: 1px solid #ff000030;
-            background: #ff000030;
-          }
+          // &.blue-item {
+          //   border: 1px solid #ff000030;
+          //   background: #ff000030;
+          // }
 
-          &.red-item {
-            border: 1px solid #34c0ff66;
-            background: #34c0ff66;
-          }
+          // &.red-item {
+          //   border: 1px solid #34c0ff66;
+          //   background: #34c0ff66;
+          // }
 
-          &.add-item:last-child {
-            border-bottom: 1px solid #ccc;
-          }
+          // &.add-item:last-child {
+          //   border-bottom: 1px solid #ccc;
+          // }
 
-          &:hover {
-            border: 1px solid #eaeaea;
-            background: #eaeaea;
+          // &:hover {
+          //   border: 1px solid #eaeaea;
+          //   background: #eaeaea;
 
-            &.add-item {
-              border-top: 1px solid #ff000030;
-              background: #ff000030;
-            }
-
-            .del-tips {
-              display: flex;
-            }
-          }
+          //   .del-tips {
+          //     display: flex;
+          //   }
+          // }
         }
 
         .type {
@@ -137,11 +132,11 @@
           flex: 1;
         }
 
-        .soak.yes {
+        .type.yes {
           color: #73d13d;
         }
 
-        .soak.no {
+        .type.no {
           color: #ff4d4f;
         }
 

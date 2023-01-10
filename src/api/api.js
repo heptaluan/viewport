@@ -35,15 +35,15 @@ export const getInfo = _ => {
 }
 
 // 获取总医生列表
-export const getChiefList = _ => {
+export const getChiefList = isFinish => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/primary/missionList`)
+  return axios.get(`${basicUrl}/primary/missionList?isFinish=${isFinish}`)
 }
 
 // 获取普通医生列表
-export const getDoctorList = isFinish => {
+export const getDoctorList = (isFinish, searchId) => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}`)
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId}`)
 }
 
 // 获取分配列表
@@ -126,6 +126,57 @@ export const assignList = params => {
       'Content-Type': 'application/json;charset=UTF-8',
     },
   })
+}
+
+// ========================================================
+// ========================================================
+
+// 新的结节列表 
+export const getNewNodeList = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.11.99:16880/thirdMark/detail/${id}`)
+}
+
+// 新的影像列表
+export const getNewImageList = url => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.1.107:19000/sortlist/${url}/`)
+}
+
+// 获取金标准列表
+export const getMarkList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
+}
+
+// 获取良性结节列表
+export const getBenignNoduleList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.11.99:16880/thirdMark/getTaskList?type=1`)
+}
+
+// 完成软标签详细结果
+export const updateResult = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`http://192.168.11.99:16880/thirdMark/updateResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
+
+// 完成软标签（检阅完成后提交最终结果）
+export const updateList = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(
+    `http://192.168.11.99:16880/thirdMark/updateList/${id}`,
+    {},
+    {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    }
+  )
 }
 
 // const basicUrl = getURLParameters(window.location.href).url

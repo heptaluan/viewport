@@ -45,3 +45,63 @@ export const formatMiniNodule = list => {
   }
   return target.length
 }
+
+// 计算结节大小平均值
+export const formatSizeMean = val => {
+  if (val) {
+    const list = val
+      .replace('*', '')
+      .split('mm')
+      .filter(n => n)
+    const max = Math.max(...list) > 30 ? 30 : Math.max(...list)
+    const min = Math.min(...list) > 30 ? 30 : Math.min(...list)
+    return ((max + min) / 2).toFixed()
+  } else {
+    return ''
+  }
+}
+
+// 格式化 size 属性
+export const formatNodeSize = size => {
+  if (size) {
+    if (size < 5) {
+      return `微小结节`
+    } else if (size >= 5 && size < 10) {
+      return `小结节`
+    } else if (size >= 10 && size <= 30) {
+      return `结节/大结节`
+    } else if (size > 30) {
+      return `肿块`
+    }
+  } else {
+    return ''
+  }
+}
+
+// 格式化结节类型
+export const formatNodeType = checkItme => {
+  if (checkItme.nodeType === '部分实性') {
+    return checkItme.nodeTypePartSolid
+  } else if (checkItme.nodeType === '肺内钙化') {
+    return checkItme.nodeTypeLungCalcific
+  } else if (checkItme.nodeType === '胸膜钙化') {
+    return checkItme.nodeTypePleuraCalcific
+  } else {
+    return 0
+  }
+}
+
+// 格式化良恶性
+export const formatDanger = val => {
+  if (val === 0) {
+    return '良性'
+  } else if (val > 0 && val < 5) {
+    return '考虑良性'
+  } else if (val >= 5 && val < 40) {
+    return '不除外恶性'
+  } else if (val >= 40 && val < 65) {
+    return '恶性可能'
+  } else if (val >= 65) {
+    return '考虑恶性'
+  }
+}

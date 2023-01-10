@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar } from 'antd'
+import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { getChiefList, getDoctorList } from '../../api/api'
 
@@ -26,7 +26,7 @@ const StudyList = () => {
     },
     {
       title: '选用状态',
-      dataIndex: 'sex',
+      dataIndex: 'isKy',
       render: (_, record) => {
         return record.isKy === 1 ? (
           <span style={{ color: '#73d13d' }}>已选用</span>
@@ -124,12 +124,18 @@ const StudyList = () => {
       newPagination.pageSize = 10
       newPagination.total = result.data.rows.length
     }
+
+    if (result.data.rows.length === 0) {
+      newPagination.current = 1
+      newPagination.pageSize = 10
+      newPagination.total = 0
+    }
     setPagination(newPagination)
   }
 
   // 获取总医生列表数据
   const fetchChiefList = async () => {
-    const result = await getChiefList()
+    const result = await getChiefList(isChiefFinish)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -145,7 +151,7 @@ const StudyList = () => {
 
   // 获取普通医生列表数据
   const fetchDoctorList = async () => {
-    const result = await getDoctorList(isFinish)
+    const result = await getDoctorList(isFinish, searchId)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -187,11 +193,16 @@ const StudyList = () => {
     setPagination(newPagination)
   }
 
-  // 查询
+  // 医生查询
   const [isFinish, setIsFinish] = useState(0)
+  const [searchId, setSearchId] = useState('')
 
   const handleIsFinishSearch = val => {
     setIsFinish(val)
+  }
+
+  const handleDoctorIdSearch = val => {
+    setSearchId(val)
   }
 
   const handleSearch = () => {
@@ -202,8 +213,39 @@ const StudyList = () => {
   const handleReset = async () => {
     const isFinish = 0
     setIsFinish(isFinish)
+    setSearchId('')
     localStorage.setItem('pagination', '')
-    const result = await getDoctorList(isFinish)
+    const result = await getDoctorList(isFinish, searchId)
+    if (result.data.code === 200) {
+      setDataSource([])
+      setDataSource(result.data.rows)
+      initPagination(result)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
+  }
+
+  // 主任医师查询
+  const [isChiefFinish, setIsChiefFinish] = useState(0)
+
+  const handleIsChiefFinishSearch = val => {
+    setIsChiefFinish(val)
+  }
+
+  const handleChiefSearch = () => {
+    localStorage.setItem('pagination', '')
+    fetchDoctorList()
+  }
+
+  const handleChiefReset = async () => {
+    const isChiefFinish = 0
+    setIsChiefFinish(isChiefFinish)
+    localStorage.setItem('pagination', '')
+    const result = await getChiefList(isChiefFinish)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -251,6 +293,10 @@ const StudyList = () => {
       history.push('/studyList')
     } else if (e.key === '2') {
       history.push('/allotList')
+    } else if (e.key === '3') {
+      history.push('/markList')
+    } else if (e.key === '4') {
+      history.push('/benignNoduleList')
     }
   }
 
@@ -285,6 +331,8 @@ const StudyList = () => {
           <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
             <Menu.Item key="1">审核列表</Menu.Item>
             {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
+            <Menu.Item key="3">金标准列表</Menu.Item>
+            {/* <Menu.Item key="4">良性结节列表</Menu.Item> */}
           </Menu>
         </div>
         <div className="study-list-container">
@@ -307,6 +355,12 @@ const StudyList = () => {
                     },
                   ]}
                 />
+                <Input
+                  value={searchId}
+                  onChange={e => handleDoctorIdSearch(e.target.value)}
+                  style={{ width: 200, marginLeft: 15 }}
+                  placeholder="请输入良性样本Id"
+                />
                 <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                   搜索
                 </Button>
@@ -315,7 +369,34 @@ const StudyList = () => {
                 </Button>
               </div>
             </div>
-          ) : null}
+          ) : (
+            <div className="search-box-wrap">
+              <div className="header"></div>
+              <div className="search-box">
+                <Select
+                  value={isChiefFinish}
+                  style={{ width: 200 }}
+                  onChange={handleIsChiefFinishSearch}
+                  options={[
+                    {
+                      value: 0,
+                      label: '未选用',
+                    },
+                    {
+                      value: 1,
+                      label: '已选用',
+                    },
+                  ]}
+                />
+                <Button style={{ marginLeft: 20 }} onClick={handleChiefSearch} type="primary">
+                  搜索
+                </Button>
+                <Button onClick={handleChiefReset} type="primary" style={{ marginLeft: 15 }}>
+                  重置
+                </Button>
+              </div>
+            </div>
+          )}
           <Table
             scroll={{ x: 'max-content' }}
             rowSelection={{
