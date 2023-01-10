@@ -3,7 +3,7 @@ import './BenignNoduleList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, Popconfirm, message, Menu, Avatar, Input } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
-import { getMarkList } from '../../api/api'
+import { getBenignNoduleList } from '../../api/api'
 
 const BenignNoduleList = () => {
   const [dataSource, setDataSource] = useState([])
@@ -14,8 +14,8 @@ const BenignNoduleList = () => {
       dataIndex: 'createBy',
     },
     {
-      title: '影像编号',
-      dataIndex: 'imageCode',
+      title: '编号',
+      dataIndex: 'kyPrimaryId',
     },
     {
       title: '完成状态',
@@ -51,12 +51,12 @@ const BenignNoduleList = () => {
   // 查询
   const [params, setParams] = useState({
     isFinish: 0,
-    imageCode: '',
+    kyPrimaryId: '',
   })
 
-  const handleImageCodeSearch = val => {
+  const handleKyPrimaryIdSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.imageCode = val
+    newParams.kyPrimaryId = val
     setParams(newParams)
   }
 
@@ -73,10 +73,10 @@ const BenignNoduleList = () => {
   const handleReset = async () => {
     const newParams = {
       isFinish: 0,
-      imageCode: '',
+      kyPrimaryId: '',
     }
     setParams(newParams)
-    const result = await getMarkList(newParams)
+    const result = await getBenignNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -91,7 +91,7 @@ const BenignNoduleList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getMarkList(params)
+    const result = await getBenignNoduleList(params)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
     } else if (result.data.code === 401) {
@@ -136,7 +136,7 @@ const BenignNoduleList = () => {
 
   // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
-    history.push(`/markViewer?id=${record.id}&imageCode=${record.imageCode}&type=2`)
+    history.push(`/markViewer?id=${record.id}&kyPrimaryId=${record.kyPrimaryId}&isFinish=${record.isFinish}&type=1`)
   }
 
   return (
@@ -171,7 +171,7 @@ const BenignNoduleList = () => {
             <Menu.Item key="1">审核列表</Menu.Item>
             {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
             <Menu.Item key="3">金标准列表</Menu.Item>
-            {/* <Menu.Item key="4">良性结节列表</Menu.Item> */}
+            <Menu.Item key="4">良性结节列表</Menu.Item>
           </Menu>
         </div>
         <div className="study-list-container">
@@ -179,10 +179,10 @@ const BenignNoduleList = () => {
             <div className="header"></div>
             <div className="search-box">
               <Input
-                value={params.imageCode}
-                onChange={e => handleImageCodeSearch(e.target.value)}
+                value={params.kyPrimaryId}
+                onChange={e => handleKyPrimaryIdSearch(e.target.value)}
                 style={{ width: 200 }}
-                placeholder="请输入影像编号"
+                placeholder="请输入编号"
               />
               <Select
                 value={params.isFinish}

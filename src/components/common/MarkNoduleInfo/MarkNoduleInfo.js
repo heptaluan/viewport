@@ -61,7 +61,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Select
                 size="small"
-                style={{ width: 180, fontSize: 13 }}
+                style={{ width: 198, fontSize: 13 }}
                 placeholder="请选择位置"
                 onChange={e => props.handleUpdateNoduleInfo(e, 'position')}
                 value={props.noduleInfo.position}
@@ -136,7 +136,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Select
                 size="small"
-                style={{ width: 180, fontSize: 13 }}
+                style={{ width: 198, fontSize: 13 }}
                 placeholder="请选择形态分叶"
                 onChange={e => props.handleUpdateNoduleInfo(e, 'paging')}
                 value={props.noduleInfo.paging}
@@ -154,7 +154,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Select
                 size="small"
-                style={{ width: 180, fontSize: 13 }}
+                style={{ width: 198, fontSize: 13 }}
                 placeholder="请选择球形"
                 onChange={e => props.handleUpdateNoduleInfo(e, 'sphere')}
                 value={props.noduleInfo.sphere}
@@ -172,7 +172,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Select
                 size="small"
-                style={{ width: 180, fontSize: 13 }}
+                style={{ width: 198, fontSize: 13 }}
                 placeholder="请选择边缘/毛刺"
                 onChange={e => props.handleUpdateNoduleInfo(e, 'rag')}
                 value={props.noduleInfo.rag}
@@ -298,7 +298,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Select
                 size="small"
-                style={{ width: 180, fontSize: 13, marginBottom: 5 }}
+                style={{ width: 198, fontSize: 13, marginBottom: 5 }}
                 onChange={e => props.handleUpdateNoduleInfo(e, 'nodeType')}
                 value={props.noduleInfo.nodeType}
                 placeholder="请选择结节类型"
@@ -359,7 +359,7 @@ const MarkNoduleInfo = props => {
             <br />
             不除外恶性，对应概率：低（5-40%）
             <br />
-            恶性可能，对应概率：中等（40-65%）
+            恶性可能，对应概率：中等（41-65%）
             <br />
             考虑恶性，对应概率：高度（大于65%）
           </div>

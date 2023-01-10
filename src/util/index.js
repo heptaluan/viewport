@@ -53,8 +53,8 @@ export const formatSizeMean = val => {
       .replace('*', '')
       .split('mm')
       .filter(n => n)
-    const max = Math.max(...list) > 30 ? 30 : Math.max(...list)
-    const min = Math.min(...list) > 30 ? 30 : Math.min(...list)
+    const max = Math.max(...list) > 35 ? 35 : Math.max(...list)
+    const min = Math.min(...list) > 35 ? 35 : Math.min(...list)
     return ((max + min) / 2).toFixed()
   } else {
     return ''
@@ -97,11 +97,11 @@ export const formatDanger = val => {
     return '良性'
   } else if (val > 0 && val < 5) {
     return '考虑良性'
-  } else if (val >= 5 && val < 40) {
+  } else if (val >= 5 && val <= 40) {
     return '不除外恶性'
-  } else if (val >= 40 && val < 65) {
+  } else if (val > 40 && val <= 65) {
     return '恶性可能'
-  } else if (val >= 65) {
+  } else if (val > 65) {
     return '考虑恶性'
   }
 }
