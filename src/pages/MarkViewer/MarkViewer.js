@@ -17,7 +17,7 @@ import {
   getBenignNodeList,
   saveSecondprimaryResult,
   updateResult,
-  updateList
+  updateList,
 } from '../../api/api'
 import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
@@ -127,6 +127,7 @@ const MarkViewer = () => {
 
   // 初始化结节与影像列表信息
   useEffect(() => {
+    // 金标准数据
     const fetchNodeListData = async () => {
       const result = await getNewNodeList(params.imageCode)
       if (result.data.code === 200) {
@@ -135,6 +136,11 @@ const MarkViewer = () => {
           const info = result.data.data.doctorResult
           formatNodeData(data, info)
           fetcImagehData(data[0].imageUrl)
+          const patients = {
+            age: data[0].patientAge,
+            sex: data[0].patientSex === 'F' ? '0' : data[0].patientSex === 'M' ? '1' : '**',
+          }
+          localStorage.setItem('patients', JSON.stringify(patients))
         } catch (error) {
           console.log(error)
         }
@@ -147,6 +153,7 @@ const MarkViewer = () => {
       }
     }
 
+    // 良性结节数据
     const fetchBenignNodeListData = async () => {
       const result = await getBenignNodeList(params.id)
       if (result.data.code === 200) {
@@ -154,6 +161,11 @@ const MarkViewer = () => {
           const data = result.data.data
           formatBenignNodeData(data.nodeInfo, data.resultInfo)
           formatImagehData(data.imageList)
+          const patients = {
+            age: data.info.age,
+            sex: data.info.sex ? data.info.sex : '**',
+          }
+          localStorage.setItem('patients', JSON.stringify(patients))
         } catch (error) {
           console.log(error)
         }
@@ -196,7 +208,6 @@ const MarkViewer = () => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
 
-    console.log(params.type)
     if (Number(params.type) === 2) {
       fetchNodeListData()
     } else if (Number(params.type) === 1) {
@@ -214,7 +225,7 @@ const MarkViewer = () => {
     //   setPatients(result.data.result.records[0])
     //   localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
     // } else {
-    localStorage.setItem('patients', '')
+    // localStorage.setItem('patients', '')
     // }
     // }
     // fetchData()
@@ -280,7 +291,13 @@ const MarkViewer = () => {
         structuralRelation: item.relation ? item.relation.split(',') : [],
         nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
         nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-        danger: item.tumorPercent ? item.tumorPercent : 0,
+        danger: item.tumorPercent
+          ? item.tumorPercent
+          : data[i].lesionType === '恶性'
+          ? 100
+          : data[i].lesionType === '良性'
+          ? 0
+          : 0,
         state: item.isFinish === 1 ? true : false,
       })
 
@@ -874,7 +891,6 @@ const MarkViewer = () => {
 
   // 隐藏和显示结节列表
   const showNoduleList = () => {
-    console.log(showState)
     setShowState(!showState)
   }
 
@@ -1305,7 +1321,7 @@ const MarkViewer = () => {
     if (checkItme) {
       const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
       const data = tool.data[0].cachedStats
-      const sizeAfter = `${data.width.toFixed()}mm*${data.height.toFixed()}mm`
+      const sizeAfter = `${Math.abs(data.width.toFixed())}mm*${Math.abs(data.height.toFixed())}mm`
       checkItme.sizeAfter = sizeAfter
       checkItme.size = formatSizeMean(sizeAfter)
       setNoduleList([...noduleList])

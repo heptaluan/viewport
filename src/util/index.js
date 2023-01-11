@@ -105,3 +105,18 @@ export const formatDanger = val => {
     return '考虑恶性'
   }
 }
+
+// 格式化结节类型所选值
+export const formatNodeTypeRemark = val => {
+  if (val >= 0 && val < 25) {
+    return '非常微妙'
+  } else if (val >= 25 && val < 50) {
+    return '适度微妙'
+  } else if (val >= 50 && val < 75) {
+    return '微妙'
+  } else if (val >= 75 && val < 100) {
+    return '中度明显'
+  } else if (val === 100) {
+    return '显而易见'
+  }
+}

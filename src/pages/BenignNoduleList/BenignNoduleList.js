@@ -48,6 +48,49 @@ const BenignNoduleList = () => {
   // 用户信息
   const [userInfo, setUserInfo] = useState('')
 
+  const onPageChange = e => {
+    const newPagination = Object.assign({}, pagination)
+    newPagination.current = e.current
+    newPagination.pageSize = e.pageSize
+    newPagination.total = e.total
+    setPagination(newPagination)
+  }
+
+  const initPagination = result => {
+    let page = localStorage.getItem('benignListPagination') ? JSON.parse(localStorage.getItem('benignListPagination')) : ''
+    const newPagination = Object.assign({}, pagination)
+    if (page !== '') {
+      newPagination.current = page.current
+      newPagination.pageSize = page.pageSize
+      newPagination.total = page.total
+    } else {
+      newPagination.current = 1
+      newPagination.pageSize = 10
+      newPagination.total = result.data.rows.length
+    }
+
+    if (result.data.rows.length === 0) {
+      newPagination.current = 1
+      newPagination.pageSize = 10
+      newPagination.total = 0
+    }
+    setPagination(newPagination)
+  }
+
+  // 初始列表数据
+  useEffect(() => {
+    const info = localStorage.getItem('info')
+    setUserInfo(info)
+    fetchList()
+  }, [])
+
+  // 分页设置
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  })
+
   // 查询
   const [params, setParams] = useState({
     isFinish: 0,
@@ -67,6 +110,7 @@ const BenignNoduleList = () => {
   }
 
   const handleSearch = () => {
+    localStorage.setItem('benignListPagination', '')
     fetchList()
   }
 
@@ -76,10 +120,12 @@ const BenignNoduleList = () => {
       kyPrimaryId: '',
     }
     setParams(newParams)
+    localStorage.setItem('benignListPagination', '')
     const result = await getBenignNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
+      initPagination(result)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
@@ -91,28 +137,35 @@ const BenignNoduleList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    const result = await getBenignNoduleList(params)
+    let page = localStorage.getItem('benignListPagination') ? JSON.parse(localStorage.getItem('benignListPagination')) : ''
+    const newParams = Object.assign({}, params)
+    if (page !== '') {
+      newParams.kyPrimaryId = page.kyPrimaryId
+      newParams.isFinish = page.isFinish
+      setParams(newParams)
+    }
+
+    const result = await getBenignNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
+      initPagination(result)
     } else if (result.data.code === 401) {
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
       localStorage.setItem('pagination', '')
+      localStorage.setItem('markListPagination', '')
+      localStorage.setItem('benignListPagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
   }
 
-  // 初始列表数据
-  useEffect(() => {
-    const info = localStorage.getItem('info')
-    setUserInfo(info)
-    fetchList()
-  }, [])
-
   // 退出
   const handleLogout = _ => {
+    localStorage.setItem('pagination', '')
+    localStorage.setItem('markListPagination', '')
+    localStorage.setItem('benignListPagination', '')
     localStorage.setItem('token', '')
     localStorage.setItem('info', '')
     localStorage.setItem('username', '')
@@ -123,6 +176,9 @@ const BenignNoduleList = () => {
 
   // 菜单切换
   const handleChangeMenu = e => {
+    localStorage.setItem('pagination', '')
+    localStorage.setItem('markListPagination', '')
+    localStorage.setItem('benignListPagination', '')
     if (e.key === '1') {
       history.push('/studyList')
     } else if (e.key === '2') {
@@ -136,6 +192,10 @@ const BenignNoduleList = () => {
 
   // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
+    const newPagination = Object.assign({}, pagination)
+    newPagination.isFinish = params.isFinish
+    newPagination.kyPrimaryId = params.kyPrimaryId
+    localStorage.setItem('benignListPagination', JSON.stringify(newPagination))
     history.push(`/markViewer?id=${record.id}&kyPrimaryId=${record.kyPrimaryId}&isFinish=${record.isFinish}&type=1`)
   }
 
@@ -214,6 +274,12 @@ const BenignNoduleList = () => {
             rowKey={record => record.id}
             dataSource={dataSource}
             columns={columns}
+            onChange={onPageChange}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+            }}
             onRow={record => {
               return {
                 onDoubleClick: event => {

@@ -1,25 +1,45 @@
 .mark-box-wrap {
   position: absolute;
-  right: 30px;
+  right: 20px;
   top: 95px;
-  width: 330px;
+  width: 350px;
   color: #fff;
   font-size: 14px;
+  -webkit-user-select: none;
   user-select: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 75%;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 
   .box-title {
     text-align: center;
-    font-size: 16px;
-  }
-
-  .list-title {
     font-size: 15px;
     margin-bottom: 5px;
   }
 
+  .list-title {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+
+  .box-wrap {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    padding: 10px;
+  }
+
   .mark-box {
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 0;
+    
+    &.mb {
+      margin-bottom: 10px;
+    }
 
     &.flex {
       display: flex;
@@ -42,6 +62,10 @@
       &.w250 {
         width: 250px;
       }
+
+      &.mb {
+        margin-bottom: 5px;
+      }
     }
 
     .mark-content {
@@ -62,6 +86,10 @@
   .tips {
     font-size: 12px;
     line-height: 18px;
+
+    .active {
+      color: #ff4d4f;
+    }
   }
 }
 
@@ -100,5 +128,12 @@
   .ant-tooltip-inner {
     background: #fff;
     color: #000 !important;
+  }
+}
+
+.mark-box {
+  .ant-slider-handle {
+    background-color: #ff4d4f !important;
+    border: solid 2px #ff4d4f !important;
   }
 }

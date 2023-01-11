@@ -13,6 +13,10 @@
   .list {
     font-size: 13px;
     margin-bottom: 5px;
+
+    &.active {
+      color: #0ee300;
+    }
   }
 
   .top-box {
