@@ -32,11 +32,11 @@ const CustomOverlay = props => {
 
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
-      const patients = localStorage.getItem('record') ? JSON.parse(localStorage.getItem('record')) : ''
+      const patients = localStorage.getItem('patients') ? JSON.parse(localStorage.getItem('patients')) : ''
       const data = {
         name: patients.name ? patients.name : '**',
         age: patients.age ? patients.age : '**',
-        sex: patients.sex === '1' ? '男' : '女',
+        sex: patients.sex === '1' ? '男' : patients.sex === '0' ? '女' : '**',
         hospital: patients.source ? patients.source : '**',
         birth: '**',
 
@@ -100,10 +100,10 @@ const CustomOverlay = props => {
           <div className="list">
             姓名：<span>{data?.name}</span>
           </div>
-          <div className="list">
-            性别：<span>{data?.sex === '**' ? data?.sex : data?.sex === 'M' ? '男' : '女'}</span>
+          <div className="list active">
+            性别：<span>{data?.sex}</span>
           </div>
-          <div className="list">
+          <div className="list active">
             年龄：<span>{data?.age}</span>
           </div>
           <div className="list">
