@@ -95,9 +95,9 @@ export const formatNodeType = checkItme => {
 export const formatDanger = val => {
   if (val === 0) {
     return '良性'
-  } else if (val > 0 && val < 5) {
+  } else if (val > 0 && val <= 20) {
     return '考虑良性'
-  } else if (val >= 5 && val <= 40) {
+  } else if (val > 20 && val <= 40) {
     return '不除外恶性'
   } else if (val > 40 && val <= 65) {
     return '恶性可能'

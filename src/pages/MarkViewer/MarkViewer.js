@@ -288,6 +288,7 @@ const MarkViewer = () => {
         proximityRelation: item.proximity ? item.proximity.split(',') : [],
         structuralConstitution: item.component ? item.component.split(',') : [],
         structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
+        structuralConstitutionVoid: undefined,
         structuralRelation: item.relation ? item.relation.split(',') : [],
         nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
         nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
@@ -348,6 +349,7 @@ const MarkViewer = () => {
         proximityRelation: item.proximity ? item.proximity.split(',') : [],
         structuralConstitution: item.component ? item.component.split(',') : [],
         structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
+        structuralConstitutionVoid: undefined,
         structuralRelation: item.relation ? item.relation.split(',') : [],
         nodeType: item.featuresType ? item.featuresType : data[i].featuresType ? data[i].featuresType : undefined,
         nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
@@ -1400,9 +1402,14 @@ const MarkViewer = () => {
           checkItme['sizeAfter'] = `${val}mm*${val}mm`
           break
 
-        // 结构成分与结构成分（钙化）
+        // 结构成分、结构成分（钙化）
         case 'structuralConstitution':
         case 'structuralConstitutionCalcific':
+          checkItme[type] = val
+          break
+
+        // 空洞
+        case 'structuralConstitutionVoid':
           checkItme[type] = val
           break
 
@@ -1429,6 +1436,7 @@ const MarkViewer = () => {
           break
       }
     }
+    console.log(checkItme)
     setNoduleList([...noduleList])
   }
 
@@ -1484,6 +1492,12 @@ const MarkViewer = () => {
       return false
     }
 
+    // 结构成分（空洞）
+    if (checkItme.structuralConstitution.includes('空洞') && !checkItme.structuralConstitutionVoid) {
+      message.warning(`如若结构成分当中包含空洞属性，请选择结构成分（空洞）属性后再进行提交`)
+      return false
+    }
+
     // 结构关系
     if (checkItme.structuralRelation.length === 0) {
       message.warning(`请选择结节的结构关系属性后再进行提交`)
@@ -1515,6 +1529,7 @@ const MarkViewer = () => {
       proximity: checkItme.proximityRelation.join(','),
       component: checkItme.structuralConstitution.join(','),
       componentRemark: checkItme.structuralConstitutionCalcific.join(','),
+      componentRemarkVoid: checkItme.structuralConstitutionVoid,
       relation: checkItme.structuralRelation.join(','),
       featuresType: checkItme.nodeType,
       featuresRemark: checkItme.nodeTypeRemark.toString(),
