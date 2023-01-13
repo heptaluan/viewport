@@ -180,7 +180,7 @@ const MarkViewer = () => {
 
     const fetcImagehData = async url => {
       if (!url) return
-      const newUrl = `-${url.split('/')[2]}-${url.split('/')[3]}`
+      const newUrl = `--${url.split('/')[2]}--${url.split('/')[3]}`
       const res = await getNewImageList(newUrl)
       // if (res.data.code === 200 && res.data.data.length > 0) {
       const newList = res.data.list
@@ -282,13 +282,14 @@ const MarkViewer = () => {
         sizeAfter: item.sizenum ? item.sizenum : undefined,
         paging: item.shape ? item.shape : undefined,
         sphere: item.spherical ? item.spherical : undefined,
-        rag: item.edge ? item.edge : undefined,
+        rag: item.edge ? item.edge.split(',') : [],
+        rag0: item.edge0 ? item.edge0 : undefined,
         spinous: item.burr ? item.burr : '非常微妙',
         lungInterface: item.definition ? item.definition : '非常微妙',
         proximityRelation: item.proximity ? item.proximity.split(',') : [],
         structuralConstitution: item.component ? item.component.split(',') : [],
         structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-        structuralConstitutionVoid: undefined,
+        structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
         structuralRelation: item.relation ? item.relation.split(',') : [],
         nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
         nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
@@ -343,13 +344,14 @@ const MarkViewer = () => {
         sizeAfter: item.sizenum ? item.sizenum : undefined,
         paging: item.shape ? item.shape : undefined,
         sphere: item.spherical ? item.spherical : undefined,
-        rag: item.edge ? item.edge : undefined,
+        rag: item.edge ? item.edge.split(',') : [],
+        rag0: item.edge0 ? item.edge0 : undefined,
         spinous: item.burr ? item.burr : '非常微妙',
         lungInterface: item.definition ? item.definition : '非常微妙',
         proximityRelation: item.proximity ? item.proximity.split(',') : [],
         structuralConstitution: item.component ? item.component.split(',') : [],
         structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-        structuralConstitutionVoid: undefined,
+        structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
         structuralRelation: item.relation ? item.relation.split(',') : [],
         nodeType: item.featuresType ? item.featuresType : data[i].featuresType ? data[i].featuresType : undefined,
         nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
@@ -979,8 +981,6 @@ const MarkViewer = () => {
       }
     }
 
-    console.log(postData.nodeText)
-
     postData.nodeText = JSON.stringify(postData.nodeText)
 
     return postData
@@ -1322,11 +1322,16 @@ const MarkViewer = () => {
 
     if (checkItme) {
       const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
+      const toolData = tool.data[0]
       const data = tool.data[0].cachedStats
       const sizeAfter = `${Math.abs(data.width.toFixed())}mm*${Math.abs(data.height.toFixed())}mm`
       checkItme.sizeAfter = sizeAfter
       checkItme.size = formatSizeMean(sizeAfter)
       setNoduleList([...noduleList])
+
+      // 调整完成后删除标注工具
+      cornerstoneTools.removeToolState(cornerstoneElement, 'MeasureRect', toolData)
+      cornerstone.updateImage(cornerstoneElement)
     }
 
     setAdjustModalVisible(false)
@@ -1392,7 +1397,6 @@ const MarkViewer = () => {
         case 'position':
         case 'paging':
         case 'sphere':
-        case 'rag':
           checkItme[type] = val
           break
 
@@ -1417,14 +1421,33 @@ const MarkViewer = () => {
         case 'proximityRelation':
         case 'structuralRelation':
           if (val.includes('无特殊') && !checkItme[type].includes('无特殊')) {
-            checkItme[type] = []
             checkItme[type] = ['无特殊']
           } else if (checkItme[type].includes('无特殊')) {
             checkItme[type] = val.filter(v => v !== '无特殊')
           } else {
             checkItme[type] = val
           }
+          break
 
+        // 边缘/毛刺 单独处理
+        case 'rag0':
+          checkItme[type] = val
+          break
+
+        case 'rag':
+          if (val.includes('光整（无毛刺）') && checkItme[type] && !checkItme[type].includes('光整（无毛刺）')) {
+            checkItme[type] = ['光整（无毛刺）']
+          } else {
+            const lastVal = val[val.length - 1] || []
+            checkItme[type] = [lastVal]
+            if (lastVal === '长毛刺') {
+              checkItme[type] = val.filter(v => v !== '光整（无毛刺）')
+            } else if (val.includes('长毛刺')) {
+              checkItme[type] = ['长毛刺', lastVal]
+            } else {
+              checkItme[type] = lastVal.length ? [lastVal] : []
+            }
+          }
           break
 
         // 结节类型
@@ -1436,7 +1459,6 @@ const MarkViewer = () => {
           break
       }
     }
-    console.log(checkItme)
     setNoduleList([...noduleList])
   }
 
@@ -1462,15 +1484,21 @@ const MarkViewer = () => {
       return false
     }
 
-    // 球形
+    // 形状
     if (!checkItme.sphere) {
-      message.warning(`请选择结节的球形属性后再进行提交`)
+      message.warning(`请选择结节的形状属性后再进行提交`)
       return false
     }
 
     // 边缘/毛刺
-    if (!checkItme.rag) {
+    if (checkItme.rag.length === 0) {
       message.warning(`请选择结节的边缘/毛刺属性后再进行提交`)
+      return false
+    }
+
+    // 边缘/毛刺
+    if (!checkItme.rag0) {
+      message.warning(`请选择结节的晕征属性后再进行提交`)
       return false
     }
 
@@ -1523,13 +1551,14 @@ const MarkViewer = () => {
       size: formatNodeSize(checkItme.size),
       shape: checkItme.paging,
       spherical: checkItme.sphere,
-      edge: checkItme.rag,
+      edge: checkItme.rag.join(','),
+      edge0: checkItme.rag0,
       burr: checkItme.spinous,
       definition: checkItme.lungInterface,
       proximity: checkItme.proximityRelation.join(','),
       component: checkItme.structuralConstitution.join(','),
       componentRemark: checkItme.structuralConstitutionCalcific.join(','),
-      componentRemarkVoid: checkItme.structuralConstitutionVoid,
+      componentRemark0: checkItme.structuralConstitutionVoid,
       relation: checkItme.structuralRelation.join(','),
       featuresType: checkItme.nodeType,
       featuresRemark: checkItme.nodeTypeRemark.toString(),

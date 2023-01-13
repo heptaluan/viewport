@@ -154,7 +154,9 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">边缘/毛刺</div>
               <div className="mark-content">
                 <Select
+                  mode="multiple"
                   size="small"
+                  allowClear
                   style={{ width: 198, fontSize: 12 }}
                   placeholder="请选择边缘/毛刺"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'rag')}
@@ -165,7 +167,7 @@ const MarkNoduleInfo = props => {
                       options: [{ label: '光整（无毛刺）', value: '光整（无毛刺）' }],
                     },
                     {
-                      label: '毛刺',
+                      label: '短毛刺',
                       options: [
                         { label: '不明显的毛刺', value: '不明显的毛刺' },
                         { label: '有毛刺', value: '有毛刺' },
@@ -173,8 +175,28 @@ const MarkNoduleInfo = props => {
                         { label: '明显毛刺', value: '明显毛刺' },
                       ],
                     },
+                    {
+                      label: '长毛刺',
+                      options: [
+                        { label: '长毛刺', value: '长毛刺' },
+                      ],
+                    },
                   ]}
                 ></Select>
+              </div>
+            </div>
+            <div className="mark-box flex left mb">
+              <div className="mark-title">晕征</div>
+              <div className="mark-content">
+                <Radio.Group
+                  options={[
+                    { label: '无晕征', value: '无晕征' },
+                    { label: '有晕征', value: '有晕征' },
+                    { label: '反晕征', value: '反晕征' },
+                  ]}
+                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag0')}
+                  value={props.noduleInfo.rag0}
+                />
               </div>
             </div>
             <div className="mark-box mb">

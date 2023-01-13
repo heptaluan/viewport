@@ -76,7 +76,7 @@
         width: 330px;
       }
 
-      .ant-checkbox-wrapper, .ant-radio-wrapper {
+      .ant-checkbox-wrapper, .ant-radio-wrapper, .ant-slider-mark-text {
         font-size: 12px !important;
         color: #fff;
       }
@@ -143,4 +143,9 @@
     background-color: #ff4d4f !important;
     border: solid 2px #ff4d4f !important;
   }
+}
+
+.ant-select-item {
+  font-size: 12px !important;
+  color: #fff;
 }
