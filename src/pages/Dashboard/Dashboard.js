@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import './Dashboard.scss'
 import { useHistory } from 'react-router-dom'
-import { Card , Button, Popconfirm, message, Menu, Avatar } from 'antd'
+import { Card, Button, Popconfirm, message, Menu, Avatar } from 'antd'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { getChiefList, getDoctorList } from '../../api/api'
+import * as echarts from 'echarts/lib/echarts.js'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/title'
+import 'echarts/lib/component/grid'
 
 const Dashboard = () => {
-
   const history = useHistory()
   const [userInfo, setUserInfo] = useState('')
 
@@ -14,6 +18,32 @@ const Dashboard = () => {
   useEffect(() => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
+  }, [])
+
+  // 初始化图表
+  useEffect(() => {
+    var myChart = echarts.init(document.getElementById('chartBox'))
+
+    const chartOptions = {
+      title: { text: 'ECharts 入门示例' },
+      tooltip: {},
+      xAxis: {
+        type: 'category',
+        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子'],
+      },
+      yAxis: {},
+      series: [
+        {
+          name: '销量',
+          type: 'bar',
+          data: [5, 20, 36, 10, 10, 20],
+        },
+      ],
+    }
+
+    if (myChart) {
+      myChart.setOption(chartOptions)
+    }
   }, [])
 
   const handleLogout = _ => {
@@ -77,9 +107,7 @@ const Dashboard = () => {
         </div>
         <div className="study-list-container">
           <Card title="图表" style={{ width: 550 }}>
-            <div className='chart-box'>
-            
-            </div>
+            <div id="chartBox" className="chart-box"></div>
           </Card>
         </div>
       </div>
