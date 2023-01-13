@@ -2,14 +2,14 @@
   position: absolute;
   right: 20px;
   top: 95px;
-  width: 350px;
+  width: 330px;
   color: #fff;
   font-size: 14px;
   -webkit-user-select: none;
   user-select: none;
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 75%;
+  height: 72%;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -22,8 +22,8 @@
   }
 
   .list-title {
-    font-size: 15px;
-    margin-bottom: 8px;
+    font-size: 13px;
+    margin-bottom: 3px;
   }
 
   .box-wrap {
@@ -36,9 +36,10 @@
   .mark-box {
     position: relative;
     margin-bottom: 0;
+    font-size: 12px;
     
     &.mb {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     &.flex {
@@ -49,7 +50,7 @@
         align-items: start;
 
         .mark-title {
-          margin-top: 5px;
+          margin-top: 2px;
         }
       }
     }
@@ -64,7 +65,7 @@
       }
 
       &.mb {
-        margin-bottom: 5px;
+        margin-bottom: 2px;
       }
     }
 
@@ -74,6 +75,12 @@
       &.slider {
         width: 330px;
       }
+
+      .ant-checkbox-wrapper, .ant-radio-wrapper, .ant-slider-mark-text {
+        font-size: 12px !important;
+        color: #fff;
+      }
+      
     }
 
     .ant-btn {
@@ -136,4 +143,9 @@
     background-color: #ff4d4f !important;
     border: solid 2px #ff4d4f !important;
   }
+}
+
+.ant-select-item {
+  font-size: 12px !important;
+  color: #fff;
 }
