@@ -28,7 +28,7 @@ const MarkNoduleInfo = props => {
 
           <div className="box-wrap">
             <div className="list-title">外观特征</div>
-            
+
             <div className="mark-box flex mb" style={{ height: 24 }}>
               <div className="mark-title" style={{ width: 160 }}>
                 大小
@@ -63,7 +63,7 @@ const MarkNoduleInfo = props => {
             </div>
 
             <div className="mark-box flex">
-              <div className="mark-content" style={{width: 310}}>
+              <div className="mark-content" style={{ width: 310 }}>
                 <Slider
                   max={35}
                   min={1}
@@ -177,9 +177,7 @@ const MarkNoduleInfo = props => {
                     },
                     {
                       label: '长毛刺',
-                      options: [
-                        { label: '长毛刺', value: '长毛刺' },
-                      ],
+                      options: [{ label: '长毛刺', value: '长毛刺' }],
                     },
                   ]}
                 ></Select>
@@ -335,7 +333,9 @@ const MarkNoduleInfo = props => {
           </div>
 
           <div className="box-wrap">
-            <div className="list-title" style={{marginBottom: 5}}>结节类型</div>
+            <div className="list-title" style={{ marginBottom: 5 }}>
+              结节类型
+            </div>
             <div className="mark-box flex">
               <div className="mark-content">
                 <Select
@@ -366,7 +366,7 @@ const MarkNoduleInfo = props => {
                     {formatNodeTypeRemark(Number(props.noduleInfo.nodeTypeRemark))}
                   </span>
                 </div>
-                <div className="mark-content" style={{width: 310}}>
+                <div className="mark-content" style={{ width: 310 }}>
                   <Slider
                     marks={{
                       0: 0,
@@ -420,13 +420,15 @@ const MarkNoduleInfo = props => {
           </div>
 
           <div className="box-wrap">
-            <div className="list-title" style={{marginBottom: 5}}>良恶性</div>
+            <div className="list-title" style={{ marginBottom: 5 }}>
+              良恶性
+            </div>
             <div className="mark-box">
               <div className="mark-title" style={{ width: 300 }}>
                 危险程度（分级），目前所选分级：
                 <span style={{ color: '#ff4d4f' }}>{formatDanger(Number(props.noduleInfo.danger))}</span>
               </div>
-              <div className="mark-content" style={{width: 310}}>
+              <div className="mark-content" style={{ width: 310 }}>
                 <Slider
                   max={100}
                   marks={{
@@ -465,7 +467,12 @@ const MarkNoduleInfo = props => {
           <div className="mark-box">
             <div className="mark-title w250"></div>
             <div className="mark-content">
-              <Button style={{fontSize: 12}} disabled={props.noduleInfo.state} size="small" onClick={props.updateSingleNodeResult}>
+              <Button
+                style={{ fontSize: 12 }}
+                disabled={props.noduleInfo.state}
+                size="small"
+                onClick={props.updateSingleNodeResult}
+              >
                 提交当前结节
               </Button>
             </div>

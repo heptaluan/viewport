@@ -160,7 +160,9 @@ export const getMarkList = params => {
 // 获取良性结节列表
 export const getBenignNoduleList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId}&isFinish=${params.isFinish}`)
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId}&isFinish=${params.isFinish}`
+  )
 }
 
 // 完成软标签详细结果
