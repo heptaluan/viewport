@@ -6,6 +6,7 @@ import StudyList from '../pages/StudyList/StudyList'
 import AllotList from '../pages/AllotList/AllotList'
 import MarkList from '../pages/MarkList/MarkList'
 import Login from '../pages/Login/Login'
+import Dashboard from '../pages/Dashboard/Dashboard'
 import { Redirect } from 'react-router-dom'
 
 const routes = [
@@ -16,6 +17,11 @@ const routes = [
       {
         path: '/login',
         component: Login,
+        routes: [],
+      },
+      {
+        path: '/dashboard',
+        component: Dashboard,
         routes: [],
       },
       {

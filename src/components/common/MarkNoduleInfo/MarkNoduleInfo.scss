@@ -37,7 +37,7 @@
     position: relative;
     margin-bottom: 0;
     font-size: 12px;
-    
+
     &.mb {
       margin-bottom: 5px;
     }
@@ -76,11 +76,12 @@
         width: 330px;
       }
 
-      .ant-checkbox-wrapper, .ant-radio-wrapper, .ant-slider-mark-text {
+      .ant-checkbox-wrapper,
+      .ant-radio-wrapper,
+      .ant-slider-mark-text {
         font-size: 12px !important;
         color: #fff;
       }
-      
     }
 
     .ant-btn {
@@ -108,7 +109,8 @@
     color: rgba(0, 0, 0, 0.85) !important;
   }
 
-  .ant-segmented-thumb, .ant-segmented-item-selected {
+  .ant-segmented-thumb,
+  .ant-segmented-item-selected {
     background: #1890ff !important;
     color: #fff !important;
 
@@ -127,7 +129,6 @@
 }
 
 .ant-tooltip {
-
   .ant-tooltip-arrow-content {
     --antd-arrow-background-color: #fff !important;
   }
@@ -143,9 +144,4 @@
     background-color: #ff4d4f !important;
     border: solid 2px #ff4d4f !important;
   }
-}
-
-.ant-select-item {
-  font-size: 12px !important;
-  color: #fff;
 }
