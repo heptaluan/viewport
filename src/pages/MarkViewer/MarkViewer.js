@@ -267,54 +267,58 @@ const MarkViewer = () => {
     const nodulesList = []
     const nodulesMapList = []
 
-    for (let i = 0; i < data.length; i++) {
-      const item = info.find(item => item.nodeId === data[i].id) || {}
-      nodulesList.push({
-        id: item.nodeId ? item.nodeId : data[i].id,
-        imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
-        num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
-        checked: false,
-        noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
-        difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-        position: item.position ? item.position : data[i].surgicalLocation ? data[i].surgicalLocation : undefined,
-        size: item.sizenum ? formatSizeMean(item.sizenum) : '',
-        sizeBefore: '',
-        sizeAfter: item.sizenum ? item.sizenum : undefined,
-        paging: item.shape ? item.shape : undefined,
-        sphere: item.spherical ? item.spherical : undefined,
-        rag: item.edge ? item.edge.split(',') : [],
-        rag0: item.edge0 ? item.edge0 : undefined,
-        spinous: item.burr ? item.burr : '非常微妙',
-        lungInterface: item.definition ? item.definition : '非常微妙',
-        proximityRelation: item.proximity ? item.proximity.split(',') : [],
-        structuralConstitution: item.component ? item.component.split(',') : [],
-        structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-        structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
-        structuralRelation: item.relation ? item.relation.split(',') : [],
-        nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
-        nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-        danger: item.tumorPercent
-          ? item.tumorPercent
-          : data[i].lesionType === '恶性'
-          ? 100
-          : data[i].lesionType === '良性'
-          ? 0
-          : 0,
-        state: item.isFinish === 1 ? true : false,
-      })
-
-      const acrossCoordz = data[i].acrossCoordz.split(',')
-      const box = data[i].box.split(',')
-      for (let j = 0; j < acrossCoordz.length; j++) {
-        nodulesMapList.push({
-          noduleName: `nodule_${data[i].id}`,
-          index: Number(acrossCoordz[j]),
-          startX: Number(box[1].trim()),
-          startY: Number(box[0].trim()),
-          endX: Number(box[3].trim()),
-          endY: Number(box[2].trim()),
+    try {
+      for (let i = 0; i < data.length; i++) {
+        const item = info.find(item => item.nodeId === data[i].id) || {}
+        nodulesList.push({
+          id: item.nodeId ? item.nodeId : data[i].id,
+          imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
+          num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
+          checked: false,
+          noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
+          difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
+          position: item.position ? item.position : data[i].surgicalLocation ? data[i].surgicalLocation : undefined,
+          size: item.sizenum ? formatSizeMean(item.sizenum) : '',
+          sizeBefore: '',
+          sizeAfter: item.sizenum ? item.sizenum : undefined,
+          paging: item.shape ? item.shape : undefined,
+          sphere: item.spherical ? item.spherical : undefined,
+          rag: item.edge ? item.edge.split(',') : [],
+          rag0: item.edge0 ? item.edge0 : undefined,
+          spinous: item.burr ? item.burr : '非常微妙',
+          lungInterface: item.definition ? item.definition : '非常微妙',
+          proximityRelation: item.proximity ? item.proximity.split(',') : [],
+          structuralConstitution: item.component ? item.component.split(',') : [],
+          structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
+          structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
+          structuralRelation: item.relation ? item.relation.split(',') : [],
+          nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
+          nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
+          danger: item.tumorPercent
+            ? item.tumorPercent
+            : data[i].lesionType === '恶性'
+            ? 100
+            : data[i].lesionType === '良性'
+            ? 0
+            : 0,
+          state: item.isFinish === 1 ? true : false,
         })
+
+        const acrossCoordz = data[i].acrossCoordz.split(',')
+        const box = data[i].box.split(',')
+        for (let j = 0; j < acrossCoordz.length; j++) {
+          nodulesMapList.push({
+            noduleName: `nodule_${data[i].id}`,
+            index: Number(acrossCoordz[j]),
+            startX: Number(box[1].trim()),
+            startY: Number(box[0].trim()),
+            endX: Number(box[3].trim()),
+            endY: Number(box[2].trim()),
+          })
+        }
       }
+    } catch (error) {
+      console.log(error)
     }
 
     // console.log(nodulesList)
@@ -1576,6 +1580,9 @@ const MarkViewer = () => {
     })
   }
 
+  // 防抖
+  const [resultLoading, setResultLoading] = useState(false);
+
   // 提交审核结果按钮
   const handleShowModal = () => {
     console.log(noduleList)
@@ -1588,9 +1595,11 @@ const MarkViewer = () => {
 
   // 提交审核结果弹窗
   const handleSubmitResults = async () => {
+    setResultLoading(true);
     const result = await updateList(params.id)
     if (result.data.code === 200) {
       message.success(`提交审核结果成功`)
+      setResultLoading(false);
       setVisible(false)
       if (params.type === '2') {
         history.push('/markList')
@@ -1598,6 +1607,7 @@ const MarkViewer = () => {
         history.push('/benignNoduleList')
       }
     } else if (result.data.code === 401) {
+      setResultLoading(false);
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
@@ -1677,6 +1687,7 @@ const MarkViewer = () => {
         okText="确认"
         cancelText="取消"
         maskStyle={{ backgroundColor: 'transparent' }}
+        confirmLoading={resultLoading}
       >
         <p>是否提交最终结果</p>
       </Modal>
