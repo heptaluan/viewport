@@ -19,13 +19,13 @@ const dicomDateTimeToLocale = (dateTime, divide) => {
   }
 }
 
-const getBirth = identityNumber => {
-  if (!identityNumber) {
-    return '**'
-  } else {
-    return `${identityNumber.substring(6, 10)}-${identityNumber.substring(10, 12)}-${identityNumber.substring(12, 14)}`
-  }
-}
+// const getBirth = identityNumber => {
+//   if (!identityNumber) {
+//     return '**'
+//   } else {
+//     return `${identityNumber.substring(6, 10)}-${identityNumber.substring(10, 12)}-${identityNumber.substring(12, 14)}`
+//   }
+// }
 
 const CustomOverlay = props => {
   const [data, setData] = useState(null)

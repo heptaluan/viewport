@@ -173,11 +173,15 @@ const Viewer = () => {
     setUserInfo(info)
 
     // 根据角色请求不同的数据
-    if (info === 'chief') {
-      fetchNodeListData()
-      fetcImagehData()
-    } else if (info === 'doctor') {
+    if (params.type === 'mission') {
       fetchSecondprimaryDetail()
+    } else {
+      if (info === 'chief') {
+        fetchNodeListData()
+        fetcImagehData()
+      } else if (info === 'doctor') {
+        fetchSecondprimaryDetail()
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -530,8 +534,12 @@ const Viewer = () => {
     checkItme.review = true
     checkItme.state = checkState
     setNoduleList([...noduleList])
-    if (userInfo === 'doctor') {
+    if (params.type === 'mission') {
       saveSecondprimaryResults(checkItme)
+    } else {
+      if (userInfo === 'doctor') {
+        saveSecondprimaryResults(checkItme)
+      }
     }
   }
 
@@ -556,8 +564,12 @@ const Viewer = () => {
     }
     setNoduleList([...noduleList])
 
-    if (userInfo === 'doctor') {
+    if (params.type === 'mission') {
       saveSecondprimaryResults(checkItme)
+    } else {
+      if (userInfo === 'doctor') {
+        saveSecondprimaryResults(checkItme)
+      }
     }
   }
 
@@ -991,13 +1003,13 @@ const Viewer = () => {
 
   // 提交审核结果弹窗
   const handleSubmitResults = async () => {
-    if (userInfo === 'chief') {
-      const postData = formatPostData()
-      const result = await addNewResult(JSON.stringify(postData))
+    if (params.type === 'mission') {
+      const result = await addSecondprimaryResult(params.id)
+      // saveResults
       if (result.data.code === 200) {
         message.success(`提交审核结果成功`)
         setVisible(false)
-        history.push('/studyList')
+        history.push('/missionList')
       } else if (result.data.code === 401) {
         localStorage.setItem('token', '')
         localStorage.setItem('info', '')
@@ -1008,20 +1020,38 @@ const Viewer = () => {
         message.error(`提交失败，请稍后重新尝试`)
       }
     } else {
-      const result = await addSecondprimaryResult(params.id)
-      // saveResults
-      if (result.data.code === 200) {
-        message.success(`提交审核结果成功`)
-        setVisible(false)
-        history.push('/studyList')
-      } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
-        message.warning(`登录已失效，请重新登录`)
-        history.push('/login')
+      if (userInfo === 'chief') {
+        const postData = formatPostData()
+        const result = await addNewResult(JSON.stringify(postData))
+        if (result.data.code === 200) {
+          message.success(`提交审核结果成功`)
+          setVisible(false)
+          history.push('/studyList')
+        } else if (result.data.code === 401) {
+          localStorage.setItem('token', '')
+          localStorage.setItem('info', '')
+          localStorage.setItem('username', '')
+          message.warning(`登录已失效，请重新登录`)
+          history.push('/login')
+        } else {
+          message.error(`提交失败，请稍后重新尝试`)
+        }
       } else {
-        message.error(`提交失败，请稍后重新尝试`)
+        const result = await addSecondprimaryResult(params.id)
+        // saveResults
+        if (result.data.code === 200) {
+          message.success(`提交审核结果成功`)
+          setVisible(false)
+          history.push('/studyList')
+        } else if (result.data.code === 401) {
+          localStorage.setItem('token', '')
+          localStorage.setItem('info', '')
+          localStorage.setItem('username', '')
+          message.warning(`登录已失效，请重新登录`)
+          history.push('/login')
+        } else {
+          message.error(`提交失败，请稍后重新尝试`)
+        }
       }
     }
   }
@@ -1460,7 +1490,11 @@ const Viewer = () => {
   // 返回列表
   const handleGoBackList = () => {
     localStorage.setItem('record', '')
-    history.push('/studyList')
+    if (params.type === 'mission') {
+      history.push('/missionList')
+    } else {
+      history.push('/studyList')
+    }
   }
 
   return (

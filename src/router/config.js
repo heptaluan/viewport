@@ -5,6 +5,7 @@ import BenignNoduleList from '../pages/BenignNoduleList/BenignNoduleList'
 import StudyList from '../pages/StudyList/StudyList'
 import AllotList from '../pages/AllotList/AllotList'
 import MarkList from '../pages/MarkList/MarkList'
+import MissionList from '../pages/MissionList/MissionList'
 import Login from '../pages/Login/Login'
 import Dashboard from '../pages/Dashboard/Dashboard'
 import { Redirect } from 'react-router-dom'
@@ -55,6 +56,11 @@ const routes = [
       {
         path: '/benignNoduleList',
         component: BenignNoduleList,
+        routes: [],
+      },
+      {
+        path: '/missionList',
+        component: MissionList,
         routes: [],
       },
     ],

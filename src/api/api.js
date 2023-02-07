@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getURLParameters } from '../util/index'
+// import { getURLParameters } from '../util/index'
 
 // const basicUrl = `http://192.168.11.99:18080/dev-api`
 // const basicUrl = `http://192.168.11.53:16880`
@@ -45,7 +45,13 @@ export const getChiefList = isFinish => {
 // 获取普通医生列表
 export const getDoctorList = (isFinish, searchId) => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId}`)
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId}&project=1`)
+}
+
+// 多组学结节列表（复用之前杨医生的列表）
+export const getMissionList = (isFinish, searchId) => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId}&project=2`)
 }
 
 // 获取分配列表

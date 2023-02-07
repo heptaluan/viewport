@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar, Input } from 'antd'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { Table, Select, Button, Space, message, Input } from 'antd'
 import { getChiefList, getDoctorList } from '../../api/api'
+import MenuList from '../../components/MenuList/MenuList'
+import HeaderList from '../../components/HeaderList/HeaderList'
 
 const StudyList = () => {
   const [dataSource, setDataSource] = useState([])
@@ -238,7 +239,7 @@ const StudyList = () => {
 
   const handleChiefSearch = () => {
     localStorage.setItem('pagination', '')
-    fetchDoctorList()
+    fetchChiefList()
   }
 
   const handleChiefReset = async () => {
@@ -279,62 +280,11 @@ const StudyList = () => {
     },
   }
 
-  const handleLogout = _ => {
-    localStorage.setItem('token', '')
-    localStorage.setItem('info', '')
-    localStorage.setItem('username', '')
-    localStorage.setItem('pagination', '')
-    message.success(`退出成功`)
-    history.push('/login')
-  }
-
-  const handleChangeMenu = e => {
-    if (e.key === '1') {
-      history.push('/studyList')
-    } else if (e.key === '2') {
-      history.push('/allotList')
-    } else if (e.key === '3') {
-      history.push('/markList')
-    } else if (e.key === '4') {
-      history.push('/benignNoduleList')
-    }
-  }
-
   return (
     <div className="study-list-box">
-      <header>
-        <div className="logo">
-          <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
-          <h1>泰莱生物商检系统</h1>
-        </div>
-        <div className="logout-box">
-          <div className="user-box">
-            <Avatar size={26} icon={<UserOutlined />} />
-            <span className="user-name">{localStorage.getItem('username')}</span>
-          </div>
-          <Popconfirm
-            placement="bottomRight"
-            title="是否退出登录？"
-            onConfirm={handleLogout}
-            okText="确定"
-            cancelText="取消"
-            className="logout"
-          >
-            <Button type="text" icon={<LogoutOutlined />}>
-              退出登录
-            </Button>
-          </Popconfirm>
-        </div>
-      </header>
+      <HeaderList />
       <div className="study-list-container-wrap">
-        <div className="meau-box">
-          <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
-            <Menu.Item key="1">审核列表</Menu.Item>
-            {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
-            <Menu.Item key="3">金标准列表</Menu.Item>
-            <Menu.Item key="4">良性结节列表</Menu.Item>
-          </Menu>
-        </div>
+        <MenuList defaultSelectedKeys={'1'} userInfo={userInfo} />
         <div className="study-list-container">
           {userInfo === 'doctor' ? (
             <div className="search-box-wrap">

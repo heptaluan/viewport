@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import './Header.scss'
 import { Button, Image, Space, Alert, Popconfirm } from 'antd'
-import { getClinicalFiles, downloadZip } from '../../api/api'
+// import { getClinicalFiles, downloadZip } from '../../api/api'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 
 const Header = props => {
   const [visible, setVisible] = useState(false)
-  const [fileData, setFileData] = useState([])
-  const [remark, setRemark] = useState('')
+  const [fileData] = useState([])
+  const [remark] = useState('')
 
   const params = qs.parse(useLocation().search)
 
-  const handleDownLoad = () => {
-    downloadZip(params.orderId, params.taskId).then(res => {
-      const { result, success, message } = res.data
-      if (success) {
-        window.open(result, '_blank')
-      } else {
-        message.warning(message)
-      }
-    })
-  }
+  // const handleDownLoad = () => {
+  //   downloadZip(params.orderId, params.taskId).then(res => {
+  //     const { result, success, message } = res.data
+  //     if (success) {
+  //       window.open(result, '_blank')
+  //     } else {
+  //       message.warning(message)
+  //     }
+  //   })
+  // }
 
   useEffect(() => {
     // const fetchData = async () => {

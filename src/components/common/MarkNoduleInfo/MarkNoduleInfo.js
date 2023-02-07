@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import './MarkNoduleInfo.scss'
 import { Slider, Select, Button, Radio, Segmented, Checkbox } from 'antd'
 import { formatNodeSize, formatDanger, formatNodeTypeRemark } from '../../../util/index'

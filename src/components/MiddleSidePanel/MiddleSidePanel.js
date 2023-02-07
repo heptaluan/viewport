@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react'
 import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Tag, Tooltip } from 'antd'
-import { formatNodeStyle, formatMiniNodule } from '../../util/index'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
@@ -108,7 +106,13 @@ const MiddleSidePanel = props => {
                     <div
                       className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}
                     >
-                      {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
+                      {item.risk ? (
+                        <>
+                          {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
+                        </>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   ) : null}
 

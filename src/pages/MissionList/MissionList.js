@@ -1,66 +1,64 @@
 import React, { useState, useEffect } from 'react'
-import './MarkList.scss'
+import './MissionList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getMarkList } from '../../api/api'
+import { Table, Select, Button, Space, message, Input } from 'antd'
+import { getMissionList } from '../../api/api'
 import MenuList from '../../components/MenuList/MenuList'
 import HeaderList from '../../components/HeaderList/HeaderList'
 
-const MarkList = () => {
+const MissionList = () => {
   const [dataSource, setDataSource] = useState([])
 
-  const columns = [
+  const doctorColumns = [
+    {
+      title: '良性样本Id',
+      dataIndex: 'kyPrimaryId',
+    },
     {
       title: '审阅人',
       dataIndex: 'createBy',
     },
     {
-      title: '影像编号',
-      dataIndex: 'imageCode',
-    },
-    {
-      title: '完成状态',
+      title: '是否完成',
       dataIndex: 'isFinish',
       render: (_, record) => {
         return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>已完成</span>
+          <span style={{ color: '#73d13d' }}>完成</span>
         ) : (
           <span style={{ color: '#ff4d4f' }}>未完成</span>
         )
       },
     },
     {
-      title: '更新时间',
-      dataIndex: 'updateTime',
+      title: '创建时间',
+      dataIndex: 'createTime',
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => {
+        const t1 = new Date(a.createTime).getTime()
+        const t2 = new Date(b.createTime).getTime()
+        return t1 - t2
+      },
+      createTime: ['descend', 'ascend'],
+      showSorterTooltip: false,
     },
     {
       title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => handleShowDetail(record)}>查看详情</a>
+          <a onClick={() => handleShowDoctorDetail(record)}>查看详情</a>
         </Space>
       ),
     },
   ]
 
   const history = useHistory()
-
-  // 用户信息
   const [userInfo, setUserInfo] = useState('')
 
-  const onPageChange = e => {
-    const newPagination = Object.assign({}, pagination)
-    newPagination.current = e.current
-    newPagination.pageSize = e.pageSize
-    newPagination.total = e.total
-    setPagination(newPagination)
-  }
-
   const initPagination = result => {
-    let page = localStorage.getItem('markListPagination') ? JSON.parse(localStorage.getItem('markListPagination')) : ''
+    let page = localStorage.getItem('pagination') ? JSON.parse(localStorage.getItem('pagination')) : ''
     const newPagination = Object.assign({}, pagination)
-    if (page !== '') {
+    if (page) {
       newPagination.current = page.current
       newPagination.pageSize = page.pageSize
       newPagination.total = page.total
@@ -78,11 +76,28 @@ const MarkList = () => {
     setPagination(newPagination)
   }
 
-  // 初始列表数据
+  // 获取列表数据
+  const fetchMissionList = async () => {
+    const result = await getMissionList(isFinish, searchId)
+    if (result.data.code === 200) {
+      setDataSource(result.data.rows)
+      initPagination(result)
+    } else if (result.data.code === 401) {
+      localStorage.setItem('token', '')
+      localStorage.setItem('info', '')
+      localStorage.setItem('username', '')
+      localStorage.setItem('pagination', '')
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
+  }
+
+  // 初始用户数据
   useEffect(() => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
-    fetchList()
+
+    fetchMissionList()
   }, [])
 
   // 分页设置
@@ -92,37 +107,38 @@ const MarkList = () => {
     total: 0,
   })
 
-  // 查询
-  const [params, setParams] = useState({
-    isFinish: 0,
-    imageCode: '',
-  })
-
-  const handleImageCodeSearch = val => {
-    const newParams = Object.assign({}, params)
-    newParams.imageCode = val
-    setParams(newParams)
+  const onPageChange = e => {
+    const newPagination = Object.assign({}, pagination)
+    newPagination.current = e.current
+    newPagination.pageSize = e.pageSize
+    newPagination.total = e.total
+    localStorage.setItem('pagination', JSON.stringify(newPagination))
+    setPagination(newPagination)
   }
 
+  // 查询
+  const [isFinish, setIsFinish] = useState(0)
+  const [searchId, setSearchId] = useState('')
+
   const handleIsFinishSearch = val => {
-    const newParams = Object.assign({}, params)
-    newParams.isFinish = val
-    setParams(newParams)
+    setIsFinish(val)
+  }
+
+  const handleDoctorIdSearch = val => {
+    setSearchId(val)
   }
 
   const handleSearch = () => {
-    localStorage.setItem('markListPagination', '')
-    fetchList()
+    localStorage.setItem('pagination', '')
+    fetchMissionList()
   }
 
   const handleReset = async () => {
-    const newParams = {
-      isFinish: 0,
-      imageCode: '',
-    }
-    setParams(newParams)
-    localStorage.setItem('markListPagination', '')
-    const result = await getMarkList(newParams)
+    const isFinish = 0
+    setIsFinish(isFinish)
+    setSearchId('')
+    localStorage.setItem('pagination', '')
+    const result = await getMissionList(isFinish, '')
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -136,57 +152,30 @@ const MarkList = () => {
     }
   }
 
-  // 请求筛选结果列表数据
-  const fetchList = async () => {
-    let page = localStorage.getItem('markListPagination') ? JSON.parse(localStorage.getItem('markListPagination')) : ''
-    const newParams = Object.assign({}, params)
-    if (page !== '') {
-      newParams.imageCode = page.imageCode
-      newParams.isFinish = page.isFinish
-      setParams(newParams)
-    }
-
-    const result = await getMarkList(newParams)
-    if (result.data.code === 200) {
-      setDataSource(result.data.rows)
-      initPagination(result)
-    } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
-      localStorage.setItem('markListPagination', '')
-      message.warning(`登录已失效，请重新登录`)
-      history.push('/login')
-    }
+  // 普通医生详情
+  const handleShowDoctorDetail = record => {
+    localStorage.setItem('record', JSON.stringify(record))
+    localStorage.setItem('pagination', JSON.stringify(pagination))
+    history.push(`/viewer?id=${record.id}&type=mission`)
   }
 
-  // 查看详情（金标准 type 2）
-  const handleShowDetail = record => {
-    const newPagination = Object.assign({}, pagination)
-    newPagination.isFinish = params.isFinish
-    newPagination.imageCode = params.imageCode
-    localStorage.setItem('markListPagination', JSON.stringify(newPagination))
-    history.push(`/markViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2`)
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows)
+    },
   }
 
   return (
     <div className="study-list-box">
       <HeaderList />
       <div className="study-list-container-wrap">
-        <MenuList defaultSelectedKeys={'3'} userInfo={userInfo} />
+        <MenuList defaultSelectedKeys={'5'} userInfo={userInfo} />
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header"></div>
             <div className="search-box">
-              <Input
-                value={params.imageCode}
-                onChange={e => handleImageCodeSearch(e.target.value)}
-                style={{ width: 200 }}
-                placeholder="请输入影像编号"
-              />
               <Select
-                value={params.isFinish}
+                value={isFinish}
                 style={{ width: 200 }}
                 onChange={handleIsFinishSearch}
                 options={[
@@ -200,7 +189,12 @@ const MarkList = () => {
                   },
                 ]}
               />
-
+              <Input
+                value={searchId}
+                onChange={e => handleDoctorIdSearch(e.target.value)}
+                style={{ width: 200, marginLeft: 15 }}
+                placeholder="请输入良性样本Id"
+              />
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                 搜索
               </Button>
@@ -209,18 +203,21 @@ const MarkList = () => {
               </Button>
             </div>
           </div>
-
           <Table
             scroll={{ x: 'max-content' }}
-            rowKey={record => record.id}
-            dataSource={dataSource}
-            columns={columns}
+            rowSelection={{
+              type: 'checkbox',
+              ...rowSelection,
+            }}
             onChange={onPageChange}
             pagination={{
               current: pagination.current,
               pageSize: pagination.pageSize,
               total: pagination.total,
             }}
+            rowKey={record => (userInfo === 'chief' ? record.orderId : record.id)}
+            dataSource={dataSource}
+            columns={doctorColumns}
             onRow={record => {
               return {
                 onDoubleClick: event => {
@@ -235,4 +232,4 @@ const MarkList = () => {
   )
 }
 
-export default MarkList
+export default MissionList

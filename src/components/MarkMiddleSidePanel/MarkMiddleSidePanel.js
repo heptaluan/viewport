@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './MarkMiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox, Tag, Tooltip } from 'antd'
-import { formatNodeStyle, formatMiniNodule } from '../../util/index'
-import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Checkbox, Tooltip } from 'antd'
 
 const MarkMiddleSidePanel = props => {
   const handleListClick = (index, num) => {
     props.onCheckChange(index, num)
-  }
-
-  const deleteNodeListHandle = (e, item) => {
-    e.stopPropagation()
-    props.showDeleteConfirm(item)
   }
 
   // 保存用户角色
@@ -23,14 +16,11 @@ const MarkMiddleSidePanel = props => {
     setUserInfo(info)
   }, [])
 
-
   return (
     <div className="middle-side-panel-box">
       <div className="nodule-list-box">
         <div className="title">
-          <span>
-            结节列表（{props.noduleList.length}）
-          </span>
+          <span>结节列表（{props.noduleList.length}）</span>
         </div>
         <div className="table-box">
           <div className="table-title">
@@ -54,7 +44,7 @@ const MarkMiddleSidePanel = props => {
                   <div className="index">{index + 1}</div>
                 </Checkbox>
                 <div className="type">{props.imagesConfig.length - item.num}</div>
-                
+
                 <Tooltip title={item.position}>
                   <div className="type">{item.position}</div>
                 </Tooltip>
@@ -79,9 +69,7 @@ const MarkMiddleSidePanel = props => {
                       key={item.id}
                       className={`viewer-item ${item.active ? 'item-active' : ''}`}
                       onClick={e => props.handleCheckedListClick(item.num)}
-                    >
-                      
-                    </div>
+                    ></div>
                   ) : null
                 })}
             </div>

@@ -19,14 +19,14 @@ import {
   updateResult,
   updateList,
 } from '../../api/api'
-import { Modal, message, Button, InputNumber } from 'antd'
+import { Modal, message, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { useHistory } from 'react-router-dom'
-import { formatSizeMean, formatNodeSize, formatNodeType } from '../../util/index'
+import { formatSizeMean, formatNodeSize } from '../../util/index'
 
 const { confirm } = Modal
 
@@ -175,6 +175,8 @@ const MarkViewer = () => {
         localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
+      } else if (result.data.code === 500) {
+        message.error(`请求失败，请重新尝试`)
       }
     }
 
