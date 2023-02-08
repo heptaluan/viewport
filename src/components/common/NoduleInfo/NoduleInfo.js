@@ -76,6 +76,10 @@ const NoduleInfo = props => {
     props.checkNoduleList(val, 'type')
   }
 
+  const handlePositionSelectChange = val => {
+    props.checkNoduleList(val, 'position')
+  }
+
   // 设置当中按钮选中
   const handleSetButtonActive = num => {
     if (isNaN(num)) {
@@ -94,6 +98,23 @@ const NoduleInfo = props => {
     <div className="nodule-info-box">
       {props.noduleInfo ? (
         <div className="nodule-info">
+          <div className="list">
+            <div className="list-title">结节位置：</div>
+            <Select
+              size="small"
+              value={props.noduleInfo.remark}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={handlePositionSelectChange}
+              placeholder="请选择结节位置"
+            >
+              <Option value="右肺上叶（RUL）">右肺上叶（RUL）</Option>
+              <Option value="右肺中叶（RML）">右肺中叶（RML）</Option>
+              <Option value="右肺下叶（RLL）">右肺下叶（RLL）</Option>
+              <Option value="左肺上叶（LUL）">左肺上叶（LUL）</Option>
+              <Option value="左肺下叶（LLL）">左肺下叶（LLL）</Option>
+            </Select>
+          </div>
+
           <div className="list">
             <div className="list-title">类型：</div>
             <Select

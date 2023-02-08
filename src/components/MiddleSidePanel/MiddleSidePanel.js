@@ -71,12 +71,13 @@ const MiddleSidePanel = props => {
               <div className="index">序号</div>
             </Checkbox>
             <div className="num">中心帧</div>
-            {userInfo === 'chief' ? (
+            <div className="soak">位置</div>
+            {/* {userInfo === 'chief' ? (
               <>
                 <div className="soak">肺</div>
                 <div className="soak">肺叶</div>
               </>
-            ) : null}
+            ) : null} */}
             <div className="type">类型</div>
             {userInfo === 'chief' ? <div className="risk">风险</div> : null}
             <div className="soak">结节</div>
@@ -94,12 +95,15 @@ const MiddleSidePanel = props => {
                     <div className="index">{index + 1}</div>
                   </Checkbox>
                   <div className="num">{props.imagesConfig.length - item.num}</div>
-                  {userInfo === 'chief' ? (
+                  <Tooltip placement="top" title={item.remark}>
+                    <div className="soak">{item.remark}</div>
+                  </Tooltip>
+                  {/* {userInfo === 'chief' ? (
                     <>
                       <div className="soak">{item.lung}</div>
                       <div className="soak">{item.lobe}</div>
                     </>
-                  ) : null}
+                  ) : null} */}
 
                   <div className="type">{item.type}</div>
                   {userInfo === 'chief' ? (

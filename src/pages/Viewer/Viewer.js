@@ -340,6 +340,7 @@ const Viewer = () => {
         type: resultInfo.featuresType ? resultInfo.featuresType : res.featuresType,
         kyTaskId: resultInfo.id,
         noduleName: `nodule_${res.id}`,
+        remark: resultInfo.remark ? resultInfo.remark : undefined,
       })
 
       const acrossCoordz = res.acrossCoordz.split(',')
@@ -550,18 +551,27 @@ const Viewer = () => {
       checkItme.lung = val
       checkItme.review = true
     }
+
     if (checkItme && type === 'lobe') {
       checkItme.lobe = val
       checkItme.review = true
     }
+
     if (checkItme && type === 'type') {
       checkItme.type = val
       // checkItme.review = true
     }
+
     if (checkItme && type === 'soak') {
       checkItme.newSoak = val
       checkItme.review = true
     }
+
+    if (checkItme && type === 'position') {
+      checkItme.remark = val
+      checkItme.review = true
+    }
+
     setNoduleList([...noduleList])
 
     if (params.type === 'mission') {
@@ -947,6 +957,7 @@ const Viewer = () => {
       id: checkItme.kyTaskId,
       featuresType: checkItme.type,
       isBenign: checkItme.state ? 1 : 0,
+      remark: checkItme.remark
     }
     const result = await saveSecondprimaryResult(postData)
     if (result.data.code === 200) {
@@ -994,10 +1005,14 @@ const Viewer = () => {
   const handleShowModal = () => {
     // formatPostData()
     console.log(noduleList)
-    if (noduleList.every(item => item.review === true)) {
+    if (params.type === 'mission') {
       setVisible(true)
     } else {
-      message.warning(`请检阅完所有结节后在进行结果提交`)
+      if (noduleList.every(item => item.review === true)) {
+        setVisible(true)
+      } else {
+        message.warning(`请检阅完所有结节后在进行结果提交`)
+      }
     }
   }
 
