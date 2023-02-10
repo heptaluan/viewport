@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './CustomOverlay.scss'
 import cornerstone from 'cornerstone-core'
+import { getPatientsList } from '../../../api/api'
+import { getURLParameters } from '../../../util/index'
 
 const dicomDateTimeToLocale = (dateTime, divide) => {
   if (dateTime) {
@@ -23,24 +25,53 @@ const getBirth = identityNumber => {
   if (!identityNumber) {
     return '**'
   } else {
-    return `${identityNumber.substring(6, 10)}-${identityNumber.substring(10, 12)}-${identityNumber.substring(12, 14)}`
+    var re = /\d{6}([12]\d{3})([01]\d)([0123]\d)\d{4}/
+    var id = re.exec(identityNumber)
+    return `${id[1]}-${id[2]}-${id[3]}`
   }
 }
 
 const CustomOverlay = props => {
   const [data, setData] = useState(null)
+  const [patients, setPatients] = useState('')
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getPatientsList(getURLParameters(window.location.href).resource)
+      setPatients(result.data.result.records[0])
+    }
+    fetchData()
+  }, [])
 
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
-      const patients = localStorage.getItem('patients') ? JSON.parse(localStorage.getItem('patients')) : ''
       const data = {
-        name: patients.patientName ? patients.patientName : '**',
-        age: patients.age ? patients.age : '**',
-        sex: patients.gender_dictText ? patients.gender_dictText : '**',
-        birth: patients.identityNumber ? getBirth(patients.identityNumber) : '**',
+        name:
+          image.data.string('x00100010') && image.data.string('x00100010') !== '**'
+            ? image.data.string('x00100010')
+            : patients.patientName,
+        birth:
+          image.data.string('x00100030') && image.data.string('x00100030') !== '00000000'
+            ? image.data.string('x00100030')
+            : getBirth(patients.identityNumber),
 
-        patientId: image.data.string('x00100020'),
-        hospital: image.data.string('x00080080'),
+        sex:
+          image.data.string('x00100040') && image.data.string('x00100040') !== '**'
+            ? image.data.string('x00100040')
+            : patients.gender_dictText,
+
+        age: patients.age ? patients.age : '**',
+
+        patientId:
+          image.data.string('x00100020') && image.data.string('x00100020') !== '**'
+            ? image.data.string('x00100020')
+            : patients.patientId,
+
+        hospital:
+          image.data.string('x00080080') && image.data.string('x00080080') !== '**'
+            ? image.data.string('x00080080')
+            : patients.hospitalShortName,
+
         studyID: image.data.string('x00200010'),
 
         seriesNo: image.data.string('x00200011'),
@@ -49,23 +80,19 @@ const CustomOverlay = props => {
         sliceThickness: image.data.string('x00180050'),
         sliceLocation: image.data.string('x00201041'),
 
-        // day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        // time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
-
-        day: patients.studyTime
-          ? patients.studyTime.split(' ')[0]
-          : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        time: patients.studyTime
-          ? patients.studyTime.split(' ')[1]
-          : dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
+        day: image.data.string('x00080022')
+          ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date')
+          : patients.studyTime && patients.studyTime.split(' ')[0],
+        time: image.data.string('x00080022')
+          ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time')
+          : patients.studyTime && patients.studyTime.split(' ')[1],
 
         Rowsize: image.rows,
         Colsize: image.columns,
       }
-
       setData(data)
     })
-  }, [props.imageId])
+  }, [props.imageId, patients])
 
   return (
     <ul className="custom-overlay-box">

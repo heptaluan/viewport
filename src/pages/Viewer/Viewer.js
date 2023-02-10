@@ -236,21 +236,21 @@ const Viewer = () => {
   }, [])
 
   // 初始化病人信息
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getPatientsList(getURLParameters(window.location.href).resource)
-      if (result.data.code === 200 && result.data.result) {
-        setPatients(result.data.result.records[0])
-        localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
-      } else {
-        localStorage.setItem('patients', '')
-      }
-    }
-    // if (getURLParameters(window.location.href).page === 'image') {
-    fetchData()
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const result = await getPatientsList(getURLParameters(window.location.href).resource)
+  //     if (result.data.code === 200 && result.data.result) {
+  //       setPatients(result.data.result.records[0])
+  //       localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
+  //     } else {
+  //       localStorage.setItem('patients', '')
+  //     }
+  //   }
+  //   // if (getURLParameters(window.location.href).page === 'image') {
+  //   fetchData()
+  //   // }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   // 多选
   const [indeterminate, setIndeterminate] = useState(false)
@@ -1515,6 +1515,7 @@ const Viewer = () => {
 
     if (checkItme) {
       const tool = cornerstoneTools.getToolState(cornerstoneElement, 'MeasureRect')
+      const toolData = tool.data[0]
       const data = tool.data[0].cachedStats
       // const handle = tool.data[0].handles
       const oldDiameter = checkItme.diameter.replace('*', '').split('mm')
@@ -1563,6 +1564,10 @@ const Viewer = () => {
       // )[0]
 
       setNoduleList([...noduleList])
+
+      // 调整完成后删除标注工具
+      cornerstoneTools.removeToolState(cornerstoneElement, 'MeasureRect', toolData)
+      cornerstone.updateImage(cornerstoneElement)
     }
 
     saveResults()
