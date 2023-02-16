@@ -132,7 +132,7 @@ const CustomOverlay = props => {
             姓名：<span>{data?.name}</span>
           </div>
           <div className="list">
-            性别：<span>{data?.sex === '**' ? data?.sex : data?.sex === 'M' ? '男' : '女'}</span>
+            性别：<span>{data?.sex}</span>
           </div>
           <div className="list">
             年龄：<span>{data?.age}</span>

@@ -130,7 +130,11 @@ const Header = props => {
           )}
 
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
-            {fileData.length === 0 ? `暂无临床影像` : `查看临床影像（共${fileData.length}页）`}
+            {fileData.length === 0
+              ? `暂无临床影像`
+              : `查看临床影像（共${
+                  fileData.filter(item => item.fileSuffix === 'jpg' || item.fileSuffix === 'png').length
+                }页）`}
           </Button>
 
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>
