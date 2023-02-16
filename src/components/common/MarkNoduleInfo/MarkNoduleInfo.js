@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './MarkNoduleInfo.scss'
-import { Slider, Select, Button, Radio, Segmented, Checkbox } from 'antd'
+import { Slider, Select, Button, Radio, Segmented, Checkbox, Cascader } from 'antd'
 import { formatNodeSize, formatDanger, formatNodeTypeRemark } from '../../../util/index'
 
 const { Option } = Select
@@ -20,11 +20,53 @@ const MarkNoduleInfo = props => {
     }
   }
 
+  // 微小结节
+  const [isMiniNode, setIsMiniNode] = useState(false)
+
+  // 发现难易度
+  const [difficultyLevel, setDifficultyLevel] = useState(false)
+
+  useEffect(() => {
+    if (formatNodeSize(props.noduleInfo?.size) === '微小结节') {
+      setIsMiniNode(true)
+      props.handleResetMiniNode()
+    } else {
+      setIsMiniNode(false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.noduleInfo?.size])
+
+  useEffect(() => {
+    if (props.noduleInfo?.difficultyLevel === '非常微妙') {
+      setDifficultyLevel(true)
+      props.handleResetDifficultyLevel()
+    } else {
+      setDifficultyLevel(false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.noduleInfo?.difficultyLevel])
+
   return (
     <div className="mark-box-wrap">
       {props.noduleInfo ? (
         <>
           <div className="box-title">肺结节标注标签</div>
+
+          <div className="box-wrap">
+            <div className="list-title">发现</div>
+            <div className="mark-box">
+              <div className="mark-title mb">检测难易度</div>
+              <div className="mark-content">
+                <Segmented
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'difficultyLevel')}
+                  value={props.noduleInfo.difficultyLevel}
+                  size="small"
+                  options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
+                  style={{ fontSize: 12 }}
+                />
+              </div>
+            </div>
+          </div>
 
           <div className="box-wrap">
             <div className="list-title">外观特征</div>
@@ -98,25 +140,131 @@ const MarkNoduleInfo = props => {
             <div className="mark-box flex mb">
               <div className="mark-title">位置</div>
               <div className="mark-content">
-                <Select
+                <Cascader
                   size="small"
                   style={{ width: 198, fontSize: 12 }}
-                  placeholder="请选择位置"
+                  options={[
+                    {
+                      value: '右肺上叶（RUL）',
+                      label: '右肺上叶（RUL）',
+                      children: [
+                        {
+                          value: '肺内',
+                          label: '肺内',
+                        },
+                        {
+                          value: '胸膜',
+                          label: '胸膜',
+                        },
+                        {
+                          value: '贴近胸膜',
+                          label: '贴近胸膜',
+                        },
+                        {
+                          value: '肺门区',
+                          label: '肺门区',
+                        },
+                      ],
+                    },
+                    {
+                      value: '右肺中叶（RML）',
+                      label: '右肺中叶（RML）',
+                      children: [
+                        {
+                          value: '肺内',
+                          label: '肺内',
+                        },
+                        {
+                          value: '胸膜',
+                          label: '胸膜',
+                        },
+                        {
+                          value: '贴近胸膜',
+                          label: '贴近胸膜',
+                        },
+                        {
+                          value: '肺门区',
+                          label: '肺门区',
+                        },
+                      ],
+                    },
+                    {
+                      value: '右肺下叶（RLL）',
+                      label: '右肺下叶（RLL）',
+                      children: [
+                        {
+                          value: '肺内',
+                          label: '肺内',
+                        },
+                        {
+                          value: '胸膜',
+                          label: '胸膜',
+                        },
+                        {
+                          value: '贴近胸膜',
+                          label: '贴近胸膜',
+                        },
+                        {
+                          value: '肺门区',
+                          label: '肺门区',
+                        },
+                      ],
+                    },
+                    {
+                      value: '左肺上叶（LUL）',
+                      label: '左肺上叶（LUL）',
+                      children: [
+                        {
+                          value: '肺内',
+                          label: '肺内',
+                        },
+                        {
+                          value: '胸膜',
+                          label: '胸膜',
+                        },
+                        {
+                          value: '贴近胸膜',
+                          label: '贴近胸膜',
+                        },
+                        {
+                          value: '肺门区',
+                          label: '肺门区',
+                        },
+                      ],
+                    },
+                    {
+                      value: '左肺下叶（LLL）',
+                      label: '左肺下叶（LLL）',
+                      children: [
+                        {
+                          value: '肺内',
+                          label: '肺内',
+                        },
+                        {
+                          value: '胸膜',
+                          label: '胸膜',
+                        },
+                        {
+                          value: '贴近胸膜',
+                          label: '贴近胸膜',
+                        },
+                        {
+                          value: '肺门区',
+                          label: '肺门区',
+                        },
+                      ],
+                    },
+                  ]}
                   onChange={e => props.handleUpdateNoduleInfo(e, 'position')}
-                  value={props.noduleInfo.position}
-                >
-                  <Option value="右肺上叶（RUL）">右肺上叶（RUL）</Option>
-                  <Option value="右肺中叶（RML）">右肺中叶（RML）</Option>
-                  <Option value="右肺下叶（RLL）">右肺下叶（RLL）</Option>
-                  <Option value="左肺上叶（LUL）">左肺上叶（LUL）</Option>
-                  <Option value="左肺下叶（LLL）">左肺下叶（LLL）</Option>
-                </Select>
+                  placeholder="请选择位置"
+                />
               </div>
             </div>
             <div className="mark-box flex mb">
               <div className="mark-title">形态分叶</div>
               <div className="mark-content">
                 <Select
+                  disabled={isMiniNode || difficultyLevel}
                   size="small"
                   style={{ width: 198, fontSize: 12 }}
                   placeholder="请选择形态分叶"
@@ -135,6 +283,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">形状</div>
               <div className="mark-content">
                 <Select
+                  disabled={isMiniNode}
                   size="small"
                   style={{ width: 198, fontSize: 12 }}
                   placeholder="请选择形状"
@@ -154,7 +303,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">边缘/毛刺</div>
               <div className="mark-content">
                 <Select
-                  mode="multiple"
+                  disabled={difficultyLevel}
                   size="small"
                   allowClear
                   style={{ width: 198, fontSize: 12 }}
@@ -175,18 +324,28 @@ const MarkNoduleInfo = props => {
                         { label: '明显毛刺', value: '明显毛刺' },
                       ],
                     },
-                    {
-                      label: '长毛刺',
-                      options: [{ label: '长毛刺', value: '长毛刺' }],
-                    },
                   ]}
                 ></Select>
+              </div>
+            </div>
+            <div className="mark-box flex left mb">
+              <div className="mark-title">长毛刺</div>
+              <div className="mark-content">
+                <Radio.Group
+                  options={[
+                    { label: '有', value: '有' },
+                    { label: '无', value: '无' },
+                  ]}
+                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag1')}
+                  value={props.noduleInfo.rag1}
+                />
               </div>
             </div>
             <div className="mark-box flex left mb">
               <div className="mark-title">晕征</div>
               <div className="mark-content">
                 <Radio.Group
+                  disabled={difficultyLevel}
                   options={[
                     { label: '无晕征', value: '无晕征' },
                     { label: '有晕征', value: '有晕征' },
@@ -201,6 +360,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title w250 mb">棘突（分级）</div>
               <div className="mark-content">
                 <Segmented
+                  disabled={isMiniNode}
                   onChange={e => props.handleUpdateNoduleInfo(e, 'spinous')}
                   value={props.noduleInfo.spinous}
                   size="small"
@@ -241,27 +401,12 @@ const MarkNoduleInfo = props => {
           </div>
 
           <div className="box-wrap">
-            <div className="list-title">发现</div>
-            <div className="mark-box">
-              <div className="mark-title mb">检测难易度</div>
-              <div className="mark-content">
-                <Segmented
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'difficultyLevel')}
-                  value={props.noduleInfo.difficultyLevel}
-                  size="small"
-                  options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
-                  style={{ fontSize: 12 }}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="box-wrap">
             <div className="list-title">内部特征</div>
             <div className="mark-box flex left mb">
               <div className="mark-title">结构成分</div>
               <div className="mark-content">
                 <Checkbox.Group
+                  disabled={isMiniNode}
                   options={[
                     { label: '软组织', value: '软组织' },
                     { label: '液体', value: '液体' },
@@ -316,6 +461,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">结构关系</div>
               <div className="mark-content">
                 <Checkbox.Group
+                  disabled={isMiniNode}
                   options={[
                     { label: '侵犯血管', value: '侵犯血管' },
                     { label: '内有血管穿行', value: '内有血管穿行' },
@@ -362,9 +508,9 @@ const MarkNoduleInfo = props => {
               <div className="mark-box">
                 <div className="mark-title" style={{ width: 320, marginTop: 8 }}>
                   {formatNodeTypeTitle(props.noduleInfo.nodeType)}，目前所选分级：
-                  <span style={{ color: '#ff4d4f' }}>
+                  {/* <span style={{ color: '#ff4d4f' }}> */}
                     {formatNodeTypeRemark(Number(props.noduleInfo.nodeTypeRemark))}
-                  </span>
+                  {/* </span> */}
                 </div>
                 <div className="mark-content" style={{ width: 310 }}>
                   <Slider
@@ -426,7 +572,9 @@ const MarkNoduleInfo = props => {
             <div className="mark-box">
               <div className="mark-title" style={{ width: 300 }}>
                 危险程度（分级），目前所选分级：
-                <span style={{ color: '#ff4d4f' }}>{formatDanger(Number(props.noduleInfo.danger))}</span>
+                {/* <span style={{ color: '#ff4d4f' }}> */}
+                  {formatDanger(Number(props.noduleInfo.danger))}
+                {/* </span> */}
               </div>
               <div className="mark-content" style={{ width: 310 }}>
                 <Slider
@@ -469,7 +617,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Button
                 style={{ fontSize: 12 }}
-                disabled={props.noduleInfo.state}
+                // disabled={props.noduleInfo.state}
                 size="small"
                 onClick={props.updateSingleNodeResult}
               >

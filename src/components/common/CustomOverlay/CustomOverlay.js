@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import './CustomOverlay.scss'
 import cornerstone from 'cornerstone-core'
+import {
+  getNewNodeList,
+  getBenignNodeList,
+} from '../../../api/api'
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
+import { message } from 'antd'
 
 const dicomDateTimeToLocale = (dateTime, divide) => {
   if (dateTime) {
@@ -19,20 +26,71 @@ const dicomDateTimeToLocale = (dateTime, divide) => {
   }
 }
 
-// const getBirth = identityNumber => {
-//   if (!identityNumber) {
-//     return '**'
-//   } else {
-//     return `${identityNumber.substring(6, 10)}-${identityNumber.substring(10, 12)}-${identityNumber.substring(12, 14)}`
-//   }
-// }
+const getBirth = identityNumber => {
+  if (!identityNumber) {
+    return '**'
+  } else {
+    var re = /\d{6}([12]\d{3})([01]\d)([0123]\d)\d{4}/
+    var id = re.exec(identityNumber)
+    return `${id[1]}-${id[2]}-${id[3]}`
+  }
+}
 
 const CustomOverlay = props => {
+
+  const params = qs.parse(useLocation().search)
   const [data, setData] = useState(null)
+  const [patients, setPatients] = useState('')
+
+  useEffect(() => {
+    // 金标准数据
+    const fetchNodeListData = async () => {
+      const result = await getNewNodeList(params.imageCode)
+      if (result.data.code === 200) {
+        try {
+          const data = result.data.data.samlpeDataList
+          const patients = {
+            age: data[0].patientAge,
+            sex: data[0].patientSex === 'F' ? '0' : data[0].patientSex === 'M' ? '1' : '**',
+          }
+          setPatients(patients)
+        } catch (error) {
+          console.log(error)
+        }
+      } else if (result.data.code === 500) {
+        message.error(`请求失败，请重新尝试`)
+      }
+    }
+
+    // 良性结节数据
+    const fetchBenignNodeListData = async () => {
+      const result = await getBenignNodeList(params.id)
+      if (result.data.code === 200) {
+        try {
+          const data = result.data.data
+          const patients = {
+            age: data.info.age,
+            sex: data.info.sex ? data.info.sex : '**',
+          }
+          setPatients(patients)
+        } catch (error) {
+          console.log(error)
+        }
+      } else if (result.data.code === 500) {
+        message.error(`请求失败，请重新尝试`)
+      }
+    }
+
+    if (Number(params.type) === 2) {
+      fetchNodeListData()
+    } else if (Number(params.type) === 1) {
+      fetchBenignNodeListData()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
-      const patients = localStorage.getItem('patients') ? JSON.parse(localStorage.getItem('patients')) : ''
       const data = {
         name: patients.name ? patients.name : '**',
         age: patients.age ? patients.age : '**',
@@ -61,7 +119,7 @@ const CustomOverlay = props => {
 
       setData(data)
     })
-  }, [props.imageId])
+  }, [props.imageId, patients])
 
   return (
     <ul className="custom-overlay-box">
@@ -100,10 +158,10 @@ const CustomOverlay = props => {
           <div className="list">
             姓名：<span>{data?.name}</span>
           </div>
-          <div className="list active">
-            性别：<span>{data?.sex}</span>
+          <div className="list">
+            性别：<span>{data?.sex === '**' ? data?.sex : data?.sex === 'M' ? '男' : '女'}</span>
           </div>
-          <div className="list active">
+          <div className="list">
             年龄：<span>{data?.age}</span>
           </div>
           <div className="list">

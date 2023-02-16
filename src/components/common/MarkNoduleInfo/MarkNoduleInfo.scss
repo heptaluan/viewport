@@ -145,3 +145,18 @@
     border: solid 2px #ff4d4f !important;
   }
 }
+
+.mark-box-wrap {
+  .ant-select-disabled .ant-select-selector,
+  .ant-segmented-disabled,
+  .ant-checkbox-disabled .ant-checkbox-inner,
+  .ant-radio-disabled .ant-radio-inner
+  {
+    background: #999 !important;
+  }
+
+  .ant-checkbox-wrapper-disabled .ant-checkbox-disabled + span,
+  .ant-radio-wrapper-disabled .ant-radio-disabled + span {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+}

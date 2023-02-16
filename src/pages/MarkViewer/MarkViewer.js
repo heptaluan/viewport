@@ -136,11 +136,6 @@ const MarkViewer = () => {
           const info = result.data.data.doctorResult
           formatNodeData(data, info)
           fetcImagehData(data[0].imageUrl)
-          const patients = {
-            age: data[0].patientAge,
-            sex: data[0].patientSex === 'F' ? '0' : data[0].patientSex === 'M' ? '1' : '**',
-          }
-          localStorage.setItem('patients', JSON.stringify(patients))
         } catch (error) {
           console.log(error)
         }
@@ -161,11 +156,6 @@ const MarkViewer = () => {
           const data = result.data.data
           formatBenignNodeData(data.nodeInfo, data.resultInfo)
           formatImagehData(data.imageList)
-          const patients = {
-            age: data.info.age,
-            sex: data.info.sex ? data.info.sex : '**',
-          }
-          localStorage.setItem('patients', JSON.stringify(patients))
         } catch (error) {
           console.log(error)
         }
@@ -287,6 +277,7 @@ const MarkViewer = () => {
           sphere: item.spherical ? item.spherical : undefined,
           rag: item.edge ? item.edge.split(',') : [],
           rag0: item.edge0 ? item.edge0 : undefined,
+          rag1: item.edge1 ? item.edge1 : undefined,
           spinous: item.burr ? item.burr : '非常微妙',
           lungInterface: item.definition ? item.definition : '非常微妙',
           proximityRelation: item.proximity ? item.proximity.split(',') : [],
@@ -352,6 +343,7 @@ const MarkViewer = () => {
         sphere: item.spherical ? item.spherical : undefined,
         rag: item.edge ? item.edge.split(',') : [],
         rag0: item.edge0 ? item.edge0 : undefined,
+        rag1: item.edge1 ? item.edge1 : undefined,
         spinous: item.burr ? item.burr : '非常微妙',
         lungInterface: item.definition ? item.definition : '非常微妙',
         proximityRelation: item.proximity ? item.proximity.split(',') : [],
@@ -1436,25 +1428,27 @@ const MarkViewer = () => {
           break
 
         // 边缘/毛刺 单独处理
+        case 'rag':
         case 'rag0':
+        case 'rag1':
           checkItme[type] = val
           break
 
-        case 'rag':
-          if (val.includes('光整（无毛刺）') && checkItme[type] && !checkItme[type].includes('光整（无毛刺）')) {
-            checkItme[type] = ['光整（无毛刺）']
-          } else {
-            const lastVal = val[val.length - 1] || []
-            checkItme[type] = [lastVal]
-            if (lastVal === '长毛刺') {
-              checkItme[type] = val.filter(v => v !== '光整（无毛刺）')
-            } else if (val.includes('长毛刺')) {
-              checkItme[type] = ['长毛刺', lastVal]
-            } else {
-              checkItme[type] = lastVal.length ? [lastVal] : []
-            }
-          }
-          break
+        // case 'rag':
+        //   if (val.includes('光整（无毛刺）') && checkItme[type] && !checkItme[type].includes('光整（无毛刺）')) {
+        //     checkItme[type] = ['光整（无毛刺）']
+        //   } else {
+        //     const lastVal = val[val.length - 1] || []
+        //     checkItme[type] = [lastVal]
+        //     if (lastVal === '长毛刺') {
+        //       checkItme[type] = val.filter(v => v !== '光整（无毛刺）')
+        //     } else if (val.includes('长毛刺')) {
+        //       checkItme[type] = ['长毛刺', lastVal]
+        //     } else {
+        //       checkItme[type] = lastVal.length ? [lastVal] : []
+        //     }
+        //   }
+        //   break
 
         // 结节类型
         case 'nodeType':
@@ -1468,12 +1462,62 @@ const MarkViewer = () => {
     setNoduleList([...noduleList])
   }
 
+  // 重置列表事件（微小结节）
+  const handleResetMiniNode = (val, type) => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    // 形态分叶
+    checkItme.paging = undefined
+
+    // 形状
+    checkItme.sphere = undefined
+
+    // 棘突
+    checkItme.spinous = '非常微妙'
+
+    // 结构成分
+    checkItme.structuralConstitution = []
+
+    // 结构成分（空洞）
+    checkItme.structuralConstitutionVoid = undefined
+
+    // 结构成分（钙化）
+    checkItme.structuralConstitutionCalcific = []
+
+    // 结构关系
+    checkItme.structuralRelation = []
+
+    setNoduleList([...noduleList])
+  }
+
+  // 重置列表事件（检测难易度）
+  const handleResetDifficultyLevel = (val, type) => {
+    const checkItme = noduleList.find(item => item.checked === true)
+
+    // 形态分叶
+    checkItme.paging = undefined
+
+    // 边缘/毛刺
+    checkItme.rag = undefined
+
+    // 晕征
+    checkItme.rag0 = undefined
+
+    setNoduleList([...noduleList])
+  }
+
   // 提交单个结果
   const updateSingleNodeResult = _ => {
     const checkItme = noduleList.find(item => item.checked === true)
 
+    console.log(checkItme)
+
     // 位置
     if (!checkItme.position) {
+      message.warning(`请选择结节的位置属性后再进行提交`)
+      return false
+    }
+
+    if (!Array.isArray(checkItme.position)) {
       message.warning(`请选择结节的位置属性后再进行提交`)
       return false
     }
@@ -1502,7 +1546,13 @@ const MarkViewer = () => {
       return false
     }
 
-    // 边缘/毛刺
+    // 长毛刺
+    if (!checkItme.rag1) {
+      message.warning(`请选择结节的长毛刺属性后再进行提交`)
+      return false
+    }
+
+    // 晕征
     if (!checkItme.rag0) {
       message.warning(`请选择结节的晕征属性后再进行提交`)
       return false
@@ -1559,6 +1609,7 @@ const MarkViewer = () => {
       spherical: checkItme.sphere,
       edge: checkItme.rag.join(','),
       edge0: checkItme.rag0,
+      edge1: checkItme.rag1,
       burr: checkItme.spinous,
       definition: checkItme.lungInterface,
       proximity: checkItme.proximityRelation.join(','),
@@ -1583,7 +1634,7 @@ const MarkViewer = () => {
   }
 
   // 防抖
-  const [resultLoading, setResultLoading] = useState(false);
+  const [resultLoading, setResultLoading] = useState(false)
 
   // 提交审核结果按钮
   const handleShowModal = () => {
@@ -1597,11 +1648,11 @@ const MarkViewer = () => {
 
   // 提交审核结果弹窗
   const handleSubmitResults = async () => {
-    setResultLoading(true);
+    setResultLoading(true)
     const result = await updateList(params.id)
     if (result.data.code === 200) {
       message.success(`提交审核结果成功`)
-      setResultLoading(false);
+      setResultLoading(false)
       setVisible(false)
       if (params.type === '2') {
         history.push('/markList')
@@ -1609,7 +1660,7 @@ const MarkViewer = () => {
         history.push('/benignNoduleList')
       }
     } else if (result.data.code === 401) {
-      setResultLoading(false);
+      setResultLoading(false)
       localStorage.setItem('token', '')
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
@@ -1657,6 +1708,8 @@ const MarkViewer = () => {
         noduleInfo={noduleInfo}
         handleShowAdjustModal={handleShowAdjustModal}
         handleUpdateNoduleInfo={handleUpdateNoduleInfo}
+        handleResetMiniNode={handleResetMiniNode}
+        handleResetDifficultyLevel={handleResetDifficultyLevel}
         handleShowMarkModal={handleShowMarkModal}
         updateSingleNodeResult={updateSingleNodeResult}
       />
