@@ -465,7 +465,6 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">结构关系</div>
               <div className="mark-content">
                 <Checkbox.Group
-                  disabled={isMiniNode}
                   options={[
                     { label: '侵犯血管', value: '侵犯血管' },
                     { label: '内有血管穿行', value: '内有血管穿行' },

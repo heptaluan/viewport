@@ -1483,9 +1483,6 @@ const MarkViewer = () => {
     // 结构成分（钙化）
     checkItme.structuralConstitutionCalcific = []
 
-    // 结构关系
-    checkItme.structuralRelation = []
-
     setNoduleList([...noduleList])
   }
 
@@ -1592,10 +1589,8 @@ const MarkViewer = () => {
 
     // 结构关系
     if (checkItme.structuralRelation.length === 0) {
-      if (formatNodeSize(checkItme.size) !== '微小结节') {
-        message.warning(`请选择结节的结构关系属性后再进行提交`)
-        return false
-      }
+      message.warning(`请选择结节的结构关系属性后再进行提交`)
+      return false
     }
 
     // 结构成分（钙化）
