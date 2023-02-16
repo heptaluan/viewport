@@ -269,7 +269,7 @@ const MarkViewer = () => {
           checked: false,
           noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
           difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-          position: item.position ? item.position : data[i].surgicalLocation ? data[i].surgicalLocation : undefined,
+          position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
           size: item.sizenum ? formatSizeMean(item.sizenum) : '',
           sizeBefore: '',
           sizeAfter: item.sizenum ? item.sizenum : undefined,
@@ -335,7 +335,7 @@ const MarkViewer = () => {
         checked: false,
         noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
         difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-        position: item.position ? item.position : data[i].surgicalLocation ? data[i].surgicalLocation : undefined,
+        position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
         size: item.sizenum ? formatSizeMean(item.sizenum) : '',
         sizeBefore: '',
         sizeAfter: item.sizenum ? item.sizenum : undefined,
@@ -1499,6 +1499,9 @@ const MarkViewer = () => {
     // 边缘/毛刺
     checkItme.rag = undefined
 
+    // 长毛刺
+    checkItme.rag1 = undefined
+
     // 晕征
     checkItme.rag0 = undefined
 
@@ -1511,6 +1514,12 @@ const MarkViewer = () => {
 
     console.log(checkItme)
 
+    // 大小
+    if (!checkItme.sizeAfter) {
+      message.warning(`请选择或者测量结节的大小属性后再进行提交`)
+      return false
+    }
+
     // 位置
     if (!checkItme.position) {
       message.warning(`请选择结节的位置属性后再进行提交`)
@@ -1522,40 +1531,49 @@ const MarkViewer = () => {
       return false
     }
 
-    // 大小
-    if (!checkItme.sizeAfter) {
-      message.warning(`请选择或者测量结节的大小属性后再进行提交`)
+    if (checkItme.position.length < 2) {
+      message.warning(`请选择结节的位置属性后再进行提交`)
       return false
     }
 
     // 形态分叶
     if (!checkItme.paging) {
-      message.warning(`请选择结节的形态分叶属性后再进行提交`)
-      return false
+      if (checkItme.difficultyLevel !== '非常微妙' && formatNodeSize(checkItme.size) !== '微小结节') {
+        message.warning(`请选择结节的形态分叶属性后再进行提交`)
+        return false
+      }
     }
 
     // 形状
     if (!checkItme.sphere) {
-      message.warning(`请选择结节的形状属性后再进行提交`)
-      return false
+      if (formatNodeSize(checkItme.size) !== '微小结节') {
+        message.warning(`请选择结节的形状属性后再进行提交`)
+        return false
+      }
     }
 
     // 边缘/毛刺
-    if (checkItme.rag.length === 0) {
-      message.warning(`请选择结节的边缘/毛刺属性后再进行提交`)
-      return false
+    if (!checkItme.rag) {
+      if (checkItme.difficultyLevel !== '非常微妙') {
+        message.warning(`请选择结节的边缘/毛刺属性后再进行提交`)
+        return false
+      }
     }
 
     // 长毛刺
     if (!checkItme.rag1) {
-      message.warning(`请选择结节的长毛刺属性后再进行提交`)
-      return false
+      if (checkItme.difficultyLevel !== '非常微妙') {
+        message.warning(`请选择结节的长毛刺属性后再进行提交`)
+        return false
+      }
     }
 
     // 晕征
     if (!checkItme.rag0) {
-      message.warning(`请选择结节的晕征属性后再进行提交`)
-      return false
+      if (checkItme.difficultyLevel !== '非常微妙') {
+        message.warning(`请选择结节的晕征属性后再进行提交`)
+        return false
+      }
     }
 
     // 临近关系
@@ -1566,8 +1584,18 @@ const MarkViewer = () => {
 
     // 结构成分
     if (checkItme.structuralConstitution.length === 0) {
-      message.warning(`请选择结节的结构成分属性后再进行提交`)
-      return false
+      if (formatNodeSize(checkItme.size) !== '微小结节') {
+        message.warning(`请选择结节的结构成分属性后再进行提交`)
+        return false
+      }
+    }
+
+    // 结构关系
+    if (checkItme.structuralRelation.length === 0) {
+      if (formatNodeSize(checkItme.size) !== '微小结节') {
+        message.warning(`请选择结节的结构关系属性后再进行提交`)
+        return false
+      }
     }
 
     // 结构成分（钙化）
@@ -1579,12 +1607,6 @@ const MarkViewer = () => {
     // 结构成分（空洞）
     if (checkItme.structuralConstitution.includes('空洞') && !checkItme.structuralConstitutionVoid) {
       message.warning(`如若结构成分当中包含空洞属性，请选择结构成分（空洞）属性后再进行提交`)
-      return false
-    }
-
-    // 结构关系
-    if (checkItme.structuralRelation.length === 0) {
-      message.warning(`请选择结节的结构关系属性后再进行提交`)
       return false
     }
 
@@ -1602,12 +1624,12 @@ const MarkViewer = () => {
       imageCode: checkItme.imageCode,
       nodeIndex: checkItme.num.toString(),
       findpercent: checkItme.difficultyLevel,
-      position: checkItme.position,
+      position: checkItme.position.join(','),
       sizenum: checkItme.sizeAfter,
       size: formatNodeSize(checkItme.size),
       shape: checkItme.paging,
       spherical: checkItme.sphere,
-      edge: checkItme.rag.join(','),
+      edge: checkItme.rag,
       edge0: checkItme.rag0,
       edge1: checkItme.rag1,
       burr: checkItme.spinous,

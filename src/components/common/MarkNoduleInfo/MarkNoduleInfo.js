@@ -26,6 +26,7 @@ const MarkNoduleInfo = props => {
   // 发现难易度
   const [difficultyLevel, setDifficultyLevel] = useState(false)
 
+  // 微小结节处理
   useEffect(() => {
     if (formatNodeSize(props.noduleInfo?.size) === '微小结节') {
       setIsMiniNode(true)
@@ -36,6 +37,7 @@ const MarkNoduleInfo = props => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.noduleInfo?.size])
 
+  // 发现难易度处理
   useEffect(() => {
     if (props.noduleInfo?.difficultyLevel === '非常微妙') {
       setDifficultyLevel(true)
@@ -257,6 +259,7 @@ const MarkNoduleInfo = props => {
                   ]}
                   onChange={e => props.handleUpdateNoduleInfo(e, 'position')}
                   placeholder="请选择位置"
+                  value={props.noduleInfo.position}
                 />
               </div>
             </div>
@@ -332,6 +335,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">长毛刺</div>
               <div className="mark-content">
                 <Radio.Group
+                  disabled={difficultyLevel}
                   options={[
                     { label: '有', value: '有' },
                     { label: '无', value: '无' },
@@ -617,7 +621,7 @@ const MarkNoduleInfo = props => {
             <div className="mark-content">
               <Button
                 style={{ fontSize: 12 }}
-                // disabled={props.noduleInfo.state}
+                disabled={props.noduleInfo.state}
                 size="small"
                 onClick={props.updateSingleNodeResult}
               >
