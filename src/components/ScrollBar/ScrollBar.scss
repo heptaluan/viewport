@@ -1,0 +1,18 @@
+.scroll-bar-wrap {
+  width: 15px;
+  height: calc(100% - 35px);
+  position: absolute;
+  right: 0;
+  top: 35px;
+  z-index: 2;
+  background: #000;
+
+  & > div {
+    display: flex;
+
+    &.active {
+      cursor: pointer;
+      background-color: #fff;
+    }
+  }
+}

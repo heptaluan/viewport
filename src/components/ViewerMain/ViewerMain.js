@@ -4,6 +4,7 @@ import './ViewerMain.scss'
 import useWindowSize from '../../hook/useWindowSize'
 import Toolbar from '../../components/Toolbar/Toolbar'
 import CustomOverlay from '../common/CustomOverlay/CustomOverlay'
+import ScrollBar from '../ScrollBar/ScrollBar'
 import { Spin } from 'antd'
 
 const ViewerMain = props => {
@@ -16,6 +17,11 @@ const ViewerMain = props => {
         </div>
       ) : (
         <div>
+          <ScrollBar
+            noduleList={props.noduleList}
+            imageIds={props.imagesConfig}
+            handleScorllClicked={props.handleScorllClicked}
+          />
           <Toolbar
             handleSliderChange={props.handleSliderChange}
             handleToolbarClick={props.handleToolbarClick}
@@ -33,6 +39,7 @@ const ViewerMain = props => {
               minWidth: '100%',
               height: props.pageType === 'detail' ? `${size.height}px` : `${size.height - 85}px`,
               flex: '1',
+              paddingRight: 15
             }}
           />
         </div>

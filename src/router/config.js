@@ -2,6 +2,7 @@ import IndexComponent from '../components/index'
 import Viewer from '../pages/Viewer/Viewer'
 import StudyList from '../pages/StudyList/StudyList'
 import TaskList from '../pages/TaskList/TaskList'
+import ComparisonViewer from '../pages/ComparisonViewer/ComparisonViewer'
 import { Redirect } from 'react-router-dom'
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
       {
         path: '/viewer/:studyInstanceUids',
         component: Viewer,
+        routes: [],
+      },
+      {
+        path: '/comparisonViewer',
+        component: ComparisonViewer,
         routes: [],
       },
     ],

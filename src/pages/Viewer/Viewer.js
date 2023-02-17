@@ -373,6 +373,31 @@ const Viewer = () => {
 
   // ===========================================================
 
+  // 右侧滚动条结节点击事件
+  const handleScorllClicked = index => {
+
+    // 设置列表选中状态
+    noduleList.map(item => (item.checked = false))
+    noduleList.find(item => item.num === index).checked = true
+    setNoduleList([...noduleList])
+
+    // 设置当中帧数
+    setCurrentImageIdIndex(index)
+
+    // 设置当前视图选中项
+    if (cornerstoneElement) {
+      changeActiveImage(index, cornerstoneElement)
+    }
+
+    // 设置右侧结节详情
+    const checkItme = noduleList.find(item => item.checked === true)
+    if (checkItme && pageType !== 'detail') {
+      setNoduleInfo(checkItme)
+    } else {
+      setNoduleInfo(null)
+    }
+  }
+
   // 单选
   const onCheckChange = (index, num) => {
     handleCheckedListClick(num)
@@ -1647,6 +1672,7 @@ const Viewer = () => {
           handleToolbarClick={handleToolbarClick}
           handleElementEnabledEvt={handleElementEnabledEvt}
           handleShowMarker={handleShowMarker}
+          handleScorllClicked={handleScorllClicked}
           toolsConfig={toolsConfig}
           imagesConfig={imagesConfig}
           noduleList={noduleList}
