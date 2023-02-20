@@ -2,7 +2,7 @@ import IndexComponent from '../components/index'
 import Viewer from '../pages/Viewer/Viewer'
 import StudyList from '../pages/StudyList/StudyList'
 import TaskList from '../pages/TaskList/TaskList'
-import CompareBox from '../pages/CompareViewer/CompareBox'
+import CompareViewer from '../pages/CompareViewer/CompareViewer'
 import { Redirect } from 'react-router-dom'
 
 const routes = [
@@ -28,8 +28,8 @@ const routes = [
         routes: [],
       },
       {
-        path: '/compareBox',
-        component: CompareBox,
+        path: '/compareViewer',
+        component: CompareViewer,
         routes: [],
       },
     ],

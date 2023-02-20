@@ -3,14 +3,15 @@ import './CompareViewer.scss'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 
-import CompareMiddleSidePanel from '../CompareMiddleSidePanel/CompareMiddleSidePanel'
-import CompareViewerMain from '../CompareViewerMain/CompareViewerMain'
-import CompareNoduleInfo from '../CompareNoduleInfo/CompareNoduleInfo'
+import CompareHeader from './CompareHeader/CompareHeader'
+import CompareMiddleSidePanel from './CompareMiddleSidePanel/CompareMiddleSidePanel'
+import CompareViewerMain from './CompareViewerMain/CompareViewerMain'
+import CompareNoduleInfo from './CompareNoduleInfo/CompareNoduleInfo'
 
-import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNoduleTool'
-import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
-import { getImageList, getDoctorTask } from '../../../api/api'
-import { getURLParameters } from '../../../util/index'
+import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
+import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
+import { getImageList, getDoctorTask } from '../../api/api'
+import { getURLParameters } from '../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
 
 const CompareViewer = props => {
@@ -20,7 +21,6 @@ const CompareViewer = props => {
 
   const [noduleList, setNoduleList] = useState([])
   // eslint-disable-next-line no-unused-vars
-  const [patients, setPatients] = useState([])
   const [noduleMapList, setNoduleMapList] = useState([])
 
   // 结节详情
@@ -231,8 +231,6 @@ const CompareViewer = props => {
     }
   }
 
-  // ===========================================================
-
   // 添加结节标注
   const addNodeTool = (cornerstoneElement, index = 0) => {
     const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
@@ -322,8 +320,6 @@ const CompareViewer = props => {
     }
   }
 
-  // ===========================================================
-
   // 右侧滚动条结节点击事件
   const handleScorllClicked = index => {
     // 设置列表选中状态
@@ -353,8 +349,6 @@ const CompareViewer = props => {
     } else {
       setNoduleInfo(null)
     }
-
-    props.compareViewerClicked()
   }
 
   // 列表点击事件
@@ -367,8 +361,6 @@ const CompareViewer = props => {
       changeActiveImage(index, cornerstoneElement)
     }
   }
-
-  // ===========================================================
 
   // 切换当前工具栏选中项
   const changeToolActive = (checked, type) => {
@@ -474,18 +466,37 @@ const CompareViewer = props => {
 
   return (
     <>
-      <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
-      <CompareViewerMain
-        handleToolbarClick={handleToolbarClick}
-        handleElementEnabledEvt={handleElementEnabledEvt}
-        handleShowMarker={handleShowMarker}
-        handleScorllClicked={handleScorllClicked}
-        toolsConfig={toolsConfig}
-        imagesConfig={imagesConfig}
-        noduleList={noduleList}
-        showMarker={showMarker}
-      />
-      <CompareNoduleInfo noduleInfo={noduleInfo} />
+      <CompareHeader />
+      <div className="compare-viewer-box">
+        <div className="box1">
+          <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
+          <CompareViewerMain
+            handleToolbarClick={handleToolbarClick}
+            handleElementEnabledEvt={handleElementEnabledEvt}
+            handleShowMarker={handleShowMarker}
+            handleScorllClicked={handleScorllClicked}
+            toolsConfig={toolsConfig}
+            imagesConfig={imagesConfig}
+            noduleList={noduleList}
+            showMarker={showMarker}
+          />
+          <CompareNoduleInfo noduleInfo={noduleInfo} />
+        </div>
+        <div className="box2">
+          <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
+          <CompareViewerMain
+            handleToolbarClick={handleToolbarClick}
+            handleElementEnabledEvt={handleElementEnabledEvt}
+            handleShowMarker={handleShowMarker}
+            handleScorllClicked={handleScorllClicked}
+            toolsConfig={toolsConfig}
+            imagesConfig={imagesConfig}
+            noduleList={noduleList}
+            showMarker={showMarker}
+          />
+          <CompareNoduleInfo noduleInfo={noduleInfo} />
+        </div>
+      </div>
     </>
   )
 }
