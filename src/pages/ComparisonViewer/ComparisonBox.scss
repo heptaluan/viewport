@@ -3,9 +3,9 @@
   flex-direction: column;
   height: calc(100% - 50px);
 
-  .box1, .box2 {
+  .box1,
+  .box2 {
     display: flex;
     flex: 1;
   }
-
 }

@@ -3,20 +3,17 @@ import './ComparisonViewer.scss'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 
-import ComparisonHeader from './ComparisonHeader/ComparisonHeader'
-import ComparisonMiddleSidePanel from './ComparisonMiddleSidePanel/ComparisonMiddleSidePanel'
-import ComparisonViewerMain from './ComparisonViewerMain/ComparisonViewerMain'
-import ComparisonNoduleInfo from './ComparisonNoduleInfo/ComparisonNoduleInfo'
+import ComparisonMiddleSidePanel from '../ComparisonMiddleSidePanel/ComparisonMiddleSidePanel'
+import ComparisonViewerMain from '../ComparisonViewerMain/ComparisonViewerMain'
+import ComparisonNoduleInfo from '../ComparisonNoduleInfo/ComparisonNoduleInfo'
 
-import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
-import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
-import { getImageList, getDoctorTask } from '../../api/api'
-import { getURLParameters } from '../../util/index'
-import { Modal, message, Button, InputNumber } from 'antd'
+import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNoduleTool'
+import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
+import { getImageList, getDoctorTask } from '../../../api/api'
+import { getURLParameters } from '../../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
 
 const ComparisonViewer = () => {
-
   // eslint-disable-next-line no-unused-vars
   const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
@@ -38,8 +35,8 @@ const ComparisonViewer = () => {
   // 临时变量
   const nodeRef = useRef()
 
-  // 历史记录
-  const [historyList, setHistoryList] = useState([])
+  // 视图元素
+  const [cornerstoneElement, setCornerstoneElement] = useState(null)
 
   useEffect(() => {
     nodeRef.current = {
@@ -51,12 +48,10 @@ const ComparisonViewer = () => {
 
   // 初始化结节信息
   useEffect(() => {
-
     const fetchDoctorData = async () => {
       const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
       if (result.data.code === 200) {
         if (result.data.result) {
-          setHistoryList(result.data.result.historyReportList)
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
@@ -221,19 +216,6 @@ const ComparisonViewer = () => {
     }
   }
 
-  // 多选
-  const [indeterminate, setIndeterminate] = useState(false)
-  const [checkAll, setCheckAll] = useState(true)
-
-  // 视图元素
-  const [cornerstoneElement, setCornerstoneElement] = useState(null)
-
-  // 弹出层
-  const [showPopover, setShowPopover] = useState({
-    index: 0,
-    visible: false,
-  })
-
   // 是否隐藏标注
   const handleShowMarker = e => {
     const flag = !showMarker
@@ -320,7 +302,6 @@ const ComparisonViewer = () => {
     }
   }
 
-  
   // 设置图片列表
   const setImageList = (res, data) => {
     if (res.data.code === 200 && res.data.result.length > 0) {
@@ -365,13 +346,6 @@ const ComparisonViewer = () => {
     noduleList.map(item => (item.checked = false))
     noduleList[index].checked = true
     setNoduleList([...noduleList])
-    if (noduleList.every(item => item.checked === true)) {
-      setIndeterminate(false)
-      setCheckAll(true)
-    } else {
-      setIndeterminate(true)
-      setCheckAll(false)
-    }
 
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
@@ -496,97 +470,20 @@ const ComparisonViewer = () => {
     })
   }
 
-  // ===========================================================
-
-  const [showState, setShowState] = useState(false)
-
-  // 隐藏和显示结节列表
-  const showNoduleList = () => {
-    console.log(showState)
-    setShowState(!showState)
-  }
-
-  // ===========================================================
-
-  const [visible, setVisible] = useState(false)
-
-  const hideModal = () => {
-    setVisible(false)
-  }
-
-  // 提交审核结果按钮
-  const handleShowModal = () => {
-    setVisible(true)
-  }
-
-  // 提交审核结果
-  const handleSubmitResults = () => {
-    console.log(`提交`)
-  }
-
   return (
     <>
-      <ComparisonHeader data={patients} handleShowModal={handleShowModal} historyList={historyList} />
-      <div className="viewer-center-box">
-        <div className="box1">
-          <ComparisonMiddleSidePanel
-            onCheckChange={onCheckChange}
-            noduleList={noduleList}
-            imagesConfig={imagesConfig}
-          />
-          <ComparisonViewerMain
-            handleToolbarClick={handleToolbarClick}
-            handleElementEnabledEvt={handleElementEnabledEvt}
-            handleShowMarker={handleShowMarker}
-            handleScorllClicked={handleScorllClicked}
-            toolsConfig={toolsConfig}
-            imagesConfig={imagesConfig}
-            noduleList={noduleList}
-            showMarker={showMarker}
-          />
-          <ComparisonNoduleInfo noduleInfo={noduleInfo} />
-        </div>
-        <div className="box2">
-          <ComparisonMiddleSidePanel
-            onCheckChange={onCheckChange}
-            noduleList={noduleList}
-            imagesConfig={imagesConfig}
-          />
-          <ComparisonViewerMain
-            handleToolbarClick={handleToolbarClick}
-            handleElementEnabledEvt={handleElementEnabledEvt}
-            handleShowMarker={handleShowMarker}
-            handleScorllClicked={handleScorllClicked}
-            toolsConfig={toolsConfig}
-            imagesConfig={imagesConfig}
-            noduleList={noduleList}
-            showMarker={showMarker}
-          />
-        </div>
-      </div>
-
-      <Modal
-        title="提交结果"
-        maskClosable={false}
-        visible={visible}
-        onOk={handleSubmitResults}
-        onCancel={hideModal}
-        okText="确认"
-        cancelText="取消"
-        maskStyle={{ backgroundColor: 'transparent' }}
-      >
-        <p>是否提交结果</p>
-      </Modal>
-
-      <div className="show-button">
-        <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
-        {getURLParameters(window.location.href).patientId &&
-        getURLParameters(window.location.href).patientId !== 'null' ? (
-          <span className="infor-detail">
-            patientId: <em>{getURLParameters(window.location.href).patientId}</em>
-          </span>
-        ) : null}
-      </div>
+      <ComparisonMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
+      <ComparisonViewerMain
+        handleToolbarClick={handleToolbarClick}
+        handleElementEnabledEvt={handleElementEnabledEvt}
+        handleShowMarker={handleShowMarker}
+        handleScorllClicked={handleScorllClicked}
+        toolsConfig={toolsConfig}
+        imagesConfig={imagesConfig}
+        noduleList={noduleList}
+        showMarker={showMarker}
+      />
+      <ComparisonNoduleInfo noduleInfo={noduleInfo} />
     </>
   )
 }
