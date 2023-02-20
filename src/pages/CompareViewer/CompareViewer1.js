@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
-import './CompareViewer.scss'
+import React, { useState, useEffect, useRef, useImperativeHandle } from 'react'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 
-import CompareHeader from './CompareHeader/CompareHeader'
 import CompareMiddleSidePanel from './CompareMiddleSidePanel/CompareMiddleSidePanel'
 import CompareViewerMain from './CompareViewerMain/CompareViewerMain'
 import CompareNoduleInfo from './CompareNoduleInfo/CompareNoduleInfo'
@@ -14,7 +12,7 @@ import { getImageList, getDoctorTask } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
 
-const CompareViewer = props => {
+const CompareViewer1 = React.forwardRef( (props, ref) => {
   // eslint-disable-next-line no-unused-vars
   const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
@@ -349,6 +347,8 @@ const CompareViewer = props => {
     } else {
       setNoduleInfo(null)
     }
+
+    props.viewer1ListClicked(index, num)
   }
 
   // 列表点击事件
@@ -461,44 +461,26 @@ const CompareViewer = props => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
       handleCheckedListClick(index)
+      props.viewer1ImageChange(index)
     })
   }
 
   return (
     <>
-      <CompareHeader />
-      <div className="compare-viewer-box">
-        <div className="box1">
-          <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
-          <CompareViewerMain
-            handleToolbarClick={handleToolbarClick}
-            handleElementEnabledEvt={handleElementEnabledEvt}
-            handleShowMarker={handleShowMarker}
-            handleScorllClicked={handleScorllClicked}
-            toolsConfig={toolsConfig}
-            imagesConfig={imagesConfig}
-            noduleList={noduleList}
-            showMarker={showMarker}
-          />
-          <CompareNoduleInfo noduleInfo={noduleInfo} />
-        </div>
-        <div className="box2">
-          <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
-          <CompareViewerMain
-            handleToolbarClick={handleToolbarClick}
-            handleElementEnabledEvt={handleElementEnabledEvt}
-            handleShowMarker={handleShowMarker}
-            handleScorllClicked={handleScorllClicked}
-            toolsConfig={toolsConfig}
-            imagesConfig={imagesConfig}
-            noduleList={noduleList}
-            showMarker={showMarker}
-          />
-          <CompareNoduleInfo noduleInfo={noduleInfo} />
-        </div>
-      </div>
+      <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
+      <CompareViewerMain
+        handleToolbarClick={handleToolbarClick}
+        handleElementEnabledEvt={handleElementEnabledEvt}
+        handleShowMarker={handleShowMarker}
+        handleScorllClicked={handleScorllClicked}
+        toolsConfig={toolsConfig}
+        imagesConfig={imagesConfig}
+        noduleList={noduleList}
+        showMarker={showMarker}
+      />
+      <CompareNoduleInfo noduleInfo={noduleInfo} />
     </>
   )
-}
+})
 
-export default CompareViewer
+export default CompareViewer1
