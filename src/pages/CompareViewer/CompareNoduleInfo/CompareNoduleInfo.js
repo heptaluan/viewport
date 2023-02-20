@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import './ComparisonNoduleInfo.scss'
-import { Radio, Select, Button, Input, InputNumber, Modal } from 'antd'
-import { getURLParameters, formatMiniNode } from '../../../util/index'
+import React from 'react'
+import './CompareNoduleInfo.scss'
 
-const { TextArea } = Input
-
-const { Option } = Select
-
-const ComparisonNoduleInfo = props => {
+const CompareNoduleInfo = props => {
   return (
-    <div className="comparison-nodule-info">
+    <div className="compare-nodule-info">
       {props.noduleInfo ? (
         <>
           <div className="list">肺：{props.noduleInfo.lung}</div>
@@ -27,4 +21,4 @@ const ComparisonNoduleInfo = props => {
   )
 }
 
-export default ComparisonNoduleInfo
+export default CompareNoduleInfo

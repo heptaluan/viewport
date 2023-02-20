@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './ComparisonViewer.scss'
+import './CompareViewer.scss'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 
-import ComparisonMiddleSidePanel from '../ComparisonMiddleSidePanel/ComparisonMiddleSidePanel'
-import ComparisonViewerMain from '../ComparisonViewerMain/ComparisonViewerMain'
-import ComparisonNoduleInfo from '../ComparisonNoduleInfo/ComparisonNoduleInfo'
+import CompareMiddleSidePanel from '../CompareMiddleSidePanel/CompareMiddleSidePanel'
+import CompareViewerMain from '../CompareViewerMain/CompareViewerMain'
+import CompareNoduleInfo from '../CompareNoduleInfo/CompareNoduleInfo'
 
 import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
@@ -13,7 +13,7 @@ import { getImageList, getDoctorTask } from '../../../api/api'
 import { getURLParameters } from '../../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
 
-const ComparisonViewer = () => {
+const CompareViewer = props => {
   // eslint-disable-next-line no-unused-vars
   const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
@@ -353,6 +353,8 @@ const ComparisonViewer = () => {
     } else {
       setNoduleInfo(null)
     }
+
+    props.compareViewerClicked()
   }
 
   // 列表点击事件
@@ -472,8 +474,8 @@ const ComparisonViewer = () => {
 
   return (
     <>
-      <ComparisonMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
-      <ComparisonViewerMain
+      <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
+      <CompareViewerMain
         handleToolbarClick={handleToolbarClick}
         handleElementEnabledEvt={handleElementEnabledEvt}
         handleShowMarker={handleShowMarker}
@@ -483,9 +485,9 @@ const ComparisonViewer = () => {
         noduleList={noduleList}
         showMarker={showMarker}
       />
-      <ComparisonNoduleInfo noduleInfo={noduleInfo} />
+      <CompareNoduleInfo noduleInfo={noduleInfo} />
     </>
   )
 }
 
-export default ComparisonViewer
+export default CompareViewer

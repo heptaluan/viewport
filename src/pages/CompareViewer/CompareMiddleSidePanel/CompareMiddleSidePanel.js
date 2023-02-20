@@ -1,11 +1,11 @@
 import React from 'react'
-import './ComparisonMiddleSidePanel.scss'
+import './CompareMiddleSidePanel.scss'
 import { Checkbox } from 'antd'
 import { getURLParameters, formatNodeStyle } from '../../../util/index'
 
-const ComparisonMiddleSidePanel = props => {
+const CompareMiddleSidePanel = props => {
   return (
-    <div className="comparison-middle-side-panel-box">
+    <div className="compare-middle-side-panel-box">
       <div className="nodule-list-box">
         <div className="title">
           <span>结节列表（{props.noduleList.length}）</span>
@@ -55,4 +55,4 @@ const ComparisonMiddleSidePanel = props => {
   )
 }
 
-export default ComparisonMiddleSidePanel
+export default CompareMiddleSidePanel

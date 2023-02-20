@@ -1,12 +1,12 @@
 import React from 'react'
 import CornerstoneViewport from 'react-cornerstone-viewport'
-import './ComparisonViewerMain.scss'
+import './CompareViewerMain.scss'
 import useWindowSize from '../../../hook/useWindowSize'
 import CustomOverlay from '../../../components/common/CustomOverlay/CustomOverlay'
 import ScrollBar from '../../../components/ScrollBar/ScrollBar'
 import { Spin } from 'antd'
 
-const ComparisonViewerMain = props => {
+const CompareViewerMain = props => {
   const size = useWindowSize()
   return (
     <div className="viewer-main-box">
@@ -15,7 +15,7 @@ const ComparisonViewerMain = props => {
           <Spin tip="加载失败，请重新尝试" />
         </div>
       ) : (
-        <div className='comparison-viewer-main'>
+        <div className='compare-viewer-main'>
           <ScrollBar
             noduleList={props.noduleList}
             imageIds={props.imagesConfig}
@@ -46,4 +46,4 @@ const ComparisonViewerMain = props => {
   )
 }
 
-export default ComparisonViewerMain
+export default CompareViewerMain

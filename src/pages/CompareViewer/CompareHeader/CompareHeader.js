@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import './ComparisonHeader.scss'
+import './CompareHeader.scss'
 import { Button, Image, Space, Alert, Popconfirm, Tooltip } from 'antd'
 import { getURLParameters } from '../../../util/index'
 import { getClinicalFiles, downloadZip } from '../../../api/api'
 import { RightCircleOutlined, FileDoneOutlined } from '@ant-design/icons'
 
-const ComparisonHeader = props => {
+const CompareHeader = props => {
   const [visible, setVisible] = useState(false)
   const [fileData, setFileData] = useState([])
   const [remark, setRemark] = useState('')
@@ -33,4 +33,4 @@ const ComparisonHeader = props => {
   )
 }
 
-export default ComparisonHeader
+export default CompareHeader
