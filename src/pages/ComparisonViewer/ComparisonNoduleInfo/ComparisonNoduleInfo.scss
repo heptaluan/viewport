@@ -1,0 +1,20 @@
+.comparison-nodule-info {
+  position: absolute;
+  right: 40px;
+  top: 60px;
+  width: 260px;
+  color: #fff;
+  font-size: 13px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  
+  .list {
+    margin-bottom: 5px;
+  }
+}
+
+.ant-radio-disabled + span {
+  color: #fff !important;
+}
