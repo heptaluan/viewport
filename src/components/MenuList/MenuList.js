@@ -23,6 +23,8 @@ const MenuList = props => {
       history.push('/benignNoduleList')
     } else if (e.key === '5') {
       history.push('/missionList')
+    } else if (e.key === '6') {
+      history.push('/thirdList')
     }
   }
 
@@ -35,6 +37,7 @@ const MenuList = props => {
         <Menu.Item key="3">金标准列表</Menu.Item>
         <Menu.Item key="4">良性结节列表</Menu.Item>
         <Menu.Item key="5">多组学结节列表</Menu.Item>
+        <Menu.Item key="6">三千软标签</Menu.Item>
       </Menu>
     </div>
   )

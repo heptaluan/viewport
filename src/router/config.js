@@ -10,6 +10,9 @@ import Login from '../pages/Login/Login'
 import Dashboard from '../pages/Dashboard/Dashboard'
 import { Redirect } from 'react-router-dom'
 
+import ThirdList from '../pages/ThirdList/ThirdList'
+import ThirdViewer from '../pages/ThirdViewer/ThirdViewer'
+
 const routes = [
   {
     path: '/',
@@ -61,6 +64,16 @@ const routes = [
       {
         path: '/missionList',
         component: MissionList,
+        routes: [],
+      },
+      {
+        path: '/thirdList',
+        component: ThirdList,
+        routes: [],
+      },
+      {
+        path: '/thirdViewer',
+        component: ThirdViewer,
         routes: [],
       },
     ],
