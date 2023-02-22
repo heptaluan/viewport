@@ -29,7 +29,7 @@ const MenuList = props => {
   return (
     <div className="meau-box">
       <Menu defaultSelectedKeys={[props.defaultSelectedKeys]} onClick={e => handleChangeMenu(e)}>
-        {/* <Menu.Item key="0">分析台</Menu.Item> */}
+        <Menu.Item key="0">统计页</Menu.Item>
         <Menu.Item key="1">{props.userInfo === 'chief' ? '商检结节列表' : '良性结节二筛列表'}</Menu.Item>
         {props.userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
         <Menu.Item key="3">金标准列表</Menu.Item>
