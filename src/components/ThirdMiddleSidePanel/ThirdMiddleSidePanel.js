@@ -56,11 +56,13 @@ const ThirdMiddleSidePanel = props => {
                 <div className="type">{item.nodeType}</div>
                 <div className="type">{item.difficultyLevel}</div>
                 <div className={`type ${item.state ? 'yes' : 'no'}`}>{item.state ? '已提交' : '未提交'}</div>
-                <div className="del-tips">
-                  <Tag color="#2db7f5" onClick={e => showNoduleDetail(e, item)}>
-                    查看结节
-                  </Tag>
-                </div>
+                {item.checked ? (
+                  <div className="del-tips">
+                    <Tag color="#2db7f5" onClick={e => showNoduleDetail(e, item)}>
+                      查看结节
+                    </Tag>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

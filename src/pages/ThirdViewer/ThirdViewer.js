@@ -1702,12 +1702,6 @@ const ThirdViewer = () => {
   // 查看结节详情
   const [openDetail, setOpenDetail] = useState(false)
   const [detailDisabled, setDetailDisabled] = useState(false)
-  const [detailBounds, setDetailBounds] = useState({
-    left: 0,
-    top: 0,
-    bottom: 0,
-    right: 0,
-  })
 
   const draggleDetailRef = useRef(null)
 
@@ -1719,20 +1713,6 @@ const ThirdViewer = () => {
   const handleDetailCancel = e => {
     console.log(e)
     setOpenDetail(false)
-  }
-
-  const onDetailStart = (_event, uiData) => {
-    const { clientWidth, clientHeight } = window.document.documentElement
-    const targetRect = draggleDetailRef.current?.getBoundingClientRect()
-    if (!targetRect) {
-      return
-    }
-    setDetailBounds({
-      left: -targetRect.left + uiData.x,
-      right: clientWidth - (targetRect.right - uiData.x),
-      top: -targetRect.top + uiData.y,
-      bottom: clientHeight - (targetRect.bottom - uiData.y),
-    })
   }
 
   const showNoduleDetail = item => {
@@ -1802,11 +1782,8 @@ const ThirdViewer = () => {
             onMouseOut={() => {
               setDetailDisabled(true)
             }}
-            // fix eslintjsx-a11y/mouse-events-have-key-events
-            // https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/blob/master/docs/rules/mouse-events-have-key-events.md
             onFocus={() => {}}
             onBlur={() => {}}
-            // end
           >
             结节比对详情
           </div>
@@ -1815,16 +1792,11 @@ const ThirdViewer = () => {
         onOk={handleDetailOk}
         onCancel={handleDetailCancel}
         modalRender={modal => (
-          <Draggable
-            disabled={detailDisabled}
-            bounds={detailBounds}
-            onStart={(event, uiData) => onDetailStart(event, uiData)}
-          >
+          <Draggable>
             <div ref={draggleDetailRef}>{modal}</div>
           </Draggable>
         )}
         closable={false}
-        keyboard={false}
         mask={false}
         maskClosable={false}
         wrapClassName={'detail-box-modal'}
