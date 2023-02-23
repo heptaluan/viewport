@@ -244,13 +244,13 @@ export const saveChiefReviseResult = params => {
   })
 }
 
-// 三千金标准列表
+// 三千金标准列表（李主任）
 export const getThirdStndrdList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
 }
 
-// 获取良性结节列表
+// 获取良性结节列表（李主任）
 export const getThirdBenignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './MarkList.scss'
+import './ThirdChiefStndrdList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getMarkList } from '../../api/api'
-import MenuList from '../../components/MenuList/MenuList'
-import HeaderList from '../../components/HeaderList/HeaderList'
+import { getThirdStndrdList } from '../../../api/api'
+import MenuList from '../../../components/MenuList/MenuList'
+import HeaderList from '../../../components/HeaderList/HeaderList'
 
-const MarkList = () => {
+const ThirdChiefStndrdList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
@@ -58,7 +58,7 @@ const MarkList = () => {
   }
 
   const initPagination = result => {
-    let page = localStorage.getItem('markListPagination') ? JSON.parse(localStorage.getItem('markListPagination')) : ''
+    let page = localStorage.getItem('ThirdChiefStndrdList') ? JSON.parse(localStorage.getItem('ThirdChiefStndrdList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page !== '') {
       newPagination.current = page.current
@@ -111,7 +111,7 @@ const MarkList = () => {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('markListPagination', '')
+    localStorage.setItem('ThirdChiefStndrdList', '')
     fetchList()
   }
 
@@ -121,24 +121,23 @@ const MarkList = () => {
       imageCode: '',
     }
     setParams(newParams)
-    localStorage.setItem('markListPagination', '')
-    const result = await getMarkList(newParams)
+    localStorage.setItem('ThirdChiefStndrdList', '')
+    const result = await getThirdStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
   }
 
+  // ===================================================
+
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    let page = localStorage.getItem('markListPagination') ? JSON.parse(localStorage.getItem('markListPagination')) : ''
+    let page = localStorage.getItem('ThirdChiefStndrdList') ? JSON.parse(localStorage.getItem('ThirdChiefStndrdList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
       newParams.imageCode = page.imageCode
@@ -146,16 +145,11 @@ const MarkList = () => {
       setParams(newParams)
     }
 
-    const result = await getMarkList(newParams)
+    const result = await getThirdStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
-      localStorage.setItem('markListPagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -166,15 +160,15 @@ const MarkList = () => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
     newPagination.imageCode = params.imageCode
-    localStorage.setItem('markListPagination', JSON.stringify(newPagination))
-    history.push(`/markViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2`)
+    localStorage.setItem('ThirdChiefStndrdList', JSON.stringify(newPagination))
+    history.push(`/thirdViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
   }
 
   return (
     <div className="study-list-box">
       <HeaderList />
       <div className="study-list-container-wrap">
-        <MenuList defaultSelectedKeys={'3'} userInfo={userInfo} />
+        <MenuList defaultSelectedKeys={'3-1'} userInfo={userInfo} />
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header"></div>
@@ -235,4 +229,4 @@ const MarkList = () => {
   )
 }
 
-export default MarkList
+export default ThirdChiefStndrdList

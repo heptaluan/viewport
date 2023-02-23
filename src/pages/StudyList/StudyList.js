@@ -114,7 +114,7 @@ const StudyList = () => {
   const [userInfo, setUserInfo] = useState('')
 
   const initPagination = result => {
-    let page = localStorage.getItem('pagination') ? JSON.parse(localStorage.getItem('pagination')) : ''
+    let page = localStorage.getItem('StudyList') ? JSON.parse(localStorage.getItem('StudyList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page) {
       newPagination.current = page.current
@@ -141,10 +141,6 @@ const StudyList = () => {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -157,10 +153,6 @@ const StudyList = () => {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -190,7 +182,7 @@ const StudyList = () => {
     newPagination.current = e.current
     newPagination.pageSize = e.pageSize
     newPagination.total = e.total
-    localStorage.setItem('pagination', JSON.stringify(newPagination))
+    localStorage.setItem('StudyList', JSON.stringify(newPagination))
     setPagination(newPagination)
   }
 
@@ -207,7 +199,7 @@ const StudyList = () => {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     fetchDoctorList()
   }
 
@@ -215,16 +207,13 @@ const StudyList = () => {
     const isFinish = 0
     setIsFinish(isFinish)
     setSearchId('')
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     const result = await getDoctorList(isFinish, searchId)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -238,23 +227,20 @@ const StudyList = () => {
   }
 
   const handleChiefSearch = () => {
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     fetchChiefList()
   }
 
   const handleChiefReset = async () => {
     const isChiefFinish = 0
     setIsChiefFinish(isChiefFinish)
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     const result = await getChiefList(isChiefFinish)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -263,15 +249,15 @@ const StudyList = () => {
   // 总医生详情
   const handleShowChiefDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
-    localStorage.setItem('pagination', JSON.stringify(pagination))
-    history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
+    localStorage.setItem('StudyList', JSON.stringify(pagination))
+    history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}&from=${history.location.pathname}`)
   }
 
   // 普通医生详情
   const handleShowDoctorDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
-    localStorage.setItem('pagination', JSON.stringify(pagination))
-    history.push(`/viewer?id=${record.id}`)
+    localStorage.setItem('StudyList', JSON.stringify(pagination))
+    history.push(`/viewer?id=${record.id}&from=${history.location.pathname}`)
   }
 
   const rowSelection = {

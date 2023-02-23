@@ -1,18 +1,25 @@
 import IndexComponent from '../components/index'
+import Login from '../pages/Login/Login'
 import Viewer from '../pages/Viewer/Viewer'
-import MarkViewer from '../pages/MarkViewer/MarkViewer'
-import BenignNoduleList from '../pages/BenignNoduleList/BenignNoduleList'
 import StudyList from '../pages/StudyList/StudyList'
 import AllotList from '../pages/AllotList/AllotList'
-import MarkList from '../pages/MarkList/MarkList'
 import MissionList from '../pages/MissionList/MissionList'
-import Login from '../pages/Login/Login'
-import Dashboard from '../pages/Dashboard/Dashboard'
-import { Redirect } from 'react-router-dom'
 
-import ThirdStndrdList from '../pages/ThirdStndrdList/ThirdStndrdList'
-import ThirdBenignList from '../pages/ThirdBenignList/ThirdBenignList'
-import ThirdViewer from '../pages/ThirdViewer/ThirdViewer'
+// 第一批软标签
+import SecondDashboard from '../pages/Second/SecondDashboard/SecondDashboard'
+import SecondViewer from '../pages/Second/SecondViewer/SecondViewer'
+import SecondBenignList from '../pages/Second/SecondBenignList/SecondBenignList'
+import SecondChiefBenignList from '../pages/Second/SecondChiefBenignList/SecondChiefBenignList'
+import SecondStndrdList from '../pages/Second/SecondStndrdList/SecondStndrdList'
+import SecondChiefStndrdList from '../pages/Second/SecondChiefStndrdList/SecondChiefStndrdList'
+
+// 第二批软标签（三千结节）
+import ThirdDashboard from '../pages/Third/ThirdDashboard/ThirdDashboard'
+import ThirdViewer from '../pages/Third/ThirdViewer/ThirdViewer'
+import ThirdBenignList from '../pages/Third/ThirdBenignList/ThirdBenignList'
+import ThirdChiefBenignList from '../pages/Third/ThirdChiefBenignList/ThirdChiefBenignList'
+import ThirdStndrdList from '../pages/Third/ThirdStndrdList/ThirdStndrdList'
+import ThirdChiefStndrdList from '../pages/Third/ThirdChiefStndrdList/ThirdChiefStndrdList'
 
 const routes = [
   {
@@ -25,46 +32,34 @@ const routes = [
         routes: [],
       },
       {
-        path: '/dashboard',
-        component: Dashboard,
+        path: '/viewer',
+        component: Viewer,
         routes: [],
       },
       {
         path: '/studyList',
         component: StudyList,
         routes: [],
-        // render: () => <Redirect to={'/viewer/1'} />,
-      },
-      {
-        path: '/markList',
-        component: MarkList,
-        routes: [],
-        // render: () => <Redirect to={'/viewer/1'} />,
       },
       {
         path: '/allotList',
         component: AllotList,
         routes: [],
-        // render: () => <Redirect to={'/viewer/1'} />,
-      },
-      {
-        path: '/viewer',
-        component: Viewer,
-        routes: [],
-      },
-      {
-        path: '/markViewer',
-        component: MarkViewer,
-        routes: [],
-      },
-      {
-        path: '/benignNoduleList',
-        component: BenignNoduleList,
-        routes: [],
       },
       {
         path: '/missionList',
         component: MissionList,
+        routes: [],
+      },
+      // 第二批软标签（三千结节）
+      {
+        path: '/thirdDashboard',
+        component: ThirdDashboard,
+        routes: [],
+      },
+      {
+        path: '/thirdViewer',
+        component: ThirdViewer,
         routes: [],
       },
       {
@@ -78,8 +73,44 @@ const routes = [
         routes: [],
       },
       {
-        path: '/thirdViewer',
-        component: ThirdViewer,
+        path: '/thirdChiefStndrdList',
+        component: ThirdChiefStndrdList,
+        routes: [],
+      },
+      {
+        path: '/thirdChiefBenignList',
+        component: ThirdChiefBenignList,
+        routes: [],
+      },
+      // 第二批软标签
+      {
+        path: '/secondDashboard',
+        component: SecondDashboard,
+        routes: [],
+      },
+      {
+        path: '/secondViewer',
+        component: SecondViewer,
+        routes: [],
+      },
+      {
+        path: '/secondStndrdList',
+        component: SecondStndrdList,
+        routes: [],
+      },
+      {
+        path: '/secondBenignList',
+        component: SecondBenignList,
+        routes: [],
+      },
+      {
+        path: '/secondChiefStndrdList',
+        component: SecondChiefStndrdList,
+        routes: [],
+      },
+      {
+        path: '/secondChiefBenignList',
+        component: SecondChiefBenignList,
         routes: [],
       },
     ],

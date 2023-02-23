@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './ThirdViewer.scss'
-import Header from '../../components/Header/Header'
-// import LeftSidePanel from '../../components/LeftSidePanel/LeftSidePanel'
-import ViewerMain from '../../components/ViewerMain/ViewerMain'
-import ThirdMiddleSidePanel from '../../components/ThirdMiddleSidePanel/ThirdMiddleSidePanel'
+import Header from '../../../components/Header/Header'
+import ViewerMain from '../../../components/ViewerMain/ViewerMain'
+import ThirdMiddleSidePanel from '../../../components/ThirdMiddleSidePanel/ThirdMiddleSidePanel'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
-import MarkNoduleInfo from '../../components/common/MarkNoduleInfo/MarkNoduleInfo'
-import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
-import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
-import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
-import ThirdNoduleInfo from '../../components/common/ThirdNoduleInfo/ThirdNoduleInfo'
+import MarkNoduleInfo from '../../../components/common/MarkNoduleInfo/MarkNoduleInfo'
+import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNoduleTool'
+import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
+import MarkDialog from '../../../components/common/MarkDialog/MarkDialog'
+import ThirdNoduleInfo from '../../../components/common/ThirdNoduleInfo/ThirdNoduleInfo'
 import {
   getNodeList,
   getNewNodeList,
@@ -19,15 +18,15 @@ import {
   saveSecondprimaryResult,
   updateResult,
   updateList,
-} from '../../api/api'
+} from '../../../api/api'
 import { Modal, message, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
-import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
+import AddNewNode from '../../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { useHistory } from 'react-router-dom'
-import { formatSizeMean, formatNodeSize } from '../../util/index'
+import { formatSizeMean, formatNodeSize } from '../../../util/index'
 
 const { confirm } = Modal
 
@@ -144,9 +143,6 @@ const ThirdViewer = () => {
           console.log(error)
         }
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -164,9 +160,6 @@ const ThirdViewer = () => {
           console.log(error)
         }
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       } else if (result.data.code === 500) {
@@ -943,9 +936,6 @@ const ThirdViewer = () => {
     if (result.data.code === 200) {
       message.success(`结节信息暂存成功`)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     } else {
@@ -1358,16 +1348,6 @@ const ThirdViewer = () => {
     setshowMarkModal(false)
   }
 
-  // 返回列表
-  const handleGoBackList = () => {
-    localStorage.setItem('record', '')
-    if (params.type === '2') {
-      history.push('/markList')
-    } else if (params.type === '1') {
-      history.push('/benignNoduleList')
-    }
-  }
-
   // ===========================================================================
 
   // ===========================================================================
@@ -1714,9 +1694,6 @@ const ThirdViewer = () => {
       }
     } else if (result.data.code === 401) {
       setResultLoading(false)
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     } else {
@@ -1765,7 +1742,7 @@ const ThirdViewer = () => {
 
   return (
     <div className="viewer-box">
-      <Header data={patients} handleShowModal={handleShowModal} handleGoBackList={handleGoBackList} />
+      <Header data={patients} handleShowModal={handleShowModal} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <ThirdMiddleSidePanel
@@ -1917,7 +1894,6 @@ const ThirdViewer = () => {
 
       <div className="show-button">
         {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-        {/* <Button onClick={handleGoBackList}>返回列表</Button> */}
       </div>
 
       <Modal

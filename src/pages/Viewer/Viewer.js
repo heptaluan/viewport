@@ -135,9 +135,6 @@ const Viewer = () => {
           console.log(error)
         }
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -160,9 +157,6 @@ const Viewer = () => {
       if (result.data.code === 200) {
         formatSecondprimaryNodeData(result.data.data)
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -963,9 +957,6 @@ const Viewer = () => {
     if (result.data.code === 200) {
       message.success(`结节信息暂存成功`)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     } else {
@@ -1026,9 +1017,6 @@ const Viewer = () => {
         setVisible(false)
         history.push('/missionList')
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       } else {
@@ -1043,9 +1031,6 @@ const Viewer = () => {
           setVisible(false)
           history.push('/studyList')
         } else if (result.data.code === 401) {
-          localStorage.setItem('token', '')
-          localStorage.setItem('info', '')
-          localStorage.setItem('username', '')
           message.warning(`登录已失效，请重新登录`)
           history.push('/login')
         } else {
@@ -1059,9 +1044,6 @@ const Viewer = () => {
           setVisible(false)
           history.push('/studyList')
         } else if (result.data.code === 401) {
-          localStorage.setItem('token', '')
-          localStorage.setItem('info', '')
-          localStorage.setItem('username', '')
           message.warning(`登录已失效，请重新登录`)
           history.push('/login')
         } else {
@@ -1502,19 +1484,9 @@ const Viewer = () => {
     setshowMarkModal(false)
   }
 
-  // 返回列表
-  const handleGoBackList = () => {
-    localStorage.setItem('record', '')
-    if (params.type === 'mission') {
-      history.push('/missionList')
-    } else {
-      history.push('/studyList')
-    }
-  }
-
   return (
     <div className="viewer-box">
-      <Header data={patients} handleShowModal={handleShowModal} handleGoBackList={handleGoBackList} />
+      <Header data={patients} handleShowModal={handleShowModal} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel
@@ -1617,7 +1589,6 @@ const Viewer = () => {
 
       <div className="show-button">
         {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-        {/* <Button onClick={handleGoBackList}>返回列表</Button> */}
       </div>
 
       <Modal

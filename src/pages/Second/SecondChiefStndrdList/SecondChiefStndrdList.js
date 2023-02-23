@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './ThirdBenignList.scss'
+import './SecondChiefStndrdList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getThirdBenignList } from '../../api/api'
-import MenuList from '../../components/MenuList/MenuList'
-import HeaderList from '../../components/HeaderList/HeaderList'
+import { getMarkList } from '../../../api/api'
+import MenuList from '../../../components/MenuList/MenuList'
+import HeaderList from '../../../components/HeaderList/HeaderList'
 
-const ThirdBenignList = () => {
+const SecondChiefStndrdList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
@@ -58,7 +58,7 @@ const ThirdBenignList = () => {
   }
 
   const initPagination = result => {
-    let page = localStorage.getItem('ThirdBenignList') ? JSON.parse(localStorage.getItem('ThirdBenignList')) : ''
+    let page = localStorage.getItem('SecondChiefStndrdList') ? JSON.parse(localStorage.getItem('SecondChiefStndrdList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page !== '') {
       newPagination.current = page.current
@@ -111,7 +111,7 @@ const ThirdBenignList = () => {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('ThirdBenignList', '')
+    localStorage.setItem('SecondChiefStndrdList', '')
     fetchList()
   }
 
@@ -121,26 +121,21 @@ const ThirdBenignList = () => {
       imageCode: '',
     }
     setParams(newParams)
-    localStorage.setItem('ThirdBenignList', '')
-    const result = await getThirdBenignList(newParams)
+    localStorage.setItem('SecondChiefStndrdList', '')
+    const result = await getMarkList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
   }
 
-  // ===================================================
-
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    let page = localStorage.getItem('ThirdBenignList') ? JSON.parse(localStorage.getItem('ThirdBenignList')) : ''
+    let page = localStorage.getItem('SecondChiefStndrdList') ? JSON.parse(localStorage.getItem('SecondChiefStndrdList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
       newParams.imageCode = page.imageCode
@@ -148,16 +143,11 @@ const ThirdBenignList = () => {
       setParams(newParams)
     }
 
-    const result = await getThirdBenignList(newParams)
+    const result = await getMarkList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
-      localStorage.setItem('ThirdBenignList', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -168,15 +158,15 @@ const ThirdBenignList = () => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
     newPagination.imageCode = params.imageCode
-    localStorage.setItem('ThirdBenignList', JSON.stringify(newPagination))
-    history.push(`/thirdViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2`)
+    localStorage.setItem('SecondChiefStndrdList', JSON.stringify(newPagination))
+    history.push(`/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
   }
 
   return (
     <div className="study-list-box">
       <HeaderList />
       <div className="study-list-container-wrap">
-        <MenuList defaultSelectedKeys={'7'} userInfo={userInfo} />
+        <MenuList defaultSelectedKeys={'2-1'} userInfo={userInfo} />
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header"></div>
@@ -237,4 +227,4 @@ const ThirdBenignList = () => {
   )
 }
 
-export default ThirdBenignList
+export default SecondChiefStndrdList

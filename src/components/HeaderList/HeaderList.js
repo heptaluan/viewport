@@ -8,10 +8,6 @@ const HeaderList = () => {
   const history = useHistory()
 
   const handleLogout = _ => {
-    localStorage.setItem('token', '')
-    localStorage.setItem('info', '')
-    localStorage.setItem('username', '')
-    localStorage.setItem('pagination', '')
     message.success(`退出成功`)
     history.push('/login')
   }

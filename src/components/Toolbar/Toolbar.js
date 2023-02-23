@@ -166,7 +166,6 @@ const Toolbar = props => {
   // 滑块滑动事件
   // const handleSliderChange = newValue => {
   //   setInputValue(newValue)
-  //   localStorage.setItem('diameterSize', newValue)
   //   props.handleSliderChange(newValue)
   // }
 

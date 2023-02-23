@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './BenignNoduleList.scss'
+import './ThirdBenignList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getBenignNoduleList } from '../../api/api'
-import MenuList from '../../components/MenuList/MenuList'
-import HeaderList from '../../components/HeaderList/HeaderList'
+import { getBenignNoduleList } from '../../../api/api'
+import MenuList from '../../../components/MenuList/MenuList'
+import HeaderList from '../../../components/HeaderList/HeaderList'
 
-const BenignNoduleList = () => {
+const ThirdBenignList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
@@ -15,8 +15,8 @@ const BenignNoduleList = () => {
       dataIndex: 'createBy',
     },
     {
-      title: '编号',
-      dataIndex: 'kyPrimaryId',
+      title: '影像编号',
+      dataIndex: 'imageCode',
     },
     {
       title: '完成状态',
@@ -58,9 +58,7 @@ const BenignNoduleList = () => {
   }
 
   const initPagination = result => {
-    let page = localStorage.getItem('benignListPagination')
-      ? JSON.parse(localStorage.getItem('benignListPagination'))
-      : ''
+    let page = localStorage.getItem('ThirdBenignList') ? JSON.parse(localStorage.getItem('ThirdBenignList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page !== '') {
       newPagination.current = page.current
@@ -97,12 +95,12 @@ const BenignNoduleList = () => {
   // 查询
   const [params, setParams] = useState({
     isFinish: 0,
-    kyPrimaryId: '',
+    imageCode: '',
   })
 
-  const handleKyPrimaryIdSearch = val => {
+  const handleImageCodeSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.kyPrimaryId = val
+    newParams.imageCode = val
     setParams(newParams)
   }
 
@@ -113,39 +111,36 @@ const BenignNoduleList = () => {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('benignListPagination', '')
+    localStorage.setItem('ThirdBenignList', '')
     fetchList()
   }
 
   const handleReset = async () => {
     const newParams = {
       isFinish: 0,
-      kyPrimaryId: '',
+      imageCode: '',
     }
     setParams(newParams)
-    localStorage.setItem('benignListPagination', '')
+    localStorage.setItem('ThirdBenignList', '')
     const result = await getBenignNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
   }
 
+  // ===================================================
+
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    let page = localStorage.getItem('benignListPagination')
-      ? JSON.parse(localStorage.getItem('benignListPagination'))
-      : ''
+    let page = localStorage.getItem('ThirdBenignList') ? JSON.parse(localStorage.getItem('ThirdBenignList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
-      newParams.kyPrimaryId = page.kyPrimaryId
+      newParams.imageCode = page.imageCode
       newParams.isFinish = page.isFinish
       setParams(newParams)
     }
@@ -155,12 +150,6 @@ const BenignNoduleList = () => {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
-      localStorage.setItem('markListPagination', '')
-      localStorage.setItem('benignListPagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -170,25 +159,25 @@ const BenignNoduleList = () => {
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
-    newPagination.kyPrimaryId = params.kyPrimaryId
-    localStorage.setItem('benignListPagination', JSON.stringify(newPagination))
-    history.push(`/markViewer?id=${record.id}&kyPrimaryId=${record.kyPrimaryId}&isFinish=${record.isFinish}&type=1`)
+    newPagination.imageCode = params.imageCode
+    localStorage.setItem('ThirdBenignList', JSON.stringify(newPagination))
+    history.push(`/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
   }
 
   return (
     <div className="study-list-box">
       <HeaderList />
       <div className="study-list-container-wrap">
-        <MenuList defaultSelectedKeys={'4'} userInfo={userInfo} />
+        <MenuList defaultSelectedKeys={'3-4'} userInfo={userInfo} />
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header"></div>
             <div className="search-box">
               <Input
-                value={params.kyPrimaryId}
-                onChange={e => handleKyPrimaryIdSearch(e.target.value)}
+                value={params.imageCode}
+                onChange={e => handleImageCodeSearch(e.target.value)}
                 style={{ width: 200 }}
-                placeholder="请输入编号"
+                placeholder="请输入影像编号"
               />
               <Select
                 value={params.isFinish}
@@ -240,4 +229,4 @@ const BenignNoduleList = () => {
   )
 }
 
-export default BenignNoduleList
+export default ThirdBenignList

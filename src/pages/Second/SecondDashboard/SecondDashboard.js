@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import './Dashboard.scss'
+import './SecondDashboard.scss'
 // import { useHistory } from 'react-router-dom'
 import { Card } from 'antd'
-import MenuList from '../../components/MenuList/MenuList'
-import HeaderList from '../../components/HeaderList/HeaderList'
+import MenuList from '../../../components/MenuList/MenuList'
+import HeaderList from '../../../components/HeaderList/HeaderList'
 import * as echarts from 'echarts/lib/echarts.js'
 import 'echarts'
 
-const Dashboard = () => {
+const SecondDashboard = () => {
   // const history = useHistory()
   const [userInfo, setUserInfo] = useState('')
 
@@ -265,7 +265,7 @@ const Dashboard = () => {
     <div className="dashboard-list-box">
       <HeaderList />
       <div className="dashboard-list-container-wrap">
-        <MenuList defaultSelectedKeys={'0'} userInfo={userInfo} />
+        <MenuList defaultSelectedKeys={'2-0'} userInfo={userInfo} />
         <div className="dashboard-list-container">
           <div className="box">
             <div className="chart-box-wrap">
@@ -305,4 +305,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default SecondDashboard

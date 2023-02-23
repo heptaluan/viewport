@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './MarkViewer.scss'
-import Header from '../../components/Header/Header'
+import './SecondViewer.scss'
+import Header from '../../../components/Header/Header'
 // import LeftSidePanel from '../../components/LeftSidePanel/LeftSidePanel'
-import ViewerMain from '../../components/ViewerMain/ViewerMain'
-import MarkMiddleSidePanel from '../../components/MarkMiddleSidePanel/MarkMiddleSidePanel'
+import ViewerMain from '../../../components/ViewerMain/ViewerMain'
+import MarkMiddleSidePanel from '../../../components/MarkMiddleSidePanel/MarkMiddleSidePanel'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
-import MarkNoduleInfo from '../../components/common/MarkNoduleInfo/MarkNoduleInfo'
-import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
-import MeasureRectTool from '../../components/common/MeasureRect/MeasureRect'
-import MarkDialog from '../../components/common/MarkDialog/MarkDialog'
+import MarkNoduleInfo from '../../../components/common/MarkNoduleInfo/MarkNoduleInfo'
+import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNoduleTool'
+import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
+import MarkDialog from '../../../components/common/MarkDialog/MarkDialog'
 import {
   getNodeList,
   getNewNodeList,
@@ -18,19 +18,19 @@ import {
   saveSecondprimaryResult,
   updateResult,
   updateList,
-} from '../../api/api'
+} from '../../../api/api'
 import { Modal, message, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
-import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
+import AddNewNode from '../../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { useHistory } from 'react-router-dom'
-import { formatSizeMean, formatNodeSize } from '../../util/index'
+import { formatSizeMean, formatNodeSize } from '../../../util/index'
 
 const { confirm } = Modal
 
-const MarkViewer = () => {
+const SecondViewer = () => {
   const history = useHistory()
 
   const defaultTools = [
@@ -140,9 +140,6 @@ const MarkViewer = () => {
           console.log(error)
         }
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       }
@@ -160,9 +157,6 @@ const MarkViewer = () => {
           console.log(error)
         }
       } else if (result.data.code === 401) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
       } else if (result.data.code === 500) {
@@ -215,9 +209,7 @@ const MarkViewer = () => {
     // const result = await getPatientsList(params.dicomId)
     // if (result.data.code === 200 && result.data.result) {
     //   setPatients(result.data.result.records[0])
-    //   localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
     // } else {
-    // localStorage.setItem('patients', '')
     // }
     // }
     // fetchData()
@@ -948,9 +940,6 @@ const MarkViewer = () => {
     if (result.data.code === 200) {
       message.success(`结节信息暂存成功`)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     } else {
@@ -1363,16 +1352,6 @@ const MarkViewer = () => {
     setshowMarkModal(false)
   }
 
-  // 返回列表
-  const handleGoBackList = () => {
-    localStorage.setItem('record', '')
-    if (params.type === '2') {
-      history.push('/markList')
-    } else if (params.type === '1') {
-      history.push('/benignNoduleList')
-    }
-  }
-
   // ===========================================================
   // ===========================================================
   // ===========================================================
@@ -1678,9 +1657,6 @@ const MarkViewer = () => {
       }
     } else if (result.data.code === 401) {
       setResultLoading(false)
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     } else {
@@ -1690,7 +1666,7 @@ const MarkViewer = () => {
 
   return (
     <div className="viewer-box">
-      <Header data={patients} handleShowModal={handleShowModal} handleGoBackList={handleGoBackList} />
+      <Header data={patients} handleShowModal={handleShowModal} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MarkMiddleSidePanel
@@ -1792,7 +1768,6 @@ const MarkViewer = () => {
 
       <div className="show-button">
         {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-        {/* <Button onClick={handleGoBackList}>返回列表</Button> */}
       </div>
 
       <Modal
@@ -1844,4 +1819,4 @@ const MarkViewer = () => {
   )
 }
 
-export default MarkViewer
+export default SecondViewer
