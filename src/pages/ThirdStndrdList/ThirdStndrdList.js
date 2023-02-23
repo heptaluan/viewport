@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './ThirdList.scss'
+import './ThirdStndrdList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getMarkList } from '../../api/api'
+import { getThirdStndrdList } from '../../api/api'
 import MenuList from '../../components/MenuList/MenuList'
 import HeaderList from '../../components/HeaderList/HeaderList'
 
-const ThirdList = () => {
+const ThirdStndrdList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
@@ -58,7 +58,7 @@ const ThirdList = () => {
   }
 
   const initPagination = result => {
-    let page = localStorage.getItem('markListPagination') ? JSON.parse(localStorage.getItem('markListPagination')) : ''
+    let page = localStorage.getItem('ThirdStndrdList') ? JSON.parse(localStorage.getItem('ThirdStndrdList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page !== '') {
       newPagination.current = page.current
@@ -111,7 +111,7 @@ const ThirdList = () => {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('markListPagination', '')
+    localStorage.setItem('ThirdStndrdList', '')
     fetchList()
   }
 
@@ -121,8 +121,8 @@ const ThirdList = () => {
       imageCode: '',
     }
     setParams(newParams)
-    localStorage.setItem('markListPagination', '')
-    const result = await getMarkList(newParams)
+    localStorage.setItem('ThirdStndrdList', '')
+    const result = await getThirdStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -136,9 +136,11 @@ const ThirdList = () => {
     }
   }
 
+  // ===================================================
+
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    let page = localStorage.getItem('markListPagination') ? JSON.parse(localStorage.getItem('markListPagination')) : ''
+    let page = localStorage.getItem('ThirdStndrdList') ? JSON.parse(localStorage.getItem('ThirdStndrdList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
       newParams.imageCode = page.imageCode
@@ -146,7 +148,7 @@ const ThirdList = () => {
       setParams(newParams)
     }
 
-    const result = await getMarkList(newParams)
+    const result = await getThirdStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -155,7 +157,7 @@ const ThirdList = () => {
       localStorage.setItem('info', '')
       localStorage.setItem('username', '')
       localStorage.setItem('pagination', '')
-      localStorage.setItem('markListPagination', '')
+      localStorage.setItem('ThirdStndrdList', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -166,7 +168,7 @@ const ThirdList = () => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
     newPagination.imageCode = params.imageCode
-    localStorage.setItem('markListPagination', JSON.stringify(newPagination))
+    localStorage.setItem('ThirdStndrdList', JSON.stringify(newPagination))
     history.push(`/thirdViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2`)
   }
 
@@ -235,4 +237,4 @@ const ThirdList = () => {
   )
 }
 
-export default ThirdList
+export default ThirdStndrdList

@@ -10,7 +10,8 @@ import Login from '../pages/Login/Login'
 import Dashboard from '../pages/Dashboard/Dashboard'
 import { Redirect } from 'react-router-dom'
 
-import ThirdList from '../pages/ThirdList/ThirdList'
+import ThirdStndrdList from '../pages/ThirdStndrdList/ThirdStndrdList'
+import ThirdBenignList from '../pages/ThirdBenignList/ThirdBenignList'
 import ThirdViewer from '../pages/ThirdViewer/ThirdViewer'
 
 const routes = [
@@ -67,8 +68,13 @@ const routes = [
         routes: [],
       },
       {
-        path: '/thirdList',
-        component: ThirdList,
+        path: '/thirdStndrdList',
+        component: ThirdStndrdList,
+        routes: [],
+      },
+      {
+        path: '/thirdBenignList',
+        component: ThirdBenignList,
         routes: [],
       },
       {
