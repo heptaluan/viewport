@@ -52,7 +52,7 @@ const ThirdNoduleInfo = props => {
     <div className="third-mark-box-wrap">
       {props.noduleInfo ? (
         <>
-          <div className="box-title">肺结节标注标签</div>
+          <div className="box-title">{props.title}</div>
 
           <div className="box-wrap">
             <div className="list-title">发现</div>
@@ -60,7 +60,7 @@ const ThirdNoduleInfo = props => {
               <div className="mark-title mb">检测难易度</div>
               <div className="mark-content">
                 <Segmented
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'difficultyLevel')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'difficultyLevel', props.index)}
                   value={props.noduleInfo.difficultyLevel}
                   size="small"
                   options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
@@ -118,7 +118,7 @@ const ThirdNoduleInfo = props => {
                     30: 30,
                   }}
                   included={false}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'size')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'size', props.index)}
                   value={props.noduleInfo.size}
                 />
               </div>
@@ -257,7 +257,7 @@ const ThirdNoduleInfo = props => {
                       ],
                     },
                   ]}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'position')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'position', props.index)}
                   placeholder="请选择位置"
                   value={props.noduleInfo.position}
                 />
@@ -271,7 +271,7 @@ const ThirdNoduleInfo = props => {
                   size="small"
                   style={{ width: 198, fontSize: 12 }}
                   placeholder="请选择形态分叶"
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'paging')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'paging', props.index)}
                   value={props.noduleInfo.paging}
                 >
                   <Option value="无分叶">无分叶</Option>
@@ -290,7 +290,7 @@ const ThirdNoduleInfo = props => {
                   size="small"
                   style={{ width: 198, fontSize: 12 }}
                   placeholder="请选择形状"
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'sphere')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'sphere', props.index)}
                   value={props.noduleInfo.sphere}
                 >
                   <Option value="长条形">长条形</Option>
@@ -311,7 +311,7 @@ const ThirdNoduleInfo = props => {
                   allowClear
                   style={{ width: 198, fontSize: 12 }}
                   placeholder="请选择边缘/毛刺"
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'rag')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'rag', props.index)}
                   value={props.noduleInfo.rag}
                   options={[
                     {
@@ -340,7 +340,7 @@ const ThirdNoduleInfo = props => {
                     { label: '有', value: '有' },
                     { label: '无', value: '无' },
                   ]}
-                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag1')}
+                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag1', props.index)}
                   value={props.noduleInfo.rag1}
                 />
               </div>
@@ -355,7 +355,7 @@ const ThirdNoduleInfo = props => {
                     { label: '有晕征', value: '有晕征' },
                     { label: '反晕征', value: '反晕征' },
                   ]}
-                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag0')}
+                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag0', props.index)}
                   value={props.noduleInfo.rag0}
                 />
               </div>
@@ -365,7 +365,7 @@ const ThirdNoduleInfo = props => {
               <div className="mark-content">
                 <Segmented
                   disabled={isMiniNode}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'spinous')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'spinous', props.index)}
                   value={props.noduleInfo.spinous}
                   size="small"
                   options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
@@ -377,7 +377,7 @@ const ThirdNoduleInfo = props => {
               <div className="mark-title w250 mb">结节-肺界面（清晰度分级）</div>
               <div className="mark-content">
                 <Segmented
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'lungInterface')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'lungInterface', props.index)}
                   value={props.noduleInfo.lungInterface}
                   size="small"
                   options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
@@ -397,7 +397,7 @@ const ThirdNoduleInfo = props => {
                     { label: '侧旁气体潴留', value: '侧旁气体潴留' },
                     { label: '无特殊', value: '无特殊' },
                   ]}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'proximityRelation')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'proximityRelation', props.index)}
                   value={props.noduleInfo.proximityRelation}
                 />
               </div>
@@ -420,7 +420,7 @@ const ThirdNoduleInfo = props => {
                     { label: '磨玻璃', value: '磨玻璃' },
                     { label: '钙化', value: '钙化' },
                   ]}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'structuralConstitution')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'structuralConstitution', props.index)}
                   value={props.noduleInfo.structuralConstitution}
                 />
               </div>
@@ -434,7 +434,7 @@ const ThirdNoduleInfo = props => {
                       { label: '内壁光滑', value: '内壁光滑' },
                       { label: '内壁不完整', value: '内壁不完整' },
                     ]}
-                    onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'structuralConstitutionVoid')}
+                    onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'structuralConstitutionVoid', props.index)}
                     value={props.noduleInfo.structuralConstitutionVoid}
                     style={{ fontSize: 12 }}
                   />
@@ -454,7 +454,7 @@ const ThirdNoduleInfo = props => {
                       { label: '环状钙化', value: '环状钙化' },
                       { label: '中心点状钙化', value: '中心点状钙化' },
                     ]}
-                    onChange={e => props.handleUpdateNoduleInfo(e, 'structuralConstitutionCalcific')}
+                    onChange={e => props.handleUpdateNoduleInfo(e, 'structuralConstitutionCalcific', props.index)}
                     value={props.noduleInfo.structuralConstitutionCalcific}
                     style={{ fontSize: 12 }}
                   />
@@ -474,7 +474,7 @@ const ThirdNoduleInfo = props => {
                     { label: '血管贴边', value: '血管贴边' },
                     { label: '无特殊', value: '无特殊' },
                   ]}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'structuralRelation')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'structuralRelation', props.index)}
                   value={props.noduleInfo.structuralRelation}
                 />
               </div>
@@ -490,7 +490,7 @@ const ThirdNoduleInfo = props => {
                 <Select
                   size="small"
                   style={{ width: 198, fontSize: 12 }}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'nodeType')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'nodeType', props.index)}
                   value={props.noduleInfo.nodeType}
                   placeholder="请选择结节类型"
                 >
@@ -525,7 +525,7 @@ const ThirdNoduleInfo = props => {
                       100: 100,
                     }}
                     included={false}
-                    onChange={e => props.handleUpdateNoduleInfo(e, 'nodeTypeRemark')}
+                    onChange={e => props.handleUpdateNoduleInfo(e, 'nodeTypeRemark', props.index)}
                     value={props.noduleInfo.nodeTypeRemark}
                   />
                 </div>
@@ -589,7 +589,7 @@ const ThirdNoduleInfo = props => {
                     65: 65,
                   }}
                   included={false}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'danger')}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'danger', props.index)}
                   value={props.noduleInfo.danger}
                 />
               </div>

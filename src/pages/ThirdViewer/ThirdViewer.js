@@ -96,6 +96,7 @@ const ThirdViewer = () => {
 
   // 结节详情
   const [noduleInfo, setNoduleInfo] = useState(null)
+  const [noduleInfoList, setNoduleInfoList] = useState([])
 
   // 跳转帧数
   const [imageIdIndex, setImageIdIndex] = useState(0)
@@ -210,21 +211,6 @@ const ThirdViewer = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 初始化病人信息
-  useEffect(() => {
-    // const fetchData = async () => {
-    // const result = await getPatientsList(params.dicomId)
-    // if (result.data.code === 200 && result.data.result) {
-    //   setPatients(result.data.result.records[0])
-    //   localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
-    // } else {
-    // localStorage.setItem('patients', '')
-    // }
-    // }
-    // fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   // 多选
   const [indeterminate, setIndeterminate] = useState(false)
   const [checkAll, setCheckAll] = useState(true)
@@ -317,6 +303,14 @@ const ThirdViewer = () => {
 
     // console.log(nodulesList)
     // console.log(nodulesMapList)
+
+    
+    const newNodulesList = [
+      [...nodulesList],
+      [...nodulesList],
+      [...nodulesList]
+    ]
+    setNoduleInfoList(newNodulesList)
 
     setNoduleList([...nodulesList])
     setNoduleMapList([...nodulesMapList])
@@ -466,12 +460,15 @@ const ThirdViewer = () => {
       setCheckAll(false)
     }
 
+    
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
       setNoduleInfo(checkItme)
     } else {
       setNoduleInfo(null)
     }
+    console.log(checkItme)
+    console.log(noduleInfoList)
   }
 
   // 全选
@@ -1374,12 +1371,28 @@ const ThirdViewer = () => {
     }
   }
 
-  // ===========================================================
-  // ===========================================================
-  // ===========================================================
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+  
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
 
   // 更新结节列表事件
-  const handleUpdateNoduleInfo = (val, type) => {
+  const handleUpdateNoduleInfo = (val, type, index) => {
     const checkItme = noduleList.find(item => item.checked === true)
     if (checkItme) {
       switch (type) {
@@ -1699,6 +1712,16 @@ const ThirdViewer = () => {
 
   // ===========================================================================
 
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
+  // ===========================================================================
+
   // 查看结节详情
   const [openDetail, setOpenDetail] = useState(false)
   const [detailDisabled, setDetailDisabled] = useState(false)
@@ -1753,15 +1776,6 @@ const ThirdViewer = () => {
           showMarker={showMarker}
         />
       </div>
-      <MarkNoduleInfo
-        noduleInfo={null}
-        handleShowAdjustModal={handleShowAdjustModal}
-        handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-        handleResetMiniNode={handleResetMiniNode}
-        handleResetDifficultyLevel={handleResetDifficultyLevel}
-        handleShowMarkModal={handleShowMarkModal}
-        updateSingleNodeResult={updateSingleNodeResult}
-      />
       {showMark ? (
         <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
       ) : null}
@@ -1806,7 +1820,9 @@ const ThirdViewer = () => {
       >
         <div className='third-detail-box'>
           <ThirdNoduleInfo
-            noduleInfo={noduleInfo}
+            title={'审核医生一结果'}
+            index={0}
+            noduleInfo={noduleInfoList[0].find(item => item.id === noduleInfo.id)}
             handleShowAdjustModal={handleShowAdjustModal}
             handleUpdateNoduleInfo={handleUpdateNoduleInfo}
             handleResetMiniNode={handleResetMiniNode}
@@ -1815,7 +1831,9 @@ const ThirdViewer = () => {
             updateSingleNodeResult={updateSingleNodeResult}
           />
           <ThirdNoduleInfo
-            noduleInfo={noduleInfo}
+            title={'审核医生二结果'}
+            index={1}
+            noduleInfo={noduleInfoList[1].find(item => item.id === noduleInfo.id)}
             handleShowAdjustModal={handleShowAdjustModal}
             handleUpdateNoduleInfo={handleUpdateNoduleInfo}
             handleResetMiniNode={handleResetMiniNode}
@@ -1824,7 +1842,9 @@ const ThirdViewer = () => {
             updateSingleNodeResult={updateSingleNodeResult}
           />
           <ThirdNoduleInfo
-            noduleInfo={noduleInfo}
+            title={'审核医生三结果'}
+            index={2}
+            noduleInfo={noduleInfoList[2].find(item => item.id === noduleInfo.id)}
             handleShowAdjustModal={handleShowAdjustModal}
             handleUpdateNoduleInfo={handleUpdateNoduleInfo}
             handleResetMiniNode={handleResetMiniNode}

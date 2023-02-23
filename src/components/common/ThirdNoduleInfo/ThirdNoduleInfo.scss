@@ -95,62 +95,71 @@
   }
 }
 
-.ant-segmented {
-  margin-top: 5px !important;
-  background: #fff !important;
-
-  .ant-segmented-item-label {
-    color: rgba(0, 0, 0, 0.85) !important;
+.third-mark-box-wrap {
+  .ant-slider-rail {
+    background-color: #c7c0c0 !important;
   }
 
-  .ant-segmented-thumb,
-  .ant-segmented-item-selected {
-    background: #1890ff !important;
-    color: #fff !important;
-
+  .ant-segmented {
+    margin-top: 5px !important;
+    background: #fff !important;
+  
     .ant-segmented-item-label {
+      color: rgba(0, 0, 0, 0.85) !important;
+    }
+  
+    .ant-segmented-thumb,
+    .ant-segmented-item-selected {
+      background: #1890ff !important;
       color: #fff !important;
+  
+      .ant-segmented-item-label {
+        color: #fff !important;
+      }
+    }
+  }
+  
+  .ant-checkbox-group .ant-checkbox-wrapper,
+  .ant-radio-group .ant-radio-wrapper {
+    color: #333 !important;
+  }
+  
+  .ant-slider-mark-text {
+    color: #333 !important;
+  }
+  
+  .ant-tooltip {
+    .ant-tooltip-arrow-content {
+      --antd-arrow-background-color: inherit !important;
+    }
+  
+    .ant-tooltip-inner {
+      background: inherit;
+      color: #000 !important;
+    }
+  }
+  
+  .mark-box {
+    .ant-slider-handle {
+      background-color: #ff4d4f !important;
+      border: solid 2px #ff4d4f !important;
+    }
+  }
+  
+  .mark-box-wrap {
+    .ant-select-disabled .ant-select-selector,
+    .ant-segmented-disabled,
+    .ant-checkbox-disabled .ant-checkbox-inner,
+    .ant-radio-disabled .ant-radio-inner
+    {
+      background: inherit !important;
+    }
+  
+    .ant-checkbox-wrapper-disabled .ant-checkbox-disabled + span,
+    .ant-radio-wrapper-disabled .ant-radio-disabled + span {
+      color: #333 !important;
     }
   }
 }
 
-.ant-checkbox-group .ant-checkbox-wrapper {
-  color: #fff !important;
-}
 
-.ant-slider-mark-text {
-  color: #fff !important;
-}
-
-.ant-tooltip {
-  .ant-tooltip-arrow-content {
-    --antd-arrow-background-color: #fff !important;
-  }
-
-  .ant-tooltip-inner {
-    background: #fff;
-    color: #000 !important;
-  }
-}
-
-.mark-box {
-  .ant-slider-handle {
-    background-color: #ff4d4f !important;
-    border: solid 2px #ff4d4f !important;
-  }
-}
-
-.mark-box-wrap {
-  .ant-select-disabled .ant-select-selector,
-  .ant-segmented-disabled,
-  .ant-checkbox-disabled .ant-checkbox-inner,
-  .ant-radio-disabled .ant-radio-inner
-  {
-    background: #999 !important;
-  }
-
-  .ant-checkbox-wrapper-disabled .ant-checkbox-disabled + span,
-  .ant-radio-wrapper-disabled .ant-radio-disabled + span {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-}
