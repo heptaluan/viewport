@@ -30,7 +30,7 @@ const ThirdNoduleInfo = props => {
   useEffect(() => {
     if (formatNodeSize(props.noduleInfo?.size) === '微小结节') {
       setIsMiniNode(true)
-      props.handleResetMiniNode()
+      props.handleResetMiniNode(props.index)
     } else {
       setIsMiniNode(false)
     }
@@ -41,7 +41,7 @@ const ThirdNoduleInfo = props => {
   useEffect(() => {
     if (props.noduleInfo?.difficultyLevel === '非常微妙') {
       setDifficultyLevel(true)
-      props.handleResetDifficultyLevel()
+      props.handleResetDifficultyLevel(props.index)
     } else {
       setDifficultyLevel(false)
     }
@@ -52,7 +52,7 @@ const ThirdNoduleInfo = props => {
     <div className="third-mark-box-wrap">
       {props.noduleInfo ? (
         <>
-          <div className="box-title">{props.title}</div>
+          <div className="box-title">{props.user}审核结果</div>
 
           <div className="box-wrap">
             <div className="list-title">发现</div>
@@ -620,11 +620,11 @@ const ThirdNoduleInfo = props => {
             <div className="mark-content">
               <Button
                 style={{ fontSize: 12 }}
-                disabled={props.noduleInfo.state}
+                // disabled={props.noduleInfo.state}
                 size="small"
-                onClick={props.updateSingleNodeResult}
+                onClick={e => props.updateSingleNodeResult(props.index)}
               >
-                提交当前结节
+                修改{props.user}结果
               </Button>
             </div>
           </div>
