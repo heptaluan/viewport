@@ -1456,199 +1456,240 @@ const ThirdViewer = () => {
       }
     }
     setNewNoduleList([...newNoduleList])
+
+    saveNoduleInfo(index)
   }
 
-  // 重置列表事件（微小结节）
-  const handleResetMiniNode = index => {
-    const checkItme = noduleList.find(item => item.checked === true)
-    const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
-
-    // 形态分叶
-    newItem.paging = undefined
-
-    // 形状
-    newItem.sphere = undefined
-
-    // 棘突
-    newItem.spinous = '非常微妙'
-
-    // 结构成分
-    newItem.structuralConstitution = []
-
-    // 结构成分（空洞）
-    newItem.structuralConstitutionVoid = undefined
-
-    // 结构成分（钙化）
-    newItem.structuralConstitutionCalcific = []
-
-    setNewNoduleList([...newNoduleList])
+  // 暂存结节数据
+  const saveNoduleInfo = index => {
+    const postData = formatNoduleInfoData()
+    // saveDnResult(JSON.stringify(postData)).then(res => {
+    //   if (res.data.code === 200) {
+    //     message.success(`结节信息保存成功`)
+    //     callback && callback()
+    //   } else {
+    //     message.error(`结节结果保存失败，请检查网络或是重新登录后再行尝试`)
+    //   }
+    // })
   }
 
-  // 重置列表事件（检测难易度）
-  const handleResetDifficultyLevel = index => {
-    const checkItme = noduleList.find(item => item.checked === true)
-    const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
-
-    // 形态分叶
-    newItem.paging = undefined
-
-    // 边缘/毛刺
-    newItem.rag = undefined
-
-    // 长毛刺
-    newItem.rag1 = undefined
-
-    // 晕征
-    newItem.rag0 = undefined
-
-    setNewNoduleList([...newNoduleList])
-  }
-
-  // 提交单个结果
-  const updateSingleNodeResult = index => {
-    const checkItme = noduleList.find(item => item.checked === true)
-    const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
-
-    console.log(checkItme)
-
-    // 大小
-    if (!newItem.sizeAfter) {
-      message.warning(`请选择或者测量结节的大小属性后再进行提交`)
-      return false
-    }
-
-    // 位置
-    if (!newItem.position) {
-      message.warning(`请选择结节的位置属性后再进行提交`)
-      return false
-    }
-
-    if (!Array.isArray(newItem.position)) {
-      message.warning(`请选择结节的位置属性后再进行提交`)
-      return false
-    }
-
-    if (newItem.position.length < 2) {
-      message.warning(`请选择结节的位置属性后再进行提交`)
-      return false
-    }
-
-    // 形态分叶
-    if (!newItem.paging) {
-      if (newItem.difficultyLevel !== '非常微妙' && formatNodeSize(newItem.size) !== '微小结节') {
-        message.warning(`请选择结节的形态分叶属性后再进行提交`)
-        return false
-      }
-    }
-
-    // 形状
-    if (!newItem.sphere) {
-      if (formatNodeSize(newItem.size) !== '微小结节') {
-        message.warning(`请选择结节的形状属性后再进行提交`)
-        return false
-      }
-    }
-
-    // 边缘/毛刺
-    if (!newItem.rag) {
-      if (newItem.difficultyLevel !== '非常微妙') {
-        message.warning(`请选择结节的边缘/毛刺属性后再进行提交`)
-        return false
-      }
-    }
-
-    // 长毛刺
-    if (!newItem.rag1) {
-      if (newItem.difficultyLevel !== '非常微妙') {
-        message.warning(`请选择结节的长毛刺属性后再进行提交`)
-        return false
-      }
-    }
-
-    // 晕征
-    if (!newItem.rag0) {
-      if (newItem.difficultyLevel !== '非常微妙') {
-        message.warning(`请选择结节的晕征属性后再进行提交`)
-        return false
-      }
-    }
-
-    // 临近关系
-    if (newItem.proximityRelation.length === 0) {
-      message.warning(`请选择结节的临近关系属性后再进行提交`)
-      return false
-    }
-
-    // 结构成分
-    if (newItem.structuralConstitution.length === 0) {
-      if (formatNodeSize(newItem.size) !== '微小结节') {
-        message.warning(`请选择结节的结构成分属性后再进行提交`)
-        return false
-      }
-    }
-
-    // 结构关系
-    if (newItem.structuralRelation.length === 0) {
-      message.warning(`请选择结节的结构关系属性后再进行提交`)
-      return false
-    }
-
-    // 结构成分（钙化）
-    if (newItem.structuralConstitution.includes('钙化') && newItem.structuralConstitutionCalcific.length === 0) {
-      message.warning(`如若结构成分当中包含钙化属性，请选择结构成分（钙化）属性后再进行提交`)
-      return false
-    }
-
-    // 结构成分（空洞）
-    if (newItem.structuralConstitution.includes('空洞') && !newItem.structuralConstitutionVoid) {
-      message.warning(`如若结构成分当中包含空洞属性，请选择结构成分（空洞）属性后再进行提交`)
-      return false
-    }
-
-    // 结节类型
-    if (!newItem.nodeType) {
-      message.warning(`请选择结节的结构类型属性后再进行提交`)
-      return false
-    }
-
+  // 格式化提交数据
+  const formatNoduleInfoData = () => {
+    const patients = JSON.parse(localStorage.getItem('record'))
     const postData = {
-      kyRemarkId: params.id,
-      kyPrimaryId: params.kyPrimaryId,
-      type: params.type,
-      nodeId: newItem.id.toString(),
-      imageCode: newItem.imageCode,
-      nodeIndex: newItem.num.toString(),
-      findpercent: newItem.difficultyLevel,
-      position: newItem.position.join(','),
-      sizenum: newItem.sizeAfter,
-      size: formatNodeSize(newItem.size),
-      shape: newItem.paging,
-      spherical: newItem.sphere,
-      edge: newItem.rag,
-      edge0: newItem.rag0,
-      edge1: newItem.rag1,
-      burr: newItem.spinous,
-      definition: newItem.lungInterface,
-      proximity: newItem.proximityRelation.join(','),
-      component: newItem.structuralConstitution.join(','),
-      componentRemark: newItem.structuralConstitutionCalcific.join(','),
-      componentRemark0: newItem.structuralConstitutionVoid,
-      relation: newItem.structuralRelation.join(','),
-      featuresType: newItem.nodeType,
-      featuresRemark: newItem.nodeTypeRemark.toString(),
-      tumorPercent: newItem.danger.toString(),
+      ...patients,
+      imageCount: imagesConfig.length,
+      nodeText: [],
     }
 
-    updateResult(postData).then(res => {
-      if (res.data.code === 200) {
-        message.success(`当前结节结果保存成功`)
-        newItem.state = true
-        setNewNoduleList([...newNoduleList])
-      } else {
-        message.error(`当前结节结果保存失败，请重新进行尝试`)
+    for (let i = 0; i < noduleList.length; i++) {
+      if (noduleList[i].state) {
+        postData.nodeText.push({
+          index: noduleList[i].id + 1,
+          imageIndex: noduleList[i].num,
+          featureLabel: noduleList[i].type,
+          box: getBox(noduleList[i]),
+          acrossCoordz: getAcrossCoordz(noduleList[i]),
+        })
       }
-    })
+    }
+
+    postData.nodeText = JSON.stringify(postData.nodeText)
+
+    return postData
   }
+
+  // // 重置列表事件（微小结节）
+  // const handleResetMiniNode = index => {
+  //   const checkItme = noduleList.find(item => item.checked === true)
+  //   const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
+
+  //   // 形态分叶
+  //   newItem.paging = undefined
+
+  //   // 形状
+  //   newItem.sphere = undefined
+
+  //   // 棘突
+  //   newItem.spinous = '非常微妙'
+
+  //   // 结构成分
+  //   newItem.structuralConstitution = []
+
+  //   // 结构成分（空洞）
+  //   newItem.structuralConstitutionVoid = undefined
+
+  //   // 结构成分（钙化）
+  //   newItem.structuralConstitutionCalcific = []
+
+  //   setNewNoduleList([...newNoduleList])
+  // }
+
+  // // 重置列表事件（检测难易度）
+  // const handleResetDifficultyLevel = index => {
+  //   const checkItme = noduleList.find(item => item.checked === true)
+  //   const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
+
+  //   // 形态分叶
+  //   newItem.paging = undefined
+
+  //   // 边缘/毛刺
+  //   newItem.rag = undefined
+
+  //   // 长毛刺
+  //   newItem.rag1 = undefined
+
+  //   // 晕征
+  //   newItem.rag0 = undefined
+
+  //   setNewNoduleList([...newNoduleList])
+  // }
+
+  // // 提交单个结果
+  // const updateSingleNodeResult = index => {
+  //   const checkItme = noduleList.find(item => item.checked === true)
+  //   const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
+
+  //   console.log(checkItme)
+
+  //   // 大小
+  //   if (!newItem.sizeAfter) {
+  //     message.warning(`请选择或者测量结节的大小属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   // 位置
+  //   if (!newItem.position) {
+  //     message.warning(`请选择结节的位置属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   if (!Array.isArray(newItem.position)) {
+  //     message.warning(`请选择结节的位置属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   if (newItem.position.length < 2) {
+  //     message.warning(`请选择结节的位置属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   // 形态分叶
+  //   if (!newItem.paging) {
+  //     if (newItem.difficultyLevel !== '非常微妙' && formatNodeSize(newItem.size) !== '微小结节') {
+  //       message.warning(`请选择结节的形态分叶属性后再进行提交`)
+  //       return false
+  //     }
+  //   }
+
+  //   // 形状
+  //   if (!newItem.sphere) {
+  //     if (formatNodeSize(newItem.size) !== '微小结节') {
+  //       message.warning(`请选择结节的形状属性后再进行提交`)
+  //       return false
+  //     }
+  //   }
+
+  //   // 边缘/毛刺
+  //   if (!newItem.rag) {
+  //     if (newItem.difficultyLevel !== '非常微妙') {
+  //       message.warning(`请选择结节的边缘/毛刺属性后再进行提交`)
+  //       return false
+  //     }
+  //   }
+
+  //   // 长毛刺
+  //   if (!newItem.rag1) {
+  //     if (newItem.difficultyLevel !== '非常微妙') {
+  //       message.warning(`请选择结节的长毛刺属性后再进行提交`)
+  //       return false
+  //     }
+  //   }
+
+  //   // 晕征
+  //   if (!newItem.rag0) {
+  //     if (newItem.difficultyLevel !== '非常微妙') {
+  //       message.warning(`请选择结节的晕征属性后再进行提交`)
+  //       return false
+  //     }
+  //   }
+
+  //   // 临近关系
+  //   if (newItem.proximityRelation.length === 0) {
+  //     message.warning(`请选择结节的临近关系属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   // 结构成分
+  //   if (newItem.structuralConstitution.length === 0) {
+  //     if (formatNodeSize(newItem.size) !== '微小结节') {
+  //       message.warning(`请选择结节的结构成分属性后再进行提交`)
+  //       return false
+  //     }
+  //   }
+
+  //   // 结构关系
+  //   if (newItem.structuralRelation.length === 0) {
+  //     message.warning(`请选择结节的结构关系属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   // 结构成分（钙化）
+  //   if (newItem.structuralConstitution.includes('钙化') && newItem.structuralConstitutionCalcific.length === 0) {
+  //     message.warning(`如若结构成分当中包含钙化属性，请选择结构成分（钙化）属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   // 结构成分（空洞）
+  //   if (newItem.structuralConstitution.includes('空洞') && !newItem.structuralConstitutionVoid) {
+  //     message.warning(`如若结构成分当中包含空洞属性，请选择结构成分（空洞）属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   // 结节类型
+  //   if (!newItem.nodeType) {
+  //     message.warning(`请选择结节的结构类型属性后再进行提交`)
+  //     return false
+  //   }
+
+  //   const postData = {
+  //     kyRemarkId: params.id,
+  //     kyPrimaryId: params.kyPrimaryId,
+  //     type: params.type,
+  //     nodeId: newItem.id.toString(),
+  //     imageCode: newItem.imageCode,
+  //     nodeIndex: newItem.num.toString(),
+  //     findpercent: newItem.difficultyLevel,
+  //     position: newItem.position.join(','),
+  //     sizenum: newItem.sizeAfter,
+  //     size: formatNodeSize(newItem.size),
+  //     shape: newItem.paging,
+  //     spherical: newItem.sphere,
+  //     edge: newItem.rag,
+  //     edge0: newItem.rag0,
+  //     edge1: newItem.rag1,
+  //     burr: newItem.spinous,
+  //     definition: newItem.lungInterface,
+  //     proximity: newItem.proximityRelation.join(','),
+  //     component: newItem.structuralConstitution.join(','),
+  //     componentRemark: newItem.structuralConstitutionCalcific.join(','),
+  //     componentRemark0: newItem.structuralConstitutionVoid,
+  //     relation: newItem.structuralRelation.join(','),
+  //     featuresType: newItem.nodeType,
+  //     featuresRemark: newItem.nodeTypeRemark.toString(),
+  //     tumorPercent: newItem.danger.toString(),
+  //   }
+
+  //   updateResult(postData).then(res => {
+  //     if (res.data.code === 200) {
+  //       message.success(`当前结节结果保存成功`)
+  //       newItem.state = true
+  //       setNewNoduleList([...newNoduleList])
+  //     } else {
+  //       message.error(`当前结节结果保存失败，请重新进行尝试`)
+  //     }
+  //   })
+  // }
 
   // 防抖
   const [resultLoading, setResultLoading] = useState(false)
@@ -1794,41 +1835,26 @@ const ThirdViewer = () => {
         wrapClassName={'detail-box-modal'}
         okText={'确定'}
         cancelText={'取消'}
-        width={1150}
+        width={1100}
       >
         <div className="third-detail-box">
           <ThirdNoduleInfo
             user={'医生一'}
             index={0}
             noduleInfo={newNoduleInfo[0]}
-            handleShowAdjustModal={handleShowAdjustModal}
             handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-            handleResetMiniNode={handleResetMiniNode}
-            handleResetDifficultyLevel={handleResetDifficultyLevel}
-            handleShowMarkModal={handleShowMarkModal}
-            updateSingleNodeResult={updateSingleNodeResult}
           />
           <ThirdNoduleInfo
             user={'医生二'}
             index={1}
             noduleInfo={newNoduleInfo[1]}
-            handleShowAdjustModal={handleShowAdjustModal}
             handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-            handleResetMiniNode={handleResetMiniNode}
-            handleResetDifficultyLevel={handleResetDifficultyLevel}
-            handleShowMarkModal={handleShowMarkModal}
-            updateSingleNodeResult={updateSingleNodeResult}
           />
           <ThirdNoduleInfo
             user={'医生三'}
             index={2}
             noduleInfo={newNoduleInfo[2]}
-            handleShowAdjustModal={handleShowAdjustModal}
             handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-            handleResetMiniNode={handleResetMiniNode}
-            handleResetDifficultyLevel={handleResetDifficultyLevel}
-            handleShowMarkModal={handleShowMarkModal}
-            updateSingleNodeResult={updateSingleNodeResult}
           />
         </div>
       </Modal>
