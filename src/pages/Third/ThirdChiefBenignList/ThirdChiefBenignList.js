@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './ThirdChiefBenignList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Space, Button, Select, message, Input } from 'antd'
+import { Table, Space, Button, Select, message, Input, Tag } from 'antd'
 import { getThirdBenignList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
@@ -27,6 +27,25 @@ const ThirdChiefBenignList = () => {
         ) : (
           <span style={{ color: '#ff4d4f' }}>未完成</span>
         )
+      },
+    },
+    {
+      title: '完成人员',
+      dataIndex: 'staff',
+      render: (_, record) => {
+        if (!record.staff) return
+        const list = record.staff?.split(',').sort()
+        const result = []
+        for (let i = 0; i < list.length; i++) {
+          if (list[i] === '李腾海') {
+            result.push(<Tag color="#f50">李腾海</Tag>)
+          } else if (list[i] === '杨帆') {
+            result.push(<Tag color="#2db7f5">杨帆</Tag>)
+          } else if (list[i] === '周坦峰') {
+            result.push(<Tag color="#87d068">周坦峰</Tag>)
+          }
+        }
+        return <div className='table-staff'>{result.map(n => n)}</div>
       },
     },
     {

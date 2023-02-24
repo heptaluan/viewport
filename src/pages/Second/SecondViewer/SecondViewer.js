@@ -269,7 +269,7 @@ const SecondViewer = () => {
           sphere: item.spherical ? item.spherical : undefined,
           rag: item.edge ? item.edge.split(',') : [],
           rag0: item.edge0 ? item.edge0 : undefined,
-          rag1: item.edge1 ? item.edge1 : undefined,
+          rag1: item.edge1 ? item.edge1 : '无',
           spinous: item.burr ? item.burr : '非常微妙',
           lungInterface: item.definition ? item.definition : '非常微妙',
           proximityRelation: item.proximity ? item.proximity.split(',') : [],
@@ -335,7 +335,7 @@ const SecondViewer = () => {
         sphere: item.spherical ? item.spherical : undefined,
         rag: item.edge ? item.edge.split(',') : [],
         rag0: item.edge0 ? item.edge0 : undefined,
-        rag1: item.edge1 ? item.edge1 : undefined,
+        rag1: item.edge1 ? item.edge1 : '无',
         spinous: item.burr ? item.burr : '非常微妙',
         lungInterface: item.definition ? item.definition : '非常微妙',
         proximityRelation: item.proximity ? item.proximity.split(',') : [],
@@ -1476,10 +1476,10 @@ const SecondViewer = () => {
     checkItme.rag = undefined
 
     // 长毛刺
-    checkItme.rag1 = undefined
+    checkItme.rag1 = '无'
 
     // 晕征
-    checkItme.rag0 = undefined
+    // checkItme.rag0 = undefined
 
     setNoduleList([...noduleList])
   }
@@ -1546,10 +1546,8 @@ const SecondViewer = () => {
 
     // 晕征
     if (!checkItme.rag0) {
-      if (checkItme.difficultyLevel !== '非常微妙') {
-        message.warning(`请选择结节的晕征属性后再进行提交`)
-        return false
-      }
+      message.warning(`请选择结节的晕征属性后再进行提交`)
+      return false
     }
 
     // 临近关系

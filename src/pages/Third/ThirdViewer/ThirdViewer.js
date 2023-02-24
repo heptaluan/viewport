@@ -1442,7 +1442,7 @@ const ThirdViewer = () => {
 
   // 暂存结节数据
   const saveNoduleInfo = index => {
-    const postData = formatNoduleInfoData()
+    // const postData = formatNoduleInfoData()
     // saveDnResult(JSON.stringify(postData)).then(res => {
     //   if (res.data.code === 200) {
     //     message.success(`结节信息保存成功`)

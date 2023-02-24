@@ -45,13 +45,13 @@ export const getChiefList = isFinish => {
 // 获取普通医生列表
 export const getDoctorList = (isFinish, searchId) => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId}&project=1`)
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId || ''}&project=1`)
 }
 
 // 多组学结节列表（复用之前杨医生的列表）
 export const getMissionList = (isFinish, searchId) => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId}&project=2`)
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId || ''}&project=2`)
 }
 
 // 获取分配列表
@@ -172,7 +172,7 @@ export const getMarkList = params => {
 export const getBenignNoduleList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId}&isFinish=${params.isFinish}`
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}`
   )
 }
 
@@ -254,7 +254,7 @@ export const getThirdStndrdList = params => {
 export const getThirdBenignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId}&isFinish=${params.isFinish}`
+    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}`
   )
 }
 

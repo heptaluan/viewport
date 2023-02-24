@@ -80,11 +80,11 @@ const MarkNoduleInfo = props => {
               <div className="mark-content">
                 <span>{props.noduleInfo.sizeBefore}</span>
               </div>
-              <Button size="small" onClick={props.handleShowMarkModal} style={{ right: 55, fontSize: 12 }}>
-                标记微小结节
-              </Button>
               <Button size="small" onClick={props.handleShowAdjustModal} style={{ fontSize: 12 }}>
                 调整
+              </Button>
+              <Button size="small" onClick={props.handleShowMarkModal} style={{ right: 55, fontSize: 12 }}>
+                标记微小结节
               </Button>
             </div>
 
@@ -335,7 +335,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">长毛刺</div>
               <div className="mark-content">
                 <Radio.Group
-                  disabled={difficultyLevel}
+                  disabled={difficultyLevel || props.noduleInfo.rag === '光整（无毛刺）'}
                   options={[
                     { label: '有', value: '有' },
                     { label: '无', value: '无' },
@@ -349,7 +349,6 @@ const MarkNoduleInfo = props => {
               <div className="mark-title">晕征</div>
               <div className="mark-content">
                 <Radio.Group
-                  disabled={difficultyLevel}
                   options={[
                     { label: '无晕征', value: '无晕征' },
                     { label: '有晕征', value: '有晕征' },
