@@ -18,6 +18,8 @@ import {
   saveSecondprimaryResult,
   updateResult,
   updateList,
+  getThirdStndrdDetail,
+  getThirdBenignDetail,
 } from '../../../api/api'
 import { Modal, message, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
@@ -131,13 +133,13 @@ const ThirdViewer = () => {
   // 初始化结节与影像列表信息
   useEffect(() => {
     // 金标准数据
-    const fetchNodeListData = async () => {
-      const result = await getNewNodeList(params.imageCode)
+    const fetchThirdStndrdDetail = async () => {
+      const result = await getThirdStndrdDetail(params.imageCode)
       if (result.data.code === 200) {
         try {
           const data = result.data.data.samlpeDataList
           const info = result.data.data.doctorResult
-          formatNodeData(data, info)
+          formatThirdStndrdDetail(data, info)
           fetcImagehData(data[0].imageUrl)
         } catch (error) {
           console.log(error)
@@ -149,8 +151,8 @@ const ThirdViewer = () => {
     }
 
     // 良性结节数据
-    const fetchBenignNodeListData = async () => {
-      const result = await getBenignNodeList(params.id)
+    const fetchThirdBenignDetail = async () => {
+      const result = await getThirdBenignDetail(params.id)
       if (result.data.code === 200) {
         try {
           const data = result.data.data
@@ -198,9 +200,9 @@ const ThirdViewer = () => {
     setUserInfo(info)
 
     if (Number(params.type) === 2) {
-      fetchNodeListData()
+      fetchThirdStndrdDetail()
     } else if (Number(params.type) === 1) {
-      fetchBenignNodeListData()
+      fetchThirdBenignDetail()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -237,155 +239,25 @@ const ThirdViewer = () => {
   // ===========================================================
 
   // 格式化结节数据（金标准）
-  const formatNodeData = (data, info) => {
+  const formatThirdStndrdDetail = (data, info) => {
     const nodulesList = []
     const nodulesMapList = []
 
-    const list1 = []
-    const list2 = []
-    const list3 = []
+    const newNoduleList = []
 
+    // 格式化结节信息
     try {
       for (let i = 0; i < data.length; i++) {
-        const item = info.find(item => item.nodeId === data[i].id) || {}
         nodulesList.push({
-          id: item.nodeId ? item.nodeId : data[i].id,
-          imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
-          num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
+          id: data[i].id,
+          imageCode: data[i].imageCode,
+          num: Number(data[i].coordz),
           checked: false,
-          noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
-          difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-          position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
-          size: item.sizenum ? formatSizeMean(item.sizenum) : '',
-          sizeBefore: '',
-          sizeAfter: item.sizenum ? item.sizenum : undefined,
-          paging: item.shape ? item.shape : undefined,
-          sphere: item.spherical ? item.spherical : undefined,
-          rag: item.edge ? item.edge.split(',') : [],
-          rag0: item.edge0 ? item.edge0 : undefined,
-          rag1: item.edge1 ? item.edge1 : undefined,
-          spinous: item.burr ? item.burr : '非常微妙',
-          lungInterface: item.definition ? item.definition : '非常微妙',
-          proximityRelation: item.proximity ? item.proximity.split(',') : [],
-          structuralConstitution: item.component ? item.component.split(',') : [],
-          structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-          structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
-          structuralRelation: item.relation ? item.relation.split(',') : [],
-          nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
-          nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-          danger: item.tumorPercent
-            ? item.tumorPercent
-            : data[i].lesionType === '恶性'
-            ? 100
-            : data[i].lesionType === '良性'
-            ? 0
-            : 0,
-          state: item.isFinish === 1 ? true : false,
-        })
-
-        list1.push({
-          id: item.nodeId ? item.nodeId : data[i].id,
-          imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
-          num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
-          checked: false,
-          noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
-          difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-          position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
-          size: item.sizenum ? formatSizeMean(item.sizenum) : '',
-          sizeBefore: '',
-          sizeAfter: item.sizenum ? item.sizenum : undefined,
-          paging: item.shape ? item.shape : undefined,
-          sphere: item.spherical ? item.spherical : undefined,
-          rag: item.edge ? item.edge.split(',') : [],
-          rag0: item.edge0 ? item.edge0 : undefined,
-          rag1: item.edge1 ? item.edge1 : undefined,
-          spinous: item.burr ? item.burr : '非常微妙',
-          lungInterface: item.definition ? item.definition : '非常微妙',
-          proximityRelation: item.proximity ? item.proximity.split(',') : [],
-          structuralConstitution: item.component ? item.component.split(',') : [],
-          structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-          structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
-          structuralRelation: item.relation ? item.relation.split(',') : [],
-          nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
-          nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-          danger: item.tumorPercent
-            ? item.tumorPercent
-            : data[i].lesionType === '恶性'
-            ? 100
-            : data[i].lesionType === '良性'
-            ? 0
-            : 0,
-          state: item.isFinish === 1 ? true : false,
-        })
-
-        list2.push({
-          id: item.nodeId ? item.nodeId : data[i].id,
-          imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
-          num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
-          checked: false,
-          noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
-          difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-          position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
-          size: item.sizenum ? formatSizeMean(item.sizenum) : '',
-          sizeBefore: '',
-          sizeAfter: item.sizenum ? item.sizenum : undefined,
-          paging: item.shape ? item.shape : undefined,
-          sphere: item.spherical ? item.spherical : undefined,
-          rag: item.edge ? item.edge.split(',') : [],
-          rag0: item.edge0 ? item.edge0 : undefined,
-          rag1: item.edge1 ? item.edge1 : undefined,
-          spinous: item.burr ? item.burr : '非常微妙',
-          lungInterface: item.definition ? item.definition : '非常微妙',
-          proximityRelation: item.proximity ? item.proximity.split(',') : [],
-          structuralConstitution: item.component ? item.component.split(',') : [],
-          structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-          structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
-          structuralRelation: item.relation ? item.relation.split(',') : [],
-          nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
-          nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-          danger: item.tumorPercent
-            ? item.tumorPercent
-            : data[i].lesionType === '恶性'
-            ? 100
-            : data[i].lesionType === '良性'
-            ? 0
-            : 0,
-          state: item.isFinish === 1 ? true : false,
-        })
-
-        list3.push({
-          id: item.nodeId ? item.nodeId : data[i].id,
-          imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
-          num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
-          checked: false,
-          noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
-          difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-          position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
-          size: item.sizenum ? formatSizeMean(item.sizenum) : '',
-          sizeBefore: '',
-          sizeAfter: item.sizenum ? item.sizenum : undefined,
-          paging: item.shape ? item.shape : undefined,
-          sphere: item.spherical ? item.spherical : undefined,
-          rag: item.edge ? item.edge.split(',') : [],
-          rag0: item.edge0 ? item.edge0 : undefined,
-          rag1: item.edge1 ? item.edge1 : undefined,
-          spinous: item.burr ? item.burr : '非常微妙',
-          lungInterface: item.definition ? item.definition : '非常微妙',
-          proximityRelation: item.proximity ? item.proximity.split(',') : [],
-          structuralConstitution: item.component ? item.component.split(',') : [],
-          structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-          structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
-          structuralRelation: item.relation ? item.relation.split(',') : [],
-          nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
-          nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-          danger: item.tumorPercent
-            ? item.tumorPercent
-            : data[i].lesionType === '恶性'
-            ? 100
-            : data[i].lesionType === '良性'
-            ? 0
-            : 0,
-          state: item.isFinish === 1 ? true : false,
+          noduleName: `nodule_${data[i].id}`,
+          difficultyLevel: '非常微妙',
+          position: data[i].surgicalLocation,
+          nodeType: data[i].lesionDensity,
+          state: true,
         })
 
         const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -405,10 +277,44 @@ const ThirdViewer = () => {
       console.log(error)
     }
 
-    // console.log(nodulesList)
-    // console.log(nodulesMapList)
+    // 格式化三个医生信息
+    try {
+      for (let i = 0; i < info.length; i++) {
+        newNoduleList.push({
+          user: info[i].createBy,
+          id: info[i].nodeId,
+          imageCode: info[i].imageCode,
+          num: Number(info[i].nodeIndex),
+          checked: false,
+          noduleName: `nodule_${info[i].nodeId}`,
+          difficultyLevel: info[i].findpercent ? info[i].findpercent : '非常微妙',
+          position: info[i].position ? info[i].position.split(',') : undefined,
+          size: info[i].sizenum ? formatSizeMean(info[i].sizenum) : '',
+          sizeBefore: '',
+          sizeAfter: info[i].sizenum ? info[i].sizenum : undefined,
+          paging: info[i].shape ? info[i].shape : undefined,
+          sphere: info[i].spherical ? info[i].spherical : undefined,
+          rag: info[i].edge ? info[i].edge.split(',') : [],
+          rag0: info[i].edge0 ? info[i].edge0 : undefined,
+          rag1: info[i].edge1 ? info[i].edge1 : undefined,
+          spinous: info[i].burr ? info[i].burr : '非常微妙',
+          lungInterface: info[i].definition ? info[i].definition : '非常微妙',
+          proximityRelation: info[i].proximity ? info[i].proximity.split(',') : [],
+          structuralConstitution: info[i].component ? info[i].component.split(',') : [],
+          structuralConstitutionCalcific: info[i].componentRemark ? info[i].componentRemark.split(',') : [],
+          structuralConstitutionVoid: info[i].componentRemark0 ? info[i].componentRemark0 : undefined,
+          structuralRelation: info[i].relation ? info[i].relation.split(',') : [],
+          nodeType: info[i].featuresType ? info[i].featuresType : undefined,
+          nodeTypeRemark: info[i].featuresRemark ? info[i].featuresRemark : 0,
+          danger: info[i].tumorPercent ? info[i].tumorPercent : 0,
+          state: info[i].isFinish === 1 ? true : false,
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
 
-    setNewNoduleList([[...list1], [...list2], [...list3]])
+    setNewNoduleList([...newNoduleList])
 
     setNoduleList([...nodulesList])
     setNoduleMapList([...nodulesMapList])
@@ -565,12 +471,9 @@ const ThirdViewer = () => {
       setNoduleInfo(null)
     }
 
-    const newNoduleInfo = [
-      newNoduleList[0].find(item => item.id === checkItme.id),
-      newNoduleList[1].find(item => item.id === checkItme.id),
-      newNoduleList[2].find(item => item.id === checkItme.id),
-    ]
-    setNewNoduleInfo(newNoduleInfo)
+    // 点击的时候过滤出与当前结节对应的三个医生结果传递给弹窗
+    const infoList = newNoduleList.filter(item => item.id === checkItme.id)
+    setNewNoduleInfo([...infoList])
   }
 
   // 全选
@@ -1007,11 +910,11 @@ const ThirdViewer = () => {
         if (result.data.result.doctorTask.resultInfo) {
           const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
           const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-          formatNodeData(data, resultInfo.nodelist)
+          formatThirdStndrdDetail(data, resultInfo.nodelist)
           callback && callback()
         } else {
           const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-          formatNodeData(data, [])
+          formatThirdStndrdDetail(data, [])
           callback && callback()
         }
       }
@@ -1369,65 +1272,20 @@ const ThirdViewer = () => {
   // ===========================================================================
 
   // 更新结节列表事件
-  const handleUpdateNoduleInfo = (val, type, index) => {
+  const handleUpdateNoduleInfo = (val, type, index, user) => {
     const checkItme = noduleList.find(item => item.checked === true)
-    const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
+    const newItem = newNoduleList.find(item => item.id === checkItme.id && item.user === user)
+
     if (newItem) {
       switch (type) {
-        // 滑动组件
-        case 'difficultyLevel':
-        case 'spinous':
-        case 'lungInterface':
-        case 'nodeTypeRemark':
-        case 'danger':
-          newItem[type] = val
-          break
 
-        // 下拉菜单
-        case 'position':
+        // 形态分叶，形状，边缘/毛刺，棘突分级，结节类型，所选分级
         case 'paging':
         case 'sphere':
-          newItem[type] = val
-          break
-
-        // 大小单独处理
-        case 'size':
-          newItem['size'] = val
-          newItem['sizeAfter'] = `${val}mm*${val}mm`
-          break
-
-        // 结构成分、结构成分（钙化）
-        case 'structuralConstitution':
-        case 'structuralConstitutionCalcific':
-          newItem[type] = val
-          break
-
-        // 空洞
-        case 'structuralConstitutionVoid':
-          newItem[type] = val
-          break
-
-        // 临近关系与结构关系单独处理
-        case 'proximityRelation':
-        case 'structuralRelation':
-          if (val.includes('无特殊') && !newItem[type].includes('无特殊')) {
-            newItem[type] = ['无特殊']
-          } else if (newItem[type].includes('无特殊')) {
-            newItem[type] = val.filter(v => v !== '无特殊')
-          } else {
-            newItem[type] = val
-          }
-          break
-
-        // 边缘/毛刺 单独处理
         case 'rag':
-        case 'rag0':
-        case 'rag1':
-          newItem[type] = val
-          break
-
-        // 结节类型
+        case 'spinous':
         case 'nodeType':
+        case 'nodeTypeRemark':
           newItem[type] = val
           break
 
@@ -1435,9 +1293,10 @@ const ThirdViewer = () => {
           break
       }
     }
+
     setNewNoduleList([...newNoduleList])
 
-    saveNoduleInfo(index)
+    // saveNoduleInfo(index)
   }
 
   // 暂存结节数据
@@ -1478,198 +1337,6 @@ const ThirdViewer = () => {
 
     return postData
   }
-
-  // // 重置列表事件（微小结节）
-  // const handleResetMiniNode = index => {
-  //   const checkItme = noduleList.find(item => item.checked === true)
-  //   const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
-
-  //   // 形态分叶
-  //   newItem.paging = undefined
-
-  //   // 形状
-  //   newItem.sphere = undefined
-
-  //   // 棘突
-  //   newItem.spinous = '非常微妙'
-
-  //   // 结构成分
-  //   newItem.structuralConstitution = []
-
-  //   // 结构成分（空洞）
-  //   newItem.structuralConstitutionVoid = undefined
-
-  //   // 结构成分（钙化）
-  //   newItem.structuralConstitutionCalcific = []
-
-  //   setNewNoduleList([...newNoduleList])
-  // }
-
-  // // 重置列表事件（检测难易度）
-  // const handleResetDifficultyLevel = index => {
-  //   const checkItme = noduleList.find(item => item.checked === true)
-  //   const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
-
-  //   // 形态分叶
-  //   newItem.paging = undefined
-
-  //   // 边缘/毛刺
-  //   newItem.rag = undefined
-
-  //   // 长毛刺
-  //   newItem.rag1 = undefined
-
-  //   // 晕征
-  //   newItem.rag0 = undefined
-
-  //   setNewNoduleList([...newNoduleList])
-  // }
-
-  // // 提交单个结果
-  // const updateSingleNodeResult = index => {
-  //   const checkItme = noduleList.find(item => item.checked === true)
-  //   const newItem = newNoduleList[index].find(item => item.id === checkItme.id)
-
-  //   console.log(checkItme)
-
-  //   // 大小
-  //   if (!newItem.sizeAfter) {
-  //     message.warning(`请选择或者测量结节的大小属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   // 位置
-  //   if (!newItem.position) {
-  //     message.warning(`请选择结节的位置属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   if (!Array.isArray(newItem.position)) {
-  //     message.warning(`请选择结节的位置属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   if (newItem.position.length < 2) {
-  //     message.warning(`请选择结节的位置属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   // 形态分叶
-  //   if (!newItem.paging) {
-  //     if (newItem.difficultyLevel !== '非常微妙' && formatNodeSize(newItem.size) !== '微小结节') {
-  //       message.warning(`请选择结节的形态分叶属性后再进行提交`)
-  //       return false
-  //     }
-  //   }
-
-  //   // 形状
-  //   if (!newItem.sphere) {
-  //     if (formatNodeSize(newItem.size) !== '微小结节') {
-  //       message.warning(`请选择结节的形状属性后再进行提交`)
-  //       return false
-  //     }
-  //   }
-
-  //   // 边缘/毛刺
-  //   if (!newItem.rag) {
-  //     if (newItem.difficultyLevel !== '非常微妙') {
-  //       message.warning(`请选择结节的边缘/毛刺属性后再进行提交`)
-  //       return false
-  //     }
-  //   }
-
-  //   // 长毛刺
-  //   if (!newItem.rag1) {
-  //     if (newItem.difficultyLevel !== '非常微妙') {
-  //       message.warning(`请选择结节的长毛刺属性后再进行提交`)
-  //       return false
-  //     }
-  //   }
-
-  //   // 晕征
-  //   if (!newItem.rag0) {
-  //     if (newItem.difficultyLevel !== '非常微妙') {
-  //       message.warning(`请选择结节的晕征属性后再进行提交`)
-  //       return false
-  //     }
-  //   }
-
-  //   // 临近关系
-  //   if (newItem.proximityRelation.length === 0) {
-  //     message.warning(`请选择结节的临近关系属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   // 结构成分
-  //   if (newItem.structuralConstitution.length === 0) {
-  //     if (formatNodeSize(newItem.size) !== '微小结节') {
-  //       message.warning(`请选择结节的结构成分属性后再进行提交`)
-  //       return false
-  //     }
-  //   }
-
-  //   // 结构关系
-  //   if (newItem.structuralRelation.length === 0) {
-  //     message.warning(`请选择结节的结构关系属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   // 结构成分（钙化）
-  //   if (newItem.structuralConstitution.includes('钙化') && newItem.structuralConstitutionCalcific.length === 0) {
-  //     message.warning(`如若结构成分当中包含钙化属性，请选择结构成分（钙化）属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   // 结构成分（空洞）
-  //   if (newItem.structuralConstitution.includes('空洞') && !newItem.structuralConstitutionVoid) {
-  //     message.warning(`如若结构成分当中包含空洞属性，请选择结构成分（空洞）属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   // 结节类型
-  //   if (!newItem.nodeType) {
-  //     message.warning(`请选择结节的结构类型属性后再进行提交`)
-  //     return false
-  //   }
-
-  //   const postData = {
-  //     kyRemarkId: params.id,
-  //     kyPrimaryId: params.kyPrimaryId,
-  //     type: params.type,
-  //     nodeId: newItem.id.toString(),
-  //     imageCode: newItem.imageCode,
-  //     nodeIndex: newItem.num.toString(),
-  //     findpercent: newItem.difficultyLevel,
-  //     position: newItem.position.join(','),
-  //     sizenum: newItem.sizeAfter,
-  //     size: formatNodeSize(newItem.size),
-  //     shape: newItem.paging,
-  //     spherical: newItem.sphere,
-  //     edge: newItem.rag,
-  //     edge0: newItem.rag0,
-  //     edge1: newItem.rag1,
-  //     burr: newItem.spinous,
-  //     definition: newItem.lungInterface,
-  //     proximity: newItem.proximityRelation.join(','),
-  //     component: newItem.structuralConstitution.join(','),
-  //     componentRemark: newItem.structuralConstitutionCalcific.join(','),
-  //     componentRemark0: newItem.structuralConstitutionVoid,
-  //     relation: newItem.structuralRelation.join(','),
-  //     featuresType: newItem.nodeType,
-  //     featuresRemark: newItem.nodeTypeRemark.toString(),
-  //     tumorPercent: newItem.danger.toString(),
-  //   }
-
-  //   updateResult(postData).then(res => {
-  //     if (res.data.code === 200) {
-  //       message.success(`当前结节结果保存成功`)
-  //       newItem.state = true
-  //       setNewNoduleList([...newNoduleList])
-  //     } else {
-  //       message.error(`当前结节结果保存失败，请重新进行尝试`)
-  //     }
-  //   })
-  // }
 
   // 防抖
   const [resultLoading, setResultLoading] = useState(false)
@@ -1810,29 +1477,20 @@ const ThirdViewer = () => {
         mask={false}
         maskClosable={false}
         wrapClassName={'detail-box-modal'}
-        okText={'确定'}
+        okText={'关闭'}
         cancelText={'取消'}
         width={1100}
       >
         <div className="third-detail-box">
-          <ThirdNoduleInfo
-            user={'医生一'}
-            index={0}
-            noduleInfo={newNoduleInfo[0]}
-            handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-          />
-          <ThirdNoduleInfo
-            user={'医生二'}
-            index={1}
-            noduleInfo={newNoduleInfo[1]}
-            handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-          />
-          <ThirdNoduleInfo
-            user={'医生三'}
-            index={2}
-            noduleInfo={newNoduleInfo[2]}
-            handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-          />
+          {newNoduleInfo.map((item, index) => (
+            <ThirdNoduleInfo
+              key={index}
+              user={item.user}
+              index={index}
+              noduleInfo={item}
+              handleUpdateNoduleInfo={handleUpdateNoduleInfo}
+            />
+          ))}
         </div>
       </Modal>
 

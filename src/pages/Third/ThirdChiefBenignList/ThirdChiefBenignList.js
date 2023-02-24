@@ -180,7 +180,7 @@ const ThirdChiefBenignList = () => {
     newPagination.isFinish = params.isFinish
     newPagination.imageCode = params.imageCode
     localStorage.setItem('ThirdChiefBenignList', JSON.stringify(newPagination))
-    history.push(`/thirdViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
+    history.push(`/thirdViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=1&from=${history.location.pathname}`)
   }
 
   return (
