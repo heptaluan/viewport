@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
-import { Tooltip, Button, Slider, InputNumber } from 'antd'
-import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Tooltip, Button } from 'antd'
 
 const toolbarList = [
   {
@@ -137,6 +136,7 @@ const Toolbar = props => {
       setstate([...state])
     } else if (type === 'Reset') {
       props.handleToolbarClick(type, state[index].checked)
+      // eslint-disable-next-line array-callback-return
       state.map(item => {
         if (item.type === 'vflip' || item.type === 'hflip') item.checked = false
       })
@@ -144,6 +144,7 @@ const Toolbar = props => {
       return
     } else {
       state[index].checked = !state[index].checked
+      // eslint-disable-next-line array-callback-return
       state.map(item => {
         if (item.type !== type && item.type !== 'playClip' && item.type !== 'vflip' && item.type !== 'hflip')
           item.checked = false
@@ -165,7 +166,6 @@ const Toolbar = props => {
   // 滑块滑动事件
   // const handleSliderChange = newValue => {
   //   setInputValue(newValue)
-  //   localStorage.setItem('diameterSize', newValue)
   //   props.handleSliderChange(newValue)
   // }
 

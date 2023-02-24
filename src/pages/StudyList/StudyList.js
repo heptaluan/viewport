@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import './StudyList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Select, Button, Space, Popconfirm, message, Menu, Avatar, Input } from 'antd'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { Table, Select, Button, Space, message, Input } from 'antd'
 import { getChiefList, getDoctorList } from '../../api/api'
+import MenuList from '../../components/MenuList/MenuList'
+import HeaderList from '../../components/HeaderList/HeaderList'
 
 const StudyList = () => {
   const [dataSource, setDataSource] = useState([])
@@ -113,7 +114,7 @@ const StudyList = () => {
   const [userInfo, setUserInfo] = useState('')
 
   const initPagination = result => {
-    let page = localStorage.getItem('pagination') ? JSON.parse(localStorage.getItem('pagination')) : ''
+    let page = localStorage.getItem('StudyList') ? JSON.parse(localStorage.getItem('StudyList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page) {
       newPagination.current = page.current
@@ -140,10 +141,6 @@ const StudyList = () => {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -156,10 +153,6 @@ const StudyList = () => {
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
-      localStorage.setItem('pagination', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -189,7 +182,7 @@ const StudyList = () => {
     newPagination.current = e.current
     newPagination.pageSize = e.pageSize
     newPagination.total = e.total
-    localStorage.setItem('pagination', JSON.stringify(newPagination))
+    localStorage.setItem('StudyList', JSON.stringify(newPagination))
     setPagination(newPagination)
   }
 
@@ -206,7 +199,7 @@ const StudyList = () => {
   }
 
   const handleSearch = () => {
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     fetchDoctorList()
   }
 
@@ -214,16 +207,13 @@ const StudyList = () => {
     const isFinish = 0
     setIsFinish(isFinish)
     setSearchId('')
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     const result = await getDoctorList(isFinish, searchId)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -237,23 +227,20 @@ const StudyList = () => {
   }
 
   const handleChiefSearch = () => {
-    localStorage.setItem('pagination', '')
-    fetchDoctorList()
+    localStorage.setItem('StudyList', '')
+    fetchChiefList()
   }
 
   const handleChiefReset = async () => {
     const isChiefFinish = 0
     setIsChiefFinish(isChiefFinish)
-    localStorage.setItem('pagination', '')
+    localStorage.setItem('StudyList', '')
     const result = await getChiefList(isChiefFinish)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
       initPagination(result)
     } else if (result.data.code === 401) {
-      localStorage.setItem('token', '')
-      localStorage.setItem('info', '')
-      localStorage.setItem('username', '')
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
     }
@@ -262,15 +249,15 @@ const StudyList = () => {
   // 总医生详情
   const handleShowChiefDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
-    localStorage.setItem('pagination', JSON.stringify(pagination))
-    history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}`)
+    localStorage.setItem('StudyList', JSON.stringify(pagination))
+    history.push(`/viewer?dicomId=${record.dicomId}&orderId=${record.orderId}&from=${history.location.pathname}`)
   }
 
   // 普通医生详情
   const handleShowDoctorDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
-    localStorage.setItem('pagination', JSON.stringify(pagination))
-    history.push(`/viewer?id=${record.id}`)
+    localStorage.setItem('StudyList', JSON.stringify(pagination))
+    history.push(`/viewer?id=${record.id}&from=${history.location.pathname}`)
   }
 
   const rowSelection = {
@@ -279,62 +266,11 @@ const StudyList = () => {
     },
   }
 
-  const handleLogout = _ => {
-    localStorage.setItem('token', '')
-    localStorage.setItem('info', '')
-    localStorage.setItem('username', '')
-    localStorage.setItem('pagination', '')
-    message.success(`退出成功`)
-    history.push('/login')
-  }
-
-  const handleChangeMenu = e => {
-    if (e.key === '1') {
-      history.push('/studyList')
-    } else if (e.key === '2') {
-      history.push('/allotList')
-    } else if (e.key === '3') {
-      history.push('/markList')
-    } else if (e.key === '4') {
-      history.push('/benignNoduleList')
-    }
-  }
-
   return (
     <div className="study-list-box">
-      <header>
-        <div className="logo">
-          <img src="https://ai.feipankang.com/img/logo-white.6ffe78fe.png" alt="logo" />
-          <h1>泰莱生物商检系统</h1>
-        </div>
-        <div className="logout-box">
-          <div className="user-box">
-            <Avatar size={26} icon={<UserOutlined />} />
-            <span className="user-name">{localStorage.getItem('username')}</span>
-          </div>
-          <Popconfirm
-            placement="bottomRight"
-            title="是否退出登录？"
-            onConfirm={handleLogout}
-            okText="确定"
-            cancelText="取消"
-            className="logout"
-          >
-            <Button type="text" icon={<LogoutOutlined />}>
-              退出登录
-            </Button>
-          </Popconfirm>
-        </div>
-      </header>
+      <HeaderList />
       <div className="study-list-container-wrap">
-        <div className="meau-box">
-          <Menu defaultSelectedKeys={['1']} onClick={e => handleChangeMenu(e)}>
-            <Menu.Item key="1">审核列表</Menu.Item>
-            {userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
-            <Menu.Item key="3">金标准列表</Menu.Item>
-            <Menu.Item key="4">良性结节列表</Menu.Item>
-          </Menu>
-        </div>
+        <MenuList defaultSelectedKeys={'1'} userInfo={userInfo} />
         <div className="study-list-container">
           {userInfo === 'doctor' ? (
             <div className="search-box-wrap">

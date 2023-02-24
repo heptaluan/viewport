@@ -20,6 +20,7 @@ const Login = () => {
   }
 
   useEffect(() => {
+    handleClearLocalStorage()
     fetchCodeImg()
   }, [])
 
@@ -41,9 +42,7 @@ const Login = () => {
         message.success(`登录成功`)
         history.push(`/studyList`)
       } else if (info.data.code === 500) {
-        localStorage.setItem('token', '')
-        localStorage.setItem('info', '')
-        localStorage.setItem('username', '')
+        handleClearLocalStorage()
         message.warning(`获取用户角色失败，请重新登录`)
         fetchCodeImg()
       }
@@ -52,6 +51,24 @@ const Login = () => {
 
   const handleChangeImg = async () => {
     fetchCodeImg()
+  }
+  
+  const handleClearLocalStorage = () => {
+    localStorage.setItem('token', '')
+    localStorage.setItem('info', '')
+    localStorage.setItem('username', '')
+    localStorage.setItem('pagination', '')
+
+    localStorage.setItem('MissionList', '')
+    localStorage.setItem('StudyList', '')
+    localStorage.setItem('SecondBenignList', '')
+    localStorage.setItem('SecondStndrdList', '')
+    localStorage.setItem('SecondChiefBenignList', '')
+    localStorage.setItem('SecondChiefStndrdList', '')
+    localStorage.setItem('ThirdBenignList', '')
+    localStorage.setItem('ThirdStndrdList', '')
+    localStorage.setItem('ThirdChiefBenignList', '')
+    localStorage.setItem('ThirdChiefStndrdList', '')
   }
 
   return (

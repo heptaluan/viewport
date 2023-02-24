@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import './MarkMiddleSidePanel.scss'
+import './ThirdMiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
-import { Checkbox, Tooltip } from 'antd'
+import { Checkbox, Tooltip, Tag } from 'antd'
 
-const MarkMiddleSidePanel = props => {
+const ThirdMiddleSidePanel = props => {
   const handleListClick = (index, num) => {
     props.onCheckChange(index, num)
   }
@@ -15,6 +15,11 @@ const MarkMiddleSidePanel = props => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
   }, [])
+
+  const showNoduleDetail = (e, item) => {
+    e.stopPropagation()
+    props.showNoduleDetail(item)
+  }
 
   return (
     <div className="middle-side-panel-box">
@@ -51,6 +56,13 @@ const MarkMiddleSidePanel = props => {
                 <div className="type">{item.nodeType}</div>
                 <div className="type">{item.difficultyLevel}</div>
                 <div className={`type ${item.state ? 'yes' : 'no'}`}>{item.state ? '已提交' : '未提交'}</div>
+                {item.checked ? (
+                  <div className="del-tips">
+                    <Tag color="#2db7f5" onClick={e => showNoduleDetail(e, item)}>
+                      查看结节
+                    </Tag>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
@@ -80,4 +92,4 @@ const MarkMiddleSidePanel = props => {
   )
 }
 
-export default MarkMiddleSidePanel
+export default ThirdMiddleSidePanel
