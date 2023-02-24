@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './CustomOverlay.scss'
 import cornerstone from 'cornerstone-core'
-import {
-  getNewNodeList,
-  getBenignNodeList,
-} from '../../../api/api'
-import { useLocation } from 'react-router-dom'
-import qs from 'query-string'
-import { message } from 'antd'
+import { getPatientsList } from '../../../api/api'
+import { getURLParameters } from '../../../util/index'
 
 const dicomDateTimeToLocale = (dateTime, divide) => {
   if (dateTime) {
@@ -37,68 +32,46 @@ const getBirth = identityNumber => {
 }
 
 const CustomOverlay = props => {
-
-  const params = qs.parse(useLocation().search)
   const [data, setData] = useState(null)
   const [patients, setPatients] = useState('')
 
   useEffect(() => {
-    // 金标准数据
-    const fetchNodeListData = async () => {
-      const result = await getNewNodeList(params.imageCode)
-      if (result.data.code === 200) {
-        try {
-          const data = result.data.data.samlpeDataList
-          const patients = {
-            age: data[0].patientAge,
-            sex: data[0].patientSex === 'F' ? '0' : data[0].patientSex === 'M' ? '1' : '**',
-          }
-          setPatients(patients)
-        } catch (error) {
-          console.log(error)
-        }
-      } else if (result.data.code === 500) {
-        message.error(`请求失败，请重新尝试`)
-      }
+    const fetchData = async () => {
+      const result = await getPatientsList(getURLParameters(window.location.href).resource)
+      setPatients(result.data.result.records[0])
     }
-
-    // 良性结节数据
-    const fetchBenignNodeListData = async () => {
-      const result = await getBenignNodeList(params.id)
-      if (result.data.code === 200) {
-        try {
-          const data = result.data.data
-          const patients = {
-            age: data.info.age,
-            sex: data.info.sex ? data.info.sex : '**',
-          }
-          setPatients(patients)
-        } catch (error) {
-          console.log(error)
-        }
-      } else if (result.data.code === 500) {
-        message.error(`请求失败，请重新尝试`)
-      }
-    }
-
-    if (Number(params.type) === 2) {
-      fetchNodeListData()
-    } else if (Number(params.type) === 1) {
-      fetchBenignNodeListData()
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData()
   }, [])
 
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
       const data = {
-        name: patients.name ? patients.name : '**',
-        age: patients.age ? patients.age : '**',
-        sex: patients.sex === '1' ? '男' : patients.sex === '0' ? '女' : '**',
-        hospital: patients.source ? patients.source : '**',
-        birth: '**',
+        name:
+          image.data.string('x00100010') && image.data.string('x00100010') !== '**'
+            ? image.data.string('x00100010')
+            : patients.patientName,
+        birth:
+          image.data.string('x00100030') && image.data.string('x00100030') !== '00000000'
+            ? image.data.string('x00100030')
+            : getBirth(patients.identityNumber),
 
-        patientId: image.data.string('x00100020'),
+        sex:
+          image.data.string('x00100040') && image.data.string('x00100040') !== '**'
+            ? image.data.string('x00100040')
+            : patients.gender_dictText,
+
+        age: patients.age ? patients.age : '**',
+
+        patientId:
+          image.data.string('x00100020') && image.data.string('x00100020') !== '**'
+            ? image.data.string('x00100020')
+            : patients.patientId,
+
+        hospital:
+          image.data.string('x00080080') && image.data.string('x00080080') !== '**'
+            ? image.data.string('x00080080')
+            : patients.hospitalShortName,
+
         studyID: image.data.string('x00200010'),
 
         seriesNo: image.data.string('x00200011'),
@@ -107,16 +80,16 @@ const CustomOverlay = props => {
         sliceThickness: image.data.string('x00180050'),
         sliceLocation: image.data.string('x00201041'),
 
-        // day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        // time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
-
-        day: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date'),
-        time: dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time'),
+        day: image.data.string('x00080022')
+          ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date')
+          : patients.studyTime && patients.studyTime.split(' ')[0],
+        time: image.data.string('x00080022')
+          ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time')
+          : patients.studyTime && patients.studyTime.split(' ')[1],
 
         Rowsize: image.rows,
         Colsize: image.columns,
       }
-
       setData(data)
     })
   }, [props.imageId, patients])

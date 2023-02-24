@@ -1,25 +1,9 @@
 import IndexComponent from '../components/index'
-import Login from '../pages/Login/Login'
 import Viewer from '../pages/Viewer/Viewer'
 import StudyList from '../pages/StudyList/StudyList'
-import AllotList from '../pages/AllotList/AllotList'
-import MissionList from '../pages/MissionList/MissionList'
-
-// 第一批软标签
-import SecondDashboard from '../pages/Second/SecondDashboard/SecondDashboard'
-import SecondViewer from '../pages/Second/SecondViewer/SecondViewer'
-import SecondBenignList from '../pages/Second/SecondBenignList/SecondBenignList'
-import SecondChiefBenignList from '../pages/Second/SecondChiefBenignList/SecondChiefBenignList'
-import SecondStndrdList from '../pages/Second/SecondStndrdList/SecondStndrdList'
-import SecondChiefStndrdList from '../pages/Second/SecondChiefStndrdList/SecondChiefStndrdList'
-
-// 第二批软标签（三千结节）
-import ThirdDashboard from '../pages/Third/ThirdDashboard/ThirdDashboard'
-import ThirdViewer from '../pages/Third/ThirdViewer/ThirdViewer'
-import ThirdBenignList from '../pages/Third/ThirdBenignList/ThirdBenignList'
-import ThirdChiefBenignList from '../pages/Third/ThirdChiefBenignList/ThirdChiefBenignList'
-import ThirdStndrdList from '../pages/Third/ThirdStndrdList/ThirdStndrdList'
-import ThirdChiefStndrdList from '../pages/Third/ThirdChiefStndrdList/ThirdChiefStndrdList'
+import TaskList from '../pages/TaskList/TaskList'
+import CompareBox from '../pages/CompareViewer/CompareBox'
+import { Redirect } from 'react-router-dom'
 
 const routes = [
   {
@@ -27,90 +11,25 @@ const routes = [
     component: IndexComponent,
     routes: [
       {
-        path: '/login',
-        component: Login,
+        path: '/studyList',
+        component: StudyList,
         routes: [],
+        render: () => <Redirect to={'/viewer/1'} />,
       },
       {
-        path: '/viewer',
+        path: '/taskList',
+        component: TaskList,
+        routes: [],
+        render: () => <Redirect to={'/viewer/1'} />,
+      },
+      {
+        path: '/viewer/:studyInstanceUids',
         component: Viewer,
         routes: [],
       },
       {
-        path: '/studyList',
-        component: StudyList,
-        routes: [],
-      },
-      {
-        path: '/allotList',
-        component: AllotList,
-        routes: [],
-      },
-      {
-        path: '/missionList',
-        component: MissionList,
-        routes: [],
-      },
-      // 第二批软标签（三千结节）
-      {
-        path: '/thirdDashboard',
-        component: ThirdDashboard,
-        routes: [],
-      },
-      {
-        path: '/thirdViewer',
-        component: ThirdViewer,
-        routes: [],
-      },
-      {
-        path: '/thirdStndrdList',
-        component: ThirdStndrdList,
-        routes: [],
-      },
-      {
-        path: '/thirdBenignList',
-        component: ThirdBenignList,
-        routes: [],
-      },
-      {
-        path: '/thirdChiefStndrdList',
-        component: ThirdChiefStndrdList,
-        routes: [],
-      },
-      {
-        path: '/thirdChiefBenignList',
-        component: ThirdChiefBenignList,
-        routes: [],
-      },
-      // 第二批软标签
-      {
-        path: '/secondDashboard',
-        component: SecondDashboard,
-        routes: [],
-      },
-      {
-        path: '/secondViewer',
-        component: SecondViewer,
-        routes: [],
-      },
-      {
-        path: '/secondStndrdList',
-        component: SecondStndrdList,
-        routes: [],
-      },
-      {
-        path: '/secondBenignList',
-        component: SecondBenignList,
-        routes: [],
-      },
-      {
-        path: '/secondChiefStndrdList',
-        component: SecondChiefStndrdList,
-        routes: [],
-      },
-      {
-        path: '/secondChiefBenignList',
-        component: SecondChiefBenignList,
+        path: '/compareBox',
+        component: CompareBox,
         routes: [],
       },
     ],

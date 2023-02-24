@@ -1,21 +1,19 @@
-.middle-side-panel-box {
+.compare-middle-side-panel-box {
   flex: 1;
   height: 100%;
   display: flex;
   flex-direction: column;
   font-size: 12px;
-  max-width: 460px;
-  min-width: 460px;
+  max-width: 350px;
+  min-width: 350px;
   padding-bottom: 12px;
   // border-left: 1px solid #ccc;
 
   .nodule-list-box {
-    height: 320px;
-    max-height: 600px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 0 10px;
-    flex: 4 1;
 
     .title {
       height: 35px;
@@ -29,6 +27,7 @@
       flex-direction: column;
       border: 1px solid #0e2b40;
       overflow: hidden;
+      height: 100%;
 
       .table-title {
         display: flex;
@@ -60,11 +59,10 @@
       }
 
       .table-content {
-        // display: flex;
         flex-direction: column;
         overflow-x: hidden;
         overflow-y: overlay;
-        min-height: 535px;
+        height: 100%;
 
         .table-item {
           user-select: none;
