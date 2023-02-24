@@ -1,0 +1,162 @@
+.mark-box-wrap {
+  position: absolute;
+  right: 20px;
+  top: 95px;
+  width: 330px;
+  color: #fff;
+  font-size: 14px;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 72%;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  .box-title {
+    text-align: center;
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+
+  .list-title {
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+
+  .box-wrap {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    margin-bottom: 8px;
+    padding: 10px;
+  }
+
+  .mark-box {
+    position: relative;
+    margin-bottom: 0;
+    font-size: 12px;
+
+    &.mb {
+      margin-bottom: 5px;
+    }
+
+    &.flex {
+      display: flex;
+      align-items: center;
+
+      &.left {
+        align-items: start;
+
+        .mark-title {
+          margin-top: 2px;
+        }
+      }
+    }
+
+    .mark-title {
+      display: inline-block;
+      margin-right: 10px;
+      width: 95px;
+
+      &.w250 {
+        width: 250px;
+      }
+
+      &.mb {
+        margin-bottom: 2px;
+      }
+    }
+
+    .mark-content {
+      width: 360px;
+
+      &.slider {
+        width: 330px;
+      }
+
+      .ant-checkbox-wrapper,
+      .ant-radio-wrapper,
+      .ant-slider-mark-text {
+        font-size: 12px !important;
+        color: #fff;
+      }
+    }
+
+    .ant-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .tips {
+    font-size: 12px;
+    line-height: 18px;
+
+    .active {
+      color: #ff4d4f;
+    }
+  }
+}
+
+.ant-segmented {
+  margin-top: 5px !important;
+  background: #fff !important;
+
+  .ant-segmented-item-label {
+    color: rgba(0, 0, 0, 0.85) !important;
+  }
+
+  .ant-segmented-thumb,
+  .ant-segmented-item-selected {
+    background: #1890ff !important;
+    color: #fff !important;
+
+    .ant-segmented-item-label {
+      color: #fff !important;
+    }
+  }
+}
+
+.ant-checkbox-group .ant-checkbox-wrapper {
+  color: #fff !important;
+}
+
+.ant-slider-mark-text {
+  color: #fff !important;
+}
+
+.ant-tooltip {
+  .ant-tooltip-arrow-content {
+    --antd-arrow-background-color: #fff !important;
+  }
+
+  .ant-tooltip-inner {
+    background: #fff;
+    color: #000 !important;
+  }
+}
+
+.mark-box {
+  .ant-slider-handle {
+    background-color: #ff4d4f !important;
+    border: solid 2px #ff4d4f !important;
+  }
+}
+
+.mark-box-wrap {
+  .ant-select-disabled .ant-select-selector,
+  .ant-segmented-disabled,
+  .ant-checkbox-disabled .ant-checkbox-inner,
+  .ant-radio-disabled .ant-radio-inner
+  {
+    background: #999 !important;
+  }
+
+  .ant-checkbox-wrapper-disabled .ant-checkbox-disabled + span,
+  .ant-radio-wrapper-disabled .ant-radio-disabled + span {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+}
