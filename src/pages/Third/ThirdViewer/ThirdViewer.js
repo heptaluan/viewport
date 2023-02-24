@@ -20,6 +20,8 @@ import {
   updateList,
   getThirdStndrdDetail,
   getThirdBenignDetail,
+  chiefFinish,
+  saveChiefReviseResult,
 } from '../../../api/api'
 import { Modal, message, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
@@ -282,6 +284,7 @@ const ThirdViewer = () => {
       for (let i = 0; i < info.length; i++) {
         newNoduleList.push({
           user: info[i].createBy,
+          userId: info[i].id,
           id: info[i].nodeId,
           imageCode: info[i].imageCode,
           num: Number(info[i].nodeIndex),
@@ -292,22 +295,30 @@ const ThirdViewer = () => {
           size: info[i].sizenum ? formatSizeMean(info[i].sizenum) : '',
           sizeBefore: '',
           sizeAfter: info[i].sizenum ? info[i].sizenum : undefined,
-          paging: info[i].shape ? info[i].shape : undefined,
-          sphere: info[i].spherical ? info[i].spherical : undefined,
-          rag: info[i].edge ? info[i].edge.split(',') : [],
-          rag0: info[i].edge0 ? info[i].edge0 : undefined,
           rag1: info[i].edge1 ? info[i].edge1 : undefined,
-          spinous: info[i].burr ? info[i].burr : '非常微妙',
           lungInterface: info[i].definition ? info[i].definition : '非常微妙',
           proximityRelation: info[i].proximity ? info[i].proximity.split(',') : [],
           structuralConstitution: info[i].component ? info[i].component.split(',') : [],
           structuralConstitutionCalcific: info[i].componentRemark ? info[i].componentRemark.split(',') : [],
           structuralConstitutionVoid: info[i].componentRemark0 ? info[i].componentRemark0 : undefined,
-          structuralRelation: info[i].relation ? info[i].relation.split(',') : [],
           nodeType: info[i].featuresType ? info[i].featuresType : undefined,
           nodeTypeRemark: info[i].featuresRemark ? info[i].featuresRemark : 0,
           danger: info[i].tumorPercent ? info[i].tumorPercent : 0,
           state: info[i].isFinish === 1 ? true : false,
+
+          spinousOrigin: info[i].burr ? info[i].burr : '非常微妙',
+          ragOrigin: info[i].edge ? info[i].edge.split(',') : [],
+          pagingOrigin: info[i].shape ? info[i].shape : undefined,
+          sphereOrigin: info[i].spherical ? info[i].spherical : undefined,
+          rag0Origin: info[i].edge0 ? info[i].edge0 : undefined,
+          structuralRelationOrigin: info[i].relation ? info[i].relation.split(',') : [],
+
+          spinous: info[i].amendBurr ? info[i].amendBurr : info[i].burr ? info[i].burr : '非常微妙',
+          rag: info[i].amendEdge ? info[i].amendEdge : info[i].edge ? info[i].edge : undefined,
+          paging: info[i].amendShape ? info[i].amendShape : info[i].shape ? info[i].shape : undefined,
+          sphere: info[i].amendSpherical ? info[i].amendSpherical : info[i].spherical ? info[i].spherical : undefined,
+          rag0: info[i].amendEdge0 ? info[i].amendEdge0 : info[i].edge ? info[i].edge.split(',') : [],
+          structuralRelation: info[i].amendRelation ? info[i].amendRelation : info[i].relation ? info[i].relation.split(',') : [],
         })
       }
     } catch (error) {
@@ -1024,13 +1035,9 @@ const ThirdViewer = () => {
       scrynMaligant: riskVal ? riskVal : res.data.scrynMaligant,
       whu_scrynMaligant: riskVal ? riskVal : res.data.whu_scrynMaligant,
       nodeBox: [startY, startX, endY, endX],
-      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-        Math.abs(endY - startY) * rowPixelSpacing
-      ).toFixed(2)}mm`,
+      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`,
       diameterSize: formatDiameter(
-        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-          Math.abs(endY - startY) * rowPixelSpacing
-        ).toFixed(2)}mm`
+        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`
       ),
       maxHu: toolList[0].cachedStats.max,
       minHu: toolList[0].cachedStats.min,
@@ -1278,7 +1285,6 @@ const ThirdViewer = () => {
 
     if (newItem) {
       switch (type) {
-
         // 形态分叶，形状，边缘/毛刺，棘突分级，结节类型，所选分级
         case 'paging':
         case 'sphere':
@@ -1286,7 +1292,18 @@ const ThirdViewer = () => {
         case 'spinous':
         case 'nodeType':
         case 'nodeTypeRemark':
+        case 'rag0':
           newItem[type] = val
+          break
+
+        case 'structuralRelation':
+          if (val.includes('无特殊') && !newItem[type].includes('无特殊')) {
+            newItem[type] = ['无特殊']
+          } else if (newItem[type].includes('无特殊')) {
+            newItem[type] = val.filter(v => v !== '无特殊')
+          } else {
+            newItem[type] = val
+          }
           break
 
         default:
@@ -1296,46 +1313,57 @@ const ThirdViewer = () => {
 
     setNewNoduleList([...newNoduleList])
 
-    // saveNoduleInfo(index)
+    saveNoduleInfo(newItem, type, val)
   }
 
   // 暂存结节数据
-  const saveNoduleInfo = index => {
-    // const postData = formatNoduleInfoData()
-    // saveDnResult(JSON.stringify(postData)).then(res => {
-    //   if (res.data.code === 200) {
-    //     message.success(`结节信息保存成功`)
-    //     callback && callback()
-    //   } else {
-    //     message.error(`结节结果保存失败，请检查网络或是重新登录后再行尝试`)
-    //   }
-    // })
+  const saveNoduleInfo = (item, type, val) => {
+    const postData = formatPostNoduleInfoData(item, type, val)
+    saveChiefReviseResult(postData).then(res => {
+      if (res.data.code === 200) {
+        message.success(`结节结果修改成功`)
+      } else {
+        message.error(`结节结果修改失败，请检查网络或是重新登录后再行尝试`)
+      }
+    })
   }
 
   // 格式化提交数据
-  const formatNoduleInfoData = () => {
-    const patients = JSON.parse(localStorage.getItem('record'))
-    const postData = {
-      ...patients,
-      imageCount: imagesConfig.length,
-      nodeText: [],
+  const formatPostNoduleInfoData = (item, type, val) => {
+    switch (type) {
+      case 'spinous':
+        return {
+          id: item.userId,
+          amendBurr: val,
+        }
+      case 'rag':
+        return {
+          id: item.userId,
+          amendEdge: val,
+        }
+      case 'paging':
+        return {
+          id: item.userId,
+          amendShape: val,
+        }
+      case 'sphere':
+        return {
+          id: item.userId,
+          amendSpherical: val,
+        }
+        case 'rag0':
+        return {
+          id: item.userId,
+          amendEdge0: val,
+        }
+        case 'structuralRelation':
+        return {
+          id: item.userId,
+          amendRelation: val.join(','),
+        }
+      default:
+        break
     }
-
-    for (let i = 0; i < noduleList.length; i++) {
-      if (noduleList[i].state) {
-        postData.nodeText.push({
-          index: noduleList[i].id + 1,
-          imageIndex: noduleList[i].num,
-          featureLabel: noduleList[i].type,
-          box: getBox(noduleList[i]),
-          acrossCoordz: getAcrossCoordz(noduleList[i]),
-        })
-      }
-    }
-
-    postData.nodeText = JSON.stringify(postData.nodeText)
-
-    return postData
   }
 
   // 防抖
@@ -1440,9 +1468,7 @@ const ThirdViewer = () => {
           showMarker={showMarker}
         />
       </div>
-      {showMark ? (
-        <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
-      ) : null}
+      {showMark ? <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} /> : null}
 
       {/* 医生结节比较弹窗 */}
       <Modal
@@ -1483,13 +1509,7 @@ const ThirdViewer = () => {
       >
         <div className="third-detail-box">
           {newNoduleInfo.map((item, index) => (
-            <ThirdNoduleInfo
-              key={index}
-              user={item.user}
-              index={index}
-              noduleInfo={item}
-              handleUpdateNoduleInfo={handleUpdateNoduleInfo}
-            />
+            <ThirdNoduleInfo key={index} user={item.user} index={index} noduleInfo={item} handleUpdateNoduleInfo={handleUpdateNoduleInfo} />
           ))}
         </div>
       </Modal>
@@ -1550,9 +1570,7 @@ const ThirdViewer = () => {
         <p>是否将当前结节自动标记为微小结节</p>
       </Modal>
 
-      <div className="show-button">
-        {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-      </div>
+      <div className="show-button">{/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}</div>
 
       <Modal
         title={

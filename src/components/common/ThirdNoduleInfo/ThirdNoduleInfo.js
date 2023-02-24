@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './ThirdNoduleInfo.scss'
 import { Slider, Select, Button, Radio, Segmented, Checkbox, Cascader } from 'antd'
 import { formatNodeSize, formatDanger, formatNodeTypeRemark } from '../../../util/index'
+import { InfoCircleOutlined } from '@ant-design/icons'
 
 const { Option } = Select
 
@@ -27,7 +28,12 @@ const ThirdNoduleInfo = props => {
             <div className="list-title">外观特征</div>
 
             <div className="mark-box flex mb">
-              <div className="mark-title">形态分叶</div>
+              <div className="mark-title">
+                {props.noduleInfo.paging !== props.noduleInfo.pagingOrigin ? (
+                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                ) : null}
+                形态分叶
+              </div>
               <div className="mark-content">
                 <Select
                   // disabled={isMiniNode || difficultyLevel}
@@ -46,7 +52,12 @@ const ThirdNoduleInfo = props => {
               </div>
             </div>
             <div className="mark-box flex mb">
-              <div className="mark-title">形状</div>
+              <div className="mark-title">
+                {props.noduleInfo.sphere !== props.noduleInfo.sphereOrigin ? (
+                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                ) : null}
+                形状
+              </div>
               <div className="mark-content">
                 <Select
                   size="small"
@@ -65,7 +76,12 @@ const ThirdNoduleInfo = props => {
               </div>
             </div>
             <div className="mark-box flex mb">
-              <div className="mark-title">边缘/毛刺</div>
+              <div className="mark-title">
+                {props.noduleInfo.rag !== props.noduleInfo.ragOrigin ? (
+                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                ) : null}
+                边缘/毛刺
+              </div>
               <div className="mark-content">
                 <Select
                   size="small"
@@ -93,8 +109,28 @@ const ThirdNoduleInfo = props => {
               </div>
             </div>
 
+            <div className="mark-box flex left mb">
+              <div className="mark-title">晕征</div>
+              <div className="mark-content">
+                <Radio.Group
+                  options={[
+                    { label: '无晕征', value: '无晕征' },
+                    { label: '有晕征', value: '有晕征' },
+                    { label: '反晕征', value: '反晕征' },
+                  ]}
+                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'rag0', props.index, props.user)}
+                  value={props.noduleInfo.rag0}
+                />
+              </div>
+            </div>
+
             <div className="mark-box mb">
-              <div className="mark-title w250 mb">棘突（分级）</div>
+              <div className="mark-title w250 mb">
+                {props.noduleInfo.spinous !== props.noduleInfo.spinousOrigin ? (
+                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                ) : null}
+                棘突（分级）
+              </div>
               <div className="mark-content">
                 <Segmented
                   onChange={e => props.handleUpdateNoduleInfo(e, 'spinous', props.index, props.user)}
@@ -108,88 +144,25 @@ const ThirdNoduleInfo = props => {
           </div>
 
           <div className="box-wrap">
-            <div className="list-title" style={{ marginBottom: 5 }}>
-              结节类型
-            </div>
-            <div className="mark-box flex">
+            <div className="list-title">内部特征</div>
+            <div className="mark-box flex left">
+              <div className="mark-title">结构关系</div>
               <div className="mark-content">
-                <Select
-                  size="small"
-                  style={{ width: 198, fontSize: 12 }}
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'nodeType', props.index, props.user)}
-                  value={props.noduleInfo.nodeType}
-                  placeholder="请选择结节类型"
-                >
-                  <Option value="肺内实性">肺内实性</Option>
-                  <Option value="部分实性">部分实性</Option>
-                  <Option value="磨玻璃">磨玻璃</Option>
-                  <Option value="肺内钙化">肺内钙化</Option>
-                  <Option value="胸膜钙化">胸膜钙化</Option>
-                  <Option value="胸膜实性">胸膜实性</Option>
-                  <Option value="其他">其他</Option>
-                </Select>
+                <Checkbox.Group
+                  options={[
+                    { label: '侵犯血管', value: '侵犯血管' },
+                    { label: '内有血管穿行', value: '内有血管穿行' },
+                    { label: '内有支气管穿行', value: '内有支气管穿行' },
+                    { label: '支气管壁增厚', value: '支气管壁增厚' },
+                    { label: '血管局部增粗', value: '血管局部增粗' },
+                    { label: '血管贴边', value: '血管贴边' },
+                    { label: '无特殊', value: '无特殊' },
+                  ]}
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'structuralRelation', props.index, props.user)}
+                  value={props.noduleInfo.structuralRelation}
+                />
               </div>
             </div>
-
-            {props.noduleInfo.nodeType === '部分实性' ||
-            props.noduleInfo.nodeType === '肺内钙化' ||
-            props.noduleInfo.nodeType === '胸膜钙化' ? (
-              <div className="mark-box">
-                <div className="mark-title" style={{ width: 320, marginTop: 8 }}>
-                  {formatNodeTypeTitle(props.noduleInfo.nodeType)}，目前所选分级：
-                  {formatNodeTypeRemark(Number(props.noduleInfo.nodeTypeRemark))}
-                </div>
-                <div className="mark-content" style={{ width: 310 }}>
-                  <Slider
-                    marks={{
-                      0: 0,
-                      25: 25,
-                      50: 50,
-                      75: 75,
-                      100: 100,
-                    }}
-                    included={false}
-                    onChange={e => props.handleUpdateNoduleInfo(e, 'nodeTypeRemark', props.index, props.user)}
-                    value={props.noduleInfo.nodeTypeRemark}
-                  />
-                </div>
-                <div className="tips">
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 0 && props.noduleInfo.nodeTypeRemark < 25 ? 'active' : ''
-                    }`}
-                  >
-                    非常微妙（0 - 24）
-                  </span>
-                  <br />
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 25 && props.noduleInfo.nodeTypeRemark < 50 ? 'active' : ''
-                    }`}
-                  >
-                    适度微妙（25 - 49）
-                  </span>
-                  <br />
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 50 && props.noduleInfo.nodeTypeRemark < 75 ? 'active' : ''
-                    }`}
-                  >
-                    微妙（50 - 74）
-                  </span>
-                  <br />
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 75 && props.noduleInfo.nodeTypeRemark < 100 ? 'active' : ''
-                    }`}
-                  >
-                    中度明显（75 - 99）
-                  </span>
-                  <br />
-                  <span className={`${props.noduleInfo.nodeTypeRemark >= 100 ? 'active' : ''}`}>显而易见（100）</span>
-                </div>
-              </div>
-            ) : null}
           </div>
         </>
       ) : null}

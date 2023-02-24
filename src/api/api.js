@@ -144,6 +144,12 @@ export const assignList = params => {
 
 // ===========================================================================
 
+// 获取三千软标签统计数据
+export const getThirdStatisticData = type => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/statistics/getByType/${type || 2}`)
+}
+
 // 新的结节列表（金标准）
 export const getNewNodeList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
@@ -208,13 +214,13 @@ export const updateList = id => {
 
 // ===========================================================================
 
-// 三千金标准详情
+// 三千金标准详情（李主任用，医生还是走之前的二筛流程）
 export const getThirdStndrdDetail = imageCode => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`${basicUrl}/thirdMark/chiefDetail/${imageCode}`)
 }
 
-// 三千良性结节详情
+// 三千良性结节详情（李主任用，医生还是走之前的二筛流程）
 export const getThirdBenignDetail = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`${basicUrl}/thirdMark/chiefDetail/${id}`)
