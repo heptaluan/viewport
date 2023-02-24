@@ -165,14 +165,14 @@ export const getNewImageList = url => {
 // 获取金标准列表
 export const getMarkList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
+  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`)
 }
 
 // 获取良性结节列表
 export const getBenignNoduleList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}`
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=1`
   )
 }
 
