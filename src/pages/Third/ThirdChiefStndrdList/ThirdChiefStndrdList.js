@@ -117,6 +117,7 @@ const ThirdChiefStndrdList = () => {
   const [params, setParams] = useState({
     isFinish: 0,
     imageCode: '',
+    staffCount: 3
   })
 
   const handleImageCodeSearch = val => {
@@ -131,6 +132,12 @@ const ThirdChiefStndrdList = () => {
     setParams(newParams)
   }
 
+  const handleStaffCountSearch = val => {
+    const newParams = Object.assign({}, params)
+    newParams.staffCount = val
+    setParams(newParams)
+  }
+
   const handleSearch = () => {
     localStorage.setItem('ThirdChiefStndrdList', '')
     fetchList()
@@ -140,6 +147,7 @@ const ThirdChiefStndrdList = () => {
     const newParams = {
       isFinish: 0,
       imageCode: '',
+      staffCount: ''
     }
     setParams(newParams)
     localStorage.setItem('ThirdChiefStndrdList', '')
@@ -218,6 +226,21 @@ const ThirdChiefStndrdList = () => {
                   },
                 ]}
               />
+              <Select
+                value={params.staffCount}
+                style={{ width: 200, marginLeft: 20 }}
+                onChange={handleStaffCountSearch}
+                options={[
+                  {
+                    value: 3,
+                    label: '已完成数据',
+                  },
+                  {
+                    value: '',
+                    label: '全部数据',
+                  },
+                ]}
+              />
 
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                 搜索
@@ -245,6 +268,9 @@ const ThirdChiefStndrdList = () => {
                   console.log(event)
                 },
               }
+            }}
+            rowClassName={(record, index) => {
+              return record.isOpinion === 1 ? 'table-active-list' : null
             }}
           />
         </div>

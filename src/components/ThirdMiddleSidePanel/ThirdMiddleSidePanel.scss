@@ -88,10 +88,10 @@
           //   background: #02b91938;
           // }
 
-          // &.blue-item {
-          //   border: 1px solid #ff000030;
-          //   background: #ff000030;
-          // }
+          &.active-item {
+            border: 1px solid #ff000030;
+            background: #ff000030;
+          }
 
           // &.red-item {
           //   border: 1px solid #34c0ff66;

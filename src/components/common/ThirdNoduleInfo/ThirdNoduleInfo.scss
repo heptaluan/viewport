@@ -15,6 +15,14 @@
     margin-bottom: 5px;
   }
 
+  .box-title-tips {
+    margin-bottom: 2px;
+
+    .list.active {
+      color: #ff4d4f;
+    }
+  }
+
   .list-title {
     font-size: 12px;
     margin-bottom: 3px;
@@ -31,6 +39,10 @@
     position: relative;
     margin-bottom: 0;
     font-size: 12px;
+
+    &.active {
+      color: #ff4d4f !important;
+    }
 
     &.mb {
       margin-bottom: 5px;
@@ -100,6 +112,10 @@
       color: #ff4d4f;
     }
   }
+}
+
+.mark-box.active {
+  color: #ff4d4f !important;
 }
 
 .third-mark-box-wrap {

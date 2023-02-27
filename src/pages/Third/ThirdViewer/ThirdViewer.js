@@ -137,7 +137,7 @@ const ThirdViewer = () => {
         try {
           const data = result.data.data.samlpeDataList
           const info = result.data.data.doctorResult
-          formatThirdStndrdDetail(data, info)
+          formatThirdStndrdDetail(data, info, result.data.data.chiefNode)
           fetcImagehData(data[0].imageUrl)
         } catch (error) {
           console.log(error)
@@ -154,7 +154,7 @@ const ThirdViewer = () => {
       if (result.data.code === 200) {
         try {
           const data = result.data.data
-          formatBenignNodeData(data.nodeInfo, data.doctorResult)
+          formatBenignNodeData(data.nodeInfo, data.doctorResult, data.chiefNode)
           formatImagehData(data.imageList)
         } catch (error) {
           console.log(error)
@@ -237,7 +237,7 @@ const ThirdViewer = () => {
   // ===========================================================
 
   // 格式化结节数据（金标准）
-  const formatThirdStndrdDetail = (data, info) => {
+  const formatThirdStndrdDetail = (data, info, chiefNode) => {
     const nodulesList = []
     const nodulesMapList = []
 
@@ -256,6 +256,7 @@ const ThirdViewer = () => {
           position: data[i].surgicalLocation,
           nodeType: data[i].lesionDensity,
           state: true,
+          isOpinion: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === data[i].id).isOpinion : null
         })
 
         const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -319,6 +320,8 @@ const ThirdViewer = () => {
             : info[i].relation
             ? info[i].relation.split(',')
             : [],
+
+          chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : ''
         })
       }
     } catch (error) {
@@ -332,7 +335,7 @@ const ThirdViewer = () => {
   }
 
   // 格式化结节数据（良性结节）
-  const formatBenignNodeData = (data, info) => {
+  const formatBenignNodeData = (data, info, chiefNode) => {
     const nodulesList = []
     const nodulesMapList = []
 
@@ -350,6 +353,7 @@ const ThirdViewer = () => {
           position: data[i].surgicalLocation || undefined,
           nodeType: data[i].lesionDensity || undefined,
           state: true,
+          isOpinion: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === data[i].id).isOpinion : null
         })
 
         const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -413,6 +417,8 @@ const ThirdViewer = () => {
             : info[i].relation
             ? info[i].relation.split(',')
             : [],
+          
+          chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : ''
         })
       }
     } catch (error) {
@@ -1396,7 +1402,7 @@ const ThirdViewer = () => {
       case 'structuralRelation':
         return {
           id: item.userId,
-          amendRelation: val.join(','),
+          amendRelation: val.sort().join(','),
         }
       default:
         break

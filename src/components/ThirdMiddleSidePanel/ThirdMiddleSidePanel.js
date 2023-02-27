@@ -42,7 +42,7 @@ const ThirdMiddleSidePanel = props => {
             {props.noduleList?.map((item, index) => (
               <div
                 key={item.id}
-                className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} `}
+                className={`table-item ${item.isOpinion === 1 ? 'active-item' : ''} `}
                 onClick={e => handleListClick(index, item.num)}
               >
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>

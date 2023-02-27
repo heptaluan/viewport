@@ -144,13 +144,41 @@ export const assignList = params => {
 
 // ===========================================================================
 
-// 新的结节列表（金标准）
+// 金标准列表（李主任）
+export const getSecondChiefStndrdList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`)
+}
+
+// 良性结节列表（李主任）
+export const getSecondChiefBenignList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=1`
+  )
+}
+
+// 获取金标准列表（医生）
+export const getMarkList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`)
+}
+
+// 获取良性结节列表（医生）
+export const getBenignNoduleList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=1`
+  )
+}
+
+// 新的结节详情（金标准）
 export const getNewNodeList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`${basicUrl}/thirdMark/detail/${id}`)
 }
 
-// 新的结节列表（良性结节）
+// 新的结节详情（良性结节）
 export const getBenignNodeList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`${basicUrl}/thirdMark/detail1/${id}`)
@@ -160,20 +188,6 @@ export const getBenignNodeList = id => {
 export const getNewImageList = url => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(`http://192.168.1.107:19000/sortlist/${url}/`)
-}
-
-// 获取金标准列表
-export const getMarkList = params => {
-  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`)
-}
-
-// 获取良性结节列表
-export const getBenignNoduleList = params => {
-  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=1`
-  )
 }
 
 // 完成软标签详细结果
@@ -211,7 +225,7 @@ export const updateList = id => {
 // 获取三千软标签统计数据
 export const getThirdStatisticData = type => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/statistics/getByType/${type || 2}?batchId=2`)
+  return axios.get(`${basicUrl}/statistics/getByType/${type || 2}/2`)
 }
 
 // 结节筛选列表
@@ -225,14 +239,14 @@ export const getAllNoduleList = params => {
 // 三千金标准列表（李主任）
 export const getThirdChiefStndrdList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=2`)
+  return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&staffCount=${params.staffCount}&batchId=2`)
 }
 
 // 获取良性结节列表（李主任）
 export const getThirdChiefBenignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=2`
+    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&staffCount=${params.staffCount}&batchId=2`
   )
 }
 

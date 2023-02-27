@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './SecondChiefStndrdList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getMarkList } from '../../../api/api'
+import { getSecondChiefStndrdList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
 
@@ -122,7 +122,7 @@ const SecondChiefStndrdList = () => {
     }
     setParams(newParams)
     localStorage.setItem('SecondChiefStndrdList', '')
-    const result = await getMarkList(newParams)
+    const result = await getSecondChiefStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -143,7 +143,7 @@ const SecondChiefStndrdList = () => {
       setParams(newParams)
     }
 
-    const result = await getMarkList(newParams)
+    const result = await getSecondChiefStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)

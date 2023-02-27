@@ -58,6 +58,9 @@ const ThirdDashboard = () => {
       tooltip: {
         trigger: 'item',
       },
+      legend: {
+        padding: [30, 0, 0, 0]
+      },
       series: [
         {
           name: '结节审查进度',
@@ -90,6 +93,10 @@ const ThirdDashboard = () => {
           type: 'shadow',
         },
       },
+      legend: {
+        padding: [15, 0, 0, 0],
+        data: ['每日审查数']
+      },
       xAxis: {
         type: 'category',
         data: dateList.doc1.date,
@@ -102,6 +109,7 @@ const ThirdDashboard = () => {
       },
       series: [
         {
+          name: '每日审查数',
           data: dateList.doc1.count,
           type: 'line',
         },
@@ -111,6 +119,9 @@ const ThirdDashboard = () => {
     const chartOptions3 = {
       tooltip: {
         trigger: 'item',
+      },
+      legend: {
+        padding: [30, 0, 0, 0]
       },
       series: [
         {
@@ -144,6 +155,10 @@ const ThirdDashboard = () => {
           type: 'shadow',
         },
       },
+      legend: {
+        padding: [15, 0, 0, 0],
+        data: ['每日审查数']
+      },
       xAxis: {
         type: 'category',
         data: dateList.doc2.date,
@@ -156,6 +171,7 @@ const ThirdDashboard = () => {
       },
       series: [
         {
+          name: '每日审查数',
           data: dateList.doc2.count,
           type: 'line',
         },
@@ -165,6 +181,9 @@ const ThirdDashboard = () => {
     const chartOptions5 = {
       tooltip: {
         trigger: 'item',
+      },
+      legend: {
+        padding: [30, 0, 0, 0]
       },
       series: [
         {
@@ -198,6 +217,10 @@ const ThirdDashboard = () => {
           type: 'shadow',
         },
       },
+      legend: {
+        padding: [15, 0, 0, 0],
+        data: ['每日审查数']
+      },
       xAxis: {
         type: 'category',
         data: dateList.doc3.date,
@@ -210,6 +233,7 @@ const ThirdDashboard = () => {
       },
       series: [
         {
+          name: '每日审查数',
           data: dateList.doc3.count,
           type: 'line',
         },
