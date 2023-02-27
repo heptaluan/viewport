@@ -78,7 +78,6 @@ const MenuList = props => {
             </>
           ) : (
             <>
-              <Menu.Item key="3-5">结节筛选页</Menu.Item>
               <Menu.Item key="3-3">金标准列表</Menu.Item>
               <Menu.Item key="3-4">良性结节列表</Menu.Item>
             </>
