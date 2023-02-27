@@ -146,6 +146,35 @@
 
 .detail-box-modal {
   pointer-events: none;
+
+  .ant-modal-close-x {
+    width: 33px;
+    height: 33px;
+    line-height: 33px;
+  }
+
+  .ant-modal-header {
+    padding: 5px 12px;
+
+    .ant-modal-title {
+      font-size: 13px;
+    }
+  }
+
+  .ant-modal-body {
+    padding: 10px 5px 0;
+  }
+
+  .ant-modal-footer {
+    padding: 0 5px 5px 5px;
+    border-top: none;
+
+    .ant-btn {
+      height: 25px;
+      font-size: 12px;
+      padding: 2px 5px;
+    }
+  }
 }
 
 .third-detail-box {

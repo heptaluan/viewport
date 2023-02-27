@@ -12,12 +12,8 @@ import MarkDialog from '../../../components/common/MarkDialog/MarkDialog'
 import ThirdNoduleInfo from '../../../components/common/ThirdNoduleInfo/ThirdNoduleInfo'
 import {
   getNodeList,
-  getNewNodeList,
   getNewImageList,
-  getBenignNodeList,
   saveSecondprimaryResult,
-  updateResult,
-  updateList,
   getThirdStndrdDetail,
   getThirdBenignDetail,
   chiefFinish,
@@ -30,7 +26,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { useHistory } from 'react-router-dom'
-import { formatSizeMean, formatNodeSize } from '../../../util/index'
+import { formatSizeMean } from '../../../util/index'
 
 const { confirm } = Modal
 
@@ -154,11 +150,11 @@ const ThirdViewer = () => {
 
     // 良性结节数据
     const fetchThirdBenignDetail = async () => {
-      const result = await getThirdBenignDetail(params.id)
+      const result = await getThirdBenignDetail(params.kyPrimaryId)
       if (result.data.code === 200) {
         try {
           const data = result.data.data
-          formatBenignNodeData(data.nodeInfo, data.resultInfo)
+          formatBenignNodeData(data.nodeInfo, data.doctorResult)
           formatImagehData(data.imageList)
         } catch (error) {
           console.log(error)
@@ -307,7 +303,7 @@ const ThirdViewer = () => {
           state: info[i].isFinish === 1 ? true : false,
 
           spinousOrigin: info[i].burr ? info[i].burr : '非常微妙',
-          ragOrigin: info[i].edge ? info[i].edge.split(',') : [],
+          ragOrigin: info[i].edge ? info[i].edge : undefined,
           pagingOrigin: info[i].shape ? info[i].shape : undefined,
           sphereOrigin: info[i].spherical ? info[i].spherical : undefined,
           rag0Origin: info[i].edge0 ? info[i].edge0 : undefined,
@@ -317,8 +313,12 @@ const ThirdViewer = () => {
           rag: info[i].amendEdge ? info[i].amendEdge : info[i].edge ? info[i].edge : undefined,
           paging: info[i].amendShape ? info[i].amendShape : info[i].shape ? info[i].shape : undefined,
           sphere: info[i].amendSpherical ? info[i].amendSpherical : info[i].spherical ? info[i].spherical : undefined,
-          rag0: info[i].amendEdge0 ? info[i].amendEdge0 : info[i].edge ? info[i].edge.split(',') : [],
-          structuralRelation: info[i].amendRelation ? info[i].amendRelation : info[i].relation ? info[i].relation.split(',') : [],
+          rag0: info[i].amendEdge0 ? info[i].amendEdge0 : info[i].edge0 ? info[i].edge0 : undefined,
+          structuralRelation: info[i].amendRelation
+            ? info[i].amendRelation.split(',')
+            : info[i].relation
+            ? info[i].relation.split(',')
+            : [],
         })
       }
     } catch (error) {
@@ -336,53 +336,90 @@ const ThirdViewer = () => {
     const nodulesList = []
     const nodulesMapList = []
 
-    for (let i = 0; i < data.length; i++) {
-      const item = info.find(item => item.nodeId === data[i].id) || {}
-      nodulesList.push({
-        id: item.nodeId ? item.nodeId : data[i].id,
-        imageCode: item.imageCode ? item.imageCode : data[i].imageCode,
-        num: Number(item.nodeIndex) ? Number(item.nodeIndex) : Number(data[i].coordz),
-        checked: false,
-        noduleName: item.nodeId ? `nodule_${item.nodeId}` : `nodule_${data[i].id}`,
-        difficultyLevel: item.findpercent ? item.findpercent : '非常微妙',
-        position: item.position ? item.position.split(',') : data[i].surgicalLocation ? [] : undefined,
-        size: item.sizenum ? formatSizeMean(item.sizenum) : '',
-        sizeBefore: '',
-        sizeAfter: item.sizenum ? item.sizenum : undefined,
-        paging: item.shape ? item.shape : undefined,
-        sphere: item.spherical ? item.spherical : undefined,
-        rag: item.edge ? item.edge.split(',') : [],
-        rag0: item.edge0 ? item.edge0 : undefined,
-        rag1: item.edge1 ? item.edge1 : undefined,
-        spinous: item.burr ? item.burr : '非常微妙',
-        lungInterface: item.definition ? item.definition : '非常微妙',
-        proximityRelation: item.proximity ? item.proximity.split(',') : [],
-        structuralConstitution: item.component ? item.component.split(',') : [],
-        structuralConstitutionCalcific: item.componentRemark ? item.componentRemark.split(',') : [],
-        structuralConstitutionVoid: item.componentRemark0 ? item.componentRemark0 : undefined,
-        structuralRelation: item.relation ? item.relation.split(',') : [],
-        nodeType: item.featuresType ? item.featuresType : data[i].featuresType ? data[i].featuresType : undefined,
-        nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-        danger: item.tumorPercent ? item.tumorPercent : 0,
-        state: item.isFinish === 1 ? true : false,
-      })
+    const newNoduleList = []
 
-      const acrossCoordz = data[i].acrossCoordz.split(',')
-      const box = data[i].box.split(',')
-      for (let j = 0; j < acrossCoordz.length; j++) {
-        nodulesMapList.push({
+    // 格式化结节信息
+    try {
+      for (let i = 0; i < data.length; i++) {
+        nodulesList.push({
+          id: data[i].id,
+          num: Number(data[i].coordz),
+          checked: false,
           noduleName: `nodule_${data[i].id}`,
-          index: Number(acrossCoordz[j]),
-          startX: Number(box[1].trim()),
-          startY: Number(box[0].trim()),
-          endX: Number(box[3].trim()),
-          endY: Number(box[2].trim()),
+          difficultyLevel: '非常微妙',
+          position: data[i].surgicalLocation || undefined,
+          nodeType: data[i].lesionDensity || undefined,
+          state: true,
         })
+
+        const acrossCoordz = data[i].acrossCoordz.split(',')
+        const box = data[i].box.split(',')
+        for (let j = 0; j < acrossCoordz.length; j++) {
+          nodulesMapList.push({
+            noduleName: `nodule_${data[i].id}`,
+            index: Number(acrossCoordz[j]),
+            startX: Number(box[1].trim()),
+            startY: Number(box[0].trim()),
+            endX: Number(box[3].trim()),
+            endY: Number(box[2].trim()),
+          })
+        }
       }
+    } catch (error) {
+      console.log(error)
     }
 
-    // console.log(nodulesList)
-    // console.log(nodulesMapList)
+    // 格式化三个医生信息
+    try {
+      for (let i = 0; i < info.length; i++) {
+        newNoduleList.push({
+          user: info[i].createBy,
+          userId: info[i].id,
+          id: info[i].nodeId,
+          imageCode: info[i].imageCode,
+          num: Number(info[i].nodeIndex),
+          checked: false,
+          noduleName: `nodule_${info[i].nodeId}`,
+          difficultyLevel: info[i].findpercent ? info[i].findpercent : '非常微妙',
+          position: info[i].position ? info[i].position.split(',') : undefined,
+          size: info[i].sizenum ? formatSizeMean(info[i].sizenum) : '',
+          sizeBefore: '',
+          sizeAfter: info[i].sizenum ? info[i].sizenum : undefined,
+          rag1: info[i].edge1 ? info[i].edge1 : undefined,
+          lungInterface: info[i].definition ? info[i].definition : '非常微妙',
+          proximityRelation: info[i].proximity ? info[i].proximity.split(',') : [],
+          structuralConstitution: info[i].component ? info[i].component.split(',') : [],
+          structuralConstitutionCalcific: info[i].componentRemark ? info[i].componentRemark.split(',') : [],
+          structuralConstitutionVoid: info[i].componentRemark0 ? info[i].componentRemark0 : undefined,
+          nodeType: info[i].featuresType ? info[i].featuresType : undefined,
+          nodeTypeRemark: info[i].featuresRemark ? info[i].featuresRemark : 0,
+          danger: info[i].tumorPercent ? info[i].tumorPercent : 0,
+          state: info[i].isFinish === 1 ? true : false,
+
+          spinousOrigin: info[i].burr ? info[i].burr : '非常微妙',
+          ragOrigin: info[i].edge ? info[i].edge : undefined,
+          pagingOrigin: info[i].shape ? info[i].shape : undefined,
+          sphereOrigin: info[i].spherical ? info[i].spherical : undefined,
+          rag0Origin: info[i].edge0 ? info[i].edge0 : undefined,
+          structuralRelationOrigin: info[i].relation ? info[i].relation.split(',') : [],
+
+          spinous: info[i].amendBurr ? info[i].amendBurr : info[i].burr ? info[i].burr : '非常微妙',
+          rag: info[i].amendEdge ? info[i].amendEdge : info[i].edge ? info[i].edge : undefined,
+          paging: info[i].amendShape ? info[i].amendShape : info[i].shape ? info[i].shape : undefined,
+          sphere: info[i].amendSpherical ? info[i].amendSpherical : info[i].spherical ? info[i].spherical : undefined,
+          rag0: info[i].amendEdge0 ? info[i].amendEdge0 : info[i].edge0 ? info[i].edge0 : undefined,
+          structuralRelation: info[i].amendRelation
+            ? info[i].amendRelation.split(',')
+            : info[i].relation
+            ? info[i].relation.split(',')
+            : [],
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setNewNoduleList([...newNoduleList])
 
     setNoduleList([...nodulesList])
     setNoduleMapList([...nodulesMapList])
@@ -1351,12 +1388,12 @@ const ThirdViewer = () => {
           id: item.userId,
           amendSpherical: val,
         }
-        case 'rag0':
+      case 'rag0':
         return {
           id: item.userId,
           amendEdge0: val,
         }
-        case 'structuralRelation':
+      case 'structuralRelation':
         return {
           id: item.userId,
           amendRelation: val.join(','),
@@ -1377,15 +1414,15 @@ const ThirdViewer = () => {
   // 提交审核结果弹窗
   const handleSubmitResults = async () => {
     setResultLoading(true)
-    const result = await updateList(params.id)
+    const result = await chiefFinish(params.id)
     if (result.data.code === 200) {
       message.success(`提交审核结果成功`)
       setResultLoading(false)
       setVisible(false)
-      if (params.type === '2') {
-        history.push('/markList')
-      } else if (params.type === '1') {
-        history.push('/benignNoduleList')
+      if (params.from) {
+        history.push(params.from)
+      } else {
+        history.push('/studyList')
       }
     } else if (result.data.code === 401) {
       setResultLoading(false)
@@ -1423,7 +1460,6 @@ const ThirdViewer = () => {
   const draggleDetailRef = useRef(null)
 
   const handleDetailOk = e => {
-    console.log(e)
     setOpenDetail(false)
   }
 
@@ -1505,7 +1541,7 @@ const ThirdViewer = () => {
         wrapClassName={'detail-box-modal'}
         okText={'关闭'}
         cancelText={'取消'}
-        width={1100}
+        width={660}
       >
         <div className="third-detail-box">
           {newNoduleInfo.map((item, index) => (

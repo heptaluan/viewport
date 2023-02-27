@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './ThirdStndrdList.scss'
+import './AllNoduleList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getThirdStndrdList } from '../../../api/api'
+import { getAllNoduleList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
 
-const ThirdStndrdList = () => {
+const AllNoduleList = () => {
   const [dataSource, setDataSource] = useState([])
 
   const columns = [
@@ -58,7 +58,7 @@ const ThirdStndrdList = () => {
   }
 
   const initPagination = result => {
-    let page = localStorage.getItem('ThirdStndrdList') ? JSON.parse(localStorage.getItem('ThirdStndrdList')) : ''
+    let page = localStorage.getItem('AllNoduleList') ? JSON.parse(localStorage.getItem('AllNoduleList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page !== '') {
       newPagination.current = page.current
@@ -82,7 +82,7 @@ const ThirdStndrdList = () => {
   useEffect(() => {
     const info = localStorage.getItem('info')
     setUserInfo(info)
-    fetchList()
+    // fetchList()
   }, [])
 
   // 分页设置
@@ -94,35 +94,27 @@ const ThirdStndrdList = () => {
 
   // 查询
   const [params, setParams] = useState({
-    isFinish: 0,
-    imageCode: '',
+    nid: '',
   })
 
-  const handleImageCodeSearch = val => {
+  const handleNidSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.imageCode = val
-    setParams(newParams)
-  }
-
-  const handleIsFinishSearch = val => {
-    const newParams = Object.assign({}, params)
-    newParams.isFinish = val
+    newParams.nid = val
     setParams(newParams)
   }
 
   const handleSearch = () => {
-    localStorage.setItem('ThirdStndrdList', '')
+    localStorage.setItem('AllNoduleList', '')
     fetchList()
   }
 
   const handleReset = async () => {
     const newParams = {
-      isFinish: 0,
-      imageCode: '',
+      nid: 0,
     }
     setParams(newParams)
-    localStorage.setItem('ThirdStndrdList', '')
-    const result = await getThirdStndrdList(newParams)
+    localStorage.setItem('AllNoduleList', '')
+    const result = await getAllNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -137,15 +129,14 @@ const ThirdStndrdList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    let page = localStorage.getItem('ThirdStndrdList') ? JSON.parse(localStorage.getItem('ThirdStndrdList')) : ''
+    let page = localStorage.getItem('AllNoduleList') ? JSON.parse(localStorage.getItem('AllNoduleList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
-      newParams.imageCode = page.imageCode
-      newParams.isFinish = page.isFinish
+      newParams.nid = page.nid
       setParams(newParams)
     }
 
-    const result = await getThirdStndrdList(newParams)
+    const result = await getAllNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -155,12 +146,10 @@ const ThirdStndrdList = () => {
     }
   }
 
-  // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
-    newPagination.isFinish = params.isFinish
-    newPagination.imageCode = params.imageCode
-    localStorage.setItem('ThirdStndrdList', JSON.stringify(newPagination))
+    newPagination.imageCode = params.nid
+    localStorage.setItem('AllNoduleList', JSON.stringify(newPagination))
     history.push(`/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
   }
 
@@ -168,31 +157,16 @@ const ThirdStndrdList = () => {
     <div className="study-list-box">
       <HeaderList />
       <div className="study-list-container-wrap">
-        <MenuList defaultSelectedKeys={'3-3'} userInfo={userInfo} />
+        <MenuList defaultSelectedKeys={'3-5'} userInfo={userInfo} />
         <div className="study-list-container">
           <div className="search-box-wrap">
             <div className="header"></div>
             <div className="search-box">
               <Input
                 value={params.imageCode}
-                onChange={e => handleImageCodeSearch(e.target.value)}
+                onChange={e => handleNidSearch(e.target.value)}
                 style={{ width: 200 }}
-                placeholder="请输入影像编号"
-              />
-              <Select
-                value={params.isFinish}
-                style={{ width: 200 }}
-                onChange={handleIsFinishSearch}
-                options={[
-                  {
-                    value: 0,
-                    label: '未完成',
-                  },
-                  {
-                    value: 1,
-                    label: '已完成',
-                  },
-                ]}
+                placeholder="请输入结节编号进行查询"
               />
 
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
@@ -229,4 +203,4 @@ const ThirdStndrdList = () => {
   )
 }
 
-export default ThirdStndrdList
+export default AllNoduleList

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './ThirdChiefStndrdList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input, Tag } from 'antd'
-import { getThirdStndrdList } from '../../../api/api'
+import { getThirdChiefStndrdList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
 
@@ -143,7 +143,7 @@ const ThirdChiefStndrdList = () => {
     }
     setParams(newParams)
     localStorage.setItem('ThirdChiefStndrdList', '')
-    const result = await getThirdStndrdList(newParams)
+    const result = await getThirdChiefStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -168,7 +168,7 @@ const ThirdChiefStndrdList = () => {
       setParams(newParams)
     }
 
-    const result = await getThirdStndrdList(newParams)
+    const result = await getThirdChiefStndrdList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -178,7 +178,6 @@ const ThirdChiefStndrdList = () => {
     }
   }
 
-  // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish

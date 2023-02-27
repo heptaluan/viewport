@@ -40,6 +40,8 @@ const MenuList = props => {
       history.push('/thirdStndrdList')
     } else if (e.key === '3-4') {
       history.push('/thirdBenignList')
+    } else if (e.key === '3-5') {
+      history.push('/allNoduleList')
     }
 
   }
@@ -54,7 +56,7 @@ const MenuList = props => {
         <Menu.ItemGroup title="第一批软标签">
           {props.userInfo === 'chief' ? (
             <>
-              <Menu.Item key="2-0">统计页</Menu.Item>
+              {/* <Menu.Item key="2-0">统计页</Menu.Item> */}
               <Menu.Item key="2-1">金标准审核列表</Menu.Item>
               <Menu.Item key="2-2">良性结节审核列表</Menu.Item>
             </>
@@ -70,11 +72,13 @@ const MenuList = props => {
           {props.userInfo === 'chief' ? (
             <>
               <Menu.Item key="3-0">统计页</Menu.Item>
+              <Menu.Item key="3-5">结节筛选页</Menu.Item>
               <Menu.Item key="3-1">金标准审核列表</Menu.Item>
               <Menu.Item key="3-2">良性结节审核列表</Menu.Item>
             </>
           ) : (
             <>
+              <Menu.Item key="3-5">结节筛选页</Menu.Item>
               <Menu.Item key="3-3">金标准列表</Menu.Item>
               <Menu.Item key="3-4">良性结节列表</Menu.Item>
             </>

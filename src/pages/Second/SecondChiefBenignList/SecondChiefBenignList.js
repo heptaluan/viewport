@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './SecondChiefBenignList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getThirdBenignList } from '../../../api/api'
+import { getBenignNoduleList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
 
@@ -122,7 +122,7 @@ const SecondChiefBenignList = () => {
     }
     setParams(newParams)
     localStorage.setItem('SecondChiefBenignList', '')
-    const result = await getThirdBenignList(newParams)
+    const result = await getBenignNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -145,7 +145,7 @@ const SecondChiefBenignList = () => {
       setParams(newParams)
     }
 
-    const result = await getThirdBenignList(newParams)
+    const result = await getBenignNoduleList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)

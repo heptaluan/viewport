@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './ThirdBenignList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input } from 'antd'
-import { getBenignNoduleList } from '../../../api/api'
+import { getThirdBenignList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
 
@@ -122,7 +122,7 @@ const ThirdBenignList = () => {
     }
     setParams(newParams)
     localStorage.setItem('ThirdBenignList', '')
-    const result = await getBenignNoduleList(newParams)
+    const result = await getThirdBenignList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -145,7 +145,7 @@ const ThirdBenignList = () => {
       setParams(newParams)
     }
 
-    const result = await getBenignNoduleList(newParams)
+    const result = await getThirdBenignList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)

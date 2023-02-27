@@ -1648,10 +1648,10 @@ const SecondViewer = () => {
       message.success(`提交审核结果成功`)
       setResultLoading(false)
       setVisible(false)
-      if (params.type === '2') {
-        history.push('/markList')
-      } else if (params.type === '1') {
-        history.push('/benignNoduleList')
+      if (params.from) {
+        history.push(params.from)
+      } else {
+        history.push('/studyList')
       }
     } else if (result.data.code === 401) {
       setResultLoading(false)

@@ -20,6 +20,7 @@ import ThirdBenignList from '../pages/Third/ThirdBenignList/ThirdBenignList'
 import ThirdChiefBenignList from '../pages/Third/ThirdChiefBenignList/ThirdChiefBenignList'
 import ThirdStndrdList from '../pages/Third/ThirdStndrdList/ThirdStndrdList'
 import ThirdChiefStndrdList from '../pages/Third/ThirdChiefStndrdList/ThirdChiefStndrdList'
+import AllNoduleList from '../pages/Third/AllNoduleList/AllNoduleList'
 
 const routes = [
   {
@@ -80,6 +81,11 @@ const routes = [
       {
         path: '/thirdChiefBenignList',
         component: ThirdChiefBenignList,
+        routes: [],
+      },
+      {
+        path: '/allNoduleList',
+        component: AllNoduleList,
         routes: [],
       },
       // 第二批软标签

@@ -1,7 +1,7 @@
 .third-mark-box-wrap {
-  width: 340px;
+  width: 202px;
   color: #333;
-  font-size: 14px;
+  font-size: 12px;
   -webkit-user-select: none;
   user-select: none;
 
@@ -11,12 +11,12 @@
 
   .box-title {
     text-align: center;
-    font-size: 15px;
+    font-size: 12px;
     margin-bottom: 5px;
   }
 
   .list-title {
-    font-size: 13px;
+    font-size: 12px;
     margin-bottom: 3px;
   }
 
@@ -24,7 +24,7 @@
     border: 1px solid #ccc;
     border-radius: 2px;
     margin-bottom: 8px;
-    padding: 10px;
+    padding: 10px 0 10px 10px;
   }
 
   .mark-box {
@@ -51,8 +51,9 @@
 
     .mark-title {
       display: inline-block;
-      margin-right: 10px;
-      width: 110px;
+      width: 145px;
+      position: relative;
+      margin-right: 8px;
 
       &.w250 {
         width: 250px;
@@ -61,10 +62,16 @@
       &.mb {
         margin-bottom: 2px;
       }
+
+      .anticon {
+        position: absolute;
+        left: -16px;
+        top: 3px;
+      }
     }
 
     .mark-content {
-      width: 360px;
+      width: 320px;
 
       &.slider {
         width: 330px;
@@ -103,63 +110,60 @@
   .ant-segmented {
     margin-top: 5px !important;
     background: #fff !important;
-  
+
     .ant-segmented-item-label {
       color: rgba(0, 0, 0, 0.85) !important;
     }
-  
+
     .ant-segmented-thumb,
     .ant-segmented-item-selected {
       background: #1890ff !important;
       color: #fff !important;
-  
+
       .ant-segmented-item-label {
         color: #fff !important;
       }
     }
   }
-  
+
   .ant-checkbox-group .ant-checkbox-wrapper,
   .ant-radio-group .ant-radio-wrapper {
     color: #333 !important;
   }
-  
+
   .ant-slider-mark-text {
     color: #333 !important;
   }
-  
+
   .ant-tooltip {
     .ant-tooltip-arrow-content {
       --antd-arrow-background-color: inherit !important;
     }
-  
+
     .ant-tooltip-inner {
       background: inherit;
       color: #000 !important;
     }
   }
-  
+
   .mark-box {
     .ant-slider-handle {
       background-color: #ff4d4f !important;
       border: solid 2px #ff4d4f !important;
     }
   }
-  
+
   .mark-box-wrap {
     .ant-select-disabled .ant-select-selector,
     .ant-segmented-disabled,
     .ant-checkbox-disabled .ant-checkbox-inner,
-    .ant-radio-disabled .ant-radio-inner
-    {
+    .ant-radio-disabled .ant-radio-inner {
       background: inherit !important;
     }
-  
+
     .ant-checkbox-wrapper-disabled .ant-checkbox-disabled + span,
     .ant-radio-wrapper-disabled .ant-radio-disabled + span {
       color: #333 !important;
     }
   }
 }
-
-

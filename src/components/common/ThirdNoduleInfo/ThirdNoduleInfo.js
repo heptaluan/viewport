@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './ThirdNoduleInfo.scss'
-import { Slider, Select, Button, Radio, Segmented, Checkbox, Cascader } from 'antd'
+import { Tooltip, Select, Button, Radio, Segmented, Checkbox, Cascader } from 'antd'
 import { formatNodeSize, formatDanger, formatNodeTypeRemark } from '../../../util/index'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
@@ -30,7 +30,9 @@ const ThirdNoduleInfo = props => {
             <div className="mark-box flex mb">
               <div className="mark-title">
                 {props.noduleInfo.paging !== props.noduleInfo.pagingOrigin ? (
-                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
                 ) : null}
                 形态分叶
               </div>
@@ -38,7 +40,7 @@ const ThirdNoduleInfo = props => {
                 <Select
                   // disabled={isMiniNode || difficultyLevel}
                   size="small"
-                  style={{ width: 198, fontSize: 12 }}
+                  style={{ width: 110, fontSize: 12 }}
                   placeholder="请选择形态分叶"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'paging', props.index, props.user)}
                   value={props.noduleInfo.paging}
@@ -54,14 +56,16 @@ const ThirdNoduleInfo = props => {
             <div className="mark-box flex mb">
               <div className="mark-title">
                 {props.noduleInfo.sphere !== props.noduleInfo.sphereOrigin ? (
-                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
                 ) : null}
                 形状
               </div>
               <div className="mark-content">
                 <Select
                   size="small"
-                  style={{ width: 198, fontSize: 12 }}
+                  style={{ width: 110, fontSize: 12 }}
                   placeholder="请选择形状"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'sphere', props.index, props.user)}
                   value={props.noduleInfo.sphere}
@@ -78,7 +82,9 @@ const ThirdNoduleInfo = props => {
             <div className="mark-box flex mb">
               <div className="mark-title">
                 {props.noduleInfo.rag !== props.noduleInfo.ragOrigin ? (
-                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
                 ) : null}
                 边缘/毛刺
               </div>
@@ -86,7 +92,7 @@ const ThirdNoduleInfo = props => {
                 <Select
                   size="small"
                   allowClear
-                  style={{ width: 198, fontSize: 12 }}
+                  style={{ width: 110, fontSize: 12 }}
                   placeholder="请选择边缘/毛刺"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'rag', props.index, props.user)}
                   value={props.noduleInfo.rag}
@@ -110,7 +116,14 @@ const ThirdNoduleInfo = props => {
             </div>
 
             <div className="mark-box flex left mb">
-              <div className="mark-title">晕征</div>
+              <div className="mark-title">
+                {props.noduleInfo.rag0 !== props.noduleInfo.rag0Origin ? (
+                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
+                ) : null}
+                晕征
+              </div>
               <div className="mark-content">
                 <Radio.Group
                   options={[
@@ -124,20 +137,28 @@ const ThirdNoduleInfo = props => {
               </div>
             </div>
 
-            <div className="mark-box mb">
-              <div className="mark-title w250 mb">
+            <div className="mark-box flex left mb">
+              <div className="mark-title">
                 {props.noduleInfo.spinous !== props.noduleInfo.spinousOrigin ? (
-                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12, marginRight: 2 }} />
+                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
                 ) : null}
-                棘突（分级）
+                棘突
+                <br />
+                (分级)
               </div>
               <div className="mark-content">
-                <Segmented
-                  onChange={e => props.handleUpdateNoduleInfo(e, 'spinous', props.index, props.user)}
+                <Radio.Group
+                  options={[
+                    { label: '非常微妙', value: '非常微妙' },
+                    { label: '适度微妙', value: '适度微妙' },
+                    { label: '微妙', value: '微妙' },
+                    { label: '中度明显', value: '中度明显' },
+                    { label: '显而易见', value: '显而易见' },
+                  ]}
+                  onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'spinous', props.index, props.user)}
                   value={props.noduleInfo.spinous}
-                  size="small"
-                  options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
-                  style={{ fontSize: 12 }}
                 />
               </div>
             </div>
@@ -146,7 +167,14 @@ const ThirdNoduleInfo = props => {
           <div className="box-wrap">
             <div className="list-title">内部特征</div>
             <div className="mark-box flex left">
-              <div className="mark-title">结构关系</div>
+              <div className="mark-title">
+                {props.noduleInfo.structuralRelation.sort().join(',') !== props.noduleInfo.structuralRelationOrigin.sort().join(',') ? (
+                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
+                ) : null}
+                结构关系
+              </div>
               <div className="mark-content">
                 <Checkbox.Group
                   options={[

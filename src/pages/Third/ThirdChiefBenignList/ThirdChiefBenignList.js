@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './ThirdChiefBenignList.scss'
 import { useHistory } from 'react-router-dom'
 import { Table, Space, Button, Select, message, Input, Tag } from 'antd'
-import { getThirdBenignList } from '../../../api/api'
+import { getThirdChiefBenignList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
 
@@ -141,7 +141,7 @@ const ThirdChiefBenignList = () => {
     }
     setParams(newParams)
     localStorage.setItem('ThirdChiefBenignList', '')
-    const result = await getThirdBenignList(newParams)
+    const result = await getThirdChiefBenignList(newParams)
     if (result.data.code === 200) {
       setDataSource([])
       setDataSource(result.data.rows)
@@ -164,7 +164,7 @@ const ThirdChiefBenignList = () => {
       setParams(newParams)
     }
 
-    const result = await getThirdBenignList(newParams)
+    const result = await getThirdChiefBenignList(newParams)
     if (result.data.code === 200) {
       setDataSource(result.data.rows)
       initPagination(result)
@@ -174,13 +174,12 @@ const ThirdChiefBenignList = () => {
     }
   }
 
-  // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
     newPagination.imageCode = params.imageCode
     localStorage.setItem('ThirdChiefBenignList', JSON.stringify(newPagination))
-    history.push(`/thirdViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=1&from=${history.location.pathname}`)
+    history.push(`/thirdViewer?kyPrimaryId=${record.kyPrimaryId}&isFinish=${record.isFinish}&type=1&from=${history.location.pathname}`)
   }
 
   return (

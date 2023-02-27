@@ -3,7 +3,7 @@ import './CustomOverlay.scss'
 import cornerstone from 'cornerstone-core'
 import {
   getNewNodeList,
-  getBenignNodeList,
+  getThirdBenignDetail,
 } from '../../../api/api'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
@@ -64,7 +64,7 @@ const CustomOverlay = props => {
 
     // 良性结节数据
     const fetchBenignNodeListData = async () => {
-      const result = await getBenignNodeList(params.id)
+      const result = await getThirdBenignDetail(params.kyPrimaryId)
       if (result.data.code === 200) {
         try {
           const data = result.data.data

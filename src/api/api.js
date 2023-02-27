@@ -144,12 +144,6 @@ export const assignList = params => {
 
 // ===========================================================================
 
-// 获取三千软标签统计数据
-export const getThirdStatisticData = type => {
-  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/statistics/getByType/${type || 2}`)
-}
-
 // 新的结节列表（金标准）
 export const getNewNodeList = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
@@ -214,6 +208,48 @@ export const updateList = id => {
 
 // ===========================================================================
 
+// 获取三千软标签统计数据
+export const getThirdStatisticData = type => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/statistics/getByType/${type || 2}?batchId=2`)
+}
+
+// 结节筛选列表
+export const getAllNoduleList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/thirdMark/selectNode/${params.nid}?batchId=2`
+  )
+}
+
+// 三千金标准列表（李主任）
+export const getThirdChiefStndrdList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=2`)
+}
+
+// 获取良性结节列表（李主任）
+export const getThirdChiefBenignList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=2`
+  )
+}
+
+// 三千金标准列表（医生）
+export const getThirdStndrdList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=2`)
+}
+
+// 获取良性结节列表（医生）
+export const getThirdBenignList = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=2`
+  )
+}
+
 // 三千金标准详情（李主任用，医生还是走之前的二筛流程）
 export const getThirdStndrdDetail = imageCode => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
@@ -221,9 +257,9 @@ export const getThirdStndrdDetail = imageCode => {
 }
 
 // 三千良性结节详情（李主任用，医生还是走之前的二筛流程）
-export const getThirdBenignDetail = id => {
+export const getThirdBenignDetail = kyPrimaryId => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/chiefDetail/${id}`)
+  return axios.get(`${basicUrl}/thirdMark/chiefDetail1/${kyPrimaryId}`)
 }
 
 // 完成三千软标签（右上角提交最终结果）
@@ -248,20 +284,6 @@ export const saveChiefReviseResult = params => {
       'Content-Type': 'application/json;charset=UTF-8',
     },
   })
-}
-
-// 三千金标准列表（李主任）
-export const getThirdStndrdList = params => {
-  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}`)
-}
-
-// 获取良性结节列表（李主任）
-export const getThirdBenignList = params => {
-  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(
-    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}`
-  )
 }
 
 // const basicUrl = getURLParameters(window.location.href).url
