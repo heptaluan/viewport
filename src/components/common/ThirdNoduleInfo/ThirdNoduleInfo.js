@@ -26,18 +26,22 @@ const ThirdNoduleInfo = props => {
 
           {props.noduleInfo.chiefNodeMark === 'size' || props.noduleInfo.chiefNodeMark === 'find' ? (
             <div className="box-title-tips">
-              <div className={`list ${props.noduleInfo.chiefNodeMark === 'size' ? 'active' : ''}`}>是否微小结节：{formatNodeSize(props.noduleInfo.size)}</div>
-              <div className={`list ${props.noduleInfo.chiefNodeMark === 'find' ? 'active' : ''}`}>发现难易度：{props.noduleInfo.difficultyLevel}</div>
+              <div className={`list ${props.noduleInfo.chiefNodeMark === 'size' ? 'active' : ''}`}>
+                是否微小结节：{formatNodeSize(props.noduleInfo.size)}
+              </div>
+              <div className={`list ${props.noduleInfo.chiefNodeMark === 'find' ? 'active' : ''}`}>
+                发现难易度：{props.noduleInfo.difficultyLevel}
+              </div>
             </div>
           ) : null}
 
           <div className="box-wrap">
             <div className="list-title">外观特征</div>
 
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark === 'spherical' ? 'active' : ''}`}>
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('spherical') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.paging !== props.noduleInfo.pagingOrigin ? (
-                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
                 ) : null}
@@ -60,10 +64,10 @@ const ThirdNoduleInfo = props => {
                 </Select>
               </div>
             </div>
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark === 'shape' ? 'active' : ''}`}>
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('shape') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.sphere !== props.noduleInfo.sphereOrigin ? (
-                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
                 ) : null}
@@ -86,10 +90,10 @@ const ThirdNoduleInfo = props => {
                 </Select>
               </div>
             </div>
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark === 'edge' ? 'active' : ''}`}>
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('edge') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.rag !== props.noduleInfo.ragOrigin ? (
-                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
                 ) : null}
@@ -122,10 +126,10 @@ const ThirdNoduleInfo = props => {
               </div>
             </div>
 
-            <div className={`mark-box left flex mb ${props.noduleInfo.chiefNodeMark === 'edge0' ? 'active' : ''}`}>
+            <div className={`mark-box left flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('edge0') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.rag0 !== props.noduleInfo.rag0Origin ? (
-                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
                 ) : null}
@@ -144,10 +148,10 @@ const ThirdNoduleInfo = props => {
               </div>
             </div>
 
-            <div className={`mark-box left flex mb ${props.noduleInfo.chiefNodeMark === 'burr' ? 'active' : ''}`}>
+            <div className={`mark-box left flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('burr') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.spinous !== props.noduleInfo.spinousOrigin ? (
-                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
                 ) : null}
@@ -173,10 +177,10 @@ const ThirdNoduleInfo = props => {
 
           <div className="box-wrap">
             <div className="list-title">内部特征</div>
-            <div className={`mark-box flex left mb ${props.noduleInfo.chiefNodeMark === 'relation' ? 'active' : ''}`}>
+            <div className={`mark-box flex left mb ${props.noduleInfo.chiefNodeMark.split(',').includes('relation') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.structuralRelation.sort().join(',') !== props.noduleInfo.structuralRelationOrigin.sort().join(',') ? (
-                  <Tooltip placement="topLeft" title={'该值进行过修改'}>
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
                 ) : null}

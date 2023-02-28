@@ -101,7 +101,7 @@ const ThirdDashboard = () => {
         type: 'category',
         data: dateList.doc1.date,
         axisLabel: {
-          rotate: '30',
+          rotate: dateList.doc1.date.length > 6 ? '30' : 0,
         },
       },
       yAxis: {
@@ -163,7 +163,7 @@ const ThirdDashboard = () => {
         type: 'category',
         data: dateList.doc2.date,
         axisLabel: {
-          rotate: '30',
+          rotate: dateList.doc2.date.length > 6 ? '30' : 0,
         },
       },
       yAxis: {
@@ -225,7 +225,7 @@ const ThirdDashboard = () => {
         type: 'category',
         data: dateList.doc3.date,
         axisLabel: {
-          rotate: '30',
+          rotate: dateList.doc3.date.length > 6 ? '30' : 0,
         },
       },
       yAxis: {

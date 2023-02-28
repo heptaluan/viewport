@@ -232,7 +232,7 @@ const ThirdChiefBenignList = () => {
               </div>
 
               <div className="srarch-label">
-                <div>医生审核结果：</div>
+                <div>完成人员：</div>
                 <Select
                   value={params.staffCount}
                   style={{ width: 200 }}
