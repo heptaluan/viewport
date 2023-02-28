@@ -33,11 +33,7 @@ const AllotList = () => {
       title: '分配状态',
       dataIndex: 'sex',
       render: (_, record) => {
-        return record.isAssign === 1 ? (
-          <span style={{ color: '#73d13d' }}>已分配</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未分配</span>
-        )
+        return record.isAssign === 1 ? <span style={{ color: '#73d13d' }}>已分配</span> : <span style={{ color: '#ff4d4f' }}>未分配</span>
       },
     },
     {
@@ -228,33 +224,44 @@ const AllotList = () => {
           <div className="search-box-wrap">
             <div className="header"></div>
             <div className="search-box">
-              <Input
-                value={params.name}
-                onChange={e => handleNameSearch(e.target.value)}
-                style={{ width: 200 }}
-                placeholder="请输入姓名"
-              />
-              <Input
-                value={params.pcode}
-                onChange={e => handlePcodeSearch(e.target.value)}
-                style={{ width: 200 }}
-                placeholder="请输入病人编号"
-              />
-              <Select
-                value={params.isAssign}
-                style={{ width: 200 }}
-                onChange={handleIsAssignSearch}
-                options={[
-                  {
-                    value: 0,
-                    label: '未分配',
-                  },
-                  {
-                    value: 1,
-                    label: '已分配',
-                  },
-                ]}
-              />
+              <div className="srarch-label">
+                <div>姓名：</div>
+                <Input
+                  value={params.name}
+                  onChange={e => handleNameSearch(e.target.value)}
+                  style={{ width: 200 }}
+                  placeholder="请输入姓名"
+                />
+              </div>
+
+              <div className="srarch-label">
+                <div>病人编号：</div>
+                <Input
+                  value={params.pcode}
+                  onChange={e => handlePcodeSearch(e.target.value)}
+                  style={{ width: 200 }}
+                  placeholder="请输入病人编号"
+                />
+              </div>
+
+              <div className="srarch-label">
+                <div>分配状态：</div>
+                <Select
+                  value={params.isAssign}
+                  style={{ width: 200 }}
+                  onChange={handleIsAssignSearch}
+                  options={[
+                    {
+                      value: 0,
+                      label: '未分配',
+                    },
+                    {
+                      value: 1,
+                      label: '已分配',
+                    },
+                  ]}
+                />
+              </div>
 
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                 搜索

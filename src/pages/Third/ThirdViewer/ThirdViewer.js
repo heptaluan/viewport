@@ -526,7 +526,10 @@ const ThirdViewer = () => {
     }
 
     // 点击的时候过滤出与当前结节对应的三个医生结果传递给弹窗
-    const infoList = newNoduleList.filter(item => item.id === checkItme.id)
+    let infoList = newNoduleList.filter(item => item.id === checkItme.id)
+    if (infoList.length > 3) {
+      infoList.length = 3
+    }
     setNewNoduleInfo([...infoList])
   }
 

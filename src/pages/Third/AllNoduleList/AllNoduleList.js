@@ -22,11 +22,7 @@ const AllNoduleList = () => {
       title: '完成状态',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>已完成</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未完成</span>
-        )
+        return record.isFinish === 1 ? <span style={{ color: '#73d13d' }}>已完成</span> : <span style={{ color: '#ff4d4f' }}>未完成</span>
       },
     },
     {
@@ -150,7 +146,9 @@ const AllNoduleList = () => {
     const newPagination = Object.assign({}, pagination)
     newPagination.imageCode = params.nid
     localStorage.setItem('AllNoduleList', JSON.stringify(newPagination))
-    history.push(`/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
+    history.push(
+      `/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`
+    )
   }
 
   return (
@@ -162,13 +160,15 @@ const AllNoduleList = () => {
           <div className="search-box-wrap">
             <div className="header"></div>
             <div className="search-box">
-              <Input
-                value={params.imageCode}
-                onChange={e => handleNidSearch(e.target.value)}
-                style={{ width: 200 }}
-                placeholder="请输入结节编号进行查询"
-              />
-
+              <div className="srarch-label">
+                <div>结节编号：</div>
+                <Input
+                  value={params.imageCode}
+                  onChange={e => handleNidSearch(e.target.value)}
+                  style={{ width: 200 }}
+                  placeholder="请输入结节编号进行查询"
+                />
+              </div>
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                 搜索
               </Button>

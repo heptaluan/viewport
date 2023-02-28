@@ -22,11 +22,7 @@ const SecondBenignList = () => {
       title: '完成状态',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>已完成</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未完成</span>
-        )
+        return record.isFinish === 1 ? <span style={{ color: '#73d13d' }}>已完成</span> : <span style={{ color: '#ff4d4f' }}>未完成</span>
       },
     },
     {
@@ -172,27 +168,33 @@ const SecondBenignList = () => {
           <div className="search-box-wrap">
             <div className="header"></div>
             <div className="search-box">
-              <Input
-                value={params.kyPrimaryId}
-                onChange={e => handleKyPrimaryIdSearch(e.target.value)}
-                style={{ width: 200 }}
-                placeholder="请输入编号"
-              />
-              <Select
-                value={params.isFinish}
-                style={{ width: 200 }}
-                onChange={handleIsFinishSearch}
-                options={[
-                  {
-                    value: 0,
-                    label: '未完成',
-                  },
-                  {
-                    value: 1,
-                    label: '已完成',
-                  },
-                ]}
-              />
+              <div className="srarch-label">
+                <div>编号：</div>
+                <Input
+                  value={params.kyPrimaryId}
+                  onChange={e => handleKyPrimaryIdSearch(e.target.value)}
+                  style={{ width: 200 }}
+                  placeholder="请输入编号"
+                />
+              </div>
+              <div className="srarch-label">
+                <div>完成状态：</div>
+                <Select
+                  value={params.isFinish}
+                  style={{ width: 200 }}
+                  onChange={handleIsFinishSearch}
+                  options={[
+                    {
+                      value: 0,
+                      label: '未完成',
+                    },
+                    {
+                      value: 1,
+                      label: '已完成',
+                    },
+                  ]}
+                />
+              </div>
 
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                 搜索

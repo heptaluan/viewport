@@ -39,8 +39,15 @@
         .search-box {
           display: flex;
 
-          .ant-input {
+          .ant-input, .ant-select {
             margin-right: 20px;
+          }
+
+          .srarch-label {
+            margin-left: 5px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
           }
         }
       }
