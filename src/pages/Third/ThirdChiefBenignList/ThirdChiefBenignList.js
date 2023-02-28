@@ -57,11 +57,12 @@ const ThirdChiefBenignList = () => {
     {
       title: '操作',
       key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a onClick={() => handleShowDetail(record)}>查看详情</a>
-        </Space>
-      ),
+      render: (_, record) =>
+        record.staffCount === 3 ? (
+          <Space size="middle">
+            <a onClick={() => handleShowDetail(record)}>查看详情</a>
+          </Space>
+        ) : null,
     },
   ]
 
@@ -147,7 +148,7 @@ const ThirdChiefBenignList = () => {
     const newParams = {
       isFinish: 0,
       imageCode: '',
-      staffCount: '',
+      staffCount: 3,
     }
     setParams(newParams)
     localStorage.setItem('ThirdChiefBenignList', '')
@@ -243,7 +244,7 @@ const ThirdChiefBenignList = () => {
                     },
                     {
                       value: '',
-                      label: '全部数据',
+                      label: '推送数据',
                     },
                   ]}
                 />
