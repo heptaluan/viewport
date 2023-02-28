@@ -22,11 +22,7 @@ const ThirdChiefStndrdList = () => {
       title: '完成状态',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>已完成</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未完成</span>
-        )
+        return record.isFinish === 1 ? <span style={{ color: '#73d13d' }}>已完成</span> : <span style={{ color: '#ff4d4f' }}>未完成</span>
       },
     },
     {
@@ -45,7 +41,13 @@ const ThirdChiefStndrdList = () => {
             result.push(<Tag color="#87d068">周坦峰</Tag>)
           }
         }
-        return <div className='table-staff'>{result.map(n => n)}</div>
+        return (
+          <div className="table-staff">
+            {result.map((n, index) => {
+              return <span key={index}>{n}</span>
+            })}
+          </div>
+        )
       },
     },
     {
@@ -77,9 +79,7 @@ const ThirdChiefStndrdList = () => {
   }
 
   const initPagination = result => {
-    let page = localStorage.getItem('ThirdChiefStndrdList')
-      ? JSON.parse(localStorage.getItem('ThirdChiefStndrdList'))
-      : ''
+    let page = localStorage.getItem('ThirdChiefStndrdList') ? JSON.parse(localStorage.getItem('ThirdChiefStndrdList')) : ''
     const newPagination = Object.assign({}, pagination)
     if (page !== '') {
       newPagination.current = page.current
@@ -117,7 +117,7 @@ const ThirdChiefStndrdList = () => {
   const [params, setParams] = useState({
     isFinish: 0,
     imageCode: '',
-    staffCount: 3
+    staffCount: 3,
   })
 
   const handleImageCodeSearch = val => {
@@ -147,7 +147,7 @@ const ThirdChiefStndrdList = () => {
     const newParams = {
       isFinish: 0,
       imageCode: '',
-      staffCount: ''
+      staffCount: '',
     }
     setParams(newParams)
     localStorage.setItem('ThirdChiefStndrdList', '')
@@ -166,9 +166,7 @@ const ThirdChiefStndrdList = () => {
 
   // 请求筛选结果列表数据
   const fetchList = async () => {
-    let page = localStorage.getItem('ThirdChiefStndrdList')
-      ? JSON.parse(localStorage.getItem('ThirdChiefStndrdList'))
-      : ''
+    let page = localStorage.getItem('ThirdChiefStndrdList') ? JSON.parse(localStorage.getItem('ThirdChiefStndrdList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
       newParams.imageCode = page.imageCode

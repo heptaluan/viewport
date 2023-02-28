@@ -22,11 +22,7 @@ const ThirdBenignList = () => {
       title: '完成状态',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>已完成</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未完成</span>
-        )
+        return record.isFinish === 1 ? <span style={{ color: '#73d13d' }}>已完成</span> : <span style={{ color: '#ff4d4f' }}>未完成</span>
       },
     },
     {
@@ -161,7 +157,9 @@ const ThirdBenignList = () => {
     newPagination.isFinish = params.isFinish
     newPagination.imageCode = params.imageCode
     localStorage.setItem('ThirdBenignList', JSON.stringify(newPagination))
-    history.push(`/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`)
+    history.push(
+      `/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`
+    )
   }
 
   return (
@@ -214,13 +212,7 @@ const ThirdBenignList = () => {
               current: pagination.current,
               pageSize: pagination.pageSize,
               total: pagination.total,
-            }}
-            onRow={record => {
-              return {
-                onDoubleClick: event => {
-                  console.log(event)
-                },
-              }
+              disabled: true,
             }}
           />
         </div>

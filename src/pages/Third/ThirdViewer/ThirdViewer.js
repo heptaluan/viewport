@@ -19,7 +19,7 @@ import {
   chiefFinish,
   saveChiefReviseResult,
 } from '../../../api/api'
-import { Modal, message, InputNumber } from 'antd'
+import { Modal, message, InputNumber, Button } from 'antd'
 import Draggable from 'react-draggable'
 import AddNewNode from '../../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -256,7 +256,7 @@ const ThirdViewer = () => {
           position: data[i].surgicalLocation,
           nodeType: data[i].lesionDensity,
           state: true,
-          isOpinion: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === data[i].id).isOpinion : null
+          isOpinion: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === data[i].id).isOpinion : null,
         })
 
         const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -321,7 +321,7 @@ const ThirdViewer = () => {
             ? info[i].relation.split(',')
             : [],
 
-          chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : ''
+          chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : '',
         })
       }
     } catch (error) {
@@ -353,7 +353,7 @@ const ThirdViewer = () => {
           position: data[i].surgicalLocation || undefined,
           nodeType: data[i].lesionDensity || undefined,
           state: true,
-          isOpinion: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === data[i].id).isOpinion : null
+          isOpinion: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === data[i].id).isOpinion : null,
         })
 
         const acrossCoordz = data[i].acrossCoordz.split(',')
@@ -417,8 +417,8 @@ const ThirdViewer = () => {
             : info[i].relation
             ? info[i].relation.split(',')
             : [],
-          
-          chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : ''
+
+          chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : '',
         })
       }
     } catch (error) {
@@ -1356,15 +1356,18 @@ const ThirdViewer = () => {
 
     setNewNoduleList([...newNoduleList])
 
-    saveNoduleInfo(newItem, type, val)
+    saveNoduleInfo(newItem, type)
   }
 
   // 暂存结节数据
-  const saveNoduleInfo = (item, type, val) => {
-    const postData = formatPostNoduleInfoData(item, type, val)
+  const saveNoduleInfo = (item, type) => {
+    const postData = formatPostNoduleInfoData(item, type)
     saveChiefReviseResult(postData).then(res => {
       if (res.data.code === 200) {
         message.success(`结节结果修改成功`)
+      } else if (res.data.code === 401) {
+        message.warning(`登录已失效，请重新登录`)
+        history.push('/login')
       } else {
         message.error(`结节结果修改失败，请检查网络或是重新登录后再行尝试`)
       }
@@ -1372,37 +1375,37 @@ const ThirdViewer = () => {
   }
 
   // 格式化提交数据
-  const formatPostNoduleInfoData = (item, type, val) => {
+  const formatPostNoduleInfoData = (item, type) => {
     switch (type) {
       case 'spinous':
         return {
           id: item.userId,
-          amendBurr: val,
+          amendBurr: item['spinous'],
         }
       case 'rag':
         return {
           id: item.userId,
-          amendEdge: val,
+          amendEdge: item['rag'],
         }
       case 'paging':
         return {
           id: item.userId,
-          amendShape: val,
+          amendShape: item['paging'],
         }
       case 'sphere':
         return {
           id: item.userId,
-          amendSpherical: val,
+          amendSpherical: item['sphere'],
         }
       case 'rag0':
         return {
           id: item.userId,
-          amendEdge0: val,
+          amendEdge0: item['rag0'],
         }
       case 'structuralRelation':
         return {
           id: item.userId,
-          amendRelation: val.sort().join(','),
+          amendRelation: item['structuralRelation'].sort().join(','),
         }
       default:
         break
@@ -1464,14 +1467,6 @@ const ThirdViewer = () => {
   const [detailDisabled, setDetailDisabled] = useState(false)
 
   const draggleDetailRef = useRef(null)
-
-  const handleDetailOk = e => {
-    setOpenDetail(false)
-  }
-
-  const handleDetailCancel = e => {
-    setOpenDetail(false)
-  }
 
   const showNoduleDetail = item => {
     setOpenDetail(true)
@@ -1535,8 +1530,6 @@ const ThirdViewer = () => {
           </div>
         }
         visible={openDetail}
-        onOk={handleDetailOk}
-        onCancel={handleDetailCancel}
         modalRender={modal => (
           <Draggable>
             <div ref={draggleDetailRef}>{modal}</div>
@@ -1545,13 +1538,24 @@ const ThirdViewer = () => {
         mask={false}
         maskClosable={false}
         wrapClassName={'detail-box-modal'}
-        okText={'关闭'}
-        cancelText={'取消'}
         width={660}
+        footer={[
+          <Button key="back" onClick={e => setOpenDetail(false)}>
+            关闭
+          </Button>,
+        ]}
       >
         <div className="third-detail-box">
           {newNoduleInfo.map((item, index) => (
-            <ThirdNoduleInfo key={index} user={item.user} index={index} noduleInfo={item} handleUpdateNoduleInfo={handleUpdateNoduleInfo} />
+            <div key={index}>
+              <ThirdNoduleInfo
+                key={index}
+                user={item.user}
+                index={index}
+                noduleInfo={item}
+                handleUpdateNoduleInfo={handleUpdateNoduleInfo}
+              />
+            </div>
           ))}
         </div>
       </Modal>

@@ -22,11 +22,7 @@ const ThirdChiefBenignList = () => {
       title: '完成状态',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>已完成</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未完成</span>
-        )
+        return record.isFinish === 1 ? <span style={{ color: '#73d13d' }}>已完成</span> : <span style={{ color: '#ff4d4f' }}>未完成</span>
       },
     },
     {
@@ -45,7 +41,13 @@ const ThirdChiefBenignList = () => {
             result.push(<Tag color="#87d068">周坦峰</Tag>)
           }
         }
-        return <div className='table-staff'>{result.map(n => n)}</div>
+        return (
+          <div className="table-staff">
+            {result.map((n, index) => {
+              return <span key={index}>{n}</span>
+            })}
+          </div>
+        )
       },
     },
     {
@@ -115,7 +117,7 @@ const ThirdChiefBenignList = () => {
   const [params, setParams] = useState({
     isFinish: 0,
     imageCode: '',
-    staffCount: 3
+    staffCount: 3,
   })
 
   const handleImageCodeSearch = val => {
@@ -145,7 +147,7 @@ const ThirdChiefBenignList = () => {
     const newParams = {
       isFinish: 0,
       imageCode: '',
-      staffCount: ''
+      staffCount: '',
     }
     setParams(newParams)
     localStorage.setItem('ThirdChiefBenignList', '')
