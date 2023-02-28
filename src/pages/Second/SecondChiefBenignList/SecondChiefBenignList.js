@@ -15,8 +15,8 @@ const SecondChiefBenignList = () => {
       dataIndex: 'createBy',
     },
     {
-      title: '影像编号',
-      dataIndex: 'imageCode',
+      title: '编号',
+      dataIndex: 'kyPrimaryId',
     },
     {
       title: '完成状态',
@@ -91,12 +91,12 @@ const SecondChiefBenignList = () => {
   // 查询
   const [params, setParams] = useState({
     isFinish: 0,
-    imageCode: '',
+    kyPrimaryId: '',
   })
 
-  const handleImageCodeSearch = val => {
+  const handleKyPrimaryIdSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.imageCode = val
+    newParams.kyPrimaryId = val
     setParams(newParams)
   }
 
@@ -114,7 +114,7 @@ const SecondChiefBenignList = () => {
   const handleReset = async () => {
     const newParams = {
       isFinish: 0,
-      imageCode: '',
+      kyPrimaryId: '',
     }
     setParams(newParams)
     localStorage.setItem('SecondChiefBenignList', '')
@@ -136,7 +136,7 @@ const SecondChiefBenignList = () => {
     let page = localStorage.getItem('SecondChiefBenignList') ? JSON.parse(localStorage.getItem('SecondChiefBenignList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
-      newParams.imageCode = page.imageCode
+      newParams.kyPrimaryId = page.kyPrimaryId
       newParams.isFinish = page.isFinish
       setParams(newParams)
     }
@@ -155,10 +155,10 @@ const SecondChiefBenignList = () => {
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
-    newPagination.imageCode = params.imageCode
+    newPagination.kyPrimaryId = params.kyPrimaryId
     localStorage.setItem('SecondChiefBenignList', JSON.stringify(newPagination))
     history.push(
-      `/secondViewer?id=${record.id}&imageCode=${record.imageCode}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`
+      `/secondViewer?id=${record.id}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`
     )
   }
 
@@ -172,12 +172,12 @@ const SecondChiefBenignList = () => {
             <div className="header"></div>
             <div className="search-box">
               <div className="srarch-label">
-                <div>影像编号：</div>
+                <div>编号：</div>
                 <Input
-                  value={params.imageCode}
-                  onChange={e => handleImageCodeSearch(e.target.value)}
+                  value={params.kyPrimaryId}
+                  onChange={e => handleKyPrimaryIdSearch(e.target.value)}
                   style={{ width: 200 }}
-                  placeholder="请输入影像编号"
+                  placeholder="请输入编号"
                 />
               </div>
 

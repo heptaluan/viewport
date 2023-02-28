@@ -15,8 +15,8 @@ const ThirdChiefBenignList = () => {
       dataIndex: 'createBy',
     },
     {
-      title: '影像编号',
-      dataIndex: 'imageCode',
+      title: '编号',
+      dataIndex: 'kyPrimaryId',
     },
     {
       title: '完成状态',
@@ -49,6 +49,10 @@ const ThirdChiefBenignList = () => {
           </div>
         )
       },
+    },
+    {
+      title: '完成人数',
+      dataIndex: 'staffCount'
     },
     {
       title: '更新时间',
@@ -117,13 +121,13 @@ const ThirdChiefBenignList = () => {
   // 查询
   const [params, setParams] = useState({
     isFinish: 0,
-    imageCode: '',
+    kyPrimaryId: '',
     staffCount: 3,
   })
 
-  const handleImageCodeSearch = val => {
+  const handleKyPrimaryIdSearch = val => {
     const newParams = Object.assign({}, params)
-    newParams.imageCode = val
+    newParams.kyPrimaryId = val
     setParams(newParams)
   }
 
@@ -147,7 +151,7 @@ const ThirdChiefBenignList = () => {
   const handleReset = async () => {
     const newParams = {
       isFinish: 0,
-      imageCode: '',
+      kyPrimaryId: '',
       staffCount: 3,
     }
     setParams(newParams)
@@ -170,7 +174,7 @@ const ThirdChiefBenignList = () => {
     let page = localStorage.getItem('ThirdChiefBenignList') ? JSON.parse(localStorage.getItem('ThirdChiefBenignList')) : ''
     const newParams = Object.assign({}, params)
     if (page !== '') {
-      newParams.imageCode = page.imageCode
+      newParams.kyPrimaryId = page.kyPrimaryId
       newParams.isFinish = page.isFinish
       setParams(newParams)
     }
@@ -188,7 +192,7 @@ const ThirdChiefBenignList = () => {
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
-    newPagination.imageCode = params.imageCode
+    newPagination.kyPrimaryId = params.kyPrimaryId
     localStorage.setItem('ThirdChiefBenignList', JSON.stringify(newPagination))
     history.push(`/thirdViewer?kyPrimaryId=${record.kyPrimaryId}&isFinish=${record.isFinish}&type=1&from=${history.location.pathname}`)
   }
@@ -203,12 +207,12 @@ const ThirdChiefBenignList = () => {
             <div className="header"></div>
             <div className="search-box">
               <div className="srarch-label">
-                <div>影像编号：</div>
+                <div>编号：</div>
                 <Input
-                  value={params.imageCode}
-                  onChange={e => handleImageCodeSearch(e.target.value)}
+                  value={params.kyPrimaryId}
+                  onChange={e => handleKyPrimaryIdSearch(e.target.value)}
                   style={{ width: 200 }}
-                  placeholder="请输入影像编号"
+                  placeholder="请输入编号"
                 />
               </div>
 
