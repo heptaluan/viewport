@@ -268,7 +268,7 @@ const ThirdChiefStndrdList = () => {
               }
             }}
             rowClassName={(record, index) => {
-              return record.isOpinion === 1 ? 'table-active-list' : null
+              return record.isOpinion === 1 && record.isFinish !== 1 ? 'table-active-list' : null
             }}
           />
         </div>

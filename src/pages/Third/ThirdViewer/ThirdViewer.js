@@ -1380,32 +1380,32 @@ const ThirdViewer = () => {
       case 'spinous':
         return {
           id: item.userId,
-          amendBurr: item['spinous'],
+          amendBurr: item[type],
         }
       case 'rag':
         return {
           id: item.userId,
-          amendEdge: item['rag'],
+          amendEdge: item[type],
         }
       case 'paging':
         return {
           id: item.userId,
-          amendShape: item['paging'],
+          amendShape: item[type],
         }
       case 'sphere':
         return {
           id: item.userId,
-          amendSpherical: item['sphere'],
+          amendSpherical: item[type],
         }
       case 'rag0':
         return {
           id: item.userId,
-          amendEdge0: item['rag0'],
+          amendEdge0: item[type],
         }
       case 'structuralRelation':
         return {
           id: item.userId,
-          amendRelation: item['structuralRelation'].sort().join(','),
+          amendRelation: item[type].sort().join(','),
         }
       default:
         break
@@ -1467,6 +1467,10 @@ const ThirdViewer = () => {
   const [detailDisabled, setDetailDisabled] = useState(false)
 
   const draggleDetailRef = useRef(null)
+
+  const handleDetailCancel = _ => {
+    setOpenDetail(false)
+  }
 
   const showNoduleDetail = item => {
     setOpenDetail(true)
@@ -1539,6 +1543,7 @@ const ThirdViewer = () => {
         maskClosable={false}
         wrapClassName={'detail-box-modal'}
         width={660}
+        onCancel={handleDetailCancel}
         footer={[
           <Button key="back" onClick={e => setOpenDetail(false)}>
             关闭

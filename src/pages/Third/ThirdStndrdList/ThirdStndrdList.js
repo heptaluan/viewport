@@ -81,12 +81,6 @@ const ThirdStndrdList = () => {
     fetchList()
   }, [])
 
-  // 调整分页
-  useEffect(() => {
-    const list = document.querySelectorAll('.ant-pagination>li')
-    console.log(list)
-  }, [])
-
   // 分页设置
   const [pagination, setPagination] = useState({
     current: 1,
