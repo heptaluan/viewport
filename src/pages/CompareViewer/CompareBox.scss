@@ -1,0 +1,12 @@
+.compare-viewer-box {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 50px);
+
+  .box1,
+  .box2 {
+    position: relative;
+    display: flex;
+    flex: 1;
+  }
+}
