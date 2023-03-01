@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './SecondChiefBenignList.scss'
 import { useHistory } from 'react-router-dom'
-import { Table, Space, Button, Select, message, Input } from 'antd'
+import { Table, Space, Button, Select, message, Input, Tag } from 'antd'
 import { getSecondChiefBenignList } from '../../../api/api'
 import MenuList from '../../../components/MenuList/MenuList'
 import HeaderList from '../../../components/HeaderList/HeaderList'
@@ -26,17 +26,47 @@ const SecondChiefBenignList = () => {
       },
     },
     {
+      title: '完成人员',
+      dataIndex: 'staff',
+      render: (_, record) => {
+        if (!record.staff) return
+        const list = record.staff?.split(',').sort()
+        const result = []
+        for (let i = 0; i < list.length; i++) {
+          if (list[i] === '李腾海') {
+            result.push(<Tag color="#f50">李腾海</Tag>)
+          } else if (list[i] === '杨帆') {
+            result.push(<Tag color="#2db7f5">杨帆</Tag>)
+          } else if (list[i] === '周坦峰') {
+            result.push(<Tag color="#87d068">周坦峰</Tag>)
+          }
+        }
+        return (
+          <div className="table-staff">
+            {result.map((n, index) => {
+              return <span key={index}>{n}</span>
+            })}
+          </div>
+        )
+      },
+    },
+    {
+      title: '完成人数',
+      dataIndex: 'staffCount'
+    },
+    {
       title: '更新时间',
       dataIndex: 'updateTime',
     },
     {
       title: '操作',
       key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <a onClick={() => handleShowDetail(record)}>查看详情</a>
-        </Space>
-      ),
+      render: (_, record) =>
+        record.staffCount === 3 ? (
+          <Space size="middle">
+            <a onClick={() => handleShowDetail(record)}>查看详情</a>
+          </Space>
+        ) : null,
     },
   ]
 
@@ -92,6 +122,7 @@ const SecondChiefBenignList = () => {
   const [params, setParams] = useState({
     isFinish: 0,
     kyPrimaryId: '',
+    staffCount: 3,
   })
 
   const handleKyPrimaryIdSearch = val => {
@@ -106,6 +137,12 @@ const SecondChiefBenignList = () => {
     setParams(newParams)
   }
 
+  const handleStaffCountSearch = val => {
+    const newParams = Object.assign({}, params)
+    newParams.staffCount = val
+    setParams(newParams)
+  }
+
   const handleSearch = () => {
     localStorage.setItem('SecondChiefBenignList', '')
     fetchList()
@@ -115,6 +152,7 @@ const SecondChiefBenignList = () => {
     const newParams = {
       isFinish: 0,
       kyPrimaryId: '',
+      staffCount: 3,
     }
     setParams(newParams)
     localStorage.setItem('SecondChiefBenignList', '')
@@ -151,15 +189,12 @@ const SecondChiefBenignList = () => {
     }
   }
 
-  // 查看详情（金标准 type 2）
   const handleShowDetail = record => {
     const newPagination = Object.assign({}, pagination)
     newPagination.isFinish = params.isFinish
     newPagination.kyPrimaryId = params.kyPrimaryId
     localStorage.setItem('SecondChiefBenignList', JSON.stringify(newPagination))
-    history.push(
-      `/secondViewer?id=${record.id}&isFinish=${record.isFinish}&type=2&from=${history.location.pathname}`
-    )
+    history.push(`/thirdViewer?kyPrimaryId=${record.kyPrimaryId}&isFinish=${record.isFinish}&type=1&from=${history.location.pathname}`)
   }
 
   return (
@@ -200,6 +235,25 @@ const SecondChiefBenignList = () => {
                 />
               </div>
 
+              <div className="srarch-label">
+                <div>完成人员：</div>
+                <Select
+                  value={params.staffCount}
+                  style={{ width: 200 }}
+                  onChange={handleStaffCountSearch}
+                  options={[
+                    {
+                      value: 3,
+                      label: '已完成数据',
+                    },
+                    {
+                      value: '',
+                      label: '推送数据',
+                    },
+                  ]}
+                />
+              </div>
+
               <Button style={{ marginLeft: 20 }} onClick={handleSearch} type="primary">
                 搜索
               </Button>
@@ -226,6 +280,9 @@ const SecondChiefBenignList = () => {
                   console.log(event)
                 },
               }
+            }}
+            rowClassName={(record, index) => {
+              return record.isOpinion === 1 ? 'table-active-list' : null
             }}
           />
         </div>

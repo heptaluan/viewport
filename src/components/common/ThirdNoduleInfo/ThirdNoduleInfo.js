@@ -38,7 +38,7 @@ const ThirdNoduleInfo = props => {
           <div className="box-wrap">
             <div className="list-title">外观特征</div>
 
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('spherical') ? 'active' : ''}`}>
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('shape') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.paging !== props.noduleInfo.pagingOrigin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
@@ -64,7 +64,7 @@ const ThirdNoduleInfo = props => {
                 </Select>
               </div>
             </div>
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('shape') ? 'active' : ''}`}>
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('spherical') ? 'active' : ''}`}>
               <div className="mark-title">
                 {props.noduleInfo.sphere !== props.noduleInfo.sphereOrigin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
