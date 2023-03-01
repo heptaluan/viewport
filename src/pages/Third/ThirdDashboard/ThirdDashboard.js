@@ -37,7 +37,6 @@ const ThirdDashboard = () => {
   }, [])
 
   const initChart = data => {
-
     const totalList = formatTotal(data.finishInfo)
     setTotal1(totalList[0][0].value + totalList[0][1].value)
     setTotal2(totalList[1][0].value + totalList[1][1].value)
@@ -59,7 +58,7 @@ const ThirdDashboard = () => {
         trigger: 'item',
       },
       legend: {
-        padding: [30, 0, 0, 0]
+        padding: [30, 0, 0, 0],
       },
       series: [
         {
@@ -95,7 +94,7 @@ const ThirdDashboard = () => {
       },
       legend: {
         padding: [15, 0, 0, 0],
-        data: ['每日审查数']
+        data: ['每日审查数'],
       },
       xAxis: {
         type: 'category',
@@ -121,7 +120,7 @@ const ThirdDashboard = () => {
         trigger: 'item',
       },
       legend: {
-        padding: [30, 0, 0, 0]
+        padding: [30, 0, 0, 0],
       },
       series: [
         {
@@ -157,7 +156,7 @@ const ThirdDashboard = () => {
       },
       legend: {
         padding: [15, 0, 0, 0],
-        data: ['每日审查数']
+        data: ['每日审查数'],
       },
       xAxis: {
         type: 'category',
@@ -183,7 +182,7 @@ const ThirdDashboard = () => {
         trigger: 'item',
       },
       legend: {
-        padding: [30, 0, 0, 0]
+        padding: [30, 0, 0, 0],
       },
       series: [
         {
@@ -219,7 +218,7 @@ const ThirdDashboard = () => {
       },
       legend: {
         padding: [15, 0, 0, 0],
-        data: ['每日审查数']
+        data: ['每日审查数'],
       },
       xAxis: {
         type: 'category',
@@ -263,31 +262,43 @@ const ThirdDashboard = () => {
     return [
       [
         {
-          value: data.filter(item => item.create_by === '杨帆' && item.is_finish === 0)[0]['count(id)'],
+          value: data.filter(item => item.create_by === '杨帆' && item.is_finish === 0)[0]
+            ? data.filter(item => item.create_by === '杨帆' && item.is_finish === 0)[0]['count(id)']
+            : '',
           name: '未完成',
         },
         {
-          value: data.filter(item => item.create_by === '杨帆' && item.is_finish === 1)[0]['count(id)'],
+          value: data.filter(item => item.create_by === '杨帆' && item.is_finish === 1)[0]
+            ? data.filter(item => item.create_by === '杨帆' && item.is_finish === 1)[0]['count(id)']
+            : '',
           name: '已完成',
         },
       ],
       [
         {
-          value: data.filter(item => item.create_by === '李腾海' && item.is_finish === 0)[0]['count(id)'],
+          value: data.filter(item => item.create_by === '李腾海' && item.is_finish === 0)[0]
+            ? data.filter(item => item.create_by === '李腾海' && item.is_finish === 0)[0]['count(id)']
+            : '',
           name: '未完成',
         },
         {
-          value: data.filter(item => item.create_by === '李腾海' && item.is_finish === 1)[0]['count(id)'],
+          value: data.filter(item => item.create_by === '李腾海' && item.is_finish === 1)[0]
+            ? data.filter(item => item.create_by === '李腾海' && item.is_finish === 1)[0]['count(id)']
+            : '',
           name: '已完成',
         },
       ],
       [
         {
-          value: data.filter(item => item.create_by === '周坦峰' && item.is_finish === 0)[0]['count(id)'],
+          value: data.filter(item => item.create_by === '周坦峰' && item.is_finish === 0)[0]
+            ? data.filter(item => item.create_by === '周坦峰' && item.is_finish === 0)[0]['count(id)']
+            : '',
           name: '未完成',
         },
         {
-          value: data.filter(item => item.create_by === '周坦峰' && item.is_finish === 1)[0]['count(id)'],
+          value: data.filter(item => item.create_by === '周坦峰' && item.is_finish === 1)[0]
+            ? data.filter(item => item.create_by === '周坦峰' && item.is_finish === 1)[0]['count(id)']
+            : '',
           name: '已完成',
         },
       ],
@@ -295,7 +306,6 @@ const ThirdDashboard = () => {
   }
 
   const formatDateList = data => {
-
     const data1 = data.filter(item => item.create_by === '杨帆')
     const data2 = data.filter(item => item.create_by === '李腾海')
     const data3 = data.filter(item => item.create_by === '周坦峰')
@@ -336,7 +346,7 @@ const ThirdDashboard = () => {
       doc3: {
         date: data3Data.reverse(),
         count: data3Value.reverse(),
-      }
+      },
     }
 
     return dateData

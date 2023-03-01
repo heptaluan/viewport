@@ -276,6 +276,8 @@ const ThirdViewer = () => {
       console.log(error)
     }
 
+    
+
     // 格式化三个医生信息
     try {
       for (let i = 0; i < info.length; i++) {
