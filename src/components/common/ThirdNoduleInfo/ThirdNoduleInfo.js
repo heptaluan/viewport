@@ -24,16 +24,65 @@ const ThirdNoduleInfo = props => {
         <>
           <div className="box-title">{props.user}医生审核结果</div>
 
-          {props.noduleInfo.chiefNodeMark === 'size' || props.noduleInfo.chiefNodeMark === 'find' ? (
-            <div className="box-title-tips">
-              <div className={`list ${props.noduleInfo.chiefNodeMark === 'size' ? 'active' : ''}`}>
-                是否微小结节：{formatNodeSize(props.noduleInfo.size)}
+          <div className="box-wrap">
+            <div className="list-title">发现</div>
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark === 'find' ? 'active' : ''}`}>
+              <div className="mark-title">
+                {props.noduleInfo.difficultyLevel !== props.noduleInfo.difficultyLevelOrigin ? (
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
+                ) : null}
+                检测难易度
               </div>
-              <div className={`list ${props.noduleInfo.chiefNodeMark === 'find' ? 'active' : ''}`}>
-                发现难易度：{props.noduleInfo.difficultyLevel}
+              <div className="mark-content">
+                <Select
+                  size="small"
+                  style={{ width: 110, fontSize: 12 }}
+                  placeholder="请选择形态分叶"
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'difficultyLevel', props.index, props.user)}
+                  value={props.noduleInfo.difficultyLevel}
+                  dropdownStyle={{
+                    zoom: 0.9
+                  }}
+                >
+                  <Option value="非常微妙">非常微妙</Option>
+                  <Option value="适度微妙">适度微妙</Option>
+                  <Option value="微妙">微妙</Option>
+                  <Option value="中度明显">中度明显</Option>
+                  <Option value="显而易见">显而易见</Option>
+                </Select>
               </div>
             </div>
-          ) : null}
+
+            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark === 'size' ? 'active' : ''}`}>
+              <div className="mark-title">
+                {props.noduleInfo.size !== props.noduleInfo.sizeOrigin ? (
+                  <Tooltip placement="topLeft" title={'该值进行过调整'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
+                ) : null}
+                结节大小
+              </div>
+              <div className="mark-content">
+                <Select
+                  size="small"
+                  style={{ width: 110, fontSize: 12 }}
+                  placeholder="请选择形态分叶"
+                  onChange={e => props.handleUpdateNoduleInfo(e, 'size', props.index, props.user)}
+                  value={props.noduleInfo.size}
+                  dropdownStyle={{
+                    zoom: 0.9
+                  }}
+                >
+                  <Option value="微小结节">微小结节</Option>
+                  <Option value="小结节">小结节</Option>
+                  <Option value="结节/大结节">结节/大结节</Option>
+                  <Option value="肿块（大于 30mm）">肿块（大于 30mm）</Option>
+                </Select>
+              </div>
+            </div>
+          </div>
 
           <div className="box-wrap">
             <div className="list-title">外观特征</div>
@@ -55,6 +104,9 @@ const ThirdNoduleInfo = props => {
                   placeholder="请选择形态分叶"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'paging', props.index, props.user)}
                   value={props.noduleInfo.paging}
+                  dropdownStyle={{
+                    zoom: 0.9
+                  }}
                 >
                   <Option value="无分叶">无分叶</Option>
                   <Option value="浅分叶">浅分叶</Option>
@@ -80,6 +132,9 @@ const ThirdNoduleInfo = props => {
                   placeholder="请选择形状"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'sphere', props.index, props.user)}
                   value={props.noduleInfo.sphere}
+                  dropdownStyle={{
+                    zoom: 0.9
+                  }}
                 >
                   <Option value="长条形">长条形</Option>
                   <Option value="不规则形">不规则形</Option>
@@ -107,6 +162,9 @@ const ThirdNoduleInfo = props => {
                   placeholder="请选择边缘/毛刺"
                   onChange={e => props.handleUpdateNoduleInfo(e, 'rag', props.index, props.user)}
                   value={props.noduleInfo.rag}
+                  dropdownStyle={{
+                    zoom: 0.9
+                  }}
                   options={[
                     {
                       label: '光整（无毛刺）',

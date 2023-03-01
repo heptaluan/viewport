@@ -276,8 +276,6 @@ const ThirdViewer = () => {
       console.log(error)
     }
 
-    
-
     // 格式化三个医生信息
     try {
       for (let i = 0; i < info.length; i++) {
@@ -289,9 +287,8 @@ const ThirdViewer = () => {
           num: Number(info[i].nodeIndex),
           checked: false,
           noduleName: `nodule_${info[i].nodeId}`,
-          difficultyLevel: info[i].findpercent ? info[i].findpercent : '非常微妙',
+
           position: info[i].position ? info[i].position.split(',') : undefined,
-          size: info[i].sizenum ? formatSizeMean(info[i].sizenum) : '',
           sizeBefore: '',
           sizeAfter: info[i].sizenum ? info[i].sizenum : undefined,
           rag1: info[i].edge1 ? info[i].edge1 : undefined,
@@ -312,6 +309,9 @@ const ThirdViewer = () => {
           rag0Origin: info[i].edge0 ? info[i].edge0 : undefined,
           structuralRelationOrigin: info[i].relation ? info[i].relation.split(',') : [],
 
+          difficultyLevelOrigin: info[i].findpercent ? info[i].findpercent : '非常微妙',
+          sizeOrigin: info[i].size ? info[i].size : '',
+
           spinous: info[i].amendBurr ? info[i].amendBurr : info[i].burr ? info[i].burr : '非常微妙',
           rag: info[i].amendEdge ? info[i].amendEdge : info[i].edge ? info[i].edge : undefined,
           paging: info[i].amendShape ? info[i].amendShape : info[i].shape ? info[i].shape : undefined,
@@ -324,6 +324,9 @@ const ThirdViewer = () => {
             : [],
 
           chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : '',
+
+          size: info[i].amendSize ? info[i].amendSize : info[i].size ? info[i].size : undefined,
+          difficultyLevel: info[i].amendFindpercent ? info[i].amendFindpercent : info[i].findpercent ? info[i].findpercent : undefined,
         })
       }
     } catch (error) {
@@ -386,9 +389,8 @@ const ThirdViewer = () => {
           num: Number(info[i].nodeIndex),
           checked: false,
           noduleName: `nodule_${info[i].nodeId}`,
-          difficultyLevel: info[i].findpercent ? info[i].findpercent : '非常微妙',
+
           position: info[i].position ? info[i].position.split(',') : undefined,
-          size: info[i].sizenum ? formatSizeMean(info[i].sizenum) : '',
           sizeBefore: '',
           sizeAfter: info[i].sizenum ? info[i].sizenum : undefined,
           rag1: info[i].edge1 ? info[i].edge1 : undefined,
@@ -409,6 +411,9 @@ const ThirdViewer = () => {
           rag0Origin: info[i].edge0 ? info[i].edge0 : undefined,
           structuralRelationOrigin: info[i].relation ? info[i].relation.split(',') : [],
 
+          difficultyLevelOrigin: info[i].findpercent ? info[i].findpercent : '非常微妙',
+          sizeOrigin: info[i].size ? info[i].size : '',
+
           spinous: info[i].amendBurr ? info[i].amendBurr : info[i].burr ? info[i].burr : '非常微妙',
           rag: info[i].amendEdge ? info[i].amendEdge : info[i].edge ? info[i].edge : undefined,
           paging: info[i].amendShape ? info[i].amendShape : info[i].shape ? info[i].shape : undefined,
@@ -421,6 +426,9 @@ const ThirdViewer = () => {
             : [],
 
           chiefNodeMark: chiefNode.length > 0 ? chiefNode.find(item => item.nodeId === info[i].nodeId).mark : '',
+
+          size: info[i].amendSize ? info[i].amendSize : info[i].size ? info[i].size : undefined,
+          difficultyLevel: info[i].amendFindpercent ? info[i].amendFindpercent : info[i].findpercent ? info[i].findpercent : undefined,
         })
       }
     } catch (error) {
@@ -1333,7 +1341,9 @@ const ThirdViewer = () => {
 
     if (newItem) {
       switch (type) {
-        // 形态分叶，形状，边缘/毛刺，棘突分级，结节类型，所选分级
+        // 发现难易度，大小，形态分叶，形状，边缘/毛刺，棘突分级，结节类型，所选分级
+        case 'difficultyLevel':
+        case 'size':
         case 'paging':
         case 'sphere':
         case 'rag':
@@ -1382,6 +1392,18 @@ const ThirdViewer = () => {
   // 格式化提交数据
   const formatPostNoduleInfoData = (item, type) => {
     switch (type) {
+      case 'difficultyLevel':
+        return {
+          id: item.userId,
+          amendFindpercent: item[type],
+        }
+
+      case 'size':
+        return {
+          id: item.userId,
+          amendSize: item[type],
+        }
+
       case 'spinous':
         return {
           id: item.userId,
@@ -1547,13 +1569,18 @@ const ThirdViewer = () => {
         mask={false}
         maskClosable={false}
         wrapClassName={'detail-box-modal'}
-        width={660}
+        width={590}
         onCancel={handleDetailCancel}
         footer={[
           <Button key="back" onClick={e => setOpenDetail(false)}>
             关闭
           </Button>,
         ]}
+        style={{
+          position: 'absolute',
+          left: 60,
+          top: 100,
+        }}
       >
         <div className="third-detail-box">
           {newNoduleInfo.map((item, index) => (
