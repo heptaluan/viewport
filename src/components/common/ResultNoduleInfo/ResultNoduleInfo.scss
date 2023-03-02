@@ -1,9 +1,10 @@
-.third-mark-box-wrap {
-  width: 202px;
+.result-nodule-info {
+  width: 420px;
   color: #333;
-  font-size: 12px;
+  font-size: 14px;
   -webkit-user-select: none;
   user-select: none;
+  margin: 0 auto;
 
   &::-webkit-scrollbar {
     width: 0;
@@ -11,7 +12,7 @@
 
   .box-title {
     text-align: center;
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: 5px;
   }
 
@@ -24,7 +25,7 @@
   }
 
   .list-title {
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: 3px;
   }
 
@@ -38,14 +39,14 @@
   .mark-box {
     position: relative;
     margin-bottom: 0;
-    font-size: 12px;
+    font-size: 13px;
 
     &.active {
       color: #ff4d4f !important;
     }
 
     &.mb {
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     &.flex {
@@ -55,15 +56,15 @@
       &.left {
         align-items: start;
 
-        .mark-title {
-          margin-top: 2px;
-        }
+        // .mark-title {
+        //   margin-top: 2px;
+        // }
       }
     }
 
     .mark-title {
       display: inline-block;
-      width: 168px;
+      width: 100px;
       position: relative;
 
       &.w250 {
@@ -111,19 +112,22 @@
       color: #ff4d4f;
     }
   }
+
+  .ant-segmented {
+    margin-top: 0 !important;
+  }
 }
 
 .mark-box.active {
   color: #ff4d4f !important;
 }
 
-.third-mark-box-wrap {
+.result-nodule-info {
   .ant-slider-rail {
     background-color: #c7c0c0 !important;
   }
 
   .ant-segmented {
-    margin-top: 5px !important;
     background: #fff !important;
 
     .ant-segmented-item-label {

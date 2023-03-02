@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './MarkNoduleInfo.scss'
-import { Slider, Select, Button, Radio, Segmented, Checkbox, Cascader } from 'antd'
+import { Slider, Select, Button, Radio, Segmented, Checkbox, Cascader, Modal } from 'antd'
 import { formatNodeSize, formatDanger, formatNodeTypeRemark } from '../../../util/index'
+import Draggable from 'react-draggable'
+import ResultNoduleInfo from '../ResultNoduleInfo/ResultNoduleInfo'
 
 const { Option } = Select
 
@@ -34,7 +36,7 @@ const MarkNoduleInfo = props => {
     } else {
       setIsMiniNode(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.noduleInfo?.size])
 
   // 发现难易度处理
@@ -45,14 +47,80 @@ const MarkNoduleInfo = props => {
     } else {
       setDifficultyLevel(false)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.noduleInfo?.difficultyLevel])
+
+  // 查看复核结果
+  const [openResult, setOpenResult] = useState(false)
+  const [resultDisabled, setResultDisabled] = useState(false)
+
+  const draggleResultRef = useRef(null)
+
+  const handleResultCancel = _ => {
+    setOpenResult(false)
+  }
+
+  const handleShowResultModal = _ => {
+    setOpenResult(true)
+  }
 
   return (
     <div className="mark-box-wrap">
       {props.noduleInfo ? (
         <>
-          <div className="box-title">肺结节标注标签</div>
+          <div className="box-title">
+            肺结节标注标签{' '}
+            {props.noduleInfo.state ? (
+              <Button
+                className="show-result-btn"
+                size="small"
+                onClick={e => handleShowResultModal()}
+                style={{ fontSize: 12, position: 'absolute', right: 0 }}
+              >
+                查看审核结果
+              </Button>
+            ) : null}
+          </div>
+
+          <Modal
+            title={
+              <div
+                style={{
+                  width: '100%',
+                  cursor: 'move',
+                }}
+                onMouseOver={() => {
+                  if (resultDisabled) {
+                    setResultDisabled(false)
+                  }
+                }}
+                onMouseOut={() => {
+                  setResultDisabled(true)
+                }}
+                onFocus={() => {}}
+                onBlur={() => {}}
+              >
+                查看审核结果
+              </div>
+            }
+            visible={openResult}
+            modalRender={modal => (
+              <Draggable>
+                <div ref={draggleResultRef}>{modal}</div>
+              </Draggable>
+            )}
+            mask={false}
+            maskClosable={false}
+            width={470}
+            onCancel={handleResultCancel}
+            footer={[
+              <Button key="back" onClick={e => setOpenResult(false)}>
+                关闭
+              </Button>,
+            ]}
+          >
+            <ResultNoduleInfo noduleInfo={props.resultNoduleInfo} />
+          </Modal>
 
           <div className="box-wrap">
             <div className="list-title">发现</div>
@@ -97,9 +165,7 @@ const MarkNoduleInfo = props => {
                   {props.noduleInfo.sizeAfter}
                   {props.noduleInfo.sizeAfter ? (
                     <>
-                      <span style={{ fontSize: 12, color: '#ff4d4f' }}>
-                        （{formatNodeSize(props.noduleInfo.size)}）
-                      </span>
+                      <span style={{ fontSize: 12, color: '#ff4d4f' }}>（{formatNodeSize(props.noduleInfo.size)}）</span>
                     </>
                   ) : null}
                 </span>
@@ -128,9 +194,7 @@ const MarkNoduleInfo = props => {
                 微小结节（＜5mm，≤3mm 的结节不测量大小）
               </span>
               <br />
-              <span className={`${props.noduleInfo.size >= 5 && props.noduleInfo.size < 10 ? 'active' : ''}`}>
-                小结节（≥5mm -＜10mm）
-              </span>
+              <span className={`${props.noduleInfo.size >= 5 && props.noduleInfo.size < 10 ? 'active' : ''}`}>小结节（≥5mm -＜10mm）</span>
               <br />
               <span className={`${props.noduleInfo.size >= 10 && props.noduleInfo.size <= 30 ? 'active' : ''}`}>
                 结节/大结节（≥10mm - ≤30mm）
@@ -511,7 +575,7 @@ const MarkNoduleInfo = props => {
                 <div className="mark-title" style={{ width: 320, marginTop: 8 }}>
                   {formatNodeTypeTitle(props.noduleInfo.nodeType)}，目前所选分级：
                   {/* <span style={{ color: '#ff4d4f' }}> */}
-                    {formatNodeTypeRemark(Number(props.noduleInfo.nodeTypeRemark))}
+                  {formatNodeTypeRemark(Number(props.noduleInfo.nodeTypeRemark))}
                   {/* </span> */}
                 </div>
                 <div className="mark-content" style={{ width: 310 }}>
@@ -529,35 +593,19 @@ const MarkNoduleInfo = props => {
                   />
                 </div>
                 <div className="tips">
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 0 && props.noduleInfo.nodeTypeRemark < 25 ? 'active' : ''
-                    }`}
-                  >
+                  <span className={`${props.noduleInfo.nodeTypeRemark >= 0 && props.noduleInfo.nodeTypeRemark < 25 ? 'active' : ''}`}>
                     非常微妙（0 - 24）
                   </span>
                   <br />
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 25 && props.noduleInfo.nodeTypeRemark < 50 ? 'active' : ''
-                    }`}
-                  >
+                  <span className={`${props.noduleInfo.nodeTypeRemark >= 25 && props.noduleInfo.nodeTypeRemark < 50 ? 'active' : ''}`}>
                     适度微妙（25 - 49）
                   </span>
                   <br />
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 50 && props.noduleInfo.nodeTypeRemark < 75 ? 'active' : ''
-                    }`}
-                  >
+                  <span className={`${props.noduleInfo.nodeTypeRemark >= 50 && props.noduleInfo.nodeTypeRemark < 75 ? 'active' : ''}`}>
                     微妙（50 - 74）
                   </span>
                   <br />
-                  <span
-                    className={`${
-                      props.noduleInfo.nodeTypeRemark >= 75 && props.noduleInfo.nodeTypeRemark < 100 ? 'active' : ''
-                    }`}
-                  >
+                  <span className={`${props.noduleInfo.nodeTypeRemark >= 75 && props.noduleInfo.nodeTypeRemark < 100 ? 'active' : ''}`}>
                     中度明显（75 - 99）
                   </span>
                   <br />
@@ -575,7 +623,7 @@ const MarkNoduleInfo = props => {
               <div className="mark-title" style={{ width: 300 }}>
                 危险程度（分级），目前所选分级：
                 {/* <span style={{ color: '#ff4d4f' }}> */}
-                  {formatDanger(Number(props.noduleInfo.danger))}
+                {formatDanger(Number(props.noduleInfo.danger))}
                 {/* </span> */}
               </div>
               <div className="mark-content" style={{ width: 310 }}>
@@ -608,21 +656,14 @@ const MarkNoduleInfo = props => {
                 恶性可能，对应概率：中等（41-65%）
               </span>
               <br />
-              <span className={`${props.noduleInfo.danger > 65 ? 'active' : ''}`}>
-                考虑恶性，对应概率：高度（＞65%）
-              </span>
+              <span className={`${props.noduleInfo.danger > 65 ? 'active' : ''}`}>考虑恶性，对应概率：高度（＞65%）</span>
             </div>
           </div>
 
           <div className="mark-box">
             <div className="mark-title w250"></div>
             <div className="mark-content">
-              <Button
-                style={{ fontSize: 12 }}
-                disabled={props.noduleInfo.state}
-                size="small"
-                onClick={props.updateSingleNodeResult}
-              >
+              <Button style={{ fontSize: 12 }} disabled={props.noduleInfo.state} size="small" onClick={props.updateSingleNodeResult}>
                 提交当前结节
               </Button>
             </div>
