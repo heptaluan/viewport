@@ -1,5 +1,5 @@
 .result-nodule-info {
-  width: 350px;
+  width: 420px;
   color: #333;
   font-size: 14px;
   -webkit-user-select: none;
@@ -46,7 +46,7 @@
     }
 
     &.mb {
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     &.flex {
@@ -64,7 +64,7 @@
 
     .mark-title {
       display: inline-block;
-      width: 130px;
+      width: 100px;
       position: relative;
 
       &.w250 {
@@ -113,23 +113,21 @@
     }
   }
 
-  // .no-data-tips {
-  //   height: 23px;
-  //   line-height: 23px;
-  // }
+  .ant-segmented {
+    margin-top: 0 !important;
+  }
 }
 
 .mark-box.active {
   color: #ff4d4f !important;
 }
 
-.third-mark-box-wrap {
+.result-nodule-info {
   .ant-slider-rail {
     background-color: #c7c0c0 !important;
   }
 
   .ant-segmented {
-    margin-top: 5px !important;
     background: #fff !important;
 
     .ant-segmented-item-label {

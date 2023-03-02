@@ -1,6 +1,6 @@
 import React from 'react'
 import './ResultNoduleInfo.scss'
-import { Select, Radio, Checkbox } from 'antd'
+import { Select, Radio, Checkbox, Segmented } from 'antd'
 
 const { Option } = Select
 
@@ -16,26 +16,20 @@ const ResultNoduleInfo = props => {
               <div className="mark-title">检测难易度</div>
               <div className="mark-content">
                 {noduleInfo[0].amendFindpercent ? (
-                  <Select
+                  <Segmented
                     disabled
-                    size="small"
-                    style={{ width: 110, fontSize: 12 }}
-                    placeholder="请选择形态分叶"
                     value={noduleInfo[0].amendFindpercent}
-                  >
-                    <Option value="非常微妙">非常微妙</Option>
-                    <Option value="适度微妙">适度微妙</Option>
-                    <Option value="微妙">微妙</Option>
-                    <Option value="中度明显">中度明显</Option>
-                    <Option value="显而易见">显而易见</Option>
-                  </Select>
+                    size="small"
+                    options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
+                    style={{ fontSize: 12 }}
+                  />
                 ) : (
                   '暂无修改'
                 )}
               </div>
             </div>
 
-            <div className="mark-box flex mb">
+            <div className="mark-box flex">
               <div className="mark-title">结节大小</div>
               <div className="mark-content">
                 {noduleInfo[0].amendSize ? (
@@ -159,20 +153,16 @@ const ResultNoduleInfo = props => {
               </div>
             </div>
 
-            <div className="mark-box left flex mb">
+            <div className="mark-box left flex">
               <div className="mark-title">棘突（分级）</div>
               <div className="mark-content">
                 {noduleInfo[0].amendBurr ? (
-                  <Radio.Group
+                  <Segmented
                     disabled
-                    options={[
-                      { label: '非常微妙', value: '非常微妙' },
-                      { label: '适度微妙', value: '适度微妙' },
-                      { label: '微妙', value: '微妙' },
-                      { label: '中度明显', value: '中度明显' },
-                      { label: '显而易见', value: '显而易见' },
-                    ]}
                     value={noduleInfo[0].amendBurr}
+                    size="small"
+                    options={['非常微妙', '适度微妙', '微妙', '中度明显', '显而易见']}
+                    style={{ fontSize: 12 }}
                   />
                 ) : (
                   '暂无修改'
@@ -183,7 +173,7 @@ const ResultNoduleInfo = props => {
 
           <div className="box-wrap">
             <div className="list-title">内部特征</div>
-            <div className="mark-box flex left mb">
+            <div className="mark-box flex left">
               <div className="mark-title">结构关系</div>
               <div className="mark-content">
                 {noduleInfo[0].amendRelation ? (

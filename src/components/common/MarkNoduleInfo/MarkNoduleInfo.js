@@ -111,7 +111,7 @@ const MarkNoduleInfo = props => {
             )}
             mask={false}
             maskClosable={false}
-            width={400}
+            width={470}
             onCancel={handleResultCancel}
             footer={[
               <Button key="back" onClick={e => setOpenResult(false)}>
