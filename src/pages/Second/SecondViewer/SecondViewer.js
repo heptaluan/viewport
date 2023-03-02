@@ -108,6 +108,9 @@ const SecondViewer = () => {
   // 隐藏标注
   const [showMarker, setShowMarker] = useState(true)
 
+  // 李主任反馈结果
+  const [resultNoduleInfo, setResultNoduleInfo] = useState([])
+
   // 临时变量
   const nodeRef = useRef()
 
@@ -134,6 +137,7 @@ const SecondViewer = () => {
         try {
           const data = result.data.data.samlpeDataList
           const info = result.data.data.doctorResult
+          setResultNoduleInfo(result.data.data.doctorResult)
           formatNodeData(data, info)
           fetcImagehData(data[0].imageUrl)
         } catch (error) {
@@ -151,6 +155,7 @@ const SecondViewer = () => {
       if (result.data.code === 200) {
         try {
           const data = result.data.data
+          setResultNoduleInfo(data.doctorResult)
           formatBenignNodeData(data.nodeInfo, data.resultInfo)
           formatImagehData(data.imageList)
         } catch (error) {
@@ -279,13 +284,7 @@ const SecondViewer = () => {
           structuralRelation: item.relation ? item.relation.split(',') : [],
           nodeType: item.featuresType ? item.featuresType : data[i].lesionDensity ? data[i].lesionDensity : undefined,
           nodeTypeRemark: item.featuresRemark ? item.featuresRemark : 0,
-          danger: item.tumorPercent
-            ? item.tumorPercent
-            : data[i].lesionType === '恶性'
-            ? 100
-            : data[i].lesionType === '良性'
-            ? 0
-            : 0,
+          danger: item.tumorPercent ? item.tumorPercent : data[i].lesionType === '恶性' ? 100 : data[i].lesionType === '良性' ? 0 : 0,
           state: item.isFinish === 1 ? true : false,
         })
 
@@ -1125,13 +1124,9 @@ const SecondViewer = () => {
       scrynMaligant: riskVal ? riskVal : res.data.scrynMaligant,
       whu_scrynMaligant: riskVal ? riskVal : res.data.whu_scrynMaligant,
       nodeBox: [startY, startX, endY, endX],
-      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-        Math.abs(endY - startY) * rowPixelSpacing
-      ).toFixed(2)}mm`,
+      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`,
       diameterSize: formatDiameter(
-        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-          Math.abs(endY - startY) * rowPixelSpacing
-        ).toFixed(2)}mm`
+        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`
       ),
       maxHu: toolList[0].cachedStats.max,
       minHu: toolList[0].cachedStats.min,
@@ -1697,6 +1692,7 @@ const SecondViewer = () => {
       </div>
       <MarkNoduleInfo
         noduleInfo={noduleInfo}
+        resultNoduleInfo={resultNoduleInfo}
         handleShowAdjustModal={handleShowAdjustModal}
         handleUpdateNoduleInfo={handleUpdateNoduleInfo}
         handleResetMiniNode={handleResetMiniNode}
@@ -1704,9 +1700,7 @@ const SecondViewer = () => {
         handleShowMarkModal={handleShowMarkModal}
         updateSingleNodeResult={updateSingleNodeResult}
       />
-      {showMark ? (
-        <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
-      ) : null}
+      {showMark ? <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} /> : null}
 
       <Modal
         title="确认模型风险结果"
@@ -1764,9 +1758,7 @@ const SecondViewer = () => {
         <p>是否将当前结节自动标记为微小结节</p>
       </Modal>
 
-      <div className="show-button">
-        {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-      </div>
+      <div className="show-button">{/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}</div>
 
       <Modal
         title={
