@@ -12,7 +12,7 @@ import { getImageList, getDoctorTask } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
 
-const CompareViewer2 = React.forwardRef( (props, ref) => {
+const CompareViewer2 = React.forwardRef((props, ref) => {
   // eslint-disable-next-line no-unused-vars
   const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
@@ -97,16 +97,9 @@ const CompareViewer2 = React.forwardRef( (props, ref) => {
           type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
           risk: (res[i].scrynMaligant * 100).toFixed(0),
           scrynMaligant:
-            resultInfo[i] && resultInfo[i].scrynMaligant
-              ? resultInfo[i].scrynMaligant
-              : (res[i].scrynMaligant * 100).toFixed(0),
+            resultInfo[i] && resultInfo[i].scrynMaligant ? resultInfo[i].scrynMaligant : (res[i].scrynMaligant * 100).toFixed(0),
           soak: res[i].invisionClassify ? res[i].invisionClassify : '',
-          newSoak:
-            resultInfo[i] && resultInfo[i].newSoak
-              ? resultInfo[i].newSoak
-              : res[i].invisionClassify
-              ? res[i].invisionClassify
-              : '',
+          newSoak: resultInfo[i] && resultInfo[i].newSoak ? resultInfo[i].newSoak : res[i].invisionClassify ? res[i].invisionClassify : '',
           info: '',
           checked: false,
           active: false,
@@ -119,11 +112,7 @@ const CompareViewer2 = React.forwardRef( (props, ref) => {
               ? true
               : undefined,
           markNode:
-            resultInfo[i] && resultInfo[i].markNode === true
-              ? true
-              : resultInfo[i] && resultInfo[i].markNode === false
-              ? false
-              : undefined,
+            resultInfo[i] && resultInfo[i].markNode === true ? true : resultInfo[i] && resultInfo[i].markNode === false ? false : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
           chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
@@ -464,7 +453,7 @@ const CompareViewer2 = React.forwardRef( (props, ref) => {
 
   useImperativeHandle(ref, () => ({
     onCheckChange,
-    handleCheckedListClick
+    handleCheckedListClick,
   }))
 
   return (

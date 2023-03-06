@@ -6,7 +6,6 @@ import CompareViewer1 from './CompareViewer1'
 import CompareViewer2 from './CompareViewer2'
 
 const CompareBox = props => {
-  
   const viewer1Ref = React.createRef()
   const viewer2Ref = React.createRef()
   const buttonRef = React.createRef()
@@ -17,7 +16,7 @@ const CompareBox = props => {
     }
   }
 
-  const viewer1ImageChange = (index) => {
+  const viewer1ImageChange = index => {
     if (buttonRef.current.sync) {
       viewer2Ref.current.handleCheckedListClick(index)
     }

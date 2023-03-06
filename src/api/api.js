@@ -10,7 +10,7 @@ const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzY5MDE4NzMsInVzZXJuYW1lIjoiY2hpZWZfbHd4In0._KBTmUrqlCslHr-H7lSU9ClfAxHR9am6J4AxiKOYdp4'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzgxMzg4ODUsInVzZXJuYW1lIjoiY2hpZWZfbHd4In0.D_4c2CoFrPfA-O-fB14MI4zGeZCKsbrXzvfU-ASJF6g'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -18,17 +18,14 @@ export const getMedicalList = (id, type) =>
 
 // 获取影像列表
 export const getImageList = resource =>
-  axios.get(
-    `${basicUrl}/tailai-multiomics/multiomics/medicalImage/instance/list?column=z_position&order=asc&archiveTaskId=${resource}`
-  )
+  axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/instance/list?column=z_position&order=asc&archiveTaskId=${resource}`)
 
 // 查看临床影像
 export const getClinicalFiles = orderId =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/bizAppendix/findCtDiagnoseByOrder/${orderId}`)
 
 // 获取病人信息
-export const getPatientsList = id =>
-  axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
+export const getPatientsList = id => axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
 
 // 获取结节列表（管理员）
 export const getNodeList = id => axios.get(`${basicUrl}/report/image/getDnResult?id=${id}`)
