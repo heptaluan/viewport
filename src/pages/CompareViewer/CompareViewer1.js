@@ -75,9 +75,16 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
           type: resultInfo[i] ? resultInfo[i].featureLabel : res[i].featureLabel.value,
           risk: (res[i].scrynMaligant * 100).toFixed(0),
           scrynMaligant:
-            resultInfo[i] && resultInfo[i].scrynMaligant ? resultInfo[i].scrynMaligant : (res[i].scrynMaligant * 100).toFixed(0),
+            resultInfo[i] && resultInfo[i].scrynMaligant
+              ? resultInfo[i].scrynMaligant
+              : (res[i].scrynMaligant * 100).toFixed(0),
           soak: res[i].invisionClassify ? res[i].invisionClassify : '',
-          newSoak: resultInfo[i] && resultInfo[i].newSoak ? resultInfo[i].newSoak : res[i].invisionClassify ? res[i].invisionClassify : '',
+          newSoak:
+            resultInfo[i] && resultInfo[i].newSoak
+              ? resultInfo[i].newSoak
+              : res[i].invisionClassify
+              ? res[i].invisionClassify
+              : '',
           info: '',
           checked: false,
           active: false,
@@ -90,7 +97,11 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
               ? true
               : undefined,
           markNode:
-            resultInfo[i] && resultInfo[i].markNode === true ? true : resultInfo[i] && resultInfo[i].markNode === false ? false : undefined,
+            resultInfo[i] && resultInfo[i].markNode === true
+              ? true
+              : resultInfo[i] && resultInfo[i].markNode === false
+              ? false
+              : undefined,
           review: resultInfo[i] ? resultInfo[i].edit : false,
           chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
@@ -276,10 +287,8 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
     }
 
     // 同步操作
-    if (document.getElementById('activeBtn').classList.contains('syncActive')) {
-      const listIndex = noduleList.findIndex(item => item.num === index)
-      props.viewer1ListClicked(listIndex, index)
-    }
+    const listIndex = noduleList.findIndex(item => item.num === index)
+    props.viewer1ListClicked(listIndex, index)
   }
 
   // 列表单击
@@ -297,14 +306,11 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
     }
 
     // 同步操作
-    if (document.getElementById('activeBtn').classList.contains('syncActive')) {
-      props.viewer1ListClicked(index, num)
-    }
+    props.viewer1ListClicked(index, num)
   }
 
   // 列表点击事件
   const handleCheckedListClick = index => {
-    console.log(cornerstoneElement)
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
@@ -352,10 +358,8 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
       const index = imagesConfig.findIndex(item => item === curImageId)
       handleCheckedListClick(index)
 
-      // 同步
-      if (document.getElementById('activeBtn').classList.contains('syncActive')) {
-        props.viewer1ImageChange(index)
-      }
+      // 同步操作
+      props.viewer1ImageChange(index)
     })
   }
 
