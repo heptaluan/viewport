@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
 
@@ -10,22 +10,20 @@ import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleToo
 import { getImageList, getDoctorTask } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
-
 import { Tabs } from 'antd'
 
 const CompareViewer1 = React.forwardRef((props, ref) => {
   // eslint-disable-next-line no-unused-vars
   const nodeRef = useRef()
 
-  const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [cornerstoneElement, setCornerstoneElement] = useState(null)
+  const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
   const [noduleList, setNoduleList] = useState([])
   const [noduleMapList, setNoduleMapList] = useState([])
   const [noduleInfo, setNoduleInfo] = useState(null)
 
   useEffect(() => {
-    cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
     nodeRef.current = {
       noduleList,
       noduleMapList,
@@ -70,14 +68,6 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
     if (data.code === 10000) {
       const res = data.detectionResult.nodulesList
 
-      // 初始化滑块的值
-      if (resultInfo[0] && resultInfo[0].diameterMaxSize) {
-        localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
-      } else {
-        localStorage.setItem('diameterSize', 3)
-      }
-
-      // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
           id: index,
@@ -266,8 +256,6 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
 
       setImagesConfig(imageList)
 
-      // loadAndCacheImage(cornerstone, imageList, data)
-
       // 缓存图片
       if (data && data.length > 0) {
         loadAndCacheImage(cornerstone, imageList, data)
@@ -281,14 +269,15 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
     noduleList.map(item => (item.checked = false))
     noduleList.find(item => item.num === index).checked = true
     setNoduleList([...noduleList])
+
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
     }
 
     // 同步操作
-    // const listIndex = noduleList.findIndex(item => item.num === index)
-    // props.viewer1ListClicked(listIndex, index)
+    const listIndex = noduleList.findIndex(item => item.num === index)
+    props.viewer1ListClicked(listIndex, index)
   }
 
   // 列表单击
@@ -305,13 +294,11 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
       setNoduleInfo(null)
     }
 
-    // // 同步操作
-    // props.viewer1ListClicked(index, num)
+    props.viewer1ListClicked(index, num)
   }
 
   // 列表点击事件
   const handleCheckedListClick = index => {
-    console.log(index)
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
@@ -350,16 +337,15 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
       cornerstoneTools.setToolActive('MarkNodule', { mouseButtonMask: 1 })
       setTimeout(() => {
         addNodeTool(cornerstoneElement, index)
+        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
       }, 0)
     })
 
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
-      cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
-      changeActiveImage(index, cornerstoneElement)
-      // handleCheckedListClick(index)
-      // props.viewer1ImageChange(index)
+      handleCheckedListClick(index)
+      props.viewer1ImageChange(index)
     })
   }
 

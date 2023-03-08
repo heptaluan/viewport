@@ -16,15 +16,14 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
   // eslint-disable-next-line no-unused-vars
   const nodeRef = useRef()
 
-  const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [cornerstoneElement, setCornerstoneElement] = useState(null)
+  const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
   const [noduleList, setNoduleList] = useState([])
   const [noduleMapList, setNoduleMapList] = useState([])
   const [noduleInfo, setNoduleInfo] = useState(null)
 
   useEffect(() => {
-    cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
     nodeRef.current = {
       noduleList,
       noduleMapList,
@@ -69,14 +68,6 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
     if (data.code === 10000) {
       const res = data.detectionResult.nodulesList
 
-      // 初始化滑块的值
-      if (resultInfo[0] && resultInfo[0].diameterMaxSize) {
-        localStorage.setItem('diameterSize', resultInfo[0].diameterMaxSize)
-      } else {
-        localStorage.setItem('diameterSize', 3)
-      }
-
-      // const res = data.detectionResult.nodulesList.sort(nestedSort('coord', 'coordZ'))
       for (let i = 0; i < res.length; i++) {
         nodulesList.push({
           id: index,
@@ -349,12 +340,13 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
-      changeActiveImage(index, cornerstoneElement)
+      handleCheckedListClick(index)
     })
   }
 
   useImperativeHandle(ref, () => ({
-    onCheckChange
+    onCheckChange,
+    handleCheckedListClick,
   }))
 
   return (
@@ -363,9 +355,9 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
       <CompareViewerMain
         handleElementEnabledEvt={handleElementEnabledEvt}
         handleScorllClicked={handleScorllClicked}
+        toolsConfig={toolsConfig}
         imagesConfig={imagesConfig}
         noduleList={noduleList}
-        toolsConfig={toolsConfig}
       />
       <CompareNoduleInfo noduleInfo={noduleInfo} />
     </>
