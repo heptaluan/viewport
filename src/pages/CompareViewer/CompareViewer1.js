@@ -276,8 +276,10 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
     }
 
     // 同步操作
-    const listIndex = noduleList.findIndex(item => item.num === index)
-    props.viewer1ListClicked(listIndex, index)
+    if (document.getElementById('activeBtn').classList.contains('syncActive')) {
+      const listIndex = noduleList.findIndex(item => item.num === index)
+      props.viewer1ListClicked(listIndex, index)
+    }
   }
 
   // 列表单击
@@ -294,11 +296,15 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
       setNoduleInfo(null)
     }
 
-    props.viewer1ListClicked(index, num)
+    // 同步操作
+    if (document.getElementById('activeBtn').classList.contains('syncActive')) {
+      props.viewer1ListClicked(index, num)
+    }
   }
 
   // 列表点击事件
   const handleCheckedListClick = index => {
+    console.log(cornerstoneElement)
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
@@ -345,7 +351,11 @@ const CompareViewer1 = React.forwardRef((props, ref) => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
       handleCheckedListClick(index)
-      props.viewer1ImageChange(index)
+
+      // 同步
+      if (document.getElementById('activeBtn').classList.contains('syncActive')) {
+        props.viewer1ImageChange(index)
+      }
     })
   }
 

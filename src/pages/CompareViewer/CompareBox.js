@@ -8,22 +8,22 @@ import CompareViewer2 from './CompareViewer2'
 import { Button } from 'antd'
 
 const CompareBox = _ => {
-  const viewer1Ref = React.createRef()
   const viewer2Ref = React.createRef()
+  const [viewer2, setViewer2] = useState(null)
+
   const [showTab, setShowTab] = useState(false)
   const [sync, setSync] = useState(false)
 
+  useEffect(() => {
+    setViewer2(viewer2Ref.current)
+  }, [viewer2Ref.current])
+
   const viewer1ListClicked = (index, num) => {
-    if (document.getElementById('syncBtn').classList.contains('activeSync')) {
-      viewer2Ref.current.onCheckChange(index, num)
-    }
+    viewer2Ref.current.onCheckChange(index, num)
   }
 
   const viewer1ImageChange = index => {
-    console.log(viewer2Ref.current)
-    if (document.getElementById('syncBtn').classList.contains('activeSync')) {
-      viewer2Ref.current.handleCheckedListClick(index)
-    }
+    viewer2.handleCheckedListClick(index)
   }
 
   // TAB 切换
@@ -38,7 +38,7 @@ const CompareBox = _ => {
   return (
     <>
       <div className="header-box">
-        <Button id="syncBtn" className={sync ? 'activeSync' : ''} onClick={e => setSync(!sync)}>
+        <Button id="activeBtn" className={sync ? 'syncActive' : ''} onClick={e => setSync(!sync)}>
           {sync ? '取消同步' : '开启同步'}
         </Button>
       </div>
@@ -46,7 +46,6 @@ const CompareBox = _ => {
         {showTab ? <CompareMatchList noduleList={[]} imagesConfig={[]} /> : null}
         <div className="box1">
           <CompareViewer1
-            ref={viewer1Ref}
             viewer1ListClicked={viewer1ListClicked}
             viewer1ScrollBarClicked={viewer1ListClicked}
             viewer1ImageChange={viewer1ImageChange}

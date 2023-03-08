@@ -172,7 +172,6 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
           })
         }
       }
-
       setNoduleList([...nodulesList])
       setNoduleMapList([...nodulesMapList])
     } else {
@@ -294,6 +293,7 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
 
   // 列表点击事件
   const handleCheckedListClick = index => {
+    console.log(cornerstoneElement)
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
