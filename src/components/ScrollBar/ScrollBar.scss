@@ -10,9 +10,14 @@
   & > div {
     display: flex;
 
-    &.active {
+    &.active:after {
       cursor: pointer;
-      background-color: #fff;
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      margin: 0 auto;
     }
   }
 }

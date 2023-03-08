@@ -2,11 +2,26 @@
   display: flex;
   flex-direction: column;
   height: calc(100% - 50px);
+  position: relative;
 
   .box1,
   .box2 {
     position: relative;
     display: flex;
     flex: 1;
+  }
+
+  .box1 {
+    .ant-tabs-nav {
+      margin: 0;
+    }
+
+    .ant-tabs-content-holder {
+      display: none;
+    }
+
+    .ant-tabs-nav-list {
+      margin: 0 auto;
+    }
   }
 }

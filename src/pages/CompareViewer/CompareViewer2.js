@@ -14,35 +14,22 @@ import { windowChange, defaultTools, loadAndCacheImage } from './util'
 
 const CompareViewer2 = React.forwardRef((props, ref) => {
   // eslint-disable-next-line no-unused-vars
-  const [toolsConfig, setToolsConfig] = useState(defaultTools)
-  const [imagesConfig, setImagesConfig] = useState([])
-
-  const [noduleList, setNoduleList] = useState([])
-  // eslint-disable-next-line no-unused-vars
-  const [noduleMapList, setNoduleMapList] = useState([])
-
-  // 结节详情
-  const [noduleInfo, setNoduleInfo] = useState(null)
-
-  // 当前帧数
-  const [currentImageIdIndex, setCurrentImageIdIndex] = useState(0)
-
-  // 隐藏标注
-  const [showMarker, setShowMarker] = useState(true)
-
-  // 临时变量
   const nodeRef = useRef()
 
-  // 视图元素
+  const [toolsConfig, setToolsConfig] = useState(defaultTools)
   const [cornerstoneElement, setCornerstoneElement] = useState(null)
+  const [imagesConfig, setImagesConfig] = useState([])
+  const [noduleList, setNoduleList] = useState([])
+  const [noduleMapList, setNoduleMapList] = useState([])
+  const [noduleInfo, setNoduleInfo] = useState(null)
 
   useEffect(() => {
+    cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
     nodeRef.current = {
       noduleList,
       noduleMapList,
-      showMarker,
     }
-  }, [noduleList, noduleMapList, showMarker])
+  }, [noduleList, noduleMapList])
 
   // 初始化结节信息
   useEffect(() => {
@@ -203,32 +190,12 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
     }
   }
 
-  // 是否隐藏标注
-  const handleShowMarker = e => {
-    const flag = !showMarker
-    setShowMarker(flag)
-
-    if (flag) {
-      setTimeout(() => {
-        addNodeTool(cornerstoneElement, currentImageIdIndex)
-      }, 200)
-    } else {
-      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-      cornerstone.updateImage(cornerstoneElement)
-    }
-  }
-
   // 添加结节标注
   const addNodeTool = (cornerstoneElement, index = 0) => {
     const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
     const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
 
-    if (nodeRef.current.showMarker === false) {
-      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-      cornerstone.updateImage(cornerstoneElement)
-    }
-
-    if (item.length >= 1 && nodeRef.current.showMarker) {
+    if (item.length >= 1) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
       if (checkItme) {
         const checkNode = item.filter(item => item.noduleName === checkItme.noduleName)
@@ -313,10 +280,6 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
     noduleList.map(item => (item.checked = false))
     noduleList.find(item => item.num === index).checked = true
     setNoduleList([...noduleList])
-
-    // 设置当中帧数
-    setCurrentImageIdIndex(index)
-
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
@@ -340,70 +303,9 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
 
   // 列表点击事件
   const handleCheckedListClick = index => {
-    // 设置当中帧数
-    setCurrentImageIdIndex(index)
-
     // 设置当前视图选中项
     if (cornerstoneElement) {
       changeActiveImage(index, cornerstoneElement)
-    }
-  }
-
-  // 切换当前工具栏选中项
-  const changeToolActive = (checked, type) => {
-    if (checked) {
-      cornerstoneTools.setToolActive(type, { mouseButtonMask: 1 })
-    } else {
-      cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
-    }
-  }
-
-  // 设定当前选中工具状态
-  const setActiveToolState = () => {
-    const activeTool = document.querySelector('.tool-bar-box .active')
-    if (activeTool) {
-      cornerstoneTools.setToolActive(activeTool.dataset.type, { mouseButtonMask: 1 })
-    } else {
-      cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
-    }
-  }
-
-  const handleToolbarClick = (type, checked) => {
-    let viewport = cornerstone.getViewport(cornerstoneElement)
-    switch (type) {
-      case 'Magnify':
-      case 'RectangleRoi':
-      case 'Eraser':
-      case 'EllipticalRoi':
-      case 'Angle':
-      case 'Length':
-      case 'MarkNodule':
-      case 'MeasureRect':
-      case 'Zoom':
-      case 'Pan':
-        changeToolActive(checked, type)
-        break
-      case 'hflip':
-        viewport.hflip = !viewport.hflip
-        cornerstone.setViewport(cornerstoneElement, viewport)
-        break
-      case 'vflip':
-        viewport.vflip = !viewport.vflip
-        cornerstone.setViewport(cornerstoneElement, viewport)
-        break
-      case 'playClip':
-        if (checked) {
-          cornerstoneTools.playClip(cornerstoneElement, 10)
-        } else {
-          cornerstoneTools.stopClip(cornerstoneElement)
-        }
-        break
-      case 'Reset':
-        cornerstone.reset(cornerstoneElement)
-        windowChange(cornerstoneElement, cornerstone.getImage(cornerstoneElement), 2)
-        break
-      default:
-        break
     }
   }
 
@@ -440,34 +342,30 @@ const CompareViewer2 = React.forwardRef((props, ref) => {
       cornerstoneTools.setToolActive('MarkNodule', { mouseButtonMask: 1 })
       setTimeout(() => {
         addNodeTool(cornerstoneElement, index)
-        setActiveToolState()
+        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
       }, 0)
     })
 
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
-      handleCheckedListClick(index)
+      changeActiveImage(index, cornerstoneElement)
     })
   }
 
   useImperativeHandle(ref, () => ({
-    onCheckChange,
-    handleCheckedListClick,
+    onCheckChange
   }))
 
   return (
     <>
       <CompareMiddleSidePanel onCheckChange={onCheckChange} noduleList={noduleList} imagesConfig={imagesConfig} />
       <CompareViewerMain
-        handleToolbarClick={handleToolbarClick}
         handleElementEnabledEvt={handleElementEnabledEvt}
-        handleShowMarker={handleShowMarker}
         handleScorllClicked={handleScorllClicked}
-        toolsConfig={toolsConfig}
         imagesConfig={imagesConfig}
         noduleList={noduleList}
-        showMarker={showMarker}
+        toolsConfig={toolsConfig}
       />
       <CompareNoduleInfo noduleInfo={noduleInfo} />
     </>
