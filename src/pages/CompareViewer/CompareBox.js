@@ -6,8 +6,6 @@ import CompareHeader from './CompareHeader/CompareHeader'
 import CompareViewer1 from './CompareViewer1'
 import CompareViewer2 from './CompareViewer2'
 
-import { Tabs } from 'antd'
-
 const CompareBox = props => {
   const viewer1Ref = React.createRef()
   const viewer2Ref = React.createRef()

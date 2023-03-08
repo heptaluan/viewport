@@ -11,7 +11,7 @@ const CompareHeader = React.forwardRef( (props, ref) => {
 
   return (
     <div className="header-box">
-      <Button onClick={e => setSync(!sync)}>{sync ? '取消同步' : '开启同步'}</Button>
+      <Button ref={ref} onClick={e => setSync(!sync)}>{sync ? '取消同步' : '开启同步'}</Button>
     </div>
   )
 })
