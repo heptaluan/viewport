@@ -22,6 +22,8 @@ import { windowChange, defaultTools, loadAndCacheImage } from './util'
 import CornerstoneViewport from 'react-cornerstone-viewport'
 import CustomOverlay from '../../components/common/CustomOverlay/CustomOverlay'
 
+import { Button, Modal } from 'antd'
+
 const CompareBox = props => {
   const size = useWindowSize()
 
@@ -38,8 +40,10 @@ const CompareBox = props => {
     nodeRef.current = {
       noduleList,
       noduleMapList,
+      imagesConfig,
+      cornerstoneElement,
     }
-  }, [noduleList, noduleMapList])
+  }, [noduleList, noduleMapList, imagesConfig, cornerstoneElement])
 
   // 初始化结节信息
   useEffect(() => {
@@ -331,8 +335,8 @@ const CompareBox = props => {
   // 列表点击事件
   const handleCheckedListClick = index => {
     // 设置当前视图选中项
-    if (cornerstoneElement) {
-      changeActiveImage(index, cornerstoneElement)
+    if (nodeRef.current.cornerstoneElement) {
+      changeActiveImage(index, nodeRef.current.cornerstoneElement)
     }
   }
 
@@ -375,7 +379,10 @@ const CompareBox = props => {
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
-      handleCheckedListClick(index)
+      // handleCheckedListClick(index)
+
+      // 同步
+      handleCheckedListClick2(index)
     })
   }
 
@@ -396,13 +403,17 @@ const CompareBox = props => {
   const [noduleList2, setNoduleList2] = useState([])
   const [noduleMapList2, setNoduleMapList2] = useState([])
   const [noduleInfo2, setNoduleInfo2] = useState(null)
+  const [sync, setSync] = useState(false)
 
   useEffect(() => {
     nodeRef2.current = {
       noduleList2,
       noduleMapList2,
+      imagesConfig2,
+      cornerstoneElement2,
+      sync,
     }
-  }, [noduleList2, noduleMapList2])
+  }, [noduleList2, noduleMapList2, imagesConfig2, cornerstoneElement2, sync])
 
   // 右侧滚动条结节点击事件
   const handleScorllClicked2 = index => {
@@ -497,21 +508,20 @@ const CompareBox = props => {
 
   // 列表点击事件
   const handleCheckedListClick2 = index => {
-    console.log(cornerstoneElement2)
     // 设置当前视图选中项
-    if (cornerstoneElement2) {
-      changeActiveImage2(index, cornerstoneElement2)
+    if (nodeRef2.current.cornerstoneElement2) {
+      changeActiveImage2(index, nodeRef2.current.cornerstoneElement2)
     }
   }
 
   // 切换当前视图
   const changeActiveImage2 = (index, cornerstoneElement) => {
-    cornerstone.loadImage(imagesConfig2[index]).then(image => {
+    cornerstone.loadImage(nodeRef2.current.imagesConfig2[index]).then(image => {
       cornerstone.displayImage(cornerstoneElement, image)
       cornerstoneTools.addStackStateManager(cornerstoneElement, ['stack'])
       cornerstoneTools.addToolState(cornerstoneElement, 'stack', {
         currentImageIdIndex: Number(index),
-        imageIds: imagesConfig2,
+        imageIds: nodeRef2.current.imagesConfig2,
       })
     })
   }
@@ -539,20 +549,16 @@ const CompareBox = props => {
         cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
       }, 0)
     })
-
-    cornerstoneElement2.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
-      const curImageId = imageRenderedEvent.detail.image.imageId
-      const index = imagesConfig.findIndex(item => item === curImageId)
-      // handleCheckedListClick2(index)
-    })
   }
 
   return (
     <>
-      {/* <CompareHeader ref={buttonRef} /> */}
+      <div className="header-box">
+        <Button onClick={e => setSync(!sync)}>{sync ? '取消同步' : '开启同步'}</Button>
+      </div>
       <div className="compare-viewer-box">
         <div className="box1">
-          {imagesConfig.length !== 0 ? (
+          {imagesConfig2.length !== 0 ? (
             <>
               <CompareMiddleSidePanel
                 onCheckChange={onCheckChange}
