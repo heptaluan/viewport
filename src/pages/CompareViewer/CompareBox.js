@@ -297,6 +297,24 @@ const CompareBox = props => {
     }
   }
 
+  // 切换当前视图
+  const changeActiveImage = (index, cornerstoneElement, imagesConfig) => {
+    cornerstone.loadImage(imagesConfig[index]).then(image => {
+      cornerstone.displayImage(cornerstoneElement, image)
+      cornerstoneTools.addStackStateManager(cornerstoneElement, ['stack'])
+      cornerstoneTools.addToolState(cornerstoneElement, 'stack', {
+        currentImageIdIndex: Number(index),
+        imageIds: imagesConfig,
+      })
+    })
+  }
+
+  // ============================================================================
+
+  // ============================================================================
+
+  // ============================================================================
+  
   // 右侧滚动条结节点击事件
   const handleScorllClicked = index => {
     // 设置列表选中状态
@@ -336,20 +354,8 @@ const CompareBox = props => {
   const handleCheckedListClick = index => {
     // 设置当前视图选中项
     if (nodeRef.current.cornerstoneElement) {
-      changeActiveImage(index, nodeRef.current.cornerstoneElement)
+      changeActiveImage(index, nodeRef.current.cornerstoneElement, nodeRef.current.imagesConfig)
     }
-  }
-
-  // 切换当前视图
-  const changeActiveImage = (index, cornerstoneElement) => {
-    cornerstone.loadImage(imagesConfig[index]).then(image => {
-      cornerstone.displayImage(cornerstoneElement, image)
-      cornerstoneTools.addStackStateManager(cornerstoneElement, ['stack'])
-      cornerstoneTools.addToolState(cornerstoneElement, 'stack', {
-        currentImageIdIndex: Number(index),
-        imageIds: imagesConfig,
-      })
-    })
   }
 
   // 监听视图变化事件
@@ -423,7 +429,7 @@ const CompareBox = props => {
     setNoduleList2([...noduleList2])
     // 设置当前视图选中项
     if (cornerstoneElement2) {
-      changeActiveImage2(index, cornerstoneElement2)
+      changeActiveImage(index, cornerstoneElement2)
     }
   }
 
@@ -510,20 +516,8 @@ const CompareBox = props => {
   const handleCheckedListClick2 = index => {
     // 设置当前视图选中项
     if (nodeRef2.current.cornerstoneElement2) {
-      changeActiveImage2(index, nodeRef2.current.cornerstoneElement2)
+      changeActiveImage(index, nodeRef2.current.cornerstoneElement2, nodeRef2.current.imagesConfig2)
     }
-  }
-
-  // 切换当前视图
-  const changeActiveImage2 = (index, cornerstoneElement) => {
-    cornerstone.loadImage(nodeRef2.current.imagesConfig2[index]).then(image => {
-      cornerstone.displayImage(cornerstoneElement, image)
-      cornerstoneTools.addStackStateManager(cornerstoneElement, ['stack'])
-      cornerstoneTools.addToolState(cornerstoneElement, 'stack', {
-        currentImageIdIndex: Number(index),
-        imageIds: nodeRef2.current.imagesConfig2,
-      })
-    })
   }
 
   // 监听视图变化事件
