@@ -1,42 +1,36 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './CompareBox.scss'
 import useWindowSize from '../../hook/useWindowSize'
-
-import CompareMatchList from './CompareMatchList/CompareMatchList'
-import CompareHeader from './CompareHeader/CompareHeader'
-import CompareViewer1 from './CompareViewer1'
-import CompareViewer2 from './CompareViewer2'
-
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
-
-import CompareMiddleSidePanel from './CompareMiddleSidePanel/CompareMiddleSidePanel'
-import CompareViewerMain from './CompareViewerMain/CompareViewerMain'
-import CompareNoduleInfo from './CompareNoduleInfo/CompareNoduleInfo'
-
 import MarkNoduleTool from '../../components/common/MarkNoduleTool/MarkNoduleTool'
+
+import CompareMatchList from './CompareMatchList/CompareMatchList'
+import CompareMiddleSidePanel from './CompareMiddleSidePanel/CompareMiddleSidePanel'
+import CompareNoduleInfo from './CompareNoduleInfo/CompareNoduleInfo'
+import CornerstoneViewport from 'react-cornerstone-viewport'
+import CustomOverlay from '../../components/common/CustomOverlay/CustomOverlay'
+import ScrollBar from '../../components/ScrollBar/ScrollBar'
+
 import { getImageList, getDoctorTask } from '../../api/api'
 import { getURLParameters } from '../../util/index'
 import { windowChange, defaultTools, loadAndCacheImage } from './util'
+import { Button, Tabs } from 'antd'
 
-import CornerstoneViewport from 'react-cornerstone-viewport'
-import CustomOverlay from '../../components/common/CustomOverlay/CustomOverlay'
-
-import { Button, Modal } from 'antd'
-
-const CompareBox = props => {
+const CompareBox = _ => {
   const size = useWindowSize()
 
   const nodeRef = useRef()
 
   const [cornerstoneElement, setCornerstoneElement] = useState(null)
-  const [toolsConfig, setToolsConfig] = useState(defaultTools)
+  const [toolsConfig] = useState(defaultTools)
   const [imagesConfig, setImagesConfig] = useState([])
   const [noduleList, setNoduleList] = useState([])
   const [noduleMapList, setNoduleMapList] = useState([])
   const [noduleInfo, setNoduleInfo] = useState(null)
 
   const [sync, setSync] = useState(false)
+  const [showTab, setShowTab] = useState(false)
 
   useEffect(() => {
     nodeRef.current = {
@@ -312,6 +306,8 @@ const CompareBox = props => {
     })
   }
 
+  // 视窗一
+
   // ============================================================================
 
   // ============================================================================
@@ -327,12 +323,14 @@ const CompareBox = props => {
 
     // 设置当前视图选中项
     if (cornerstoneElement) {
-      changeActiveImage(index, cornerstoneElement)
+      changeActiveImage(index, nodeRef.current.cornerstoneElement, nodeRef.current.imagesConfig)
     }
 
     // 同步操作
-    // const listIndex = noduleList.findIndex(item => item.num === index)
-    // props.viewer1ListClicked(listIndex, index)
+    if (nodeRef.current.sync) {
+      const listIndex = noduleList.findIndex(item => item.num === index)
+      onCheckChange2(listIndex, index)
+    }
   }
 
   // 列表单击
@@ -392,6 +390,8 @@ const CompareBox = props => {
     })
   }
 
+  // 视窗二
+
   // ============================================================================================
 
   // ============================================================================================
@@ -428,7 +428,7 @@ const CompareBox = props => {
     setNoduleList2([...noduleList2])
     // 设置当前视图选中项
     if (cornerstoneElement2) {
-      changeActiveImage(index, cornerstoneElement2)
+      changeActiveImage(index, nodeRef2.current.cornerstoneElement2, nodeRef2.current.imagesConfig2)
     }
   }
 
@@ -474,20 +474,39 @@ const CompareBox = props => {
     })
   }
 
+  // ============================================================================================
+
+  // TAB 切换
+  const handleTabClick = (key, event) => {
+    if (Number(key) === 2) {
+      setShowTab(true)
+    } else {
+      setShowTab(false)
+    }
+  }
+
   return (
     <>
       <div className="header-box">
         <Button onClick={e => setSync(!sync)}>{sync ? '取消同步' : '开启同步'}</Button>
       </div>
       <div className="compare-viewer-box">
+        {showTab ? <CompareMatchList noduleList={[]} imagesConfig={[]} /> : null}
         <div className="box1">
           {imagesConfig2.length !== 0 ? (
             <>
-              <CompareMiddleSidePanel
-                onCheckChange={onCheckChange}
-                noduleList={noduleList}
-                imagesConfig={imagesConfig}
-              />
+              <div>
+                <Tabs onTabClick={key => handleTabClick(key)}>
+                  <Tabs.TabPane tab="对比列表" key="1"></Tabs.TabPane>
+                  <Tabs.TabPane tab="匹配列表" key="2"></Tabs.TabPane>
+                </Tabs>
+                <CompareMiddleSidePanel
+                  onCheckChange={onCheckChange}
+                  noduleList={noduleList}
+                  imagesConfig={imagesConfig}
+                />
+              </div>
+              <ScrollBar noduleList={noduleList} imageIds={imagesConfig} handleScorllClicked={handleScorllClicked} />
               <CornerstoneViewport
                 viewportOverlayComponent={CustomOverlay}
                 onElementEnabled={elementEnabledEvt => handleElementEnabledEvt(elementEnabledEvt)}
@@ -506,6 +525,7 @@ const CompareBox = props => {
         <div className="box2">
           {imagesConfig2.length !== 0 ? (
             <>
+              <ScrollBar noduleList={noduleList2} imageIds={imagesConfig2} handleScorllClicked={handleScorllClicked2} />
               <CompareMiddleSidePanel
                 onCheckChange={onCheckChange2}
                 noduleList={noduleList2}
