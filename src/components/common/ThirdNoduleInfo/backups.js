@@ -428,7 +428,7 @@ const ThirdNoduleInfo = props => {
                   <Radio.Group
                     options={[
                       { label: '内壁光滑', value: '内壁光滑' },
-                      { label: '内壁不完整', value: '内壁不完整' },
+                      { label: '内壁不光整', value: '内壁不光整' },
                     ]}
                     onChange={e => props.handleUpdateNoduleInfo(e.target.value, 'structuralConstitutionVoid', props.index, props.user)}
                     value={props.noduleInfo.structuralConstitutionVoid}
