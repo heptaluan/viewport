@@ -36,14 +36,17 @@ const CompareBox = props => {
   const [noduleMapList, setNoduleMapList] = useState([])
   const [noduleInfo, setNoduleInfo] = useState(null)
 
+  const [sync, setSync] = useState(false)
+
   useEffect(() => {
     nodeRef.current = {
       noduleList,
       noduleMapList,
       imagesConfig,
       cornerstoneElement,
+      sync,
     }
-  }, [noduleList, noduleMapList, imagesConfig, cornerstoneElement])
+  }, [noduleList, noduleMapList, imagesConfig, cornerstoneElement, sync])
 
   // 初始化结节信息
   useEffect(() => {
@@ -213,9 +216,9 @@ const CompareBox = props => {
   }
 
   // 添加结节标注
-  const addNodeTool = (cornerstoneElement, index = 0) => {
-    const item = nodeRef.current.noduleMapList.filter(item => item.index === index)
-    const checkItme = nodeRef.current.noduleList.find(item => item.checked === true)
+  const addNodeTool = (cornerstoneElement, index = 0, noduleList, noduleMapList) => {
+    const checkItme = noduleList.find(item => item.checked === true)
+    const item = noduleMapList.filter(item => item.index === index)
 
     if (item.length >= 1) {
       cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
@@ -314,7 +317,7 @@ const CompareBox = props => {
   // ============================================================================
 
   // ============================================================================
-  
+
   // 右侧滚动条结节点击事件
   const handleScorllClicked = index => {
     // 设置列表选中状态
@@ -334,7 +337,9 @@ const CompareBox = props => {
 
   // 列表单击
   const onCheckChange = (index, num) => {
-    handleCheckedListClick(num)
+    if (nodeRef.current.cornerstoneElement) {
+      changeActiveImage(num, nodeRef.current.cornerstoneElement, nodeRef.current.imagesConfig)
+    }
     noduleList.map(item => (item.checked = false))
     noduleList[index].checked = true
     setNoduleList([...noduleList])
@@ -347,14 +352,8 @@ const CompareBox = props => {
     }
 
     // 同步操作
-    onCheckChange2(index, num)
-  }
-
-  // 列表点击事件
-  const handleCheckedListClick = index => {
-    // 设置当前视图选中项
-    if (nodeRef.current.cornerstoneElement) {
-      changeActiveImage(index, nodeRef.current.cornerstoneElement, nodeRef.current.imagesConfig)
+    if (nodeRef.current.sync) {
+      onCheckChange2(index, num)
     }
   }
 
@@ -377,7 +376,7 @@ const CompareBox = props => {
 
       cornerstoneTools.setToolActive('MarkNodule', { mouseButtonMask: 1 })
       setTimeout(() => {
-        addNodeTool(cornerstoneElement, index)
+        addNodeTool(cornerstoneElement, index, nodeRef.current.noduleList, nodeRef.current.noduleMapList)
         cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
       }, 0)
     })
@@ -385,10 +384,11 @@ const CompareBox = props => {
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
-      // handleCheckedListClick(index)
 
       // 同步
-      handleCheckedListClick2(index)
+      if (nodeRef.current.sync && nodeRef2.current.cornerstoneElement2) {
+        changeActiveImage(index, nodeRef2.current.cornerstoneElement2, nodeRef2.current.imagesConfig2)
+      }
     })
   }
 
@@ -409,7 +409,6 @@ const CompareBox = props => {
   const [noduleList2, setNoduleList2] = useState([])
   const [noduleMapList2, setNoduleMapList2] = useState([])
   const [noduleInfo2, setNoduleInfo2] = useState(null)
-  const [sync, setSync] = useState(false)
 
   useEffect(() => {
     nodeRef2.current = {
@@ -433,73 +432,11 @@ const CompareBox = props => {
     }
   }
 
-  // 添加结节标注
-  const addNodeTool2 = (cornerstoneElement, index = 0) => {
-    const item = nodeRef2.current.noduleMapList2.filter(item => item.index === index)
-    const checkItme = nodeRef2.current.noduleList2.find(item => item.checked === true)
-
-    if (item.length >= 1) {
-      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-      if (checkItme) {
-        const checkNode = item.filter(item => item.noduleName === checkItme.noduleName)
-        for (let i = 0; i < item.length; i++) {
-          const measurementData = {
-            visible: true,
-            active: true,
-            color: item[i].noduleName === (checkNode[0] && checkNode[0].noduleName) ? undefined : 'white',
-            invalidated: true,
-            handles: {
-              start: {
-                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
-                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
-                highlight: true,
-                active: true,
-              },
-              end: {
-                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
-                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
-                highlight: true,
-                active: true,
-              },
-            },
-          }
-          cornerstoneTools.addToolState(cornerstoneElement, 'MarkNodule', measurementData)
-        }
-      } else {
-        for (let i = 0; i < item.length; i++) {
-          const measurementData = {
-            visible: true,
-            active: true,
-            color: 'white',
-            invalidated: true,
-            handles: {
-              start: {
-                x: item[i].nodeType === 1 ? item[i].startX : item[i].startX - 3,
-                y: item[i].nodeType === 1 ? item[i].startY : item[i].startY - 3,
-                highlight: true,
-                active: true,
-              },
-              end: {
-                x: item[i].nodeType === 1 ? item[i].endX : item[i].endX + 3,
-                y: item[i].nodeType === 1 ? item[i].endY : item[i].endY + 3,
-                highlight: true,
-                active: true,
-              },
-            },
-          }
-          cornerstoneTools.addToolState(cornerstoneElement, 'MarkNodule', measurementData)
-        }
-      }
-      cornerstone.updateImage(cornerstoneElement)
-    } else {
-      cornerstoneTools.clearToolState(cornerstoneElement, 'MarkNodule')
-      cornerstone.updateImage(cornerstoneElement)
-    }
-  }
-
   // 列表单击
   const onCheckChange2 = (index, num) => {
-    handleCheckedListClick2(num)
+    if (nodeRef2.current.cornerstoneElement2) {
+      changeActiveImage(num, nodeRef2.current.cornerstoneElement2, nodeRef2.current.imagesConfig2)
+    }
     noduleList2.map(item => (item.checked = false))
     noduleList2[index].checked = true
     setNoduleList2([...noduleList2])
@@ -509,14 +446,6 @@ const CompareBox = props => {
       setNoduleInfo2(checkItme)
     } else {
       setNoduleInfo2(null)
-    }
-  }
-
-  // 列表点击事件
-  const handleCheckedListClick2 = index => {
-    // 设置当前视图选中项
-    if (nodeRef2.current.cornerstoneElement2) {
-      changeActiveImage(index, nodeRef2.current.cornerstoneElement2, nodeRef2.current.imagesConfig2)
     }
   }
 
@@ -539,7 +468,7 @@ const CompareBox = props => {
 
       cornerstoneTools.setToolActive('MarkNodule', { mouseButtonMask: 1 })
       setTimeout(() => {
-        addNodeTool2(cornerstoneElement2, index)
+        addNodeTool(cornerstoneElement2, index, nodeRef2.current.noduleList2, nodeRef2.current.noduleMapList2)
         cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 })
       }, 0)
     })
@@ -593,7 +522,7 @@ const CompareBox = props => {
                   paddingRight: 15,
                 }}
               />
-              <CompareNoduleInfo noduleInfo={noduleInfo} />
+              <CompareNoduleInfo noduleInfo={noduleInfo2} />
             </>
           ) : null}
         </div>
