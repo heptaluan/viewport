@@ -181,8 +181,8 @@ const ResultNoduleInfo = props => {
                     disabled
                     options={[
                       { label: '侵犯血管', value: '侵犯血管' },
-                      { label: '内有血管穿行', value: '内有血管穿行' },
-                      { label: '内有支气管穿行', value: '内有支气管穿行' },
+                      { label: '内有血管进入或穿行', value: '内有血管进入或穿行' },
+                      { label: '内有支气管进入或穿行', value: '内有支气管进入或穿行' },
                       { label: '支气管壁增厚', value: '支气管壁增厚' },
                       { label: '血管局部增粗', value: '血管局部增粗' },
                       { label: '血管贴边', value: '血管贴边' },
