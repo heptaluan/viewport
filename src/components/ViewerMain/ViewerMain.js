@@ -17,11 +17,11 @@ const ViewerMain = props => {
         </div>
       ) : (
         <div>
-          <ScrollBar
+          {/* <ScrollBar
             noduleList={props.noduleList}
             imageIds={props.imagesConfig}
             handleScorllClicked={props.handleScorllClicked}
-          />
+          /> */}
           <Toolbar
             handleSliderChange={props.handleSliderChange}
             handleToolbarClick={props.handleToolbarClick}
@@ -39,7 +39,8 @@ const ViewerMain = props => {
               minWidth: '100%',
               height: props.pageType === 'detail' ? `${size.height}px` : `${size.height - 85}px`,
               flex: '1',
-              paddingRight: 15
+              // paddingRight: 15,
+              paddingRight: 0
             }}
           />
         </div>

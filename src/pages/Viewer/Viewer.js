@@ -1131,8 +1131,25 @@ const Viewer = () => {
     })
   }
 
+  // 提交审核结果（添加节流）
+  const [pre, setPre] = useState(0)
+
+  const throttle =
+    (fn, delay) =>
+    (...rest) => {
+      const current = Date.now()
+      if (current - pre > delay) {
+        fn(rest)
+        setPre(current)
+      }
+    }
+
+  const handleShowModal = _ => {
+    throttle(handleUpdateResult, 2000)()
+  }
+
   // 提交审核结果按钮
-  const handleShowModal = () => {
+  const handleUpdateResult = () => {
     formatPostData()
     if (getURLParameters(window.location.href).user === 'chief_lwx') {
       if (!noduleList.every(item => item.chiefReview === true)) {
