@@ -218,7 +218,7 @@ const ThirdBenignList = () => {
               current: pagination.current,
               pageSize: pagination.pageSize,
               total: pagination.total,
-              disabled: true,
+              // disabled: true,
             }}
           />
         </div>
