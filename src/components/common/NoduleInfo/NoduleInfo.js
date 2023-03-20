@@ -266,6 +266,13 @@ const NoduleInfo = props => {
             />
           </div>
 
+          {props.noduleInfo.nodeType !== 1 ? (
+            <div className="list">
+              <em>泰莱恶性风险：</em>
+              {props.noduleInfo.whuScryn} %
+            </div>
+          ) : null}
+
           <div className="list list-btn-box">
             {btnGroup.map((item, index) => (
               <div className="list-btn-group" key={item.id}>

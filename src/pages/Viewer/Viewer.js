@@ -20,7 +20,8 @@ import {
   addNewNodeList,
   updateDnResult,
   updateSuperDoctorResult,
-  updateDnResultTemp,
+  addNewNodeList2,
+  ossKeyUrl,
   getDnReslutByOrderIdUrl,
 } from '../../api/api'
 import { getURLParameters, formatMiniNodule } from '../../util/index'
@@ -106,9 +107,6 @@ const Viewer = () => {
   // 当前帧数
   const [currentImageIdIndex, setCurrentImageIdIndex] = useState(0)
 
-  // 当前 Dicom 文件
-  const [currentDicomFileUrl, setCurrentDicomFileUrl] = useState('')
-
   // 隐藏标注
   const [showMarker, setShowMarker] = useState(true)
 
@@ -117,6 +115,11 @@ const Viewer = () => {
 
   // 历史记录
   const [historyList, setHistoryList] = useState([])
+
+  // ossKey，当前 Dicom 文件，当前帧
+  const [ossKey, setOssKey] = useState('')
+  const [dicomFile, setDicomFile] = useState('')
+  const [currentCoordZ, setCurrentCoordZ] = useState('')
 
   useEffect(() => {
     nodeRef.current = {
@@ -157,15 +160,16 @@ const Viewer = () => {
       const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
       if (result.data.code === 200) {
         if (result.data.result) {
+          const whuScryn = result.data.result.whuScryn ? JSON.parse(result.data.result.whuScryn.replace(/'/g, '"')) : ''
           setHistoryList(result.data.result.historyReportList)
           if (result.data.result.doctorTask.resultInfo) {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
             const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-            formatNodeData(data, resultInfo.nodelist)
+            formatNodeData(data, resultInfo.nodelist, whuScryn.nodulesList)
             fetcImagehData(data.detectionResult.nodulesList)
           } else {
             const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-            formatNodeData(data, [])
+            formatNodeData(data, [], whuScryn.nodulesList)
             fetcImagehData(data.detectionResult.nodulesList)
           }
         }
@@ -235,22 +239,16 @@ const Viewer = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // 初始化病人信息
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await getPatientsList(getURLParameters(window.location.href).resource)
-  //     if (result.data.code === 200 && result.data.result) {
-  //       setPatients(result.data.result.records[0])
-  //       localStorage.setItem('patients', JSON.stringify(result.data.result.records[0]))
-  //     } else {
-  //       localStorage.setItem('patients', '')
-  //     }
-  //   }
-  //   // if (getURLParameters(window.location.href).page === 'image') {
-  //   fetchData()
-  //   // }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
+  // 获取 ossKey
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await getPatientsList(getURLParameters(window.location.href).resource)
+      if (result.data.code === 200 && result.data.result) {
+        setOssKey(result.data.result.records[0].ossKey)
+      }
+    }
+    fetchData()
+  }, [])
 
   // 多选
   const [indeterminate, setIndeterminate] = useState(false)
@@ -375,7 +373,6 @@ const Viewer = () => {
 
   // 右侧滚动条结节点击事件
   const handleScorllClicked = index => {
-
     // 设置列表选中状态
     noduleList.map(item => (item.checked = false))
     noduleList.find(item => item.num === index).checked = true
@@ -733,7 +730,8 @@ const Viewer = () => {
     cornerstoneElement.addEventListener('cornerstoneimagerendered', imageRenderedEvent => {
       const curImageId = imageRenderedEvent.detail.image.imageId
       const index = imagesConfig.findIndex(item => item === curImageId)
-      setCurrentDicomFileUrl(curImageId)
+      setDicomFile(curImageId)
+      setCurrentCoordZ(index)
       handleCheckedListClick(index)
     })
 
@@ -838,7 +836,7 @@ const Viewer = () => {
   }
 
   // 格式化结节数据
-  const formatNodeData = (data, resultInfo) => {
+  const formatNodeData = (data, resultInfo, whuScryn) => {
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
@@ -902,6 +900,10 @@ const Viewer = () => {
           newNoduleSize: resultInfo[i] && resultInfo[i].newNoduleSize ? resultInfo[i].newNoduleSize : '',
           featureLabelG: res[i].featureLabelG,
           suggest: resultInfo[i] ? resultInfo[i].suggest : '',
+          whuScryn:
+            whuScryn && whuScryn.length > 0 && whuScryn[i].whu_scrynMaligant !== '  '
+              ? parseInt(whuScryn[i].whu_scrynMaligant)
+              : '-',
         })
         index++
       }
@@ -1254,15 +1256,16 @@ const Viewer = () => {
   const fetchDoctorData = async callback => {
     const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
     if (result.data.code === 200) {
+      const whuScryn = result.data.result.whuScryn ? JSON.parse(result.data.result.whuScryn.replace(/'/g, '"')) : ''
       if (result.data.result) {
         if (result.data.result.doctorTask.resultInfo) {
           const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
           const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo.replace(/'/g, '"'))
-          formatNodeData(data, resultInfo.nodelist)
+          formatNodeData(data, resultInfo.nodelist, whuScryn.nodulesList)
           callback && callback()
         } else {
           const data = JSON.parse(result.data.result.imageResult.replace(/'/g, '"'))
-          formatNodeData(data, [])
+          formatNodeData(data, [], whuScryn.nodulesList)
           callback && callback()
         }
       }
@@ -1431,8 +1434,10 @@ const Viewer = () => {
     }
 
     const postData = {
-      dicom_url: currentDicomFileUrl.replace('wadouri:', '').replace('https://', 'http://'),
+      dicom_zip: ossKeyUrl + ossKey,
       boxes: [],
+      coordZ: currentCoordZ,
+      dicom_url: dicomFile.replace('wadouri:', '').replace('https://', 'http://'),
     }
 
     if (toolList[0].startX > toolList[0].endX) {
@@ -1461,7 +1466,7 @@ const Viewer = () => {
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    addNewNodeList(JSON.stringify(postData)).then(res => {
+    addNewNodeList2(JSON.stringify(postData)).then(res => {
       if (res.data.code === 1) {
         setTimeout(hide)
         setRiskVal(res.data.scrynMaligant)

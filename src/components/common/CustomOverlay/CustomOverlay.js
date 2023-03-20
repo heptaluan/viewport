@@ -27,7 +27,11 @@ const getBirth = identityNumber => {
   } else {
     var re = /\d{6}([12]\d{3})([01]\d)([0123]\d)\d{4}/
     var id = re.exec(identityNumber)
-    return `${id[1]}-${id[2]}-${id[3]}`
+    if (!id) {
+      return '-'
+    } else {
+      return `${id[1]}-${id[2]}-${id[3]}`
+    }
   }
 }
 
