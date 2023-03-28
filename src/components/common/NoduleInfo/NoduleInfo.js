@@ -175,24 +175,22 @@ const NoduleInfo = props => {
             </Select>
           </div>
 
-          {props.noduleInfo.newSoak ? (
-            <div className="list" style={{ marginTop: 3 }}>
-              <div className="list-title">浸润类型：</div>
-              <Select
-                disabled="disabled"
-                size="small"
-                value={props.noduleInfo.newSoak}
-                style={{ width: 185, fontSize: 13 }}
-                onChange={handleSoakChange}
-              >
-                <Option value="AAH">AAH（非典型腺瘤样增生）</Option>
-                <Option value="AIS">AIS（原位腺癌）</Option>
-                <Option value="MIA">MIA（微浸润性腺癌）</Option>
-                <Option value="IA">IA（浸润性腺癌）</Option>
-                <Option value="OTHER">OTHER（其他）</Option>
-              </Select>
-            </div>
-          ) : null}
+          <div className="list" style={{ marginTop: 3 }}>
+            <div className="list-title">浸润类型：</div>
+            <Select
+              disabled
+              size="small"
+              value={props.noduleInfo.newSoak}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={handleSoakChange}
+            >
+              <Option value="AAH">AAH（非典型腺瘤样增生）</Option>
+              <Option value="AIS">AIS（原位腺癌）</Option>
+              <Option value="MIA">MIA（微浸润性腺癌）</Option>
+              <Option value="IA">IA（浸润性腺癌）</Option>
+              <Option value="OTHER">OTHER（其他）</Option>
+            </Select>
+          </div>
 
           <div className="list">
             <em>大小：</em>

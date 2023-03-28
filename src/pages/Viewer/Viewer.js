@@ -837,6 +837,7 @@ const Viewer = () => {
 
   // 格式化结节数据
   const formatNodeData = (data, resultInfo, whuScryn) => {
+
     const nodulesList = []
     const nodulesMapList = []
     let index = 0
@@ -868,7 +869,7 @@ const Viewer = () => {
               ? resultInfo[i].newSoak
               : res[i].invisionClassify
               ? res[i].invisionClassify
-              : '',
+              : 'OTHER',
           info: '',
           checked: false,
           active: false,
@@ -932,6 +933,7 @@ const Viewer = () => {
             risk: resultInfo[i].risk,
             scrynMaligant: resultInfo[i].scrynMaligant,
             soak: '',
+            newSoak: 'OTHER',
             info: '',
             checked: false,
             active: false,
@@ -1365,6 +1367,7 @@ const Viewer = () => {
       chiefReview: getURLParameters(window.location.href).user === 'chief_lwx' ? true : false,
       size: '',
       soak: '',
+      newSoak: 'OTHER',
       markNode: true,
       state: true,
       suggest: toolList[0].suggest,
@@ -1395,7 +1398,7 @@ const Viewer = () => {
         (Number(startY) + Number(endY)) / 2,
         1,
         1
-      )[0],
+      )[0]
     }
 
     noduleList.push(newNodeData)
