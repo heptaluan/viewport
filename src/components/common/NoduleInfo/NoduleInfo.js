@@ -178,7 +178,6 @@ const NoduleInfo = props => {
           <div className="list" style={{ marginTop: 3 }}>
             <div className="list-title">浸润类型：</div>
             <Select
-              disabled
               size="small"
               value={props.noduleInfo.newSoak}
               style={{ width: 185, fontSize: 13 }}

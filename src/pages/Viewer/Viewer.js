@@ -875,19 +875,14 @@ const Viewer = () => {
           active: false,
           noduleName: res[i].noduleName,
           noduleNum: res[i].noduleNum,
-          state:
-            resultInfo[i] && Number(resultInfo[i].invisable) === 1
-              ? false
-              : resultInfo[i] && Number(resultInfo[i].invisable) === 0
-              ? true
-              : undefined,
+          state: false,
+          review: true,
           markNode:
             resultInfo[i] && resultInfo[i].markNode === true
               ? true
               : resultInfo[i] && resultInfo[i].markNode === false
               ? false
               : undefined,
-          review: resultInfo[i] ? resultInfo[i].edit : false,
           chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
@@ -939,9 +934,9 @@ const Viewer = () => {
             active: false,
             noduleName: resultInfo[i].noduleName,
             noduleNum: resultInfo[i].noduleNum,
-            state: Number(resultInfo[i].invisable) === 1 ? false : Number(resultInfo[i].invisable) === 0 ? true : true,
-            markNode: resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : true,
+            state: false,
             review: true,
+            markNode: resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : true,
             chiefReview: resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
             lung: resultInfo[i].lungLocation,
             lobe: resultInfo[i].lobeLocation,
