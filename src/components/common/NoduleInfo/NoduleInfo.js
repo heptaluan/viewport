@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import './NoduleInfo.scss'
-import { Radio, Select, Button, Input, InputNumber, Modal } from 'antd'
+import { Radio, Select, Button, Input, InputNumber, Modal, message } from 'antd'
 import { getURLParameters, formatMiniNode } from '../../../util/index'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+
+const { confirm } = Modal
 
 const { TextArea } = Input
 
@@ -133,6 +136,26 @@ const NoduleInfo = props => {
     const curRisk = val * 10 + Math.floor(Math.random() * 10)
     setRiskData(curRisk)
     props.handleUpdateRisk(Number(curRisk))
+  }
+
+  const showConfirm = () => {
+    confirm({
+      title: '提交结节结果',
+      icon: <ExclamationCircleOutlined />,
+      content: '是否提交当前结节结果，提交以后无法进行修改。',
+      okText: '确定',
+      cancelText: '取消',
+      onOk() {
+        if (props.noduleInfo.state === undefined) {
+          message.warning('请选择是否为结节')
+        } else {
+          props.saveResults()
+        }
+      },
+      onCancel() {
+        console.log('取消')
+      },
+    })
   }
 
   return (
@@ -303,54 +326,55 @@ const NoduleInfo = props => {
       ) : null}
 
       {props.noduleInfo ? (
-        <div className="check-group">
-          <div className="group-wrap">
-            <span>是否为结节</span>
-            <div className="group">
-              <Button
-                disabled={props.pageState === 'admin'}
-                type={props.noduleInfo.state === false ? 'primary' : null}
-                style={{ marginRight: '15px' }}
-                size="small"
-                onClick={e => props.updateNoduleList(false)}
-              >
-                否
-              </Button>
-              <Button
-                disabled={props.pageState === 'admin'}
-                type={props.noduleInfo.state === true ? 'primary' : null}
-                size="small"
-                onClick={e => props.updateNoduleList(true)}
-              >
-                是
-              </Button>
-            </div>
-          </div>
-          {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-            <>
-              <div className="group-wrap" style={{ marginTop: 5 }}>
-                <span>是否已复核</span>
-                <div className="group">
-                  <Button
-                    disabled={props.pageState === 'admin'}
-                    type={props.noduleInfo.chiefReview === false ? 'primary' : null}
-                    style={{ marginRight: '15px' }}
-                    size="small"
-                    onClick={e => props.updateChiefNoduleList(false)}
-                  >
-                    否
-                  </Button>
-                  <Button
-                    disabled={props.pageState === 'admin'}
-                    type={props.noduleInfo.chiefReview === true ? 'primary' : null}
-                    size="small"
-                    onClick={e => props.updateChiefNoduleList(true)}
-                  >
-                    是
-                  </Button>
-                </div>
+        <>
+          <div className="check-group">
+            <div className="group-wrap">
+              <span>是否为结节</span>
+              <div className="group">
+                <Button
+                  disabled={props.pageState === 'admin'}
+                  type={props.noduleInfo.state === false ? 'primary' : null}
+                  style={{ marginRight: '15px' }}
+                  size="small"
+                  onClick={e => props.updateNoduleList(false)}
+                >
+                  否
+                </Button>
+                <Button
+                  disabled={props.pageState === 'admin'}
+                  type={props.noduleInfo.state === true ? 'primary' : null}
+                  size="small"
+                  onClick={e => props.updateNoduleList(true)}
+                >
+                  是
+                </Button>
               </div>
-              {/* <div className="group-wrap" style={{ marginTop: 5 }}>
+            </div>
+            {getURLParameters(window.location.href).user === 'chief_lwx' ? (
+              <>
+                <div className="group-wrap" style={{ marginTop: 5 }}>
+                  <span>是否已复核</span>
+                  <div className="group">
+                    <Button
+                      disabled={props.pageState === 'admin'}
+                      type={props.noduleInfo.chiefReview === false ? 'primary' : null}
+                      style={{ marginRight: '15px' }}
+                      size="small"
+                      onClick={e => props.updateChiefNoduleList(false)}
+                    >
+                      否
+                    </Button>
+                    <Button
+                      disabled={props.pageState === 'admin'}
+                      type={props.noduleInfo.chiefReview === true ? 'primary' : null}
+                      size="small"
+                      onClick={e => props.updateChiefNoduleList(true)}
+                    >
+                      是
+                    </Button>
+                  </div>
+                </div>
+                {/* <div className="group-wrap" style={{ marginTop: 5 }}>
                 <span>是否标记为良性样本</span>
                 <div className="group">
                   <Button
@@ -372,9 +396,16 @@ const NoduleInfo = props => {
                   </Button>
                 </div>
               </div> */}
-            </>
-          ) : null}
-        </div>
+              </>
+            ) : null}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 15 }}>
+            <Button disabled={props.pageState === 'admin' || props.noduleInfo.isFinish === 1} size="small" onClick={showConfirm}>
+              提交
+            </Button>
+          </div>
+        </>
       ) : null}
     </div>
   )

@@ -4,11 +4,17 @@ import { Button, Image, Space, Alert, Popconfirm, Tooltip } from 'antd'
 import { getURLParameters } from '../../util/index'
 import { getClinicalFiles, downloadZip } from '../../api/api'
 import { RightCircleOutlined, FileDoneOutlined } from '@ant-design/icons'
+import { useHistory } from 'react-router-dom'
+import qs from 'query-string'
+import { useLocation } from 'react-router-dom'
 
 const Header = props => {
   const [visible, setVisible] = useState(false)
   const [fileData, setFileData] = useState([])
   const [remark, setRemark] = useState('')
+
+  const history = useHistory()
+  const params = qs.parse(useLocation().search)
 
   const handleDownLoad = () => {
     downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(
@@ -128,6 +134,19 @@ const Header = props => {
               </>
             )
           )}
+
+          {props.historyList.length > 0 ? (
+            <Button
+              style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}
+              onClick={e => {
+                history.push(
+                  `/compareBox?backType=${params.backType}&doctorId=${params.doctorId}&id=${params.id}&orderId=${params.orderId}&page=${params.page}&resource=${params.resource}&taskId=${params.taskId}&token=${params.token}&url=${params.url}&user=${params.user}&oldHisId=${props.historyList[0].historyDicomId}&newHisId=${props.historyList[1].historyDicomId}&oldOrdId=${props.historyList[0].historyOrderId}&newOrdId=${props.historyList[1].historyOrderId}`
+                )
+              }}
+            >
+              随访比对
+            </Button>
+          ) : null}
 
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0

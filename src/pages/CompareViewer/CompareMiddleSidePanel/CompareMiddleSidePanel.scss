@@ -1,6 +1,6 @@
 .compare-middle-side-panel-box {
   flex: 1;
-  height: calc(100% - 50px);
+  height: 100%;
   display: flex;
   flex-direction: column;
   font-size: 12px;
@@ -75,22 +75,22 @@
           padding: 0 10px 0 5px;
           position: relative;
 
-          &.add-item {
-            border-top: 1px solid #ccc;
-            background: #eaeaea;
-          }
+          // &.add-item {
+          //   border-top: 1px solid #ccc;
+          //   background: #eaeaea;
+          // }
           
-          &.green-item {
-            border: 1px solid #02b91938;
-            background: #02b91938;
-          }
+          // &.green-item {
+          //   border: 1px solid #02b91938;
+          //   background: #02b91938;
+          // }
 
-          &.blue-item {
-            border: 1px solid #ff000030;
-            background: #ff000030;
-          }
+          // &.blue-item {
+          //   border: 1px solid #ff000030;
+          //   background: #ff000030;
+          // }
 
-          &.red-item {
+          &.relation-item {
             border: 1px solid #34c0ff66;
             background: #34c0ff66;
           }

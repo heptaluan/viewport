@@ -101,7 +101,7 @@ const MiddleSidePanel = props => {
                       {item.chiefReview === true ? '已复核' : '未复核'}
                     </span>
                   ) : (
-                    <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
+                    <span className={item.isFinish === 1 ? 'review' : null}>{item.isFinish === 1 ? '已检阅' : '未检阅'}</span>
                   )}
                 </div>
                 {/* {getURLParameters(window.location.href).user === 'chief_lwx' ? (
@@ -134,7 +134,7 @@ const MiddleSidePanel = props => {
                     className={`viewer-item ${item.active ? 'item-active' : ''}`}
                     onClick={e => props.handleCheckedListClick(item.num)}
                   >
-                    于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
+                    于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabel}</span>{' '}
                     结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
                     <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
                     <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
