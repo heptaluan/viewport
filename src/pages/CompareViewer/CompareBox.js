@@ -46,7 +46,7 @@ const CompareBox = _ => {
       imagesConfig,
       cornerstoneElement,
       sync,
-      nodeRelation
+      nodeRelation,
     }
   }, [noduleList, noduleMapList, imagesConfig, cornerstoneElement, sync, nodeRelation])
 
@@ -337,7 +337,7 @@ const CompareBox = _ => {
         console.log(item2Index)
         onCheckChange2(item2Index, nodeRef2.current.noduleList2[item2Index].num)
       }
-    //   
+      //
     }
   }
 
@@ -383,9 +383,13 @@ const CompareBox = _ => {
     if (checkItme && checkItme.isRelation) {
       const relationItem = nodeRef.current.nodeRelation.find(item => item.nodeIdOld === checkItme.noduleNum).nodeIdNew
       const item2 = nodeRef2.current.noduleList2.find(item => item.noduleNum === relationItem)
-      let diff = Math.abs(index - Number(item2.num))
-      console.log(index - diff)
-      changeActive2Image(index - diff, cornerstoneElement, imagesConfig)
+      let activeIndex = Number(item2.num) + index - Number(checkItme.num)
+      if (activeIndex >= nodeRef2.current.imagesConfig2.length) {
+        activeIndex = nodeRef2.current.imagesConfig2.length - 1
+      } else if (activeIndex <= 0) {
+        activeIndex = 0
+      }
+      changeActive2Image(activeIndex, cornerstoneElement, imagesConfig)
     } else {
       changeActive2Image(index, cornerstoneElement, imagesConfig)
     }
@@ -497,9 +501,6 @@ const CompareBox = _ => {
     const checkItem1 = nodeRef.current.noduleList.find(item => item.checked === true)
     const checkItem2 = nodeRef2.current.noduleList2.find(item => item.checked === true)
 
-    console.log(checkItem1)
-    console.log(checkItem2)
-
     if (!checkItem1) {
       message.warning(`请先选择结节列表一当中需要关联的结节`)
       return false
@@ -540,7 +541,39 @@ const CompareBox = _ => {
   }
 
   const handleDelRelationship = () => {
-    console.log(`del`)
+    const checkItem1 = nodeRef.current.noduleList.find(item => item.checked === true)
+    console.log(checkItem1)
+
+    if (!checkItem1) {
+      message.warning(`请选择结节列表一当中已经关联的结节进行解绑`)
+      return false
+    }
+
+    if (!checkItem1.isRelation) {
+      message.warning(`请选择结节列表一当中已经关联的结节进行解绑`)
+      return false
+    }
+
+    confirm({
+      title: '结节解绑',
+      icon: <ExclamationCircleOutlined />,
+      content: `是否解除结节列表一中心帧为 ${
+        nodeRef.current.imagesConfig.length - Number(checkItem1.num)
+      } 的关联结节？`,
+      okText: '确定',
+      cancelText: '取消',
+      onOk() {
+        const relationItem = nodeRef.current.nodeRelation.find(item => item.nodeIdOld === checkItem1.noduleNum)
+        deleteNodeRelation(relationItem.id).then(res => {
+          if (res.data.code === 200) {
+            fetchDoctorData()
+            message.success('解除关联成功！')
+          } else {
+            message.error(res.data.message)
+          }
+        })
+      },
+    })
   }
 
   return (

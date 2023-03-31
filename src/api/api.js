@@ -141,8 +141,8 @@ export const addNodeRelation = params =>
   })
 
 // 随访取消关联结节
-export const deleteNodeRelation = params =>
-  axios.post(`${basicUrl}/report/nodeRelation/delete`, params, {
+export const deleteNodeRelation = id =>
+  axios.get(`${basicUrl}/report/nodeRelation/delete?id=${id}`, {
     headers: {
       'Content-Type': 'application/json',
     },
