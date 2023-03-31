@@ -350,54 +350,6 @@ const NoduleInfo = props => {
                 </Button>
               </div>
             </div>
-            {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-              <>
-                <div className="group-wrap" style={{ marginTop: 5 }}>
-                  <span>是否已复核</span>
-                  <div className="group">
-                    <Button
-                      disabled={props.pageState === 'admin'}
-                      type={props.noduleInfo.chiefReview === false ? 'primary' : null}
-                      style={{ marginRight: '15px' }}
-                      size="small"
-                      onClick={e => props.updateChiefNoduleList(false)}
-                    >
-                      否
-                    </Button>
-                    <Button
-                      disabled={props.pageState === 'admin'}
-                      type={props.noduleInfo.chiefReview === true ? 'primary' : null}
-                      size="small"
-                      onClick={e => props.updateChiefNoduleList(true)}
-                    >
-                      是
-                    </Button>
-                  </div>
-                </div>
-                {/* <div className="group-wrap" style={{ marginTop: 5 }}>
-                <span>是否标记为良性样本</span>
-                <div className="group">
-                  <Button
-                    disabled={props.pageState === 'admin'}
-                    type={props.noduleInfo.markNode === false ? 'primary' : null}
-                    style={{ marginRight: '15px' }}
-                    size="small"
-                    onClick={e => props.updateChiefMarkNode(false)}
-                  >
-                    否
-                  </Button>
-                  <Button
-                    disabled={props.pageState === 'admin'}
-                    type={props.noduleInfo.markNode === true ? 'primary' : null}
-                    size="small"
-                    onClick={e => props.updateChiefMarkNode(true)}
-                  >
-                    是
-                  </Button>
-                </div>
-              </div> */}
-              </>
-            ) : null}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 15 }}>

@@ -142,7 +142,7 @@ const Viewer = () => {
   useEffect(() => {
     // 管理员请求接口
     const fetchAdminData = async () => {
-      const result = await getNodeList(getURLParameters(window.location.href).id)
+      const result = await getNodeList(params.id)
       if (result.data.code === 200) {
         if (result.data.result) {
           const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
@@ -154,7 +154,7 @@ const Viewer = () => {
 
     // 订单跳转请求接口
     const getDnReslutByOrderId = async () => {
-      const result = await getDnReslutByOrderIdUrl(getURLParameters(window.location.href).orderId)
+      const result = await getDnReslutByOrderIdUrl(params.orderId)
       if (result.data.code === 200) {
         if (result.data.result) {
           const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
@@ -166,7 +166,7 @@ const Viewer = () => {
 
     // 医生请求接口
     const fetchDoctorData = async () => {
-      const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
+      const result = await getDoctorTask(params.doctorId)
       if (result.data.code === 200) {
         if (result.data.result) {
           setDnId(result.data.result.doctorTask.dnResultId)
@@ -189,7 +189,7 @@ const Viewer = () => {
 
     // 历史记录请求接口
     const fetchDoctorHistoryData = async () => {
-      const result = await getDoctorHistoryTask(getURLParameters(window.location.href).taskId)
+      const result = await getDoctorHistoryTask(params.taskId)
       if (result.data.code === 200) {
         if (result.data.result) {
           if (result.data.result.doctorTask.resultInfo) {
@@ -207,39 +207,39 @@ const Viewer = () => {
     }
 
     const fetcImagehData = async data => {
-      // const res = await getImageList(getURLParameters(window.location.href).resource)
+      // const res = await getImageList(params.resource)
       setImagesConfig(imageIds)
       // setImageList(res, data)
     }
 
-    if (getURLParameters(window.location.href).from === 'history') {
+    if (params.from === 'history') {
       setPageType('review')
       setPageState('admin')
       fetchDoctorHistoryData()
     } else {
-      if (getURLParameters(window.location.href).user === 'admin') {
-        if (getURLParameters(window.location.href).requestType === 'order') {
+      if (params.user === 'admin') {
+        if (params.requestType === 'order') {
           getDnReslutByOrderId()
         } else {
           fetchAdminData()
         }
-      } else if (!getURLParameters(window.location.href).user) {
+      } else if (!params.user) {
         fetcImagehData(null)
       } else {
         fetchDoctorData()
       }
 
-      if (getURLParameters(window.location.href).state === 'admin') {
+      if (params.state === 'admin') {
         setPageState('admin')
       }
 
-      if (getURLParameters(window.location.href).page === 'review') {
+      if (params.page === 'review') {
         setPageType('review')
-      } else if (getURLParameters(window.location.href).page === 'image') {
+      } else if (params.page === 'image') {
         setPageType('image')
-      } else if (getURLParameters(window.location.href).page === 'detail') {
+      } else if (params.page === 'detail') {
         setPageType('detail')
-        const index = getURLParameters(window.location.href).index
+        const index = params.index
         if (index) {
           setImageIdIndex(Number(index))
         } else {
@@ -254,7 +254,7 @@ const Viewer = () => {
   // 获取 ossKey
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getPatientsList(getURLParameters(window.location.href).resource)
+      const result = await getPatientsList(params.resource)
       if (result.data.code === 200 && result.data.result) {
         setOssKey(result.data.result.records[0].ossKey)
       }
@@ -393,8 +393,8 @@ const Viewer = () => {
       localStorage.setItem('diameterSize', 3)
     }
 
-    console.log(data);
-    console.log(resultInfo);
+    console.log(data)
+    console.log(resultInfo)
 
     // scrynMaligant    AI 的结果，不会变
     // whuMaligant      武大的结果，不会变
@@ -403,6 +403,7 @@ const Viewer = () => {
     for (let i = 0; i < data.length; i++) {
       const item = resultInfo.find(item => item.nodeId === data[i].id)
       nodulesList.push({
+        doctorNodeId: item ? item.id : '',
         num: item ? item.imageIndex : data[i].imageIndex,
         type: item ? item.featureLabel : data[i].featureLabel,
         risk: data[i].scrynMaligant,
@@ -422,7 +423,6 @@ const Viewer = () => {
         noduleName: data[i].id,
         noduleNum: data[i].id,
         state: item && Number(item.invisable) === 1 ? false : item && Number(item.invisable) === 0 ? true : undefined,
-        chiefReview: item && item.chiefReview ? item.chiefReview : false,
         lung: item ? item.lungLocation : data[i].lungLocation,
         lobe: item ? item.lobeLocation : data[i].lobeLocation,
         diameter: data[i].diameter,
@@ -590,13 +590,6 @@ const Viewer = () => {
     const checkItme = noduleList.find(item => item.checked === true)
     checkItme.review = true
     checkItme.state = checkState
-    setNoduleList([...noduleList])
-  }
-
-  // 是否已复核
-  const updateChiefNoduleList = checkState => {
-    const checkItme = noduleList.find(item => item.checked === true)
-    checkItme.chiefReview = checkState
     setNoduleList([...noduleList])
   }
 
@@ -916,13 +909,11 @@ const Viewer = () => {
     // for (let i = 0; i < noduleList.length; i++) {
     //   if (noduleList[i].diameterSize <= val) {
     //     noduleList[i].review = true
-    //     noduleList[i].chiefReview = true
     //     noduleList[i].state = true
     //   }
 
     //   if (noduleList[i].diameterSize >= val && noduleList[i].diameterSize < preVal) {
     //     noduleList[i].review = false
-    //     noduleList[i].chiefReview = false
     //     noduleList[i].state = undefined
     //   }
     // }
@@ -950,17 +941,6 @@ const Viewer = () => {
     setVisible(false)
   }
 
-  // 获取当前时间
-  const getCurrentTime = () => {
-    let yy = new Date().getFullYear()
-    let mm = new Date().getMonth() + 1
-    let dd = new Date().getDate()
-    let hh = new Date().getHours()
-    let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()
-    let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()
-    return yy + '-' + mm + '-' + dd + ' ' + hh + ':' + mf + ':' + ss
-  }
-
   // 格式化提交数据
   const formatPostData = () => {
     // 微小结节度量
@@ -974,6 +954,7 @@ const Viewer = () => {
       : ''
 
     const postData = {
+      id: checkItme.doctorNodeId || '',
       dttrId: params.taskId,
       orderId: params.orderId,
       nodeId: checkItme.noduleNum,
@@ -1038,8 +1019,8 @@ const Viewer = () => {
 
   // 提交审核结果按钮
   const handleUpdateResult = () => {
-    if (getURLParameters(window.location.href).user === 'chief_lwx') {
-      if (!noduleList.every(item => item.chiefReview === true)) {
+    if (params.user === 'chief_lwx') {
+      if (!noduleList.every(item => item.isFinish === 1)) {
         message.warning(`请复核完所有结节后在进行结果提交`)
         return false
       }
@@ -1055,9 +1036,11 @@ const Viewer = () => {
 
   // 提交审核结果弹窗
   const handleSubmitResults = () => {
-    const postData = formatPostData()
+    const postData = {
+      id: params.user === 'admin' ? params.taskId : params.doctorId,
+    }
 
-    if (getURLParameters(window.location.href).user === 'chief_lwx') {
+    if (params.user === 'chief_lwx') {
       updateSuperDoctorResult(JSON.stringify(postData)).then(res => {
         console.log(res)
         if (res.data.code === 200) {
@@ -1068,8 +1051,8 @@ const Viewer = () => {
               {
                 code: 200,
                 success: true,
-                backId: getURLParameters(window.location.href).backId,
-                backType: getURLParameters(window.location.href).backType,
+                backId: params.backId,
+                backType: params.backType,
               },
               '*'
             )
@@ -1089,8 +1072,8 @@ const Viewer = () => {
               {
                 code: 200,
                 success: true,
-                backId: getURLParameters(window.location.href).backId,
-                backType: getURLParameters(window.location.href).backType,
+                backId: params.backId,
+                backType: params.backType,
               },
               '*'
             )
@@ -1134,7 +1117,7 @@ const Viewer = () => {
 
   // 重新请求，刷新数据
   const fetchDoctorData = async callback => {
-    const result = await getDoctorTask(getURLParameters(window.location.href).doctorId)
+    const result = await getDoctorTask(params.doctorId)
     if (result.data.code === 200) {
       if (result.data.result) {
         if (result.data.result.doctorTask.resultInfo) {
@@ -1273,7 +1256,6 @@ const Viewer = () => {
       boxes: JSON.stringify([{ index: currentImageIdIndex, box: [startY, startX, endY, endX] }]),
 
       isFinish: 1,
-
     }
 
     addNodeSourceDetail(newNodeData).then(res => {
@@ -1597,7 +1579,6 @@ const Viewer = () => {
         handleInputBlur={handleInputBlur}
         checkNoduleList={checkNoduleList}
         updateNoduleList={updateNoduleList}
-        updateChiefNoduleList={updateChiefNoduleList}
         updateChiefMarkNode={updateChiefMarkNode}
         handleUpdateRisk={handleUpdateRisk}
         handleShowAdjustModal={handleShowAdjustModal}
@@ -1667,10 +1648,9 @@ const Viewer = () => {
       {pageType === 'review' ? (
         <div className="show-button">
           <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button>
-          {getURLParameters(window.location.href).patientId &&
-          getURLParameters(window.location.href).patientId !== 'null' ? (
+          {params.patientId && params.patientId !== 'null' ? (
             <span className="infor-detail">
-              patientId: <em>{getURLParameters(window.location.href).patientId}</em>
+              patientId: <em>{params.patientId}</em>
             </span>
           ) : null}
         </div>

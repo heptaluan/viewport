@@ -37,15 +37,6 @@ const CompareMatchList = props => {
                 <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
                   {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
                 </div>
-                <div className="action review-state">
-                  {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-                    <span className={item.chiefReview ? 'review' : null}>
-                      {item.chiefReview === true ? '已复核' : '未复核'}
-                    </span>
-                  ) : (
-                    <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
-                  )}
-                </div>
               </div>
             ))}
           </div>

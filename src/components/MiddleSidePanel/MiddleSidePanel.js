@@ -97,8 +97,8 @@ const MiddleSidePanel = props => {
                 </div>
                 <div className="action review-state">
                   {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-                    <span className={item.chiefReview ? 'review' : null}>
-                      {item.chiefReview === true ? '已复核' : '未复核'}
+                    <span className={item.isFinish === 1 ? 'review' : null}>
+                      {item.isFinish === 1 ? '已复核' : '未复核'}
                     </span>
                   ) : (
                     <span className={item.isFinish === 1 ? 'review' : null}>{item.isFinish === 1 ? '已检阅' : '未检阅'}</span>
