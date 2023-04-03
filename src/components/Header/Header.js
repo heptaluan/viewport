@@ -11,16 +11,14 @@ const Header = props => {
   const [remark, setRemark] = useState('')
 
   const handleDownLoad = () => {
-    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(
-      res => {
-        const { result, success, message } = res.data
-        if (success) {
-          window.open(result, '_blank')
-        } else {
-          message.warning(message)
-        }
+    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(res => {
+      const { result, success, message } = res.data
+      if (success) {
+        window.open(result, '_blank')
+      } else {
+        message.warning(message)
       }
-    )
+    })
   }
 
   useEffect(() => {
@@ -30,7 +28,9 @@ const Header = props => {
         setFileData([])
       } else if (result.data.code === 200) {
         setFileData(result.data.result.appendix)
-        setRemark(result.data.result.remark)
+        if (result.data.result.remark) {
+          setRemark(result.data.result.remark.replace(/\n/g, '<br />'))
+        }
       }
     }
     fetchData()
@@ -69,7 +69,7 @@ const Header = props => {
                         title={
                           <>
                             <div>补充说明</div>
-                            <span className="remark-content">{remark}</span>
+                            <span className="remark-content" dangerouslySetInnerHTML={{ __html: remark }}></span>
                           </>
                         }
                         okText="确定"
@@ -91,9 +91,9 @@ const Header = props => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`/ct/viewer/1?&url=/api&taskId=${item.historyTaskId}&orderId=${item.historyOrderId}&resource=${
-                    item.historyDicomId
-                  }&token=${getURLParameters(window.location.href).token}&user=admin&page=review&from=history`}
+                  href={`/ct/viewer/1?&url=/api&taskId=${item.historyTaskId}&orderId=${item.historyOrderId}&resource=${item.historyDicomId}&token=${
+                    getURLParameters(window.location.href).token
+                  }&user=admin&page=review&from=history`}
                 >
                   <Tooltip placement="bottom" title={'历史影像'}>
                     <Button size="small" style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
@@ -102,11 +102,7 @@ const Header = props => {
                     </Button>
                   </Tooltip>
                 </a>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://ai.feipankang.com/preview/${item.historyOrderId}`}
-                >
+                <a target="_blank" rel="noopener noreferrer" href={`https://ai.feipankang.com/preview/${item.historyOrderId}`}>
                   <Tooltip placement="bottom" title={'历史报告'}>
                     <Button size="small" style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
                       <FileDoneOutlined />
@@ -132,9 +128,7 @@ const Header = props => {
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0
               ? `暂无临床影像`
-              : `查看临床影像（共${
-                  fileData.filter(item => item.fileSuffix === 'jpg' || item.fileSuffix === 'png').length
-                }页）`}
+              : `查看临床影像（共${fileData.filter(item => item.fileSuffix === 'jpg' || item.fileSuffix === 'png').length}页）`}
           </Button>
 
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>

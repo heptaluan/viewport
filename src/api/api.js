@@ -11,12 +11,12 @@ export const ossKeyUrl = '/preview/archive_images/'
 // export const ossKeyUrl = '/prod/archive_images/'
 
 // http://localhost:3000/ct/viewer/1?&url=/api&type=undefined&id=1503929871832645633&orderId=1503628225604390914&user=doctor&resource=1503913389228199938&state=undefined&taskId=1503929871832645633&doctorId=1503929871832645633&backId=undefined&backType=check&page=review&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTYyNjg4MTQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.w-8bVodwtdCgOUCTPKa-nWVeYFvTjICQxmUDl3pnGEA
-// // const basicUrl = 'http://139.196.114.118:9999'
+// const basicUrl = 'http://139.196.114.118:9999'
 // const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 // axios.defaults.headers.common['X-Access-Token'] =
-  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODAwMzAyOTgsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.vGAPiKoLSvQzFOMJb8sL_DlkbOQwlnaOwP3-p6ZrlN0'
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODA1NDc4MjYsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.pkMLbeOxdSY2jL7sk1DdxlflOPJgX2skotw5a7dS8fk'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>

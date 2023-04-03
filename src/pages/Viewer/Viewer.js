@@ -875,14 +875,19 @@ const Viewer = () => {
           active: false,
           noduleName: res[i].noduleName,
           noduleNum: res[i].noduleNum,
-          state: false,
-          review: true,
+          state:
+            resultInfo[i] && Number(resultInfo[i].invisable) === 1
+              ? false
+              : resultInfo[i] && Number(resultInfo[i].invisable) === 0
+              ? true
+              : undefined,
           markNode:
             resultInfo[i] && resultInfo[i].markNode === true
               ? true
               : resultInfo[i] && resultInfo[i].markNode === false
               ? false
               : undefined,
+          review: resultInfo[i] ? resultInfo[i].edit : false,
           chiefReview: resultInfo[i] && resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
           lung: resultInfo[i] ? resultInfo[i].lungLocation : res[i].lobe.lungLocation,
           lobe: resultInfo[i] ? resultInfo[i].lobeLocation : res[i].lobe.lobeLocation,
@@ -934,9 +939,9 @@ const Viewer = () => {
             active: false,
             noduleName: resultInfo[i].noduleName,
             noduleNum: resultInfo[i].noduleNum,
-            state: false,
-            review: true,
+            state: Number(resultInfo[i].invisable) === 1 ? false : Number(resultInfo[i].invisable) === 0 ? true : true,
             markNode: resultInfo[i].markNode === true ? true : resultInfo[i].markNode === false ? false : true,
+            review: true,
             chiefReview: resultInfo[i].chiefReview ? resultInfo[i].chiefReview : false,
             lung: resultInfo[i].lungLocation,
             lobe: resultInfo[i].lobeLocation,
@@ -1151,10 +1156,10 @@ const Viewer = () => {
   const handleUpdateResult = () => {
     formatPostData()
     if (getURLParameters(window.location.href).user === 'chief_lwx') {
-      if (!noduleList.every(item => item.chiefReview === true)) {
-        message.warning(`请复核完所有结节后在进行结果提交`)
-        return false
-      }
+      // if (!noduleList.every(item => item.chiefReview === true)) {
+      //   message.warning(`请复核完所有结节后在进行结果提交`)
+      //   return false
+      // }
 
       // if (!noduleList.every(item => item.markNode === true)) {
       //   message.warning(`请标记完所有良性样本后在进行结果提交`)
@@ -1162,11 +1167,11 @@ const Viewer = () => {
       // }
       setVisible(true)
     } else {
-      if (noduleList.every(item => item.review === true)) {
+      // if (noduleList.every(item => item.review === true)) {
         setVisible(true)
-      } else {
-        message.warning(`请检阅完所有结节后在进行结果提交`)
-      }
+      // } else {
+      //   message.warning(`请检阅完所有结节后在进行结果提交`)
+      // }
     }
   }
 
