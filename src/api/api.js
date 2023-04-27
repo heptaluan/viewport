@@ -12,11 +12,11 @@ export const ossKeyUrl = '/preview/archive_images/'
 
 // http://localhost:3000/ct/viewer/1?&url=/api&type=undefined&id=1503929871832645633&orderId=1503628225604390914&user=doctor&resource=1503913389228199938&state=undefined&taskId=1503929871832645633&doctorId=1503929871832645633&backId=undefined&backType=check&page=review&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTYyNjg4MTQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.w-8bVodwtdCgOUCTPKa-nWVeYFvTjICQxmUDl3pnGEA
 // // const basicUrl = 'http://139.196.114.118:9999'
-// const basicUrl = 'https://yyds.ananpan.com/api'
-const basicUrl = 'http://192.168.1.204/api'
+const basicUrl = 'https://yyds.ananpan.com/api'
+// const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 axios.defaults.headers.common['X-Access-Token'] =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODAzMDAzMjAsInVzZXJuYW1lIjoiY2hpZWZfbHd4In0.dMTj1J4Epfw70KhQPegZ-y85Ry7yTg4UORmXU7Wf3hA'
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODI2MTk3NDUsInVzZXJuYW1lIjoiY2hpZWZfbHd4In0.XA21P8p4FE-4aF6BxE_VXLsQFJV6r8mRwxV-YzHYe_c'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -47,6 +47,16 @@ export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task
 
 // 查看结节列表历史记录
 export const getDoctorHistoryTask = id => axios.get(`${basicUrl}/report/doctorTask/historyTask?id=${id}`)
+
+// ===========================================
+
+// ===========================================
+
+// ===========================================
+
+// 获取新的结节列表与影像
+export const getImageReslutByOrderId = orderId => axios.get(`${basicUrl}/report/image/getImageReslutByOrderId?Oid=${orderId}`)
+
 
 // 保存结果
 // export const updateNodeResult = params =>

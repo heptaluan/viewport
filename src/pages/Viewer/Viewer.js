@@ -25,6 +25,7 @@ import {
   getDnReslutByOrderIdUrl,
   addNodeSourceDetail,
   deleteNodeSourceDetail,
+  getImageReslutByOrderId,
 } from '../../api/api'
 import { getURLParameters, formatMiniNodule } from '../../util/index'
 import { Modal, message, Button, InputNumber } from 'antd'
@@ -33,7 +34,6 @@ import AddNewNode from '../../components/common/AddNewNode/AddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import qs from 'query-string'
 import { useLocation } from 'react-router-dom'
-import { imageIds } from './imageIds'
 
 const { confirm } = Modal
 
@@ -140,26 +140,14 @@ const Viewer = () => {
 
   // 初始化结节信息
   useEffect(() => {
-    // 管理员请求接口
-    const fetchAdminData = async () => {
-      const result = await getNodeList(params.id)
-      if (result.data.code === 200) {
-        if (result.data.result) {
-          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-          formatNodeData(data, [])
-          fetcImagehData(data.detectionResult.nodulesList)
-        }
-      }
-    }
 
-    // 订单跳转请求接口
-    const getDnReslutByOrderId = async () => {
-      const result = await getDnReslutByOrderIdUrl(params.orderId)
+    // 管理员请求接口和订单跳转请求接口
+    const getAdminReslutByOrderId = async () => {
+      const result = await getImageReslutByOrderId(params.orderId)
       if (result.data.code === 200) {
         if (result.data.result) {
-          const data = JSON.parse(result.data.result.text.replace(/'/g, '"'))
-          formatNodeData(data, [])
-          fetcImagehData(data.detectionResult.nodulesList)
+          formatAdminNodeData(result.data.result.nodeFinalList)
+          fetcImagehData(result.data.result.nodeFinalList[0].dicomId)
         }
       }
     }
@@ -207,9 +195,8 @@ const Viewer = () => {
     }
 
     const fetcImagehData = async data => {
-      // const res = await getImageList(params.resource)
-      setImagesConfig(imageIds)
-      // setImageList(res, data)
+      const res = await getImageList(params.resource)
+      setImageList(res, data)
     }
 
     if (params.from === 'history') {
@@ -217,22 +204,16 @@ const Viewer = () => {
       setPageState('admin')
       fetchDoctorHistoryData()
     } else {
-      if (params.user === 'admin') {
-        if (params.requestType === 'order') {
-          getDnReslutByOrderId()
-        } else {
-          fetchAdminData()
-        }
+      if (params.user === 'admin' || params.requestType === 'order') {
+        setPageState('admin')
+        getAdminReslutByOrderId()
       } else if (!params.user) {
         fetcImagehData(null)
       } else {
         fetchDoctorData()
       }
 
-      if (params.state === 'admin') {
-        setPageState('admin')
-      }
-
+      // 现实对应的界面配置
       if (params.page === 'review') {
         setPageType('review')
       } else if (params.page === 'image') {
@@ -372,16 +353,74 @@ const Viewer = () => {
 
       setImagesConfig(imageList)
 
-      // loadAndCacheImage(cornerstone, imageList, data)
-
       // 缓存图片
-      if (data && data.length > 0) {
-        loadAndCacheImage(cornerstone, imageList, data)
-      }
+      // if (data && data.length > 0) {
+      //   loadAndCacheImage(cornerstone, imageList, data)
+      // }
     }
   }
 
   // 格式化结节数据
+  const formatAdminNodeData = data => {
+    const nodulesList = []
+    const nodulesMapList = []
+
+    // 初始化滑块的值
+    // if (resultInfo[0] && resultInfo[0].diameterStandard) {
+    //   localStorage.setItem('diameterSize', resultInfo[0].diameterStandard)
+    // } else {
+    //   localStorage.setItem('diameterSize', 3)
+    // }
+
+    // scrynMaligant    AI 的结果，不会变
+    // whuMaligant      武大的结果，不会变
+    // doctorMaligant   医生的结果，会变
+
+    for (let i = 0; i < data.length; i++) {
+      nodulesList.push({
+        doctorNodeId: data[i].id,
+        num: data[i].imageIndex,
+        type: data[i].featureLabel,
+        risk: data[i].scrynMaligant,
+        scrynMaligant: data[i].scrynMaligant,
+        whuScryn: data[i].whuMaligant,
+        soak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
+        newSoak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
+        info: '',
+        markNode: '',
+        checked: false,
+        active: false,
+        noduleName: data[i].id,
+        noduleNum: data[i].id,
+        state: data[i].id.invisable === 1 ? false : true,
+        lung: data[i].lungLocation,
+        lobe: data[i].lobeLocation,
+        diameter: data[i].diameter,
+        diameterSize: formatDiameter(data[i].diameter),
+        noduleSize: data[i].noduleSize,
+        suggest: data[i].suggest,
+        isFinish: 1,
+        nodeType: 0,
+      })
+
+      // 提取结节
+      const box = data[i].boxes ? JSON.parse(data[i].boxes.replace(/'/g, '"')) : []
+      for (let j = 0; j < box.length; j++) {
+        nodulesMapList.push({
+          noduleName: data[i].id,
+          index: Number(box[j].index),
+          startX: Number(box[j].box[1]),
+          startY: Number(box[j].box[0]),
+          endX: Number(box[j].box[3]),
+          endY: Number(box[j].box[2]),
+        })
+      }
+    }
+
+    setNoduleList([...nodulesList])
+    setNoduleMapList([...nodulesMapList])
+  }
+
   const formatNodeData = (data, resultInfo, whuScryn) => {
     const nodulesList = []
     const nodulesMapList = []
@@ -410,12 +449,7 @@ const Viewer = () => {
         scrynMaligant: data[i].scrynMaligant,
         whuScryn: data[i].whuMaligant || item.whuMaligant,
         soak: item ? item.invisionClassify : data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
-        newSoak:
-          item && item.newInvisionClassify
-            ? item.newInvisionClassify
-            : data[i].invisionClassify
-            ? data[i].invisionClassify
-            : 'OTHER',
+        newSoak: item && item.newInvisionClassify ? item.newInvisionClassify : data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
         info: '',
         markNode: '',
         checked: false,
@@ -804,8 +838,10 @@ const Viewer = () => {
       const index = imagesConfig.findIndex(item => item === curImageId)
 
       if (flag) {
-        windowChange(cornerstoneElement, newImage.detail.image, 2)
-        flag = false
+        setTimeout(() => {
+          windowChange(cornerstoneElement, newImage.detail.image, 2)
+          flag = false
+        }, 0)
       }
 
       cornerstoneTools.setToolActive('MarkNodule', { mouseButtonMask: 1 })
@@ -870,28 +906,6 @@ const Viewer = () => {
 
   // ===========================================================
 
-  // 保存为图片
-  // const saveAs = (element, filename, mimetype = 'image/png') => {
-  //   const canvas = element.querySelector('canvas')
-  //   if (canvas.msToBlob) {
-  //     const blob = canvas.msToBlob()
-
-  //     return window.navigator.msSaveBlob(blob, filename)
-  //   }
-
-  //   const lnk = document.createElement('a')
-  //   lnk.download = filename
-  //   lnk.href = canvas.toDataURL(mimetype, 1)
-
-  //   if (document.createEvent) {
-  //     const e = document.createEvent('MouseEvents')
-  //     e.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
-  //     lnk.dispatchEvent(e)
-  //   } else if (lnk.fireEvent) {
-  //     lnk.fireEvent('onclick')
-  //   }
-  // }
-
   // 格式化中心直径
   const formatDiameter = diameter => {
     if (diameter) {
@@ -947,11 +961,7 @@ const Viewer = () => {
     const noduleMeasure = Number(localStorage.getItem('diameterSize'))
 
     const checkItme = noduleList.find(item => item.checked === true)
-    const diameterSize = checkItme.newDiameter
-      ? formatDiameter(checkItme.newDiameter)
-      : checkItme.diameter
-      ? formatDiameter(checkItme.diameter)
-      : ''
+    const diameterSize = checkItme.newDiameter ? formatDiameter(checkItme.newDiameter) : checkItme.diameter ? formatDiameter(checkItme.diameter) : ''
 
     const postData = {
       id: checkItme.doctorNodeId || '',
@@ -1217,9 +1227,7 @@ const Viewer = () => {
       dttrId: params.taskId,
       orderId: params.orderId,
       dnId: dnId,
-      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-        Math.abs(endY - startY) * rowPixelSpacing
-      ).toFixed(2)}mm`,
+      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`,
       lobeLocation: toolList[0].lobe,
       lungLocation: toolList[0].lung,
       noduleSize: (Math.pow(Math.sqrt(toolList[0].cachedStats.area) / 2, 3) * Math.PI).toFixed(2),
@@ -1233,13 +1241,7 @@ const Viewer = () => {
       maxHu: toolList[0].cachedStats.max,
       minHu: toolList[0].cachedStats.min,
       meanHu: toolList[0].cachedStats.mean.toFixed(2),
-      centerHu: cornerstone.getPixels(
-        cornerstoneElement,
-        (Number(startX) + Number(endX)) / 2,
-        (Number(startY) + Number(endY)) / 2,
-        1,
-        1
-      )[0],
+      centerHu: cornerstone.getPixels(cornerstoneElement, (Number(startX) + Number(endX)) / 2, (Number(startY) + Number(endY)) / 2, 1, 1)[0],
 
       imageUrl: '',
       imageSurl: '',
@@ -1307,19 +1309,9 @@ const Viewer = () => {
     }
 
     if (toolList[0].startX > toolList[0].endX) {
-      postData.boxes = [
-        parseInt(toolList[0].endY),
-        parseInt(toolList[0].endX),
-        parseInt(toolList[0].startY),
-        parseInt(toolList[0].startX),
-      ].join(',')
+      postData.boxes = [parseInt(toolList[0].endY), parseInt(toolList[0].endX), parseInt(toolList[0].startY), parseInt(toolList[0].startX)].join(',')
     } else {
-      postData.boxes = [
-        parseInt(toolList[0].startY),
-        parseInt(toolList[0].startX),
-        parseInt(toolList[0].endY),
-        parseInt(toolList[0].endX),
-      ].join(',')
+      postData.boxes = [parseInt(toolList[0].startY), parseInt(toolList[0].startX), parseInt(toolList[0].endY), parseInt(toolList[0].endX)].join(',')
     }
 
     setPostData(postData)
@@ -1449,9 +1441,7 @@ const Viewer = () => {
       }
 
       // 重新计算中心直径
-      checkItme.diameterSize = formatDiameter(
-        `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
-      )
+      checkItme.diameterSize = formatDiameter(`${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`)
 
       // if (handle.start.x > handle.end.x) {
       //   nodeBox = [parseInt(handle.end.y), parseInt(handle.end.x), parseInt(handle.start.y), parseInt(handle.start.x)]
@@ -1534,13 +1524,7 @@ const Viewer = () => {
 
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
-      <Header
-        data={patients}
-        handleShowModal={handleShowModal}
-        pageType={pageType}
-        pageState={pageState}
-        historyList={historyList}
-      />
+      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} historyList={historyList} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel
@@ -1586,9 +1570,7 @@ const Viewer = () => {
         pageState={pageState}
         saveResults={saveResults}
       />
-      {showMark ? (
-        <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
-      ) : null}
+      {showMark ? <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} /> : null}
 
       <Modal
         title="确认模型风险结果"

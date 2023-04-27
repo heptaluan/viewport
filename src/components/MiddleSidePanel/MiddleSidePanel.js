@@ -76,7 +76,7 @@ const MiddleSidePanel = props => {
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
               <div
-                key={item.id}
+                key={index}
                 className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNodeStyle(item)}`}
                 onClick={e => handleListClick(index, item.num)}
               >
@@ -130,7 +130,7 @@ const MiddleSidePanel = props => {
               {props.noduleList?.map((item, index) => {
                 return item.checked ? (
                   <div
-                    key={item.id}
+                    key={index}
                     className={`viewer-item ${item.active ? 'item-active' : ''}`}
                     onClick={e => props.handleCheckedListClick(item.num)}
                   >
