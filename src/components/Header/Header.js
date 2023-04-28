@@ -139,9 +139,9 @@ const Header = props => {
             </Button>
           ) : null}
 
-          {params.user !== 'chief_lwx' ? (
-            <Button style={{ marginRight: 10, display: 'flex', alignItems: 'center' }} onClick={e => {}}>
-              结果比对
+          {params.user === 'doctor_test' ? (
+            <Button style={{ marginRight: 10, display: 'flex', alignItems: 'center' }} onClick={e => props.handleShowCompareModal()}>
+              查看审阅结果
             </Button>
           ) : null}
 
