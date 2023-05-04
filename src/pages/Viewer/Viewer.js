@@ -1773,7 +1773,7 @@ const Viewer = () => {
           top: 95,
         }}
       >
-        <div className="third-detail-box">
+        <div className="compare-detail-box">
           {compareList.map((item, index) => (
             <div key={index}>
               <CompareModalDetail key={index} index={index} noduleInfo={item} />
