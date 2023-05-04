@@ -139,12 +139,6 @@ const Header = props => {
             </Button>
           ) : null}
 
-          {params.user === 'doctor_test' ? (
-            <Button style={{ marginRight: 10, display: 'flex', alignItems: 'center' }} onClick={e => props.handleShowCompareModal()}>
-              查看审阅结果
-            </Button>
-          ) : null}
-
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0
               ? `暂无临床影像`

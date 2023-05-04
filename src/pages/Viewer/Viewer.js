@@ -123,6 +123,10 @@ const Viewer = () => {
   // 历史记录
   const [historyList, setHistoryList] = useState([])
 
+  // 医生比对
+  const [doctorList, setDoctorList] = useState([])
+  const [compareList, setCompareList] = useState([])
+
   // dnId
   const [dnId, setDnId] = useState('')
 
@@ -161,8 +165,9 @@ const Viewer = () => {
       const result = await getDoctorTask(params.doctorId)
       if (result.data.code === 200) {
         if (result.data.result) {
-          // setHistoryList(result.data.result.historyReportList)
-          formatDoctorNodeData(result.data.result.nodeSourceList)
+          setDoctorList([result.data.result.nodeChiefDoctorList, result.data.result.nodeDoctorList])
+          setHistoryList(result.data.result.historyReportList)
+          formatDoctorNodeData(result.data.result.nodeSourceList, result.data.result.nodeDoctorList)
           fetcImagehData(result.data.result.nodeSourceList[0].dicomId)
         }
       }
@@ -341,7 +346,8 @@ const Viewer = () => {
       const newList = res.data.result
       const imageList = []
       newList.forEach(item => {
-        imageList.push(`wadouri:${item.ossUrl.replace('http://', 'https://')}`)
+        // imageList.push(`wadouri:${item.ossUrl.replace('http://', 'https://')}`)
+        imageList.push(`wadouri:${item.ossUrl.replace('yydsofflone', 'yydsoffline')}`)
       })
 
       setImagesConfig(imageList)
@@ -375,10 +381,10 @@ const Viewer = () => {
         num: data[i].imageIndex,
         type: data[i].featureLabel,
         risk: data[i].scrynMaligant,
-        scrynMaligant: data[i].scrynMaligant,
+        scrynMaligant: data[i].doctorMaligant,
         whuScryn: data[i].whuMaligant,
         soak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
-        newSoak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
+        newSoak: data[i].newInvisionClassify ? data[i].newInvisionClassify : 'OTHER',
         info: '',
         markNode: '',
         checked: false,
@@ -392,8 +398,8 @@ const Viewer = () => {
         diameterSize: formatDiameter(data[i].diameter),
         noduleSize: data[i].noduleSize,
         suggest: data[i].suggest,
-        isFinish: 1,
-        nodeType: 0,
+        isFinish: data[i].isFinish,
+        nodeType: data[i].isNew,
       })
 
       // 提取结节
@@ -415,7 +421,7 @@ const Viewer = () => {
   }
 
   // 格式化结节数据（医生接口）
-  const formatDoctorNodeData = (data) => {
+  const formatDoctorNodeData = (data, resultInfo) => {
     const nodulesList = []
     const nodulesMapList = []
 
@@ -426,36 +432,67 @@ const Viewer = () => {
     //   localStorage.setItem('diameterSize', 3)
     // }
 
-    // scrynMaligant    AI 的结果，不会变
-    // whuMaligant      武大的结果，不会变
+    // scrynMaligant    AI 的结果，不会变，risk
+    // whuMaligant      武大的结果，不会变，scrynMaligant
     // doctorMaligant   医生的结果，会变
 
     for (let i = 0; i < data.length; i++) {
-      nodulesList.push({
-        doctorNodeId: data[i].id,
-        num: data[i].imageIndex,
-        type: data[i].featureLabel,
-        risk: data[i].scrynMaligant,
-        scrynMaligant: data[i].scrynMaligant,
-        whuScryn: data[i].whuMaligant,
-        soak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
-        newSoak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
-        info: '',
-        markNode: '',
-        checked: false,
-        active: false,
-        noduleName: data[i].id,
-        noduleNum: data[i].id,
-        state: data[i].id.invisable === 1 ? false : true,
-        lung: data[i].lungLocation,
-        lobe: data[i].lobeLocation,
-        diameter: data[i].diameter,
-        diameterSize: formatDiameter(data[i].diameter),
-        noduleSize: data[i].noduleSize,
-        suggest: data[i].suggest,
-        isFinish: 0,
-        nodeType: data[i].isNew,
-      })
+      const item = resultInfo.find(item => item.nodeId === data[i].id)
+
+      if (item) {
+        nodulesList.push({
+          doctorNodeId: data[i].id,
+          num: data[i].imageIndex,
+          type: item.featureLabel,
+          risk: item.scrynMaligant,
+          scrynMaligant: item.doctorMaligant,
+          whuScryn: item.whuMaligant,
+          soak: item.invisionClassify ? item.invisionClassify : 'OTHER',
+          newSoak: item.newInvisionClassify ? item.newInvisionClassify : 'OTHER',
+          info: '',
+          markNode: '',
+          checked: false,
+          active: false,
+          noduleName: data[i].id,
+          noduleNum: data[i].id,
+          state: item.invisable === 1 ? false : true,
+          lung: item.lungLocation,
+          lobe: item.lobeLocation,
+          diameter: item.diameter,
+          diameterSize: formatDiameter(item.diameter),
+          noduleSize: item.noduleSize,
+          newNoduleSize: item.newNoduleSize,
+          suggest: item.suggest,
+          isFinish: item.isFinish,
+          nodeType: item.isNew,
+        })
+      } else {
+        nodulesList.push({
+          doctorNodeId: data[i].id,
+          num: data[i].imageIndex,
+          type: data[i].featureLabel,
+          risk: data[i].scrynMaligant,
+          scrynMaligant: data[i].doctorMaligant,
+          whuScryn: data[i].whuMaligant,
+          soak: data[i].invisionClassify ? data[i].invisionClassify : 'OTHER',
+          newSoak: data[i].newInvisionClassify ? data[i].newInvisionClassify : 'OTHER',
+          info: '',
+          markNode: '',
+          checked: false,
+          active: false,
+          noduleName: data[i].id,
+          noduleNum: data[i].id,
+          state: data[i].id.invisable === 1 ? false : true,
+          lung: data[i].lungLocation,
+          lobe: data[i].lobeLocation,
+          diameter: data[i].diameter,
+          diameterSize: formatDiameter(data[i].diameter),
+          noduleSize: data[i].noduleSize,
+          suggest: data[i].suggest,
+          isFinish: data[i].isFinish,
+          nodeType: data[i].isNew,
+        })
+      }
 
       // 提取结节
       const box = data[i].boxes ? JSON.parse(data[i].boxes.replace(/'/g, '"')) : []
@@ -986,7 +1023,6 @@ const Viewer = () => {
 
   const handleSaveResults = _ => {
     const postData = formatPostData()
-    debugger
     updateNodeResult(postData).then(res => {
       if (res.data.code === 200) {
         message.success(`结节信息保存成功`)
@@ -1519,29 +1555,20 @@ const Viewer = () => {
 
   const draggleDetailRef = useRef(null)
 
-  // 貌似不需要这个
-  const [newNoduleInfo, setNewNoduleInfo] = useState([])
-
-  const [newNoduleList, setNewNoduleList] = useState([])
-
   const handleDetailCancel = _ => {
     setOpenDetail(false)
   }
 
-  const handleShowCompareModal = () => {
+  const handleShowCompareModal = item => {
+    const nodeChiefDoctorList = doctorList[0].find(v => v.nodeId === item.doctorNodeId)
+    const nodeDoctorList = doctorList[1].find(v => v.nodeId === item.doctorNodeId)
+    setCompareList([nodeChiefDoctorList, nodeDoctorList])
     setOpenDetail(true)
   }
 
   return (
     <div className={pageType ? `viewer-${pageType}-box` : 'viewer-box'}>
-      <Header
-        data={patients}
-        handleShowModal={handleShowModal}
-        pageType={pageType}
-        pageState={pageState}
-        historyList={historyList}
-        handleShowCompareModal={handleShowCompareModal}
-      />
+      <Header data={patients} handleShowModal={handleShowModal} pageType={pageType} pageState={pageState} historyList={historyList} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <MiddleSidePanel
@@ -1557,6 +1584,7 @@ const Viewer = () => {
             noduleList={noduleList}
             noduleInfo={noduleInfo}
             imagesConfig={imagesConfig}
+            handleShowCompareModal={handleShowCompareModal}
           />
         </div>
         <ViewerMain
@@ -1746,9 +1774,9 @@ const Viewer = () => {
         }}
       >
         <div className="third-detail-box">
-          {newNoduleInfo.map((item, index) => (
+          {compareList.map((item, index) => (
             <div key={index}>
-              <CompareModalDetail key={index} user={item.user} index={index} noduleInfo={item} />
+              <CompareModalDetail key={index} index={index} noduleInfo={item} />
             </div>
           ))}
         </div>

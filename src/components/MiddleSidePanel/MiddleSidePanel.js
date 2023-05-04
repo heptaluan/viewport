@@ -79,6 +79,7 @@ const MiddleSidePanel = props => {
                 key={index}
                 className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNodeStyle(item)}`}
                 onClick={e => handleListClick(index, item.num)}
+                onDoubleClick={() => props.handleShowCompareModal(item)}
               >
                 {/* <div className="icon">{item.id}</div> */}
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>

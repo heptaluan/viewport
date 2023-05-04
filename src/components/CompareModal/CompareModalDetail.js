@@ -21,7 +21,7 @@ const CompareModalDetail = props => {
     <div className="compare-modal-box-wrap">
       {props.noduleInfo ? (
         <>
-          <div className="box-title">{props.user}医生审核结果</div>
+          <div className="box-title">{props.index === 0 ? '李主任' : '医生'}审核结果</div>
 
           <div className="box-wrap">
             <div className="list-title">发现</div>
@@ -88,7 +88,7 @@ const CompareModalDetail = props => {
           <div className="box-wrap">
             <div className="list-title">外观特征</div>
 
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('shape') ? 'active' : ''}`}>
+            <div className={`mark-box flex mb`}>
               <div className="mark-title">
                 {props.noduleInfo.paging !== props.noduleInfo.pagingOrigin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
@@ -118,7 +118,7 @@ const CompareModalDetail = props => {
                 </Select>
               </div>
             </div>
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('spherical') ? 'active' : ''}`}>
+            <div className={`mark-box flex mb `}>
               <div className="mark-title">
                 {props.noduleInfo.sphere !== props.noduleInfo.sphereOrigin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
@@ -148,7 +148,7 @@ const CompareModalDetail = props => {
                 </Select>
               </div>
             </div>
-            <div className={`mark-box flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('edge') ? 'active' : ''}`}>
+            <div className={`mark-box flex mb `}>
               <div className="mark-title">
                 {props.noduleInfo.rag !== props.noduleInfo.ragOrigin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
@@ -187,7 +187,7 @@ const CompareModalDetail = props => {
               </div>
             </div>
 
-            <div className={`mark-box left flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('edge0') ? 'active' : ''}`}>
+            <div className={`mark-box left flex mb `}>
               <div className="mark-title">
                 {props.noduleInfo.rag0 !== props.noduleInfo.rag0Origin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
@@ -209,7 +209,7 @@ const CompareModalDetail = props => {
               </div>
             </div>
 
-            <div className={`mark-box left flex mb ${props.noduleInfo.chiefNodeMark.split(',').includes('burr') ? 'active' : ''}`}>
+            <div className={`mark-box left flex mb `}>
               <div className="mark-title">
                 {props.noduleInfo.spinous !== props.noduleInfo.spinousOrigin ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
@@ -238,13 +238,16 @@ const CompareModalDetail = props => {
 
           <div className="box-wrap">
             <div className="list-title">内部特征</div>
-            <div className={`mark-box flex left mb ${props.noduleInfo.chiefNodeMark.split(',').includes('relation') ? 'active' : ''}`}>
+            <div className={`mark-box flex left mb `}>
               <div className="mark-title">
-                {props.noduleInfo.structuralRelation.sort().join(',') !== props.noduleInfo.structuralRelationOrigin.sort().join(',') ? (
+                {/* {props.noduleInfo.structuralRelation.sort().join(',') !== props.noduleInfo.structuralRelationOrigin.sort().join(',') ? (
                   <Tooltip placement="topLeft" title={'该值进行过调整'}>
                     <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
                   </Tooltip>
-                ) : null}
+                ) : null} */}
+                <Tooltip placement="topLeft" title={'该值进行过调整'}>
+                  <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                </Tooltip>
                 结构关系
               </div>
               <div className="mark-content">
