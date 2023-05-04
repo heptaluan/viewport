@@ -465,6 +465,7 @@ const Viewer = () => {
           suggest: item.suggest,
           isFinish: item.isFinish,
           nodeType: item.isNew,
+          differentKey: item.differentKey || data[i].differentKey
         })
       } else {
         nodulesList.push({
@@ -491,6 +492,7 @@ const Viewer = () => {
           suggest: data[i].suggest,
           isFinish: data[i].isFinish,
           nodeType: data[i].isNew,
+          differentKey: data[i].differentKey || null
         })
       }
 
@@ -1757,7 +1759,7 @@ const Viewer = () => {
             <div ref={draggleDetailRef}>{modal}</div>
           </Draggable>
         )}
-        mask={false}
+        // mask={false}
         maskClosable={false}
         wrapClassName={'detail-box-modal'}
         width={590}
@@ -1767,11 +1769,11 @@ const Viewer = () => {
             关闭
           </Button>,
         ]}
-        style={{
-          position: 'absolute',
-          left: 466,
-          top: 95,
-        }}
+        // style={{
+        //   position: 'absolute',
+        //   left: 466,
+        //   top: 95,
+        // }}
       >
         <div className="compare-detail-box">
           {compareList.map((item, index) => (
