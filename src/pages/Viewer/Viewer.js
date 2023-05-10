@@ -465,7 +465,7 @@ const Viewer = () => {
           suggest: item.suggest,
           isFinish: item.isFinish,
           nodeType: item.isNew,
-          differentKey: item.differentKey || data[i].differentKey
+          differentKey: item.differentKey || data[i].differentKey,
         })
       } else {
         nodulesList.push({
@@ -492,7 +492,7 @@ const Viewer = () => {
           suggest: data[i].suggest,
           isFinish: data[i].isFinish,
           nodeType: data[i].isNew,
-          differentKey: data[i].differentKey || null
+          differentKey: data[i].differentKey || null,
         })
       }
 
@@ -1152,27 +1152,6 @@ const Viewer = () => {
     }, 0)
   }
 
-  // 重新请求，刷新数据
-  const fetchDoctorData = async callback => {
-    const result = await getDoctorTask(params.doctorId)
-    if (result.data.code === 200) {
-      if (result.data.result) {
-        if (result.data.result.doctorTask.resultInfo) {
-          const data = JSON.parse(result.data.result.imageResult)
-          const resultInfo = JSON.parse(result.data.result.doctorTask.resultInfo)
-          formatNodeData(data, resultInfo)
-          callback && callback()
-        } else {
-          const data = JSON.parse(result.data.result.imageResult)
-          formatNodeData(data, [])
-          callback && callback()
-        }
-      }
-    } else {
-      message.error(`请求数据失败，请检查网络后重新尝试`)
-    }
-  }
-
   // 格式化新增结节数据
   const formatNewNodeData = data => {
     const toolList = []
@@ -1239,6 +1218,17 @@ const Viewer = () => {
   const [postData, setPostData] = useState(null)
   const [res, setRes] = useState(null)
 
+  // 重新请求，刷新数据
+  const fetchDoctorData = async callback => {
+    const result = await getDoctorTask(params.doctorId)
+    if (result.data.code === 200) {
+      if (result.data.result) {
+        formatDoctorNodeData(result.data.result.nodeSourceList, result.data.result.nodeDoctorList)
+        callback && callback()
+      }
+    }
+  }
+
   // 新增结节操作
   const handleRiskOk = () => {
     setConfirmLoading(true)
@@ -1280,7 +1270,7 @@ const Viewer = () => {
       // scrynMaligant: riskVal ? riskVal : res.data.scrynMaligant,
       // whu_scrynMaligant: riskVal ? riskVal : res.data.whu_scrynMaligant,
 
-      isNew: 1,
+      nodeType: 1,
       maxBox: [startY, startX, endY, endX].toString(),
       boxes: JSON.stringify([{ index: currentImageIdIndex, box: [startY, startX, endY, endX] }]),
 
@@ -1564,6 +1554,7 @@ const Viewer = () => {
   const handleShowCompareModal = item => {
     const nodeChiefDoctorList = doctorList[0].find(v => v.nodeId === item.doctorNodeId)
     const nodeDoctorList = doctorList[1].find(v => v.nodeId === item.doctorNodeId)
+    if (!nodeChiefDoctorList || !nodeDoctorList) return false
     setCompareList([nodeChiefDoctorList, nodeDoctorList])
     setOpenDetail(true)
   }
