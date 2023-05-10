@@ -39,6 +39,8 @@ const CustomOverlay = props => {
   const [data, setData] = useState(null)
   const [patients, setPatients] = useState('')
 
+  const [username, setUsername] = useState(null)
+
   useEffect(() => {
     const fetchData = async () => {
       const result = await getPatientsList(getURLParameters(window.location.href).resource)
@@ -48,55 +50,77 @@ const CustomOverlay = props => {
   }, [])
 
   useEffect(() => {
+    const userInfo = localStorage.getItem('pro__Login_Userinfo')
+    if (userInfo) {
+      setUsername(JSON.parse(userInfo).value.username)
+    } else {
+      setUsername(null)
+    }
+  }, [])
+
+  useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
-      const data = {
-        name:
-          image.data.string('x00100010') && image.data.string('x00100010') !== '**'
-            ? image.data.string('x00100010')
-            : patients.patientName,
-        birth:
-          image.data.string('x00100030') && image.data.string('x00100030') !== '00000000'
-            ? image.data.string('x00100030')
-            : getBirth(patients.identityNumber),
+      if (username === '杨帆' || username === 'chief_lwx' || username === 'admin') {
+        const data = {
+          name: image.data.string('x00100010') && image.data.string('x00100010') !== '**' ? image.data.string('x00100010') : patients.patientName,
+          birth:
+            image.data.string('x00100030') && image.data.string('x00100030') !== '00000000'
+              ? image.data.string('x00100030')
+              : getBirth(patients.identityNumber),
 
-        sex:
-          image.data.string('x00100040') && image.data.string('x00100040') !== '**'
-            ? image.data.string('x00100040')
-            : patients.gender_dictText,
+          sex: image.data.string('x00100040') && image.data.string('x00100040') !== '**' ? image.data.string('x00100040') : patients.gender_dictText,
 
-        age: patients.age ? patients.age : '**',
+          age: patients.age ? patients.age : '**',
 
-        patientId:
-          image.data.string('x00100020') && image.data.string('x00100020') !== '**'
-            ? image.data.string('x00100020')
-            : patients.patientId,
+          patientId: image.data.string('x00100020') && image.data.string('x00100020') !== '**' ? image.data.string('x00100020') : patients.patientId,
 
-        hospital:
-          image.data.string('x00080080') && image.data.string('x00080080') !== '**'
-            ? image.data.string('x00080080')
-            : patients.hospitalShortName,
+          hospital: image.data.string('x00080080') && image.data.string('x00080080') !== '**' ? image.data.string('x00080080') : patients.hospitalShortName,
 
-        studyID: image.data.string('x00200010'),
+          studyID: image.data.string('x00200010'),
 
-        seriesNo: image.data.string('x00200011'),
-        seriesDescription: image.data.string('x0008103e'),
+          seriesNo: image.data.string('x00200011'),
+          seriesDescription: image.data.string('x0008103e'),
 
-        sliceThickness: image.data.string('x00180050'),
-        sliceLocation: image.data.string('x00201041'),
+          sliceThickness: image.data.string('x00180050'),
+          sliceLocation: image.data.string('x00201041'),
 
-        day: image.data.string('x00080022')
-          ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date')
-          : patients.studyTime && patients.studyTime.split(' ')[0],
-        time: image.data.string('x00080022')
-          ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time')
-          : patients.studyTime && patients.studyTime.split(' ')[1],
+          day: image.data.string('x00080022')
+            ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'date')
+            : patients.studyTime && patients.studyTime.split(' ')[0],
+          time: image.data.string('x00080022')
+            ? dicomDateTimeToLocale(image.data.string('x00080022') + '.' + image.data.string('x00080032'), 'time')
+            : patients.studyTime && patients.studyTime.split(' ')[1],
 
-        Rowsize: image.rows,
-        Colsize: image.columns,
+          Rowsize: image.rows,
+          Colsize: image.columns,
+        }
+        setData(data)
+      } else {
+        const data = {
+          name: '****',
+          birth: '****',
+          sex: '****',
+          age: '****',
+          patientId: '*****',
+          hospital: '*****',
+          studyID: '*****',
+
+          seriesNo: image.data.string('x00200011'),
+          seriesDescription: image.data.string('x0008103e'),
+
+          sliceThickness: image.data.string('x00180050'),
+          sliceLocation: image.data.string('x00201041'),
+
+          day: '',
+          time: '',
+
+          Rowsize: image.rows,
+          Colsize: image.columns,
+        }
+        setData(data)
       }
-      setData(data)
     })
-  }, [props.imageId, patients])
+  }, [props.imageId, patients, username])
 
   return (
     <ul className="custom-overlay-box">
@@ -105,8 +129,7 @@ const CustomOverlay = props => {
           <div className="list">
             图像帧：
             <span>
-              {props.stackSize - props.imageIndex + 1} / {props.stackSize}（正序：{props.imageIndex - 1} /{' '}
-              {props.stackSize}）
+              {props.stackSize - props.imageIndex + 1} / {props.stackSize}（正序：{props.imageIndex - 1} / {props.stackSize}）
             </span>
           </div>
           <div className="list">
@@ -161,12 +184,17 @@ const CustomOverlay = props => {
           <div className="list">
             位置：<span>{data?.sliceLocation} mm</span>
           </div>
-          <div className="list">
-            检查日期：<span>{data?.day}</span>
-          </div>
-          <div className="list">
-            检查时间：<span>{data?.time}</span>
-          </div>
+          {data?.day ? (
+            <div className="list">
+              检查日期：<span>{data?.day}</span>
+            </div>
+          ) : null}
+
+          {data?.time ? (
+            <div className="list">
+              检查时间：<span>{data?.time}</span>
+            </div>
+          ) : null}
         </div>
       </div>
 
