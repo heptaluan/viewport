@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './AddNewNode.scss'
-import { Radio, Select, Input } from 'antd'
+import { Radio, Select, Button, Input } from 'antd'
 import cornerstone from 'cornerstone-core'
 
 const { Option } = Select
