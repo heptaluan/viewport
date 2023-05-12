@@ -16,7 +16,7 @@ export const ossKeyUrl = '/preview/archive_images/'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 // axios.defaults.headers.common['X-Access-Token'] =
-  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM3MzMyNTQsInVzZXJuYW1lIjoiVExTWjAwNCJ9.Kx27in72CngytqLb8os0Jp7gYAxWio_5zr77IyJOjNA'
+  // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODM4MTM3NjEsInVzZXJuYW1lIjoieHdqIn0.von9e1zvU2OTi9qFcZqjM9qXuMqQB_iu4FmxCFLdmYQ'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>

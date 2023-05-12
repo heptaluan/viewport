@@ -213,6 +213,8 @@ const Viewer = () => {
         }
       } else if (!getURLParameters(window.location.href).user) {
         fetcImagehData(null)
+      } else if (getURLParameters(window.location.href).requestType === 'order') {
+        getDnReslutByOrderId()
       } else {
         fetchDoctorData()
       }
