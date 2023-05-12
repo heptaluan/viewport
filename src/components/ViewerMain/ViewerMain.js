@@ -4,6 +4,7 @@ import './ViewerMain.scss'
 import useWindowSize from '../../hook/useWindowSize'
 import Toolbar from '../../components/Toolbar/Toolbar'
 import CustomOverlay from '../common/CustomOverlay/CustomOverlay'
+import ScrollBar from '../ScrollBar/ScrollBar'
 import { Spin } from 'antd'
 
 const ViewerMain = props => {
@@ -12,10 +13,15 @@ const ViewerMain = props => {
     <div className="viewer-main-box">
       {props.imagesConfig.length === 0 ? (
         <div className="error-tips">
-          <Spin tip="正在加载，请稍后……" />
+          <Spin tip="加载失败，请重新尝试" />
         </div>
       ) : (
         <div>
+          {/* <ScrollBar
+            noduleList={props.noduleList}
+            imageIds={props.imagesConfig}
+            handleScorllClicked={props.handleScorllClicked}
+          /> */}
           <Toolbar
             handleSliderChange={props.handleSliderChange}
             handleToolbarClick={props.handleToolbarClick}
@@ -31,8 +37,10 @@ const ViewerMain = props => {
             imageIds={props.imagesConfig}
             style={{
               minWidth: '100%',
-              height: `${size.height - 85}px`,
+              height: props.pageType === 'detail' ? `${size.height}px` : `${size.height - 85}px`,
               flex: '1',
+              // paddingRight: 15,
+              paddingRight: 0
             }}
           />
         </div>
