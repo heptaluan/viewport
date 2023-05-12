@@ -16,11 +16,7 @@ const Header = props => {
   const params = qs.parse(useLocation().search)
 
   const handleDownLoad = () => {
-<<<<<<< HEAD
     downloadZip(params.orderId, params.resource).then(res => {
-=======
-    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(res => {
->>>>>>> 4fa24f9b1843a8ebf0c8b30f96497ffc7f980cfb
       const { result, success, message } = res.data
       if (success) {
         window.open(result, '_blank')
@@ -37,9 +33,7 @@ const Header = props => {
         setFileData([])
       } else if (result.data.code === 200) {
         setFileData(result.data.result.appendix)
-        if (result.data.result.remark) {
-          setRemark(result.data.result.remark.replace(/\n/g, '<br />'))
-        }
+        setRemark(result.data.result.remark)
       }
     }
     fetchData()
@@ -78,7 +72,7 @@ const Header = props => {
                         title={
                           <>
                             <div>补充说明</div>
-                            <span className="remark-content" dangerouslySetInnerHTML={{ __html: remark }}></span>
+                            <span className="remark-content">{remark}</span>
                           </>
                         }
                         okText="确定"
@@ -100,13 +94,7 @@ const Header = props => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-<<<<<<< HEAD
                   href={`/ct/viewer/1?&url=/api&taskId=${item.historyTaskId}&orderId=${item.historyOrderId}&resource=${item.historyDicomId}&token=${params.token}&user=admin&page=review&from=history`}
-=======
-                  href={`/ct/viewer/1?&url=/api&taskId=${item.historyTaskId}&orderId=${item.historyOrderId}&resource=${item.historyDicomId}&token=${
-                    getURLParameters(window.location.href).token
-                  }&user=admin&page=review&from=history`}
->>>>>>> 4fa24f9b1843a8ebf0c8b30f96497ffc7f980cfb
                 >
                   <Tooltip placement="bottom" title={'历史影像'}>
                     <Button size="small" style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
