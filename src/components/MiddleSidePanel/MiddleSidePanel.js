@@ -3,7 +3,7 @@ import './MiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Tag, Tooltip } from 'antd'
 import { getURLParameters, formatNodeStyle, formatMiniNodule } from '../../util/index'
-import { QuestionCircleOutlined } from '@ant-design/icons'
+import { QuestionCircleOutlined, InfoCircleOutlined } from '@ant-design/icons'
 
 const MiddleSidePanel = props => {
   const handleListClick = (index, num) => {
@@ -34,8 +34,8 @@ const MiddleSidePanel = props => {
         由 微小结节 调整为 非微小结节 <span style={{ background: '#ff0000', padding: '0 4px' }}>红色</span>
       </div>
       <hr />
-      注意：只有 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span> 与{' '}
-      <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span> 为微小结节
+      注意：只有 <span style={{ background: '#34c0ff', padding: '0 4px' }}>蓝色</span> 与 <span style={{ background: '#02b919', padding: '0 4px' }}>绿色</span>{' '}
+      为微小结节
     </div>
   )
 
@@ -76,10 +76,17 @@ const MiddleSidePanel = props => {
           <div id="tableIItemBox" className="table-content">
             {props.noduleList?.map((item, index) => (
               <div
-                key={item.id}
+                key={index}
                 className={`table-item ${item.nodeType === 1 ? 'add-item' : ''} ${formatNodeStyle(item)}`}
                 onClick={e => handleListClick(index, item.num)}
+                onDoubleClick={() => props.handleShowCompareModal(item)}
               >
+                {item.differentKey ? (
+                  <Tooltip className='node-tips' placement="topLeft" title={'此结节属性李主任进行过调整'}>
+                    <InfoCircleOutlined style={{ color: '#f5222d', fontSize: 12 }} />
+                  </Tooltip>
+                ) : null}
+
                 {/* <div className="icon">{item.id}</div> */}
                 <Checkbox onChange={e => props.onCheckChange(index, item.num)} checked={item.checked}>
                   <div className="index">{index + 1}</div>
@@ -97,11 +104,9 @@ const MiddleSidePanel = props => {
                 </div>
                 <div className="action review-state">
                   {getURLParameters(window.location.href).user === 'chief_lwx' ? (
-                    <span className={item.chiefReview ? 'review' : null}>
-                      {item.chiefReview === true ? '已复核' : '未复核'}
-                    </span>
+                    <span className={item.isFinish === 1 ? 'review' : null}>{item.isFinish === 1 ? '已复核' : '未复核'}</span>
                   ) : (
-                    <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
+                    <span className={item.isFinish === 1 ? 'review' : null}>{item.isFinish === 1 ? '已检阅' : '未检阅'}</span>
                   )}
                 </div>
                 {/* {getURLParameters(window.location.href).user === 'chief_lwx' ? (
@@ -129,14 +134,9 @@ const MiddleSidePanel = props => {
             <div id="viewerItemBox" className="report-content">
               {props.noduleList?.map((item, index) => {
                 return item.checked ? (
-                  <div
-                    key={item.id}
-                    className={`viewer-item ${item.active ? 'item-active' : ''}`}
-                    onClick={e => props.handleCheckedListClick(item.num)}
-                  >
-                    于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
-                    结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                    <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
+                  <div key={index} className={`viewer-item ${item.active ? 'item-active' : ''}`} onClick={e => props.handleCheckedListClick(item.num)}>
+                    于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabel}</span> 结节，类型为 <span>{item.type}</span>，大小约{' '}
+                    <span>{item.diameter}</span>，体积约 <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
                     <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                   </div>
                 ) : null

@@ -11,12 +11,12 @@ export const ossKeyUrl = '/preview/archive_images/'
 // export const ossKeyUrl = '/prod/archive_images/'
 
 // http://localhost:3000/ct/viewer/1?&url=/api&type=undefined&id=1503929871832645633&orderId=1503628225604390914&user=doctor&resource=1503913389228199938&state=undefined&taskId=1503929871832645633&doctorId=1503929871832645633&backId=undefined&backType=check&page=review&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTYyNjg4MTQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.w-8bVodwtdCgOUCTPKa-nWVeYFvTjICQxmUDl3pnGEA
-// const basicUrl = 'http://139.196.114.118:9999'
+// // const basicUrl = 'http://139.196.114.118:9999'
 // const basicUrl = 'https://yyds.ananpan.com/api'
 // const basicUrl = 'http://192.168.1.204/api'
 // const basicUrl = 'https://ai.feipankang.com/api'
 // axios.defaults.headers.common['X-Access-Token'] =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODA1NDc4MjYsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.pkMLbeOxdSY2jL7sk1DdxlflOPJgX2skotw5a7dS8fk'
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODMyMTE2MDYsInVzZXJuYW1lIjoi5p2o5biGIn0.enLKVdYfJSFqRGyBIcL7OKQVs9sX0ZIf9mKtp178vG4'
 
 // 获取序列列表（0-详情，1-订单跳转）
 export const getMedicalList = (id, type) =>
@@ -24,14 +24,17 @@ export const getMedicalList = (id, type) =>
 
 // 获取影像列表
 export const getImageList = resource =>
-  axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/instance/list?column=z_position&order=asc&archiveTaskId=${resource}`)
+  axios.get(
+    `${basicUrl}/tailai-multiomics/multiomics/medicalImage/instance/list?column=z_position&order=asc&archiveTaskId=${resource}`
+  )
 
 // 查看临床影像
 export const getClinicalFiles = orderId =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/bizAppendix/findCtDiagnoseByOrder/${orderId}`)
 
 // 获取病人信息
-export const getPatientsList = id => axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
+export const getPatientsList = id =>
+  axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
 
 // 获取结节列表（管理员）
 export const getNodeList = id => axios.get(`${basicUrl}/report/image/getDnResult?id=${id}`)
@@ -45,9 +48,27 @@ export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task
 // 查看结节列表历史记录
 export const getDoctorHistoryTask = id => axios.get(`${basicUrl}/report/doctorTask/historyTask?id=${id}`)
 
+// ===========================================
+
+// ===========================================
+
+// ===========================================
+
+// 获取新的结节列表与影像
+export const getImageReslutByOrderId = orderId => axios.get(`${basicUrl}/report/image/getImageReslutByOrderId?Oid=${orderId}`)
+
+
 // 保存结果
-export const saveDnResult = params =>
-  axios.post(`${basicUrl}/report/doctorTask/saveTask`, params, {
+// export const updateNodeResult = params =>
+//   axios.post(`${basicUrl}/report/doctorTask/saveTask`, params, {
+//     headers: {
+//       'Content-Type': 'application/json;charset=UTF-8',
+//     },
+//   })
+
+// 保存结果（最新）
+export const updateNodeResult = params =>
+  axios.post(`${basicUrl}/report/image/updateNodeResult`, params, {
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
     },
@@ -85,9 +106,25 @@ export const addNewNodeList = params =>
     },
   })
 
-// 新增结节（最新）
+// 新增结节（计算风险）
 export const addNewNodeList2 = params =>
   axios.post(`https://ct.feipankang.com/image/new2`, params, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+// 新增结节（增加结节）
+export const addNodeSourceDetail = params =>
+  axios.post(`${basicUrl}/report/nodeSourceDetail/add`, params, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+// 删除结节
+export const deleteNodeSourceDetail = id =>
+  axios.get(`${basicUrl}/report/nodeSourceDetail/delete?id=${id}`, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -96,3 +133,27 @@ export const addNewNodeList2 = params =>
 // 下载文件
 export const downloadZip = (orderId, resource) =>
   axios.get(`${basicUrl}/multiomics/medicalImage/getPreSignedUrl?orderId=${orderId}&taskId=${resource}`)
+
+// 随访接口列表
+export const loadNodeRelation = (oldId, newId) =>
+  axios.get(`${basicUrl}/report/nodeRelation/load?oldId=${oldId}&newId=${newId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+// 随访关联结节
+export const addNodeRelation = params =>
+  axios.post(`${basicUrl}/report/nodeRelation/add`, params, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+// 随访取消关联结节
+export const deleteNodeRelation = id =>
+  axios.get(`${basicUrl}/report/nodeRelation/delete?id=${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })

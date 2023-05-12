@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import './Header.scss'
 import { Button, Image, Space, Alert, Popconfirm, Tooltip } from 'antd'
-import { getURLParameters } from '../../util/index'
 import { getClinicalFiles, downloadZip } from '../../api/api'
 import { RightCircleOutlined, FileDoneOutlined } from '@ant-design/icons'
+import { useHistory } from 'react-router-dom'
+import qs from 'query-string'
+import { useLocation } from 'react-router-dom'
 
 const Header = props => {
   const [visible, setVisible] = useState(false)
   const [fileData, setFileData] = useState([])
   const [remark, setRemark] = useState('')
 
+  const history = useHistory()
+  const params = qs.parse(useLocation().search)
+
   const handleDownLoad = () => {
-    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(res => {
+    downloadZip(params.orderId, params.resource).then(res => {
       const { result, success, message } = res.data
       if (success) {
         window.open(result, '_blank')
@@ -23,14 +28,12 @@ const Header = props => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getClinicalFiles(getURLParameters(window.location.href).orderId)
+      const result = await getClinicalFiles(params.orderId)
       if (result.data.code === 500) {
         setFileData([])
       } else if (result.data.code === 200) {
         setFileData(result.data.result.appendix)
-        if (result.data.result.remark) {
-          setRemark(result.data.result.remark.replace(/\n/g, '<br />'))
-        }
+        setRemark(result.data.result.remark)
       }
     }
     fetchData()
@@ -44,7 +47,7 @@ const Header = props => {
   return (
     <div className="header-box">
       <div className="user-content">
-        {props.data?.patientName && getURLParameters(window.location.href).page === 'image' ? (
+        {props.data?.patientName && params.page === 'image' ? (
           <div className="patient-detail">
             <span>姓名：{props.data.patientName}，</span>
             <span>性别：{props.data.gender_dictText}，</span>
@@ -69,7 +72,7 @@ const Header = props => {
                         title={
                           <>
                             <div>补充说明</div>
-                            <span className="remark-content" dangerouslySetInnerHTML={{ __html: remark }}></span>
+                            <span className="remark-content">{remark}</span>
                           </>
                         }
                         okText="确定"
@@ -91,9 +94,7 @@ const Header = props => {
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`/ct/viewer/1?&url=/api&taskId=${item.historyTaskId}&orderId=${item.historyOrderId}&resource=${item.historyDicomId}&token=${
-                    getURLParameters(window.location.href).token
-                  }&user=admin&page=review&from=history`}
+                  href={`/ct/viewer/1?&url=/api&taskId=${item.historyTaskId}&orderId=${item.historyOrderId}&resource=${item.historyDicomId}&token=${params.token}&user=admin&page=review&from=history`}
                 >
                   <Tooltip placement="bottom" title={'历史影像'}>
                     <Button size="small" style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
@@ -125,6 +126,19 @@ const Header = props => {
             )
           )}
 
+          {props.historyList.length > 0 ? (
+            <Button
+              style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}
+              onClick={e => {
+                history.push(
+                  `/compareBox?backType=${params.backType}&doctorId=${params.doctorId}&id=${params.id}&orderId=${params.orderId}&page=${params.page}&resource=${params.resource}&taskId=${params.taskId}&token=${params.token}&url=${params.url}&user=${params.user}&oldHisId=${props.historyList[0].historyDicomId}&newHisId=${props.historyList[1].historyDicomId}&oldOrdId=${props.historyList[0].historyOrderId}&newOrdId=${props.historyList[1].historyOrderId}`
+                )
+              }}
+            >
+              随访比对
+            </Button>
+          ) : null}
+
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0
               ? `暂无临床影像`
@@ -135,11 +149,7 @@ const Header = props => {
             影像下载
           </Button>
 
-          <Button
-            disabled={props.pageState === 'admin' || getURLParameters(window.location.href).from === 'history'}
-            type="primary"
-            onClick={props.handleShowModal}
-          >
+          <Button disabled={props.pageState === 'admin' || params.from === 'history'} type="primary" onClick={props.handleShowModal}>
             提交审核结果
           </Button>
         </div>

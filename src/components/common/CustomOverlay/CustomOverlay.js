@@ -50,31 +50,17 @@ const CustomOverlay = props => {
   useEffect(() => {
     cornerstone.loadImage(props.imageId).then(image => {
       const data = {
-        name:
-          image.data.string('x00100010') && image.data.string('x00100010') !== '**'
-            ? image.data.string('x00100010')
-            : patients.patientName,
+        name: image.data.string('x00100010') && image.data.string('x00100010') !== '**' ? image.data.string('x00100010') : patients.patientName,
         birth:
-          image.data.string('x00100030') && image.data.string('x00100030') !== '00000000'
-            ? image.data.string('x00100030')
-            : getBirth(patients.identityNumber),
+          image.data.string('x00100030') && image.data.string('x00100030') !== '00000000' ? image.data.string('x00100030') : getBirth(patients.identityNumber),
 
-        sex:
-          image.data.string('x00100040') && image.data.string('x00100040') !== '**'
-            ? image.data.string('x00100040')
-            : patients.gender_dictText,
+        sex: image.data.string('x00100040') && image.data.string('x00100040') !== '**' ? image.data.string('x00100040') : patients.gender_dictText,
 
         age: patients.age ? patients.age : '**',
 
-        patientId:
-          image.data.string('x00100020') && image.data.string('x00100020') !== '**'
-            ? image.data.string('x00100020')
-            : patients.patientId,
+        patientId: image.data.string('x00100020') && image.data.string('x00100020') !== '**' ? image.data.string('x00100020') : patients.patientId,
 
-        hospital:
-          image.data.string('x00080080') && image.data.string('x00080080') !== '**'
-            ? image.data.string('x00080080')
-            : patients.hospitalShortName,
+        hospital: image.data.string('x00080080') && image.data.string('x00080080') !== '**' ? image.data.string('x00080080') : patients.hospitalShortName,
 
         studyID: image.data.string('x00200010'),
 
@@ -105,8 +91,7 @@ const CustomOverlay = props => {
           <div className="list">
             图像帧：
             <span>
-              {props.stackSize - props.imageIndex + 1} / {props.stackSize}（正序：{props.imageIndex - 1} /{' '}
-              {props.stackSize}）
+              {props.stackSize - props.imageIndex + 1} / {props.stackSize}（正序：{props.imageIndex} / {props.stackSize}）
             </span>
           </div>
           <div className="list">
