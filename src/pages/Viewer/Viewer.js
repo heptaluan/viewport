@@ -1056,6 +1056,7 @@ const Viewer = () => {
 
   // 提交审核结果按钮
   const handleUpdateResult = () => {
+<<<<<<< HEAD
     if (params.user === 'chief_lwx') {
       if (!noduleList.every(item => item.isFinish === 1)) {
         message.warning(`请复核完所有结节后在进行结果提交`)
@@ -1064,10 +1065,26 @@ const Viewer = () => {
       setVisible(true)
     } else {
       if (noduleList.every(item => item.isFinish === 1)) {
+=======
+    formatPostData()
+    if (getURLParameters(window.location.href).user === 'chief_lwx') {
+      // if (!noduleList.every(item => item.chiefReview === true)) {
+      //   message.warning(`请复核完所有结节后在进行结果提交`)
+      //   return false
+      // }
+
+      // if (!noduleList.every(item => item.markNode === true)) {
+      //   message.warning(`请标记完所有良性样本后在进行结果提交`)
+      //   return false
+      // }
+      setVisible(true)
+    } else {
+      // if (noduleList.every(item => item.review === true)) {
+>>>>>>> 4fa24f9b1843a8ebf0c8b30f96497ffc7f980cfb
         setVisible(true)
-      } else {
-        message.warning(`请检阅完所有结节后在进行结果提交`)
-      }
+      // } else {
+      //   message.warning(`请检阅完所有结节后在进行结果提交`)
+      // }
     }
   }
 
