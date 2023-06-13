@@ -40,7 +40,7 @@ const Login = () => {
         localStorage.setItem('info', info.data.roles[0])
         localStorage.setItem('username', info.data.user.nickName)
         message.success(`登录成功`)
-        history.push(`/studyList`)
+        history.push(`/fourBenignList`)
       } else if (info.data.code === 500) {
         handleClearLocalStorage()
         message.warning(`获取用户角色失败，请重新登录`)

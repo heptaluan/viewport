@@ -44,12 +44,15 @@ const MenuList = props => {
       history.push('/allNoduleList')
     }
 
+    if (e.key === '4-0') {
+      history.push('/fourBenignList')
+    }
   }
 
   return (
     <div className="meau-box">
       <Menu defaultSelectedKeys={[props.defaultSelectedKeys]} onClick={e => handleChangeMenu(e)}>
-        <Menu.Item key="1">{props.userInfo === 'chief' ? '商检结节列表' : '良性结节二筛列表'}</Menu.Item>
+        {/* <Menu.Item key="1">{props.userInfo === 'chief' ? '商检结节列表' : '良性结节二筛列表'}</Menu.Item> */}
         {props.userInfo === 'chief' ? <Menu.Item key="2">分配列表</Menu.Item> : ''}
         <Menu.Item key="3">多组学结节列表</Menu.Item>
 
@@ -82,6 +85,10 @@ const MenuList = props => {
               <Menu.Item key="3-4">良性结节列表</Menu.Item>
             </>
           )}
+        </Menu.ItemGroup>
+
+        <Menu.ItemGroup title="第三批软标签">
+          <Menu.Item key="4-0">良性结节列表</Menu.Item>
         </Menu.ItemGroup>
       </Menu>
     </div>

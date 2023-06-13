@@ -22,11 +22,27 @@ import ThirdStndrdList from '../pages/Third/ThirdStndrdList/ThirdStndrdList'
 import ThirdChiefStndrdList from '../pages/Third/ThirdChiefStndrdList/ThirdChiefStndrdList'
 import AllNoduleList from '../pages/Third/AllNoduleList/AllNoduleList'
 
+// 第三批软标签
+import FourBenignList from '../pages/Four/FourBenignList/FourBenignList'
+import FourViewer from '../pages/Four/FourViewer/FourViewer'
+
 const routes = [
   {
     path: '/',
     component: IndexComponent,
     routes: [
+      // 最新的一批软标签
+      {
+        path: '/fourBenignList',
+        component: FourBenignList,
+        routes: [],
+      },
+      {
+        path: '/fourViewer',
+        component: FourViewer,
+        routes: [],
+      },
+      // =============================
       {
         path: '/login',
         component: Login,

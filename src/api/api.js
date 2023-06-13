@@ -16,6 +16,36 @@ axios.interceptors.request.use(
   }
 )
 
+// 最新的，第三批数据审核，只有良恶选项
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+// 获取对应的影像列表
+export const getFourViewerImageList = pcode => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.1.107:19000/sortlist/--3000_158--${pcode}/`)
+}
+
+// 获取良性结节列表
+export const getFourBenignList = (isFinish, searchId) => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId || ''}&project=3`)
+}
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
 // 获取验证码
 export const getCodeImg = _ => {
   axios.defaults.headers.common['Authorization'] = ''
