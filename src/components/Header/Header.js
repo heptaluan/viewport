@@ -11,16 +11,14 @@ const Header = props => {
   const [remark, setRemark] = useState('')
 
   const handleDownLoad = () => {
-    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(
-      res => {
-        const { result, success, message } = res.data
-        if (success) {
-          window.open(result, '_blank')
-        } else {
-          message.warning(message)
-        }
+    downloadZip(getURLParameters(window.location.href).orderId, getURLParameters(window.location.href).resource).then(res => {
+      const { result, success, message } = res.data
+      if (success) {
+        window.open(result, '_blank')
+      } else {
+        message.warning(message)
       }
-    )
+    })
   }
 
   useEffect(() => {
@@ -29,7 +27,8 @@ const Header = props => {
       if (result.data.code === 500) {
         setFileData([])
       } else if (result.data.code === 200) {
-        setFileData(result.data.result.appendix)
+        console.log(result.data.result.appendix);
+        setFileData(result.data.result.appendix.filter(item => item.fileSuffix === 'jpg' || item.fileSuffix === 'png'))
         setRemark(result.data.result.remark)
       }
     }
@@ -102,11 +101,7 @@ const Header = props => {
                     </Button>
                   </Tooltip>
                 </a>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://ai.feipankang.com/preview/${item.historyOrderId}`}
-                >
+                <a target="_blank" rel="noopener noreferrer" href={`https://ai.feipankang.com/preview/${item.historyOrderId}`}>
                   <Tooltip placement="bottom" title={'历史报告'}>
                     <Button size="small" style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}>
                       <FileDoneOutlined />
@@ -130,11 +125,7 @@ const Header = props => {
           )}
 
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
-            {fileData.length === 0
-              ? `暂无临床影像`
-              : `查看临床影像（共${
-                  fileData.filter(item => item.fileSuffix === 'jpg' || item.fileSuffix === 'png').length
-                }页）`}
+            {fileData.length === 0 ? `暂无临床影像` : `查看临床影像（共${fileData.length}页）`}
           </Button>
 
           <Button onClick={handleDownLoad} style={{ marginRight: 10 }}>

@@ -5,10 +5,10 @@ const basicUrl = getURLParameters(window.location.href).url
 axios.defaults.headers.common['X-Access-Token'] = getURLParameters(window.location.href).token
 
 // yyds
-export const ossKeyUrl = '/preview/archive_images/'
+// export const ossKeyUrl = '/preview/archive_images/'
 
 // 正式机
-// export const ossKeyUrl = '/prod/archive_images/'
+export const ossKeyUrl = '/prod/archive_images/'
 
 // http://localhost:3000/ct/viewer/1?&url=/api&type=undefined&id=1503929871832645633&orderId=1503628225604390914&user=doctor&resource=1503913389228199938&state=undefined&taskId=1503929871832645633&doctorId=1503929871832645633&backId=undefined&backType=check&page=review&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTYyNjg4MTQsInVzZXJuYW1lIjoiZG9jdG9yX3Rlc3QifQ.w-8bVodwtdCgOUCTPKa-nWVeYFvTjICQxmUDl3pnGEA
 // // const basicUrl = 'http://139.196.114.118:9999'
