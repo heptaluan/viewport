@@ -47,6 +47,10 @@ const MenuList = props => {
     if (e.key === '4-0') {
       history.push('/fourBenignList')
     }
+
+    if (e.key === '5-0') {
+      history.push('/fiveBenignList')
+    }
   }
 
   return (
@@ -89,6 +93,10 @@ const MenuList = props => {
 
         <Menu.ItemGroup title="第三批软标签">
           <Menu.Item key="4-0">良性结节列表</Menu.Item>
+        </Menu.ItemGroup>
+
+        <Menu.ItemGroup title="第四批软标签">
+          <Menu.Item key="5-0">良性结节列表</Menu.Item>
         </Menu.ItemGroup>
       </Menu>
     </div>

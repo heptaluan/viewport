@@ -26,11 +26,26 @@ import AllNoduleList from '../pages/Third/AllNoduleList/AllNoduleList'
 import FourBenignList from '../pages/Four/FourBenignList/FourBenignList'
 import FourViewer from '../pages/Four/FourViewer/FourViewer'
 
+// 第四批软标签
+import FiveBenignList from '../pages/Five/FiveBenignList/FiveBenignList'
+import FiveViewer from '../pages/Five/FiveViewer/FiveViewer'
+
 const routes = [
   {
     path: '/',
     component: IndexComponent,
     routes: [
+      // 7-20
+      {
+        path: '/fiveBenignList',
+        component: FiveBenignList,
+        routes: [],
+      },
+      {
+        path: '/fiveViewer',
+        component: FiveViewer,
+        routes: [],
+      },
       // 最新的一批软标签
       {
         path: '/fourBenignList',

@@ -2,9 +2,9 @@ import axios from 'axios'
 // import { getURLParameters } from '../util/index'
 
 // const basicUrl = `http://192.168.11.99:18080/dev-api`
-// const basicUrl = `http://192.168.11.53:16880`
+const basicUrl = `http://192.168.11.53:16880`
 // const basicUrl = `http://ky.feipankang.com/api`
-const basicUrl = `http://192.168.1.64:16880`
+// const basicUrl = `http://192.168.1.64:16880`
 // const basicUrl = `http://192.168.11.99:16880`
 
 axios.interceptors.request.use(
@@ -15,6 +15,44 @@ axios.interceptors.request.use(
     return Promise.reject(err)
   }
 )
+
+// 7-20 临时添加，复制的第三批数据审核
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+// 获取详情
+export const getFiveResearchDetail = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/research/detail/${id}`)
+}
+
+// 获取对应的影像列表
+export const getFiveViewerImageList = pcode => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`http://192.168.1.107:19001/sortlist/${pcode}/`)
+}
+
+// 获取良性结节列表
+export const getFiveBenignList = (isFinish, searchId) => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/research/list?isFinish=${isFinish}&kyPrimaryId=${searchId || ''}&project=4`)
+}
+
+// 暂存二筛结果
+export const researchUpdateResult = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`${basicUrl}/research/updateResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
 
 // 最新的，第三批数据审核，只有良恶选项
 
@@ -87,7 +125,9 @@ export const getMissionList = (isFinish, searchId) => {
 // 获取分配列表
 export const getAssignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/primary/primaryList?isAssign=${params.isAssign}&name=${params.name}&pcode=${params.pcode}`)
+  return axios.get(
+    `${basicUrl}/primary/primaryList?isAssign=${params.isAssign}&name=${params.name}&pcode=${params.pcode}`
+  )
 }
 
 // 获取可分配医生列表
@@ -175,25 +215,37 @@ export const assignList = params => {
 // 金标准列表（李主任）
 export const getSecondChiefStndrdList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`)
+  return axios.get(
+    `${basicUrl}/thirdMark/chiefList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`
+  )
 }
 
 // 良性结节列表（李主任）
 export const getSecondChiefBenignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=1`)
+  return axios.get(
+    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${
+      params.isFinish
+    }&batchId=1`
+  )
 }
 
 // 获取金标准列表（医生）
 export const getMarkList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`)
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=1`
+  )
 }
 
 // 获取良性结节列表（医生）
 export const getBenignNoduleList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=1`)
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${
+      params.isFinish
+    }&batchId=1`
+  )
 }
 
 // 新的结节详情（金标准）
@@ -270,22 +322,28 @@ export const getThirdChiefStndrdList = params => {
 export const getThirdChiefBenignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
   return axios.get(
-    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&staffCount=${
-      params.staffCount
-    }&batchId=2`
+    `${basicUrl}/thirdMark/chiefList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${
+      params.isFinish
+    }&staffCount=${params.staffCount}&batchId=2`
   )
 }
 
 // 三千金标准列表（医生）
 export const getThirdStndrdList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=2`)
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=2&imageCode=${params.imageCode}&isFinish=${params.isFinish}&batchId=2`
+  )
 }
 
 // 获取良性结节列表（医生）
 export const getThirdBenignList = params => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${params.isFinish}&batchId=2`)
+  return axios.get(
+    `${basicUrl}/thirdMark/getTaskList?type=1&kyPrimaryId=${params.kyPrimaryId || ''}&isFinish=${
+      params.isFinish
+    }&batchId=2`
+  )
 }
 
 // 三千金标准详情（李主任用，医生还是走之前的二筛流程）
@@ -346,7 +404,8 @@ export const getClinicalFiles = orderId =>
   axios.get(`${basicUrl}/tailai-multiomics/multiomics/bizAppendix/findCtDiagnoseByOrder/${orderId}`)
 
 // 获取病人信息
-export const getPatientsList = id => axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
+export const getPatientsList = id =>
+  axios.get(`${basicUrl}/tailai-multiomics/multiomics/medicalImage/taskMedicalCaseView/list?id=${id}`)
 
 // 获取结节列表（医生）
 export const getDoctorTask = id => axios.get(`${basicUrl}/report/doctorTask/task?id=${id}`)
