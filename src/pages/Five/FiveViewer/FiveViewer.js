@@ -10,7 +10,7 @@ import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNodule
 import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../../components/common/MarkDialog/MarkDialog'
 import {
-  getNodeList,
+  newResult,
   getFiveResearchDetail,
   addSecondprimaryResult,
   researchUpdateResult,
@@ -18,7 +18,7 @@ import {
 } from '../../../api/api'
 import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
-import AddNewNode from '../../../components/common/AddNewNode/AddNewNode'
+import FiveAddNewNode from '../FiveAddNewNode/FiveAddNewNode'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
@@ -199,7 +199,7 @@ const FiveViewer = () => {
         checked: false,
         state: resultInfo && resultInfo.isBenign ? resultInfo.isBenign : 0,
         review: resultInfo && resultInfo.isFinish === 1 ? true : false,
-        type: resultInfo && resultInfo.featuresType ? resultInfo.featuresType : res.featureLabel,
+        type: resultInfo && resultInfo.featureLabel ? resultInfo.featureLabel : res.featureLabel,
         noduleName: `nodule_${res.id}`,
       })
 
@@ -226,14 +226,14 @@ const FiveViewer = () => {
   // 重新请求，刷新数据
   const fetchDoctorData = async callback => {
     const result = await getFiveResearchDetail(params.id)
-      if (result.data.code === 200) {
-        formatFiveResearchNodeData(result.data.data)
-        fetcImagehData(result.data.data.url)
-        callback && callback()
-      } else if (result.data.code === 401) {
-        message.warning(`登录已失效，请重新登录`)
-        history.push('/login')
-      }
+    if (result.data.code === 200) {
+      formatFiveResearchNodeData(result.data.data)
+      fetcImagehData(result.data.data.url)
+      callback && callback()
+    } else if (result.data.code === 401) {
+      message.warning(`登录已失效，请重新登录`)
+      history.push('/login')
+    }
   }
 
   // 获取影像
@@ -355,10 +355,8 @@ const FiveViewer = () => {
     }
   }
 
-
   // 列表点击事件
   const handleCheckedListClick = index => {
-
     // 设置当中帧数
     setCurrentImageIdIndex(index)
 
@@ -386,8 +384,7 @@ const FiveViewer = () => {
 
     if (state !== 0) {
       saveFivePrimaryResults(checkItme)
-    } 
-    
+    }
   }
 
   // 更新结节事件
@@ -422,7 +419,7 @@ const FiveViewer = () => {
 
     if (checkItme.state !== 0) {
       saveFivePrimaryResults(checkItme)
-    } 
+    }
   }
 
   // 更新医生影像建议内容
@@ -791,7 +788,7 @@ const FiveViewer = () => {
   }
 
   // 暂存二筛数据
-  const saveFivePrimaryResults = async checkItme => {
+  const saveFivePrimaryResults = async (checkItme, callback) => {
     const postData = {
       id: checkItme.resultInfoId || undefined,
       nodeId: checkItme.nodeId || undefined,
@@ -807,6 +804,7 @@ const FiveViewer = () => {
         updateCanvasAndList()
       })
       message.success(`结节信息暂存成功`)
+      callback && callback()
     } else if (result.data.code === 401) {
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')
@@ -918,6 +916,7 @@ const FiveViewer = () => {
         startY: data[i].handles.start.y,
         endX: data[i].handles.end.x,
         endY: data[i].handles.end.y,
+        isBenign: 0
       })
     }
     setToolList(toolList)
@@ -935,6 +934,12 @@ const FiveViewer = () => {
     if (checkItme && type === 'type') {
       checkItme.type = val
     }
+    setToolList([...toolList])
+  }
+
+  const updateIsBenign = (val, id) => {
+    const checkItme = toolList.find(item => item.uuid === id)
+    checkItme.isBenign = val
     setToolList([...toolList])
   }
 
@@ -1029,17 +1034,12 @@ const FiveViewer = () => {
     noduleList.push(newNodeData)
     setNoduleList([...noduleList])
 
-    saveResults(callback => {
-      fetchDoctorData(callback => {
-        updateCanvasAndList()
-      })
-    })
-
     setShowRisk(false)
   }
 
   const handleOk = e => {
     for (let i = 0; i < toolList.length; i++) {
+      console.log(toolList[i]);
       if (!toolList[i].lung) {
         message.warn(`请选择结节的肺属性后在进行新增`)
         return false
@@ -1059,52 +1059,55 @@ const FiveViewer = () => {
         message.warn(`请选择结节的肺叶属性后在进行新增`)
         return false
       }
+
+      if (toolList[i].isBenign === 0) {
+        message.warn(`请选择结节的良恶性后在进行新增`)
+        return false
+      }
     }
 
     const postData = {
-      dicom_url: currentDicomFileUrl.replace('wadouri:', '').replace('https://', 'http://'),
-      boxes: [],
+      maxBox: [],
+      imageIndex: currentImageIdIndex,
+      isBenign: toolList[0].isBenign,
+      featureLabel: toolList[0].type,
+      lobeLocation: toolList[0].lobe,
+      lungLocation: toolList[0].lung,
+      kyPrimaryId: noduleList[0].kyPrimaryId,
+      kySecondId: noduleList[0].kySecondId,
     }
 
     if (toolList[0].startX > toolList[0].endX) {
-      postData.boxes = [
+      postData.maxBox = JSON.stringify([
         parseInt(toolList[0].endY),
         parseInt(toolList[0].endX),
         parseInt(toolList[0].startY),
         parseInt(toolList[0].startX),
-      ].join(',')
+      ])
     } else {
-      postData.boxes = [
+      postData.maxBox = JSON.stringify([
         parseInt(toolList[0].startY),
         parseInt(toolList[0].startX),
         parseInt(toolList[0].endY),
         parseInt(toolList[0].endX),
-      ].join(',')
+      ])
     }
-
-    setPostData(postData)
-
-    // startX: rois.bbox[1],
-    // startY: rois.bbox[0],
-    // endX: rois.bbox[3],
-    // endY: rois.bbox[2],
 
     const hide = message.loading('新增结节中，请稍等..', 0)
     setConfirmLoading(true)
 
-    // addNewNodeList(JSON.stringify(postData)).then(res => {
-    //   if (res.data.code === 1) {
-    //     setTimeout(hide)
-    //     setRiskVal(res.data.scrynMaligant)
-    //     setRes(res)
-    //     setShowRisk(true)
-    //   } else {
-    //     message.error(`新增失败，请重新尝试`)
-    //     setTimeout(hide)
-    //     setConfirmLoading(true)
-    //     return false
-    //   }
-    // })
+    newResult(JSON.stringify(postData)).then(res => {
+      if (res.data.code === 200) {
+        setTimeout(hide)
+        fetchDoctorData(callback => {
+          updateCanvasAndList()
+        })
+      } else {
+        message.error(`新增失败，请重新尝试`)
+        setTimeout(hide)
+        return false
+      }
+    })
   }
 
   // 删除结节
@@ -1424,10 +1427,11 @@ const FiveViewer = () => {
           </Draggable>
         )}
       >
-        <AddNewNode
+        <FiveAddNewNode
           handleToolListTextareaChange={handleToolListTextareaChange}
           handleToolListTextareaBlur={handleToolListTextareaBlur}
           updateToolList={updateToolList}
+          updateIsBenign={updateIsBenign}
           currentImageIdIndex={currentImageIdIndex}
           toolList={toolList}
           imagesConfig={imagesConfig}

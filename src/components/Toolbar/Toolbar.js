@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import './Toolbar.scss'
 import IconFont from '../common/IconFont/index'
 import { Tooltip, Button } from 'antd'
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
 
 const toolbarList = [
   {
@@ -130,6 +132,8 @@ const Toolbar = props => {
   const [state, setstate] = useState(toolbarList)
   // const [inputValue, setInputValue] = useState(null)
 
+  const params = qs.parse(useLocation().search)
+
   const handleToolbarClick = (e, index, type) => {
     if (type === 'playClip' || type === 'vflip' || type === 'hflip') {
       state[index].checked = !state[index].checked
@@ -192,7 +196,7 @@ const Toolbar = props => {
       </div>
 
       <div className="submit-btn">
-        <Button disabled onClick={e => props.handleSubmitNodeDetail(e)} size="small">
+        <Button disabled={params.add !== '1'} onClick={e => props.handleSubmitNodeDetail(e)} size="small">
           新增结节
         </Button>
 

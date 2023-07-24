@@ -26,6 +26,16 @@ axios.interceptors.request.use(
 
 // ===========================================================================
 
+// 新增结节
+export const newResult = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(`${basicUrl}/research/newResult`, params, {
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+  })
+}
+
 // 获取详情
 export const getFiveResearchDetail = id => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
