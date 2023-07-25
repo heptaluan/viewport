@@ -126,7 +126,7 @@ const Header = props => {
             )
           )}
 
-          {props.historyList.length > 0 ? (
+          {/* {props.historyList.length > 0 ? (
             <Button
               style={{ marginRight: 10, display: 'flex', alignItems: 'center' }}
               onClick={e => {
@@ -137,7 +137,7 @@ const Header = props => {
             >
               随访比对
             </Button>
-          ) : null}
+          ) : null} */}
 
           <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
             {fileData.length === 0
