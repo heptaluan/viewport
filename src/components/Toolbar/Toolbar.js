@@ -196,7 +196,7 @@ const Toolbar = props => {
       </div>
 
       <div className="submit-btn">
-        <Button disabled={params.add !== '1'} onClick={e => props.handleSubmitNodeDetail(e)} size="small">
+        <Button disabled={params.add !== '1' || Number(params.isFinish) === 1} onClick={e => props.handleSubmitNodeDetail(e)} size="small">
           新增结节
         </Button>
 

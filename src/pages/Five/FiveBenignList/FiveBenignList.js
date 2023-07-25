@@ -149,7 +149,7 @@ const FiveBenignList = () => {
   const handleShowDoctorDetail = record => {
     localStorage.setItem('record', JSON.stringify(record))
     localStorage.setItem('FiveBenignList', JSON.stringify(pagination))
-    history.push(`/fiveViewer?add=1&id=${record.id}&from=${history.location.pathname}`)
+    history.push(`/fiveViewer?add=1&id=${record.id}&from=${history.location.pathname}&isFinish=${record.isFinish}`)
   }
 
   const rowSelection = {

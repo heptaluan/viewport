@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './CustomOverlay.scss'
 import cornerstone from 'cornerstone-core'
-import {
-  getNewNodeList,
-  getThirdBenignDetail,
-} from '../../../api/api'
+import { getNewNodeList, getThirdBenignDetail } from '../../../api/api'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { message } from 'antd'
@@ -37,7 +34,6 @@ const getBirth = identityNumber => {
 }
 
 const CustomOverlay = props => {
-
   const params = qs.parse(useLocation().search)
   const [data, setData] = useState(null)
   const [patients, setPatients] = useState('')
@@ -86,7 +82,7 @@ const CustomOverlay = props => {
     } else if (Number(params.type) === 1) {
       fetchBenignNodeListData()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

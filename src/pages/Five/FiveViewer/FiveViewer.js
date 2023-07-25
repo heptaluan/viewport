@@ -12,9 +12,10 @@ import MarkDialog from '../../../components/common/MarkDialog/MarkDialog'
 import {
   newResult,
   getFiveResearchDetail,
-  addSecondprimaryResult,
+  addFivePrimaryResult,
   researchUpdateResult,
   getFiveViewerImageList,
+  delFiveNode,
 } from '../../../api/api'
 import { Modal, message, Button, InputNumber } from 'antd'
 import Draggable from 'react-draggable'
@@ -182,31 +183,49 @@ const FiveViewer = () => {
   const formatFiveResearchNodeData = data => {
     const nodulesList = []
     const nodulesMapList = []
+    const { kyTask, nodeInfo, resultInfo } = data
     let index = 0
 
-    // 格式化结节信息
-    for (let i = 0; i < data.nodeInfo.length; i++) {
-      const res = data.nodeInfo[i]
-      const resultInfo = data.resultInfo[i]
+    for (let i = 0; i < nodeInfo.length; i++) {
+      const item = resultInfo.find(item => Number(item.nodeId) === Number(nodeInfo[i].id))
 
-      nodulesList.push({
-        id: index,
-        resultInfoId: resultInfo && resultInfo.id,
-        nodeId: res.id,
-        kyPrimaryId: data.kyTask.kyPrimaryId,
-        kySecondId: data.kyTask.id,
-        num: Number(res.imageIndex),
-        checked: false,
-        state: resultInfo && resultInfo.isBenign ? resultInfo.isBenign : 0,
-        review: resultInfo && resultInfo.isFinish === 1 ? true : false,
-        type: resultInfo && resultInfo.featureLabel ? resultInfo.featureLabel : res.featureLabel,
-        noduleName: `nodule_${res.id}`,
-      })
+      if (item) {
+        nodulesList.push({
+          id: index,
+          resultInfoId: item.id,
+          nodeId: nodeInfo[i].id,
+          kyPrimaryId: kyTask.kyPrimaryId,
+          kySecondId: kyTask.id,
+          num: Number(item.imageIndex),
+          checked: false,
+          state: item.isBenign,
+          review: item.isFinish === 1 ? true : false,
+          type: item.featuresType,
+          noduleName: `nodule_${item.id}`,
+          nodeType: 0,
+        })
+      } else {
+        nodulesList.push({
+          id: index,
+          resultInfoId: undefined,
+          nodeId: nodeInfo[i].id,
+          kyPrimaryId: kyTask.kyPrimaryId,
+          kySecondId: kyTask.id,
+          num: Number(nodeInfo[i].imageIndex),
+          checked: false,
+          state: 0,
+          review: false,
+          type: nodeInfo[i].featureLabel,
+          noduleName: `nodule_${nodeInfo[i].id}`,
+          nodeType: 0,
+        })
+      }
 
-      const box = res.maxBox ? JSON.parse(res.maxBox.replace(/'/g, '"')) : []
+      // 提取结节
+      const box = nodeInfo[i].maxBox ? JSON.parse(nodeInfo[i].maxBox.replace(/'/g, '"')) : []
       nodulesMapList.push({
-        noduleName: `nodule_${res.id}`,
-        index: Number(res.imageIndex),
+        noduleName: `nodule_${nodeInfo[i].id}`,
+        index: Number(nodeInfo[i].imageIndex),
         startX: Number(box[1]),
         startY: Number(box[0]),
         endX: Number(box[3]),
@@ -214,6 +233,37 @@ const FiveViewer = () => {
       })
 
       index++
+    }
+
+    for (let i = 0; i < resultInfo.length; i++) {
+      if (resultInfo[i].maxBox) {
+        nodulesList.push({
+          id: index,
+          resultInfoId: resultInfo[i].id,
+          nodeId: undefined,
+          kyPrimaryId: kyTask.kyPrimaryId,
+          kySecondId: kyTask.id,
+          num: Number(resultInfo[i].imageIndex),
+          checked: false,
+          state: resultInfo[i].isBenign,
+          review: true,
+          type: resultInfo[i].featuresType,
+          noduleName: `nodule_${resultInfo[i].id}`,
+          nodeType: 1,
+        })
+
+        const box = resultInfo[i].maxBox ? JSON.parse(resultInfo[i].maxBox.replace(/'/g, '"')) : []
+        nodulesMapList.push({
+          noduleName: `nodule_${resultInfo[i].id}`,
+          index: Number(resultInfo[i].imageIndex),
+          startX: Number(box[1]),
+          startY: Number(box[0]),
+          endX: Number(box[3]),
+          endY: Number(box[2]),
+        })
+
+        index++
+      }
     }
 
     console.log(nodulesList)
@@ -858,7 +908,7 @@ const FiveViewer = () => {
 
   // 提交审核结果弹窗
   const handleSubmitResults = async () => {
-    const result = await addSecondprimaryResult(params.id)
+    const result = await addFivePrimaryResult(params.id)
     if (result.data.code === 200) {
       message.success(`提交审核结果成功`)
       setVisible(false)
@@ -916,7 +966,7 @@ const FiveViewer = () => {
         startY: data[i].handles.start.y,
         endX: data[i].handles.end.x,
         endY: data[i].handles.end.y,
-        isBenign: 0
+        isBenign: 0,
       })
     }
     setToolList(toolList)
@@ -1039,7 +1089,7 @@ const FiveViewer = () => {
 
   const handleOk = e => {
     for (let i = 0; i < toolList.length; i++) {
-      console.log(toolList[i]);
+      console.log(toolList[i])
       if (!toolList[i].lung) {
         message.warn(`请选择结节的肺属性后在进行新增`)
         return false
@@ -1070,7 +1120,7 @@ const FiveViewer = () => {
       maxBox: [],
       imageIndex: currentImageIdIndex,
       isBenign: toolList[0].isBenign,
-      featureLabel: toolList[0].type,
+      featuresType: toolList[0].type,
       lobeLocation: toolList[0].lobe,
       lungLocation: toolList[0].lung,
       kyPrimaryId: noduleList[0].kyPrimaryId,
@@ -1098,13 +1148,16 @@ const FiveViewer = () => {
 
     newResult(JSON.stringify(postData)).then(res => {
       if (res.data.code === 200) {
+        message.success(`新增成功`)
         setTimeout(hide)
+        setConfirmLoading(false)
         fetchDoctorData(callback => {
           updateCanvasAndList()
         })
       } else {
         message.error(`新增失败，请重新尝试`)
         setTimeout(hide)
+        setConfirmLoading(false)
         return false
       }
     })
@@ -1115,26 +1168,20 @@ const FiveViewer = () => {
     confirm({
       title: `是否删除该中心帧为 ${imagesConfig.length - Number(item.num)} 的结节？`,
       icon: <ExclamationCircleOutlined />,
-      content: (
-        <div>
-          肺：{item.lung} <br />
-          肺叶：{item.lobe} <br />
-          类型：{item.type} <br />
-        </div>
-      ),
       okText: '删除',
       okType: 'danger',
       cancelText: '取消',
       onOk() {
-        const itemIndex = noduleList.findIndex(n => n.noduleNum === item.noduleNum)
-        noduleList.splice(itemIndex, 1)
-        setNoduleList([...noduleList])
-        setNoduleInfo(null)
-
-        saveResults(callback => {
-          fetchDoctorData(callback => {
-            updateCanvasAndList()
-          })
+        delFiveNode(item.resultInfoId).then(res => {
+          if (res.data.code === 200) {
+            message.success(`删除成功`)
+            fetchDoctorData(callback => {
+              updateCanvasAndList()
+            })
+          } else {
+            message.error(`删除失败，请重新尝试`)
+            return false
+          }
         })
       },
       onCancel() {
@@ -1359,7 +1406,7 @@ const FiveViewer = () => {
         cancelText="取消"
         maskStyle={{ backgroundColor: 'transparent' }}
       >
-        <p>是否提交结果</p>
+        <p>是否提交最终审核结果</p>
       </Modal>
 
       <Modal

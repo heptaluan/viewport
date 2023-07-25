@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import './FiveNoduleInfo.scss'
 import { Select, Button } from 'antd'
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
 
 const { Option } = Select
 
@@ -58,6 +60,8 @@ const FiveNoduleInfo = props => {
     },
   ])
 
+  const params = qs.parse(useLocation().search)
+
   useEffect(() => {
     if (props.noduleInfo?.scrynMaligant) {
       let num = 0
@@ -98,6 +102,8 @@ const FiveNoduleInfo = props => {
     <div className="nodule-info-box">
       {props.noduleInfo ? (
         <div className="nodule-info">
+          {Number(params.isFinish) === 1 ? <div className="disabled-mask"></div> : null}
+
           {/* <div className="list">
             <div className="list-title">结节位置：</div>
             <Select
@@ -118,6 +124,7 @@ const FiveNoduleInfo = props => {
           <div className="list">
             <div className="list-title">类型：</div>
             <Select
+              disabled={Number(params.isFinish) === 1}
               size="small"
               value={props.noduleInfo.type}
               style={{ width: 185, fontSize: 13 }}

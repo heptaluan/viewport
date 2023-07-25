@@ -79,8 +79,8 @@
           position: relative;
 
           &.add-item {
-            border-top: 1px solid #ff000030;
-            background: #ff000030;
+            border-top: 1px solid #ccc;
+            background: #eaeaea;
           }
 
           &.green-item {
@@ -107,8 +107,8 @@
             background: #eaeaea;
 
             &.add-item {
-              border-top: 1px solid #ff000030;
-              background: #ff000030;
+              border-top: 1px solid #ccc;
+              background: #eaeaea;
             }
 
             .del-tips {

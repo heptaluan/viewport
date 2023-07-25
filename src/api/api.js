@@ -2,9 +2,9 @@ import axios from 'axios'
 // import { getURLParameters } from '../util/index'
 
 // const basicUrl = `http://192.168.11.99:18080/dev-api`
-const basicUrl = `http://192.168.11.53:16880`
+// const basicUrl = `http://192.168.11.53:16880`
 // const basicUrl = `http://ky.feipankang.com/api`
-// const basicUrl = `http://192.168.1.64:16880`
+const basicUrl = `http://192.168.1.64:16880`
 // const basicUrl = `http://192.168.11.99:16880`
 
 axios.interceptors.request.use(
@@ -34,6 +34,26 @@ export const newResult = params => {
       'Content-Type': 'application/json;charset=UTF-8',
     },
   })
+}
+
+// 删除结节
+export const delFiveNode = params => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.delete(`${basicUrl}/research/delete/${params}`)
+}
+
+// 提交最终结果
+export const addFivePrimaryResult = id => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.post(
+    `${basicUrl}/research/updateList/${id}`,
+    {},
+    {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    }
+  )
 }
 
 // 获取详情
