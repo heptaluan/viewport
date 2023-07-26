@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './FiveViewer.scss'
-import Header from '../../../components/Header/Header'
+import FiveHeader from '../FiveHeader/FiveHeader'
 import ViewerMain from '../../../components/ViewerMain/ViewerMain'
 import FiveMiddleSidePanel from '../FiveMiddleSidePanel/FiveMiddleSidePanel'
 import cornerstone from 'cornerstone-core'
@@ -122,6 +122,11 @@ const FiveViewer = () => {
   // 角色
   const [userInfo, setUserInfo] = useState('')
 
+  // 补充说明
+  const [remark, setRemark] = useState('')
+  const [kyPrimaryId, setKyPrimaryId] = useState('')
+  const [kySecondId, setKySecondId] = useState('')
+
   // 初始化结节与影像列表信息
   useEffect(() => {
     const fetchFiveResearchDetail = async () => {
@@ -129,6 +134,9 @@ const FiveViewer = () => {
       if (result.data.code === 200) {
         formatFiveResearchNodeData(result.data.data)
         fetcImagehData(result.data.data.url)
+        setRemark(result.data.data.remark)
+        setKyPrimaryId(result.data.data.kyTask.kyPrimaryId)
+        setKySecondId(result.data.data.kyTask.id)
       } else if (result.data.code === 401) {
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
@@ -196,13 +204,14 @@ const FiveViewer = () => {
           nodeId: nodeInfo[i].id,
           kyPrimaryId: kyTask.kyPrimaryId,
           kySecondId: kyTask.id,
-          num: Number(item.imageIndex),
+          num: Number(nodeInfo[i].imageIndex),
           checked: false,
           state: item.isBenign,
           review: item.isFinish === 1 ? true : false,
           type: item.featuresType,
-          noduleName: `nodule_${item.id}`,
+          noduleName: `nodule_${nodeInfo[i].id}`,
           nodeType: 0,
+          invisionClassify: item.invisionClassify,
         })
       } else {
         nodulesList.push({
@@ -218,6 +227,7 @@ const FiveViewer = () => {
           type: nodeInfo[i].featureLabel,
           noduleName: `nodule_${nodeInfo[i].id}`,
           nodeType: 0,
+          invisionClassify: nodeInfo[i].invisionClassify,
         })
       }
 
@@ -250,6 +260,7 @@ const FiveViewer = () => {
           type: resultInfo[i].featuresType,
           noduleName: `nodule_${resultInfo[i].id}`,
           nodeType: 1,
+          invisionClassify: resultInfo[i].invisionClassify,
         })
 
         const box = resultInfo[i].maxBox ? JSON.parse(resultInfo[i].maxBox.replace(/'/g, '"')) : []
@@ -456,13 +467,8 @@ const FiveViewer = () => {
     }
 
     if (checkItme && type === 'soak') {
-      checkItme.newSoak = val
-      checkItme.review = true
-    }
-
-    if (checkItme && type === 'position') {
-      checkItme.remark = val
-      checkItme.review = true
+      checkItme.invisionClassify = val
+      // checkItme.review = true
     }
 
     setNoduleList([...noduleList])
@@ -847,6 +853,7 @@ const FiveViewer = () => {
       featuresType: checkItme.type,
       isBenign: checkItme.state,
       remark: checkItme.remark,
+      invisionClassify: checkItme.invisionClassify,
     }
     const result = await researchUpdateResult(postData)
     if (result.data.code === 200) {
@@ -898,11 +905,11 @@ const FiveViewer = () => {
     if (params.type === 'mission') {
       setVisible(true)
     } else {
-      if (noduleList.every(item => item.state > 0)) {
-        setVisible(true)
-      } else {
-        message.warning(`请检阅完所有结节后在进行结果提交`)
-      }
+      // if (noduleList.every(item => item.state > 0)) {
+      setVisible(true)
+      // } else {
+      //   message.warning(`请检阅完所有结节后在进行结果提交`)
+      // }
     }
   }
 
@@ -984,6 +991,9 @@ const FiveViewer = () => {
     if (checkItme && type === 'type') {
       checkItme.type = val
     }
+    if (checkItme && type === 'soak') {
+      checkItme.invisionClassify = val
+    }
     setToolList([...toolList])
   }
 
@@ -1059,13 +1069,9 @@ const FiveViewer = () => {
       scrynMaligant: riskVal ? riskVal : res.data.scrynMaligant,
       whu_scrynMaligant: riskVal ? riskVal : res.data.whu_scrynMaligant,
       nodeBox: [startY, startX, endY, endX],
-      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-        Math.abs(endY - startY) * rowPixelSpacing
-      ).toFixed(2)}mm`,
+      diameter: `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`,
       diameterSize: formatDiameter(
-        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(
-          Math.abs(endY - startY) * rowPixelSpacing
-        ).toFixed(2)}mm`
+        `${(Math.abs(endX - startX) * rowPixelSpacing).toFixed(2)}mm*${(Math.abs(endY - startY) * rowPixelSpacing).toFixed(2)}mm`
       ),
       maxHu: toolList[0].cachedStats.max,
       minHu: toolList[0].cachedStats.min,
@@ -1105,6 +1111,11 @@ const FiveViewer = () => {
         return false
       }
 
+      if (!toolList[i].invisionClassify) {
+        message.warn(`请选择结节的浸润类型后在进行新增`)
+        return false
+      }
+
       if (toolList[i].lung === '左肺' && toolList[i].lobe === '中叶') {
         message.warn(`请选择结节的肺叶属性后在进行新增`)
         return false
@@ -1121,10 +1132,11 @@ const FiveViewer = () => {
       imageIndex: currentImageIdIndex,
       isBenign: toolList[0].isBenign,
       featuresType: toolList[0].type,
+      invisionClassify: toolList[0].invisionClassify,
       lobeLocation: toolList[0].lobe,
       lungLocation: toolList[0].lung,
-      kyPrimaryId: noduleList[0].kyPrimaryId,
-      kySecondId: noduleList[0].kySecondId,
+      kyPrimaryId: kyPrimaryId,
+      kySecondId: kySecondId,
     }
 
     if (toolList[0].startX > toolList[0].endX) {
@@ -1252,9 +1264,7 @@ const FiveViewer = () => {
       }
 
       // 重新计算中心直径
-      checkItme.diameterSize = formatDiameter(
-        `${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`
-      )
+      checkItme.diameterSize = formatDiameter(`${Math.abs(data.width.toFixed(2))}mm*${Math.abs(data.height.toFixed(2))}mm`)
 
       // if (handle.start.x > handle.end.x) {
       //   nodeBox = [parseInt(handle.end.y), parseInt(handle.end.x), parseInt(handle.start.y), parseInt(handle.start.x)]
@@ -1335,7 +1345,7 @@ const FiveViewer = () => {
 
   return (
     <div className="viewer-box">
-      <Header data={patients} handleShowModal={handleShowModal} />
+      <FiveHeader data={patients} handleShowModal={handleShowModal} remark={remark} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
           <FiveMiddleSidePanel
@@ -1376,9 +1386,7 @@ const FiveViewer = () => {
         handleShowAdjustModal={handleShowAdjustModal}
         handleShowMarkModal={handleShowMarkModal}
       />
-      {showMark ? (
-        <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} />
-      ) : null}
+      {showMark ? <MarkDialog handleCloseCallback={handleCloseCallback} handleSubmitCallback={handleSubmitCallback} /> : null}
 
       <Modal
         title="确认模型风险结果"
@@ -1435,9 +1443,7 @@ const FiveViewer = () => {
         <p>是否将当前结节标记为微小结节</p>
       </Modal>
 
-      <div className="show-button">
-        {/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}
-      </div>
+      <div className="show-button">{/* <Button onClick={showNoduleList}>{showState ? '展开结节列表' : '收起结节列表'}</Button> */}</div>
 
       <Modal
         title={

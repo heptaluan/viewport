@@ -107,16 +107,8 @@ const MiddleSidePanel = props => {
 
                   <div className="type">{item.type}</div>
                   {userInfo === 'chief' ? (
-                    <div
-                      className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}
-                    >
-                      {item.risk ? (
-                        <>
-                          {Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%
-                        </>
-                      ) : (
-                        ''
-                      )}
+                    <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
+                      {item.risk ? <>{Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%</> : ''}
                     </div>
                   ) : null}
 
@@ -153,10 +145,9 @@ const MiddleSidePanel = props => {
                       className={`viewer-item ${item.active ? 'item-active' : ''}`}
                       onClick={e => props.handleCheckedListClick(item.num)}
                     >
-                      于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
-                      结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                      <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
-                      <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
+                      于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span> 结节，类型为{' '}
+                      <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约 <span>{item.noduleSize} mm³</span>。
+                      结节恶性风险为 <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                     </div>
                   ) : null
                 })}

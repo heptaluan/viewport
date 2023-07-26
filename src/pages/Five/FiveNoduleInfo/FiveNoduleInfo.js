@@ -80,8 +80,8 @@ const FiveNoduleInfo = props => {
     props.checkNoduleList(val, 'type')
   }
 
-  const handlePositionSelectChange = val => {
-    props.checkNoduleList(val, 'position')
+  const handleSoakChange = val => {
+    props.checkNoduleList(val, 'soak')
   }
 
   // 设置当中按钮选中
@@ -140,10 +140,27 @@ const FiveNoduleInfo = props => {
             </Select>
           </div>
 
+          <div className="list" style={{ marginTop: 3 }}>
+            <div className="list-title">浸润类型：</div>
+            <Select
+              placeholder={'请选择浸润类型'}
+              size="small"
+              value={props.noduleInfo.invisionClassify}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={handleSoakChange}
+            >
+              <Option value="AAH">AAH（非典型腺瘤样增生）</Option>
+              <Option value="AIS">AIS（原位腺癌）</Option>
+              <Option value="MIA">MIA（微浸润性腺癌）</Option>
+              <Option value="IA">IA（浸润性腺癌）</Option>
+              <Option value="OTHER">OTHER（其他）</Option>
+            </Select>
+          </div>
+
           {/* 默认是 0， 不是结节的话，1 ， 良是2，恶是3 */}
           <div className="check-group">
             <div className="group-wrap">
-              <span>是否是结节</span>
+              <span>是否是结节：</span>
               <div className="group">
                 <Button
                   type={props.noduleInfo.state === 1 ? 'primary' : null}
@@ -165,7 +182,7 @@ const FiveNoduleInfo = props => {
 
             {props.noduleInfo.state !== 1 ? (
               <div className="group-wrap">
-                <span>良恶性</span>
+                <span>良恶性：</span>
                 <div className="group">
                   <Button
                     type={props.noduleInfo.state === 2 ? 'primary' : null}

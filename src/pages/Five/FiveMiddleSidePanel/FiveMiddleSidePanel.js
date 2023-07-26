@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react'
 import './FiveMiddleSidePanel.scss'
 // import IconFont from '../common/IconFont/index'
 import { Checkbox, Tag, Tooltip } from 'antd'
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
 
 const FiveMiddleSidePanel = props => {
+  const params = qs.parse(useLocation().search)
+
   const handleListClick = (index, num) => {
     props.onCheckChange(index, num)
   }
@@ -106,14 +110,8 @@ const FiveMiddleSidePanel = props => {
 
                 <div className="type">{item.type}</div>
                 {userInfo === 'chief' ? (
-                  <div
-                    className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}
-                  >
-                    {item.risk ? (
-                      <>{Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%</>
-                    ) : (
-                      ''
-                    )}
+                  <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
+                    {item.risk ? <>{Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%</> : ''}
                   </div>
                 ) : null}
 
@@ -124,7 +122,7 @@ const FiveMiddleSidePanel = props => {
                 <div className="action review-state">
                   <span className={item.review ? 'review' : null}>{item.review === true ? '已检阅' : '未检阅'}</span>
                 </div>
-                {item.nodeType === 1 ? (
+                {item.nodeType === 1 && Number(params.isFinish) !== 1 ? (
                   <div className="del-tips">
                     <Tag color="#f50" onClick={e => deleteNodeListHandle(e, item)}>
                       删除
@@ -150,10 +148,9 @@ const FiveMiddleSidePanel = props => {
                       className={`viewer-item ${item.active ? 'item-active' : ''}`}
                       onClick={e => props.handleCheckedListClick(item.num)}
                     >
-                      于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span>{' '}
-                      结节，类型为 <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约{' '}
-                      <span>{item.noduleSize} mm³</span>。 结节恶性风险为{' '}
-                      <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
+                      于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span> 结节，类型为{' '}
+                      <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约 <span>{item.noduleSize} mm³</span>。
+                      结节恶性风险为 <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                     </div>
                   ) : null
                 })}

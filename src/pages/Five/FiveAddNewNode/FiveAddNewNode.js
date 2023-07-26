@@ -18,6 +18,10 @@ const FiveAddNewNode = props => {
     props.updateToolList(val, 'type', id)
   }
 
+  const handleSoakChange = (val, id) => {
+    props.updateToolList(val, 'soak', id)
+  }
+
   return (
     <div className="add-new-node-box">
       <div className="title-box">
@@ -38,6 +42,7 @@ const FiveAddNewNode = props => {
             结节信息（Area：{parseInt(item.cachedStats.area)}，Mean：{parseInt(item.cachedStats.mean)}，Std Dev：
             {parseInt(item.cachedStats.stdDev)}）
           </div>
+
           <div className="list">
             <div className="list-title">是否是结节：</div>
             <Button
@@ -56,6 +61,7 @@ const FiveAddNewNode = props => {
               是
             </Button>
           </div>
+
           {item.isBenign !== 1 ? (
             <div className="list">
               <div className="list-title">良恶性：</div>
@@ -76,6 +82,7 @@ const FiveAddNewNode = props => {
               </Button>
             </div>
           ) : null}
+
           <div className="list">
             <span className="list-title">肺：</span>
             <Radio.Group value={item.lung} onChange={e => onLungChange(e, item.uuid)}>
@@ -83,6 +90,7 @@ const FiveAddNewNode = props => {
               <Radio value={'左肺'}>左肺</Radio>
             </Radio.Group>
           </div>
+
           <div className="list">
             <div className="list-title">肺叶：</div>
             <Radio.Group value={item.lobe} onChange={e => onLobeChange(e, item.uuid)}>
@@ -91,6 +99,7 @@ const FiveAddNewNode = props => {
               <Radio value={'下叶'}>下叶</Radio>
             </Radio.Group>
           </div>
+
           <div className="list">
             <div className="list-title">类型：</div>
             <Select
@@ -108,11 +117,27 @@ const FiveAddNewNode = props => {
               <Option value="其他">其他</Option>
             </Select>
           </div>
+
+          <div className="list" style={{ marginTop: 3 }}>
+            <div className="list-title">浸润类型：</div>
+            <Select
+              value={item.invisionClassify}
+              style={{ width: 200, fontSize: 13 }}
+              onChange={e => handleSoakChange(e, item.uuid)}
+              placeholder={'请选择浸润类型'}
+            >
+              <Option value="AAH">AAH（非典型腺瘤样增生）</Option>
+              <Option value="AIS">AIS（原位腺癌）</Option>
+              <Option value="MIA">MIA（微浸润性腺癌）</Option>
+              <Option value="IA">IA（浸润性腺癌）</Option>
+              <Option value="OTHER">OTHER（其他）</Option>
+            </Select>
+          </div>
+
           <div className="list">
             <span className="list-title">建议：</span>
             <Input
               placeholder="这里输入结节备注信息"
-              size="small"
               style={{ width: 200, height: 30, marginTop: 2, fontSize: 13 }}
               value={item.suggest}
               onChange={e => props.handleToolListTextareaChange(e, item.uuid)}

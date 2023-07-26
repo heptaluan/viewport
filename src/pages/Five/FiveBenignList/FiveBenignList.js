@@ -11,7 +11,7 @@ const FiveBenignList = () => {
 
   const doctorColumns = [
     {
-      title: '良性样本Id',
+      title: '金标准样本Id',
       dataIndex: 'kyPrimaryId',
     },
     {
@@ -22,11 +22,7 @@ const FiveBenignList = () => {
       title: '是否完成',
       dataIndex: 'isFinish',
       render: (_, record) => {
-        return record.isFinish === 1 ? (
-          <span style={{ color: '#73d13d' }}>完成</span>
-        ) : (
-          <span style={{ color: '#ff4d4f' }}>未完成</span>
-        )
+        return record.isFinish === 1 ? <span style={{ color: '#73d13d' }}>完成</span> : <span style={{ color: '#ff4d4f' }}>未完成</span>
       },
     },
     {
@@ -168,12 +164,12 @@ const FiveBenignList = () => {
             <div className="header"></div>
             <div className="search-box">
               <div className="srarch-label">
-                <div>良性样本编号：</div>
+                <div>金标准样本编号：</div>
                 <Input
                   value={searchId}
                   onChange={e => handleDoctorIdSearch(e.target.value)}
                   style={{ width: 200, marginLeft: 15 }}
-                  placeholder="请输入良性样本Id"
+                  placeholder="请输入金标准样本Id"
                 />
               </div>
 
