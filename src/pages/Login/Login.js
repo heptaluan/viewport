@@ -53,6 +53,7 @@ const Login = () => {
     fetchCodeImg()
   }
   
+  // 登录的时候清空暂存数据
   const handleClearLocalStorage = () => {
     localStorage.setItem('token', '')
     localStorage.setItem('info', '')
@@ -69,6 +70,12 @@ const Login = () => {
     localStorage.setItem('ThirdStndrdList', '')
     localStorage.setItem('ThirdChiefBenignList', '')
     localStorage.setItem('ThirdChiefStndrdList', '')
+
+    localStorage.setItem('FourChiefBenignList', '')
+    localStorage.setItem('FourBenignList', '')
+
+    localStorage.setItem('FiveBenignList', '')
+    
   }
 
   return (

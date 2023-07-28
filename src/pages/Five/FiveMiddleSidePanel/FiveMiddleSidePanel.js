@@ -83,7 +83,7 @@ const FiveMiddleSidePanel = props => {
               </>
             ) : null} */}
             <div className="type">类型</div>
-            {userInfo === 'chief' ? <div className="risk">风险</div> : null}
+            <div className="risk">风险</div>
             {/* <div className="soak">结节</div> */}
             <div className="action">状态</div>
           </div>
@@ -109,11 +109,10 @@ const FiveMiddleSidePanel = props => {
                 ) : null} */}
 
                 <div className="type">{item.type}</div>
-                {userInfo === 'chief' ? (
-                  <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
-                    {item.risk ? <>{Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%</> : ''}
-                  </div>
-                ) : null}
+                
+                <div className={`risk`}>
+                  { item.scrynMaligant }%
+                </div>
 
                 {/* <div className={`soak ${item.state ? 'yes' : 'no'}`}> */}
                 {/* <div className="soak">
@@ -140,7 +139,7 @@ const FiveMiddleSidePanel = props => {
           <div className="report-box">
             <div className="title">影像所见</div>
             <div id="viewerItemBox" className="report-content">
-              {userInfo === 'chief' &&
+              {
                 props.noduleList?.map((item, index) => {
                   return item.checked ? (
                     <div
@@ -149,7 +148,7 @@ const FiveMiddleSidePanel = props => {
                       onClick={e => props.handleCheckedListClick(item.num)}
                     >
                       于 <span>{item.lung}</span> <span>{item.lobe}</span> 可见一 <span>{item.featureLabelG}</span> 结节，类型为{' '}
-                      <span>{item.type}</span>，大小约 <span>{item.diameter}</span>，体积约 <span>{item.noduleSize} mm³</span>。
+                      <span>{item.type}</span>。
                       结节恶性风险为 <span>{item.risk ? item.risk : item.scrynMaligant}</span> %。
                     </div>
                   ) : null

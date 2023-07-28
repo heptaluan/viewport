@@ -212,6 +212,7 @@ const FiveViewer = () => {
           noduleName: `nodule_${nodeInfo[i].id}`,
           nodeType: 0,
           invisionClassify: item.invisionClassify,
+          scrynMaligant: nodeInfo[i].scrynMaligant,
         })
       } else {
         nodulesList.push({
@@ -228,6 +229,7 @@ const FiveViewer = () => {
           noduleName: `nodule_${nodeInfo[i].id}`,
           nodeType: 0,
           invisionClassify: nodeInfo[i].invisionClassify,
+          scrynMaligant: nodeInfo[i].scrynMaligant,
         })
       }
 
@@ -261,6 +263,7 @@ const FiveViewer = () => {
           noduleName: `nodule_${resultInfo[i].id}`,
           nodeType: 1,
           invisionClassify: resultInfo[i].invisionClassify,
+          scrynMaligant: 0,
         })
 
         const box = resultInfo[i].maxBox ? JSON.parse(resultInfo[i].maxBox.replace(/'/g, '"')) : []
