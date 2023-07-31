@@ -213,6 +213,8 @@ const FiveViewer = () => {
           nodeType: 0,
           invisionClassify: item.invisionClassify,
           scrynMaligant: nodeInfo[i].scrynMaligant,
+          lobeLocation: item.lobeLocation ? item.lobeLocation : nodeInfo[i].lobeLocation,
+          lungLocation: item.lungLocation ? item.lungLocation : nodeInfo[i].lungLocation,
         })
       } else {
         nodulesList.push({
@@ -230,6 +232,8 @@ const FiveViewer = () => {
           nodeType: 0,
           invisionClassify: nodeInfo[i].invisionClassify,
           scrynMaligant: nodeInfo[i].scrynMaligant,
+          lobeLocation: nodeInfo[i].lobeLocation,
+          lungLocation: nodeInfo[i].lungLocation,
         })
       }
 
@@ -264,6 +268,8 @@ const FiveViewer = () => {
           nodeType: 1,
           invisionClassify: resultInfo[i].invisionClassify,
           scrynMaligant: 0,
+          lobeLocation: resultInfo[i].lobeLocation,
+          lungLocation: resultInfo[i].lungLocation,
         })
 
         const box = resultInfo[i].maxBox ? JSON.parse(resultInfo[i].maxBox.replace(/'/g, '"')) : []
@@ -454,24 +460,23 @@ const FiveViewer = () => {
   // 更新结节事件
   const checkNoduleList = (val, type) => {
     const checkItme = noduleList.find(item => item.checked === true)
-    if (checkItme && type === 'lung') {
-      checkItme.lung = val
-      checkItme.review = true
+    if (checkItme && type === 'lungLocation') {
+      if (checkItme.lobeLocation === '中叶' && val === '左肺') {
+        checkItme.lobeLocation = '上叶'
+      }
+      checkItme.lungLocation = val
     }
 
-    if (checkItme && type === 'lobe') {
-      checkItme.lobe = val
-      checkItme.review = true
+    if (checkItme && type === 'lobeLocation') {
+      checkItme.lobeLocation = val
     }
 
     if (checkItme && type === 'type') {
       checkItme.type = val
-      // checkItme.review = true
     }
 
     if (checkItme && type === 'soak') {
       checkItme.invisionClassify = val
-      // checkItme.review = true
     }
 
     setNoduleList([...noduleList])
@@ -857,6 +862,8 @@ const FiveViewer = () => {
       isBenign: checkItme.state,
       remark: checkItme.remark,
       invisionClassify: checkItme.invisionClassify,
+      lobeLocation: checkItme.lobeLocation,
+      lungLocation: checkItme.lungLocation,
     }
     const result = await researchUpdateResult(postData)
     if (result.data.code === 200) {

@@ -76,12 +76,10 @@ const FiveMiddleSidePanel = props => {
             </Checkbox>
             <div className="num">中心帧</div>
             {/* <div className="soak">位置</div> */}
-            {/* {userInfo === 'chief' ? (
-              <>
-                <div className="soak">肺</div>
-                <div className="soak">肺叶</div>
-              </>
-            ) : null} */}
+          
+            <div className="soak">肺</div>
+            <div className="soak">肺叶</div>
+   
             <div className="type">类型</div>
             <div className="risk">风险</div>
             {/* <div className="soak">结节</div> */}
@@ -101,12 +99,10 @@ const FiveMiddleSidePanel = props => {
                 {/* <Tooltip placement="top" title={item.remark}>
                   <div className="soak">{item.remark}</div>
                 </Tooltip> */}
-                {/* {userInfo === 'chief' ? (
-                  <>
-                    <div className="soak">{item.lung}</div>
-                    <div className="soak">{item.lobe}</div>
-                  </>
-                ) : null} */}
+              
+                <div className="soak">{item.lungLocation}</div>
+                <div className="soak">{item.lobeLocation}</div>
+              
 
                 <div className="type">{item.type}</div>
                 

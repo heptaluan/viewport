@@ -79,7 +79,7 @@ const FiveNoduleInfo = props => {
   const handleSelectChange = val => {
     props.checkNoduleList(val, 'type')
   }
-
+  
   const handleSoakChange = val => {
     props.checkNoduleList(val, 'soak')
   }
@@ -104,23 +104,6 @@ const FiveNoduleInfo = props => {
         <div className="nodule-info">
           {Number(params.isFinish) === 1 ? <div className="disabled-mask"></div> : null}
 
-          {/* <div className="list">
-            <div className="list-title">结节位置：</div>
-            <Select
-              size="small"
-              value={props.noduleInfo.remark}
-              style={{ width: 185, fontSize: 13 }}
-              onChange={handlePositionSelectChange}
-              placeholder="请选择结节位置"
-            >
-              <Option value="右肺上叶（RUL）">右肺上叶（RUL）</Option>
-              <Option value="右肺中叶（RML）">右肺中叶（RML）</Option>
-              <Option value="右肺下叶（RLL）">右肺下叶（RLL）</Option>
-              <Option value="左肺上叶（LUL）">左肺上叶（LUL）</Option>
-              <Option value="左肺下叶（LLL）">左肺下叶（LLL）</Option>
-            </Select>
-          </div> */}
-
           <div className="list">
             <div className="list-title">类型：</div>
             <Select
@@ -137,6 +120,35 @@ const FiveNoduleInfo = props => {
               <Option value="胸膜实性">胸膜实性</Option>
               <Option value="胸膜钙化">胸膜钙化</Option>
               <Option value="其它（包括不可分辨）">其它（包括不可分辨）</Option>
+            </Select>
+          </div>
+
+          <div className="list">
+            <div className="list-title">肺：</div>
+            <Select
+              size="small"
+              value={props.noduleInfo.lungLocation}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={val => props.checkNoduleList(val, 'lungLocation')}
+              placeholder="请选择肺位置"
+            >
+              <Option value="左肺">左肺</Option>
+              <Option value="右肺">右肺</Option>
+            </Select>
+          </div>
+
+          <div className="list">
+            <div className="list-title">肺叶：</div>
+            <Select
+              size="small"
+              value={props.noduleInfo.lobeLocation}
+              style={{ width: 185, fontSize: 13 }}
+              onChange={val => props.checkNoduleList(val, 'lobeLocation')}
+              placeholder="请选择肺叶位置"
+            >
+              <Option value="上叶">上叶</Option>
+              { props.noduleInfo.lungLocation === '右肺' ? <Option value="中叶">中叶</Option> : null }
+              <Option value="下叶">下叶</Option>
             </Select>
           </div>
 
