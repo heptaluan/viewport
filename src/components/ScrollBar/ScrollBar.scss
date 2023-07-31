@@ -1,23 +1,18 @@
 .scroll-bar-wrap {
   width: 15px;
-  height: 100%;
+  height: calc(100% - 35px);
   position: absolute;
   right: 0;
-  top: 0;
+  top: 35px;
   z-index: 2;
   background: #000;
 
   & > div {
     display: flex;
 
-    &.active:after {
+    &.active {
       cursor: pointer;
-      content: '';
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      border-radius: 50%;
-      margin: 0 auto;
+      background-color: #fff;
     }
   }
 }

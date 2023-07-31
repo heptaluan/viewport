@@ -21,6 +21,13 @@ const CompareViewerMain = props => {
             imageIds={props.imagesConfig}
             handleScorllClicked={props.handleScorllClicked}
           />
+          {/* <Toolbar
+            handleSliderChange={props.handleSliderChange}
+            handleToolbarClick={props.handleToolbarClick}
+            handleSubmitNodeDetail={props.handleSubmitNodeDetail}
+            handleShowMarker={props.handleShowMarker}
+            showMarker={props.showMarker}
+          /> */}
           <CornerstoneViewport
             imageIdIndex={props.imageIdIndex}
             viewportOverlayComponent={CustomOverlay}

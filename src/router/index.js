@@ -1,12 +1,12 @@
 import React from 'react'
 import { renderRoutes } from 'react-router-config'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, HashRouter } from 'react-router-dom'
 import routes from './config'
 
 const Router = () => {
   return (
     <>
-      <BrowserRouter basename='/ct/'>{renderRoutes(routes)}</BrowserRouter>
+      <HashRouter basename="/">{renderRoutes(routes)}</HashRouter>
     </>
   )
 }

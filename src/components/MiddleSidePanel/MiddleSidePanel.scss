@@ -33,6 +33,7 @@
       .table-title {
         display: flex;
         height: 25px;
+        min-height: 25px;
         line-height: 25px;
         text-align: center;
         border: 1px solid transparent;
@@ -64,7 +65,7 @@
         flex-direction: column;
         overflow-x: hidden;
         overflow-y: overlay;
-        min-height: 535px;
+        height: 535px;
 
         .table-item {
           user-select: none;
@@ -78,10 +79,10 @@
           position: relative;
 
           &.add-item {
-            border-top: 1px solid #ccc;
-            background: #eaeaea;
+            border-top: 1px solid #ff000030;
+            background: #ff000030;
           }
-          
+
           &.green-item {
             border: 1px solid #02b91938;
             background: #02b91938;
@@ -105,10 +106,22 @@
             border: 1px solid #eaeaea;
             background: #eaeaea;
 
+            &.add-item {
+              border-top: 1px solid #ff000030;
+              background: #ff000030;
+            }
+
             .del-tips {
               display: flex;
             }
           }
+        }
+
+        .type {
+          width: 84px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .index,
@@ -122,6 +135,17 @@
         .soak,
         .action {
           flex: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .soak.yes {
+          color: #73d13d;
+        }
+
+        .soak.no {
+          color: #ff4d4f;
         }
 
         .risk.edit {
@@ -153,12 +177,6 @@
           align-items: center;
           justify-content: flex-end;
           padding-right: 5px;
-        }
-
-        .node-tips {
-          position: absolute;
-          left: 25px;
-          top: 7px;
         }
       }
     }
@@ -310,4 +328,20 @@
   padding: 0 2px !important;
   line-height: normal !important;
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #999;
 }
