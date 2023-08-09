@@ -1163,6 +1163,11 @@ const Viewer = () => {
         return false
       }
 
+      if (!noduleList.every(item => item.state !== undefined)) {
+        message.warning(`请复核完所有结节后在进行结果提交`)
+        return false
+      }
+
       // if (!noduleList.every(item => item.markNode === true)) {
       //   message.warning(`请标记完所有良性样本后在进行结果提交`)
       //   return false
