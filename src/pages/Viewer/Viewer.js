@@ -1175,6 +1175,12 @@ const Viewer = () => {
       setVisible(true)
     } else {
       if (noduleList.every(item => item.review === true)) {
+
+        if (!noduleList.every(item => item.state !== undefined)) {
+          message.warning(`请复核完所有结节后在进行结果提交`)
+          return false
+        }
+        
         setVisible(true)
       } else {
         message.warning(`请检阅完所有结节后在进行结果提交`)
