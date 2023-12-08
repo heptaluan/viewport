@@ -16,6 +16,24 @@ axios.interceptors.request.use(
   }
 )
 
+// 12-08 拷贝第三批次，接口调整
+
+// 获取良性结节列表
+export const getSixBenignList = (isFinish, searchId) => {
+  axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+  return axios.get(`${basicUrl}/secondprimary/list?isFinish=${isFinish}&kyPrimaryId=${searchId || ''}&project=5`)
+}
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+// ===========================================================================
+
+
+
 // 7-20 临时添加，复制的第三批数据审核
 
 // ===========================================================================
@@ -95,9 +113,15 @@ export const researchUpdateResult = params => {
 // ===========================================================================
 
 // 获取对应的影像列表
+// export const getFourViewerImageList = pcode => {
+//   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
+//   return axios.get(`http://192.168.1.107:19000/sortlist/--3000_158--${pcode}/`)
+// }
+
+// 新的改动
 export const getFourViewerImageList = pcode => {
   axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
-  return axios.get(`http://192.168.1.107:19000/sortlist/--3000_158--${pcode}/`)
+  return axios.get(`http://192.168.1.107:19001/sortlist/${pcode}/`)
 }
 
 // 获取良性结节列表

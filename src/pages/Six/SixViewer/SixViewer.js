@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './FourViewer.scss'
-import Header from '../../../components/Header/Header'
+import './SixViewer.scss'
+import SixHeader from '../SixHeader/SixHeader'
 import ViewerMain from '../../../components/ViewerMain/ViewerMain'
-import FourMiddleSidePanel from '../FourMiddleSidePanel/FourMiddleSidePanel'
+import SixMiddleSidePanel from '../SixMiddleSidePanel/SixMiddleSidePanel'
 import cornerstone from 'cornerstone-core'
 import cornerstoneTools from 'cornerstone-tools'
-import FourNoduleInfo from '../FourNoduleInfo/FourNoduleInfo'
+import SixNoduleInfo from '../SixNoduleInfo/SixNoduleInfo'
 import MarkNoduleTool from '../../../components/common/MarkNoduleTool/MarkNoduleTool'
 import MeasureRectTool from '../../../components/common/MeasureRect/MeasureRect'
 import MarkDialog from '../../../components/common/MarkDialog/MarkDialog'
@@ -28,7 +28,7 @@ import { useHistory } from 'react-router-dom'
 
 const { confirm } = Modal
 
-const FourViewer = () => {
+const SixViewer = () => {
   const history = useHistory()
 
   const defaultTools = [
@@ -156,6 +156,9 @@ const FourViewer = () => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [])
 
+  // 补充说明
+  const [remark, setRemark] = useState('')
+
   // 这里有所调整，之前使用的是 pcode，现在调整成连了 kyTask 下的 url 字段
   useEffect(() => {
     const fetchSecondprimaryDetail = async () => {
@@ -163,6 +166,7 @@ const FourViewer = () => {
       if (result.data.code === 200) {
         formatSecondprimaryNodeData(result.data.data)
         fetcImagehData(result.data.data.kyTask.url)
+        setRemark(result.data.data.kyTask.memo)
       } else if (result.data.code === 401) {
         message.warning(`登录已失效，请重新登录`)
         history.push('/login')
@@ -1454,10 +1458,10 @@ const FourViewer = () => {
 
   return (
     <div className="viewer-box">
-      <Header data={patients} handleShowModal={handleShowModal} />
+      <SixHeader data={patients} handleShowModal={handleShowModal} remark={remark} />
       <div className="viewer-center-box">
         <div className={showState ? 'middle-box-wrap-show' : 'middle-box-wrap-hide'}>
-          <FourMiddleSidePanel
+          <SixMiddleSidePanel
             handleVisibleChange={handleVisibleChange}
             handleCheckedListClick={handleCheckedListClick}
             handleHideNodule={handleHideNodule}
@@ -1485,7 +1489,7 @@ const FourViewer = () => {
           showMarker={showMarker}
         />
       </div>
-      <FourNoduleInfo
+      <SixNoduleInfo
         noduleInfo={noduleInfo}
         handleTextareaOnChange={handleTextareaOnChange}
         handleInputBlur={handleInputBlur}
@@ -1604,4 +1608,4 @@ const FourViewer = () => {
   )
 }
 
-export default FourViewer
+export default SixViewer

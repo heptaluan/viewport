@@ -51,6 +51,10 @@ const MenuList = props => {
     if (e.key === '5-0') {
       history.push('/fiveBenignList')
     }
+
+    if (e.key === '6-0') {
+      history.push('/sixBenignList')
+    }
   }
 
   return (
@@ -97,6 +101,10 @@ const MenuList = props => {
 
         <Menu.ItemGroup title="第四批软标签">
           <Menu.Item key="5-0">金标准列表</Menu.Item>
+        </Menu.ItemGroup>
+
+        <Menu.ItemGroup title="第五批软标签">
+          <Menu.Item key="6-0">良性结节列表</Menu.Item>
         </Menu.ItemGroup>
       </Menu>
     </div>

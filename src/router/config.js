@@ -30,11 +30,26 @@ import FourViewer from '../pages/Four/FourViewer/FourViewer'
 import FiveBenignList from '../pages/Five/FiveBenignList/FiveBenignList'
 import FiveViewer from '../pages/Five/FiveViewer/FiveViewer'
 
+// 第五批软标签
+import SixBenignList from '../pages/Six/SixBenignList/SixBenignList'
+import SixViewer from '../pages/Six/SixViewer/SixViewer'
+
 const routes = [
   {
     path: '/',
     component: IndexComponent,
     routes: [
+      // 12-08，第六批软标签
+      {
+        path: '/sixBenignList',
+        component: SixBenignList,
+        routes: [],
+      },
+      {
+        path: '/sixViewer',
+        component: SixViewer,
+        routes: [],
+      },
       // 7-20
       {
         path: '/fiveBenignList',

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import './FiveHeader.scss'
+import './SixHeader.scss'
 import { Button, Image, Space, Alert, Popconfirm } from 'antd'
 // import { getClinicalFiles, downloadZip } from '../../api/api'
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { useHistory } from 'react-router-dom'
 
-const FiveHeader = props => {
+const SixHeader = props => {
   const [visible, setVisible] = useState(false)
   const [fileData] = useState([])
 
@@ -24,7 +24,7 @@ const FiveHeader = props => {
   }
 
   return (
-    <div className="header-box five-header">
+    <div className="header-box six-header">
       <Button onClick={handleGoBackList}>返回列表</Button>
       <div className="five-export-box">
         {/* <Button disabled={fileData.length === 0} onClick={handleViewClinicalImages} style={{ marginRight: 10 }}>
@@ -86,4 +86,4 @@ const FiveHeader = props => {
   )
 }
 
-export default FiveHeader
+export default SixHeader
