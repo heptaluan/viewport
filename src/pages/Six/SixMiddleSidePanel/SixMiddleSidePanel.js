@@ -79,7 +79,7 @@ const SixMiddleSidePanel = props => {
               </>
             ) : null} */}
             <div className="type">类型</div>
-            {userInfo === 'chief' ? <div className="risk">风险</div> : null}
+            <div className="risk">风险</div>
             {/* <div className="soak">结节</div> */}
             <div className="action">状态</div>
           </div>
@@ -106,12 +106,11 @@ const SixMiddleSidePanel = props => {
                   ) : null} */}
 
                   <div className="type">{item.type}</div>
-                  {userInfo === 'chief' ? (
-                    <div className={`risk ${item.risk && Number(item.scrynMaligant) !== Number(item.risk) ? 'edit' : ''}`}>
-                      {item.risk ? <>{Number(item.scrynMaligant) !== Number(item.risk) ? item.scrynMaligant : item.risk}%</> : ''}
-                    </div>
-                  ) : null}
-
+                  
+                  <div className="risk">
+                    {item.scrynMaligant}%
+                  </div>
+                 
                   {/* <div className={`soak ${item.state ? 'yes' : 'no'}`}> */}
                   {/* <div className="soak">
                     <span>{item.state === undefined ? '-' : item.state ? '恶' : '良'}</span>

@@ -104,7 +104,7 @@ const MenuList = props => {
         </Menu.ItemGroup>
 
         <Menu.ItemGroup title="第五批软标签">
-          <Menu.Item key="6-0">良性结节列表</Menu.Item>
+          <Menu.Item key="6-0">金标准列表</Menu.Item>
         </Menu.ItemGroup>
       </Menu>
     </div>

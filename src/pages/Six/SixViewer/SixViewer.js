@@ -338,6 +338,7 @@ const SixViewer = () => {
         kyTaskId: resultInfo && resultInfo.id,
         noduleName: `nodule_${res.id}`,
         remark: resultInfo && resultInfo.remark ? resultInfo.remark : undefined,
+        scrynMaligant: res.prob ? res.prob : '-'
       })
 
       const acrossCoordz = res.acrossCoordz.split(',')
@@ -1003,17 +1004,18 @@ const SixViewer = () => {
 
   // 提交审核结果按钮
   const handleShowModal = () => {
+    setVisible(true)
     // formatPostData()
-    console.log(noduleList)
-    if (params.type === 'mission') {
-      setVisible(true)
-    } else {
-      if (noduleList.every(item => item.state > 0)) {
-        setVisible(true)
-      } else {
-        message.warning(`请检阅完所有结节后在进行结果提交`)
-      }
-    }
+    // console.log(noduleList)
+    // if (params.type === 'mission') {
+    //   setVisible(true)
+    // } else {
+    //   if (noduleList.every(item => item.state > 0)) {
+    //     setVisible(true)
+    //   } else {
+    //     message.warning(`请检阅完所有结节后在进行结果提交`)
+    //   }
+    // }
   }
 
   // 提交审核结果弹窗
@@ -1022,7 +1024,7 @@ const SixViewer = () => {
     if (result.data.code === 200) {
       message.success(`提交审核结果成功`)
       setVisible(false)
-      history.push('/fourBenignList')
+      history.push('/sixBenignList')
     } else if (result.data.code === 401) {
       message.warning(`登录已失效，请重新登录`)
       history.push('/login')

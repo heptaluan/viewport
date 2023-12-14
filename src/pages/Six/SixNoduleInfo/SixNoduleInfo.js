@@ -128,11 +128,16 @@ const SixNoduleInfo = props => {
             </Select>
           </div>
 
+          <div className="list">
+            <div className="list-title">风险：</div>
+            <span>{props.noduleInfo.scrynMaligant}%</span>
+          </div>
+
           {/* 默认是 0， 不是结节的话，1 ， 良是2，恶是3 */}
           <div className="check-group">
             <div className="group-wrap">
               <span>是否是结节</span>
-              <div className="group">
+              <div className="group" style={{ paddingRight: 0 }}>
                 <Button
                   type={props.noduleInfo.state === 1 ? 'primary' : null}
                   style={{ marginRight: '15px' }}
@@ -154,7 +159,7 @@ const SixNoduleInfo = props => {
             {props.noduleInfo.state !== 1 ? (
               <div className="group-wrap">
                 <span>良恶性</span>
-                <div className="group">
+                <div className="group" style={{ paddingRight: 0 }}>
                   <Button
                     type={props.noduleInfo.state === 2 ? 'primary' : null}
                     style={{ marginRight: '15px' }}
